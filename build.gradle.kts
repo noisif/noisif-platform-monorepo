@@ -17,6 +17,7 @@ import org.gradle.plugins.ide.idea.model.IdeaModel
 import xyz.jwizard.buildconfig.CompactTestOutputListener
 import xyz.jwizard.buildconfig.getEnv
 import xyz.jwizard.buildconfig.getPluginId
+import xyz.jwizard.buildconfig.registerTestSummaryService
 
 plugins {
     alias(libs.plugins.java)
@@ -67,7 +68,9 @@ subprojects {
         testLogging {
             showStandardStreams = false
         }
-        addTestListener(CompactTestOutputListener())
+        val summaryService = registerTestSummaryService()
+        usesService(summaryService)
+        addTestListener(CompactTestOutputListener(summaryService.get()))
         // suppress JDK 21+ warnings regarding dynamic agent loading (used by mockito)
         // -Xshare:off: disables class data sharing
         jvmArgs(

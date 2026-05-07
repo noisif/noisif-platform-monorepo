@@ -19,12 +19,7 @@ import org.gradle.api.tasks.testing.TestDescriptor
 import org.gradle.api.tasks.testing.TestListener
 import org.gradle.api.tasks.testing.TestResult
 
-class CompactTestOutputListener : TestListener {
-    private val reset = "\u001B[0m"
-    private val green = "\u001B[32m"
-    private val red = "\u001B[31m"
-    private val yellow = "\u001B[33m"
-
+class CompactTestOutputListener(private val summaryService: TestSummaryService) : TestListener {
     override fun beforeSuite(suite: TestDescriptor) {
     }
 
@@ -37,6 +32,8 @@ class CompactTestOutputListener : TestListener {
         val skipped = result.skippedTestCount
         val total = result.testCount
 
+        summaryService.addResults(passed, failed, skipped)
+
         val plainPassedStr = "$passed PASSED"
         val plainFailedStr = "$failed FAILED"
         val plainSkippedStr = "$skipped SKIPPED"
@@ -47,9 +44,9 @@ class CompactTestOutputListener : TestListener {
         val maxLength = maxOf(summaryLine.length, totalLine.length)
         val separator = "=".repeat(maxLength)
 
-        val passedStr = if (passed > 0) "$green$plainPassedStr$reset" else plainPassedStr
-        val failedStr = if (failed > 0) "$red$plainFailedStr$reset" else plainFailedStr
-        val skippedStr = if (skipped > 0) "$yellow$plainSkippedStr$reset" else plainSkippedStr
+        val passedStr = "$GREEN$plainPassedStr$RESET"
+        val failedStr = "$RED$plainFailedStr$RESET"
+        val skippedStr = "$YELLOW$plainSkippedStr$RESET"
 
         println("\n$separator")
         println("Test summary: $passedStr, $failedStr, $skippedStr")
@@ -65,13 +62,13 @@ class CompactTestOutputListener : TestListener {
         val simpleClassName = testDescriptor.className?.substringAfterLast('.') ?: "UnknownClass"
         when (result.resultType) {
             TestResult.ResultType.SUCCESS ->
-                println("$simpleClassName > $name ${green}PASSED${reset}")
+                println("$simpleClassName > $name ${GREEN}PASSED$RESET")
 
             TestResult.ResultType.FAILURE ->
-                println("$simpleClassName > $name ${red}FAILED${reset}")
+                println("$simpleClassName > $name ${RED}FAILED$RESET")
 
             TestResult.ResultType.SKIPPED ->
-                println("$simpleClassName > $name ${yellow}SKIPPED${reset}")
+                println("$simpleClassName > $name ${YELLOW}SKIPPED$RESET")
 
             else -> {}
         }
