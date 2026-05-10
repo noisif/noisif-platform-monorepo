@@ -65,6 +65,7 @@ public class ActionRouterWsMessageListener extends WsMessageListener {
         for (final WsAction<?> action : actions) {
             if (pool == null || action.pool() == pool) {
                 registerAction(action);
+                registeredCount++;
             }
         }
         LOG.info("Successfully auto-registered {} WS action(s)", registeredCount);
