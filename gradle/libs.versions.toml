@@ -3,6 +3,7 @@ amqpClient = "5.29.0"
 assertj = "3.27.7"
 bucket4j = "8.18.0"
 clazzGraph = "4.8.184"
+erlangJinterface = "1.6.1"
 guava = "33.5.0-jre"
 guice = "7.0.0"
 graalvm = "25.0.2"
@@ -20,6 +21,7 @@ kotlinDsl = "5.2.0"
 logback = "1.5.32"
 mockito = "5.11.0"
 neo4jDriver = "6.0.4"
+nvWebsocketClient = "2.14"
 postgresql = "42.7.10"
 protobuf = "4.34.1"
 protobufPlugin = "0.10.0"
@@ -34,6 +36,7 @@ ampq-client = { module = "com.rabbitmq:amqp-client", version.ref = "amqpClient" 
 assertj-core = { module = "org.assertj:assertj-core", version.ref = "assertj" }
 bucket4j = { module = "com.bucket4j:bucket4j_jdk17-core", version.ref = "bucket4j" }
 clazz-graph = { module = "io.github.classgraph:classgraph", version.ref = "clazzGraph" }
+erlang-jinterface = { module = "org.erlang.otp:jinterface", version.ref = "erlangJinterface" }
 guava = { module = "com.google.guava:guava", version.ref = "guava" }
 guice = { module = "com.google.inject:guice", version.ref = "guice" }
 graalvm-polyglot = { module = "org.graalvm.polyglot:polyglot", version.ref = "graalvm" }
@@ -55,6 +58,7 @@ logback-classic = { module = "ch.qos.logback:logback-classic", version.ref = "lo
 mockito-core = { module = "org.mockito:mockito-core", version.ref = "mockito" }
 mockito-jupiter = { module = "org.mockito:mockito-junit-jupiter", version.ref = "mockito" }
 neo4j-driver = { module = "org.neo4j.driver:neo4j-java-driver", version.ref = "neo4jDriver" }
+nv-websocket-client = { module = "com.neovisionaries:nv-websocket-client", version.ref = "nvWebsocketClient" }
 postgresql = { module = "org.postgresql:postgresql", version.ref = "postgresql" }
 protobuf-gradle-plugin = { module = "com.google.protobuf:protobuf-gradle-plugin", version.ref = "protobufPlugin" }
 protobuf-java = { module = "com.google.protobuf:protobuf-java", version.ref = "protobuf" }

@@ -13,28 +13,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package xyz.jwizard.jws.ingress;
 
-rootProject.name = "jwizard-platform-monorepo"
+import xyz.jwizard.jwl.common.bootstrap.AppBootstrapper;
+import xyz.jwizard.jwl.common.bootstrap.DefaultBootstrapper;
 
-include("jwl-ci")
-include("jwl-codec")
-include("jwl-common")
-include("jwl-contracts")
-include("jwl-graph")
-include("jwl-http")
-include("jwl-i18n")
-include("jwl-kv")
-include("jwl-net")
-include("jwl-netclient")
-include("jwl-queue")
-include("jwl-sql")
-include("jwl-websocket")
-
-include("jws-api")
-include("jws-cli")
-include("jws-gateway")
-include("jws-ingestor")
-include("jws-ingress")
-include("jws-registry")
-include("jws-translator")
-include("jws-worker")
+@AppBootstrapper
+public class JwsIngressMain {
+    public static void main(String[] args) {
+        DefaultBootstrapper.run(JwsIngressMain.class);
+    }
+}

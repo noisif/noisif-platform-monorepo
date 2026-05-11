@@ -13,28 +13,24 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+import xyz.jwizard.buildconfig.JwProtobufPlugin
+import xyz.jwizard.buildconfig.JwServicePlugin
+import xyz.jwizard.buildconfig.jwService
 
-rootProject.name = "jwizard-platform-monorepo"
+apply<JwServicePlugin>()
+apply<JwProtobufPlugin>()
 
-include("jwl-ci")
-include("jwl-codec")
-include("jwl-common")
-include("jwl-contracts")
-include("jwl-graph")
-include("jwl-http")
-include("jwl-i18n")
-include("jwl-kv")
-include("jwl-net")
-include("jwl-netclient")
-include("jwl-queue")
-include("jwl-sql")
-include("jwl-websocket")
+jwService {
+    packageSuffix.set("ingress")
+    mainClass.set("JwsIngressMain")
+}
 
-include("jws-api")
-include("jws-cli")
-include("jws-gateway")
-include("jws-ingestor")
-include("jws-ingress")
-include("jws-registry")
-include("jws-translator")
-include("jws-worker")
+dependencies {
+    implementation(libs.nv.websocket.client)
+    implementation(libs.erlang.jinterface)
+
+    implementation(project(":jwl-common"))
+    implementation(project(":jwl-codec"))
+
+    testImplementation(testFixtures(project(":jwl-common")))
+}
