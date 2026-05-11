@@ -15,13 +15,9 @@
  */
 package xyz.jwizard.jwl.websocket.auth;
 
+import xyz.jwizard.jwl.common.Ordered;
 import xyz.jwizard.jwl.websocket.WsHandshakeRequest;
 
-public interface WsAuthenticator {
+public interface WsAuthenticator extends Ordered {
     String authenticate(WsHandshakeRequest req);
-
-    // lower = started after
-    default int getPriority() {
-        return Integer.MAX_VALUE;
-    }
 }

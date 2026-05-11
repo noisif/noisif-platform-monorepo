@@ -106,7 +106,7 @@ public abstract class WsServer extends IdempotentService {
         reflectAuthenticators.addAll(authenticators);
         final List<WsAuthenticator> sortedAuthenticators = new ArrayList<>(reflectAuthenticators)
             .stream()
-            .sorted(Comparator.comparing(WsAuthenticator::getPriority).reversed())
+            .sorted(WsAuthenticator.COMPARATOR)
             .toList();
         if (log.isDebugEnabled()) {
             final String pipeline = sortedAuthenticators.stream()
