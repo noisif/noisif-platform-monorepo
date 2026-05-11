@@ -35,10 +35,10 @@ public abstract class IdempotentService implements Closeable {
             try {
                 onStart();
                 log.info("Service '{}' started successfully", getClass().getSimpleName());
-            } catch (Exception e) {
+            } catch (Exception ex) {
                 running.set(false);
                 initialized.set(false);
-                throw translateException(e);
+                throw translateException(ex);
             }
         } else {
             log.warn("Service '{}' is already running or was already initialized",
