@@ -13,31 +13,30 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package xyz.jwizard.jwl.websocket.registry;
+package xyz.jwizard.jwl.codec.envelope;
 
-import xyz.jwizard.jwl.codec.envelope.EnvelopeSerializer;
 import xyz.jwizard.jwl.codec.envelope.json.JsonBinaryEnvelopeSerializer;
 import xyz.jwizard.jwl.codec.envelope.json.JsonTextEnvelopeSerializer;
 import xyz.jwizard.jwl.codec.serialization.SerializerRegistry;
 import xyz.jwizard.jwl.codec.serialization.json.JsonSerializer;
 
-public class WsSerializerRegistry extends SerializerRegistry<EnvelopeSerializer<?>> {
-    private WsSerializerRegistry() {
+public class EnvelopeSerializerRegistry extends SerializerRegistry<EnvelopeSerializer<?>> {
+    private EnvelopeSerializerRegistry() {
         super();
     }
 
-    public static WsSerializerRegistry createWs() {
-        return new WsSerializerRegistry();
+    public static EnvelopeSerializerRegistry createEnvelopeRegistry() {
+        return new EnvelopeSerializerRegistry();
     }
 
-    public WsSerializerRegistry registerJsonDefaults(JsonSerializer jsonSerializer) {
+    public EnvelopeSerializerRegistry registerJsonDefaults(JsonSerializer jsonSerializer) {
         register(JsonTextEnvelopeSerializer.createDefault(jsonSerializer));
         register(JsonBinaryEnvelopeSerializer.createDefault(jsonSerializer));
         return this;
     }
 
     @Override
-    public WsSerializerRegistry register(EnvelopeSerializer<?> serializer) {
+    public EnvelopeSerializerRegistry register(EnvelopeSerializer<?> serializer) {
         super.register(serializer);
         return this;
     }

@@ -15,9 +15,9 @@
  */
 package xyz.jwizard.jwl.websocket.negotation;
 
-import xyz.jwizard.jwl.websocket.registry.WsSerializerRegistry;
+import xyz.jwizard.jwl.codec.envelope.EnvelopeSerializerRegistry;
 
 @FunctionalInterface
 public interface WsSerializerResolverFactory {
-    WsSerializerResolver create(WsSerializerRegistry registry);
+    WsSerializerResolver create(EnvelopeSerializerRegistry registry);
 }

@@ -21,9 +21,9 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import xyz.jwizard.jwl.codec.envelope.EnvelopeSerializer;
+import xyz.jwizard.jwl.codec.envelope.EnvelopeSerializerRegistry;
 import xyz.jwizard.jwl.common.util.Assert;
 import xyz.jwizard.jwl.websocket.WsHandshakeRequest;
-import xyz.jwizard.jwl.websocket.registry.WsSerializerRegistry;
 
 // with O(1) cache
 public class QueryParamSerializerResolver implements WsSerializerResolver {
@@ -74,14 +74,14 @@ public class QueryParamSerializerResolver implements WsSerializerResolver {
     }
 
     public static class Builder {
-        private WsSerializerRegistry registry;
+        private EnvelopeSerializerRegistry registry;
         private String encodingParamName = "encoding";
         private String frameParamName = "frame";
 
         private Builder() {
         }
 
-        public Builder registry(WsSerializerRegistry registry) {
+        public Builder registry(EnvelopeSerializerRegistry registry) {
             this.registry = registry;
             return this;
         }
@@ -97,7 +97,7 @@ public class QueryParamSerializerResolver implements WsSerializerResolver {
         }
 
         public WsSerializerResolver build() {
-            Assert.notNull(registry, "WsSerializerRegistry cannot be null");
+            Assert.notNull(registry, "EnvelopeSerializerRegistry cannot be null");
             Assert.notNull(encodingParamName, "EncodingParamName cannot be null");
             Assert.notNull(frameParamName, "FrameParamName cannot be null");
             return new QueryParamSerializerResolver(this);

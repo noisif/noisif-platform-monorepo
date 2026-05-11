@@ -35,6 +35,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
+import xyz.jwizard.jwl.codec.envelope.EnvelopeSerializerRegistry;
 import xyz.jwizard.jwl.codec.envelope.MessageEnvelope;
 import xyz.jwizard.jwl.codec.serialization.json.JsonSerializer;
 import xyz.jwizard.jwl.common.di.ApplicationContext;
@@ -56,7 +57,6 @@ import xyz.jwizard.jwl.websocket.listener.action.TestOpCode;
 import xyz.jwizard.jwl.websocket.listener.action.WsOpCode;
 import xyz.jwizard.jwl.websocket.negotation.QueryParamSerializerResolver;
 import xyz.jwizard.jwl.websocket.registry.InMemoryWsSessionRegistry;
-import xyz.jwizard.jwl.websocket.registry.WsSerializerRegistry;
 import xyz.jwizard.jwl.websocket.registry.WsSubscriptionRegistry;
 
 class JettyWsServerIntegrationTest {
@@ -80,7 +80,7 @@ class JettyWsServerIntegrationTest {
             .port(0)
             .path("/v1")
             .componentProvider(componentProvider)
-            .serializerRegistry(WsSerializerRegistry.createWs()
+            .serializerRegistry(EnvelopeSerializerRegistry.createEnvelopeRegistry()
                 .registerJsonDefaults(jsonSerializer)
             )
             .sessionRegistry(registry)

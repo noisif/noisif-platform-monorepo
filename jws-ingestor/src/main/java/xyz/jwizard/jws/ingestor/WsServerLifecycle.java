@@ -18,6 +18,7 @@ package xyz.jwizard.jws.ingestor;
 import java.time.Duration;
 import java.util.List;
 
+import xyz.jwizard.jwl.codec.envelope.EnvelopeSerializerRegistry;
 import xyz.jwizard.jwl.codec.envelope.protobuf.ProtobufEnvelopeSerializer;
 import xyz.jwizard.jwl.codec.serialization.json.JacksonSerializer;
 import xyz.jwizard.jwl.codec.serialization.protobuf.ProtobufSerializer;
@@ -33,7 +34,6 @@ import xyz.jwizard.jwl.websocket.jetty.JettyWsServer;
 import xyz.jwizard.jwl.websocket.listener.action.ActionRouterWsMessageListener;
 import xyz.jwizard.jwl.websocket.negotation.QueryParamSerializerResolver;
 import xyz.jwizard.jwl.websocket.registry.InMemoryWsSessionRegistry;
-import xyz.jwizard.jwl.websocket.registry.WsSerializerRegistry;
 import xyz.jwizard.jwl.websocket.registry.WsSubscriptionRegistry;
 
 import jakarta.enterprise.inject.Produces;
@@ -59,7 +59,7 @@ class WsServerLifecycle implements LifecycleHook {
             )
             .componentProvider(componentProvider)
             .rateLimiter(TokenBucketRateLimiter.createDefault())
-            .serializerRegistry(WsSerializerRegistry.createWs()
+            .serializerRegistry(EnvelopeSerializerRegistry.createEnvelopeRegistry()
                 .registerJsonDefaults(JacksonSerializer.createLenientForMessaging())
                 .register(ProtobufEnvelopeSerializer
                     .createDefault(ProtobufSerializer.createDefault(scanner)))

@@ -27,6 +27,7 @@ import org.jspecify.annotations.Nullable;
 import xyz.jwizard.jwl.codec.envelope.EnvelopeDataType;
 import xyz.jwizard.jwl.codec.envelope.EnvelopeSerializer;
 import xyz.jwizard.jwl.codec.envelope.EnvelopeSerializerFormat;
+import xyz.jwizard.jwl.codec.envelope.EnvelopeSerializerRegistry;
 import xyz.jwizard.jwl.codec.serialization.StandardSerializerFormat;
 import xyz.jwizard.jwl.common.bootstrap.lifecycle.IdempotentService;
 import xyz.jwizard.jwl.common.di.ComponentProvider;
@@ -49,7 +50,6 @@ import xyz.jwizard.jwl.websocket.listener.lifecycle.CompositeWsLifecycleListener
 import xyz.jwizard.jwl.websocket.listener.lifecycle.WsLifecycleListener;
 import xyz.jwizard.jwl.websocket.negotation.WsSerializerResolver;
 import xyz.jwizard.jwl.websocket.negotation.WsSerializerResolverFactory;
-import xyz.jwizard.jwl.websocket.registry.WsSerializerRegistry;
 import xyz.jwizard.jwl.websocket.registry.WsSessionRegistry;
 import xyz.jwizard.jwl.websocket.registry.WsSubscriptionRegistry;
 
@@ -60,7 +60,7 @@ public abstract class WsServer extends IdempotentService {
     protected final Duration idleTimeout;
 
     protected final RateLimiter rateLimiter;
-    protected final WsSerializerRegistry serializerRegistry;
+    protected final EnvelopeSerializerRegistry serializerRegistry;
     protected final WsSerializerResolver serializerResolver;
     protected final WsSessionRegistry sessionRegistry;
     protected final WsAuthenticator authenticator;
@@ -172,7 +172,7 @@ public abstract class WsServer extends IdempotentService {
         private Duration idleTimeout = Duration.ofMinutes(10);
         private RateLimiter rateLimiter = new NoOpRateLimiter();
         private ComponentProvider componentProvider;
-        private WsSerializerRegistry serializerRegistry;
+        private EnvelopeSerializerRegistry serializerRegistry;
         private WsSerializerResolverFactory serializerResolverFactory;
         private WsSessionRegistry sessionRegistry;
         private WsAuthFailureHandler authFailureHandler;
@@ -226,7 +226,7 @@ public abstract class WsServer extends IdempotentService {
             return self();
         }
 
-        public B serializerRegistry(WsSerializerRegistry serializerRegistry) {
+        public B serializerRegistry(EnvelopeSerializerRegistry serializerRegistry) {
             this.serializerRegistry = serializerRegistry;
             return self();
         }
@@ -265,7 +265,7 @@ public abstract class WsServer extends IdempotentService {
             Assert.notNull(idleTimeout, "IdleTimeout cannot be null");
             Assert.notNull(rateLimiter, "RateLimiter cannot be null");
             Assert.notNull(componentProvider, "ComponentProvider cannot be null");
-            Assert.notNull(serializerRegistry, "WsSerializerRegistry cannot be null");
+            Assert.notNull(serializerRegistry, "EnvelopeSerializerRegistry cannot be null");
             Assert.notNull(serializerResolverFactory, "WsSerializerResolverFactory cannot be null");
             Assert.notNull(sessionRegistry, "WsSessionRegistry cannot be null");
             Assert.notNull(localSessionDispatcherFactory,
