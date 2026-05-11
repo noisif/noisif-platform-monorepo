@@ -113,4 +113,87 @@ public class NetworkUtilTest {
         assertEquals(NumberFormatException.class, exception.getCause().getClass(),
             "Root cause should be NumberFormatException");
     }
+
+    @Test
+    @DisplayName("should add query parameter to URI without existing parameters")
+    void shouldAddParameterToSimpleUri() {
+        // given
+        final String uri = "https://jwizard.xyz/ws";
+        // when
+        final String result = NetworkUtil.addQueryParameter(uri, "token", "secret");
+        // then
+        assertEquals("https://jwizard.xyz/ws?token=secret", result);
+    }
+
+    @Test
+    @DisplayName("should append query parameter to URI that already has parameters")
+    void shouldAppendParameterToExistingQuery() {
+        // given
+        final String uri = "https://jwizard.xyz/ws?v=10";
+        // when
+        final String result = NetworkUtil.addQueryParameter(uri, "encoding", "etf");
+        // then
+        assertEquals("https://jwizard.xyz/ws?v=10&encoding=etf", result);
+    }
+
+    @Test
+    @DisplayName("should correctly encode special characters in query parameters")
+    void shouldEncodeSpecialCharacters() {
+        // given
+        final String uri = "https://jwizard.xyz/api";
+        final String key = "user name";
+        final String value = "Jan Kowalski + Co";
+        // when
+        final String result = NetworkUtil.addQueryParameter(uri, key, value);
+        // then
+        assertTrue(result.contains("user") && result.contains("name"), "Key should be present");
+        assertTrue(result.contains("Jan") && result.contains("Kowalski"),
+            "Value should be present");
+        assertTrue(result.contains("%2B"), "The plus sign must be encoded as %2B");
+        assertTrue(result.startsWith("https://jwizard.xyz/api?"),
+            "Should start with correctly appended ?");
+    }
+
+    @Test
+    @DisplayName("should insert query parameter before URI fragment (anchor)")
+    void shouldHandleUriWithFragment() {
+        // given
+        final String uri = "https://jwizard.xyz/docs#section-1";
+        // when
+        final String result = NetworkUtil.addQueryParameter(uri, "auth", "true");
+        // then
+        assertEquals("https://jwizard.xyz/docs?auth=true#section-1", result);
+    }
+
+    @Test
+    @DisplayName("should handle complex URIs with existing query and fragment")
+    void shouldHandleComplexUriCorrectly() {
+        // given
+        final String uri = "wss://gateway.discord.gg/?v=10#resume";
+        // when
+        final String result = NetworkUtil.addQueryParameter(uri, "compress", "zlib-stream");
+        // then
+        assertEquals("wss://gateway.discord.gg/?v=10&compress=zlib-stream#resume", result);
+    }
+
+    @Test
+    @DisplayName("should return original URI when key or value is null")
+    void shouldReturnOriginalWhenInputsAreNull() {
+        // given
+        final String uri = "https://jwizard.xyz";
+        // when & then
+        assertEquals(uri, NetworkUtil.addQueryParameter(uri, null, "val"));
+        assertEquals(uri, NetworkUtil.addQueryParameter(uri, "key", null));
+    }
+
+    @Test
+    @DisplayName("should use fallback when URI is malformed")
+    void shouldFallbackOnMalformedUri() {
+        // given
+        final String malformed = "not a valid uri ^";
+        // when
+        final String result = NetworkUtil.addQueryParameter(malformed, "a", "b");
+        // then
+        assertTrue(result.endsWith("?a=b") || result.endsWith("&a=b"));
+    }
 }

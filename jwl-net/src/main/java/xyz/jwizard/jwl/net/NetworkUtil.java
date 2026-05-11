@@ -17,6 +17,8 @@ package xyz.jwizard.jwl.net;
 
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 
 import xyz.jwizard.jwl.common.bootstrap.ForbiddenInstantiationException;
 import xyz.jwizard.jwl.common.util.io.IoUtil;
@@ -75,5 +77,25 @@ public class NetworkUtil {
             uriPath = "/" + uriPath;
         }
         return base + uriPath;
+    }
+
+    public static String addQueryParameter(String originalUri, String key, String value) {
+        if (originalUri == null) {
+            return null;
+        }
+        if (key == null || value == null) {
+            return originalUri;
+        }
+        String fragment = "";
+        String uriWithoutFragment = originalUri;
+        final int hashIdx = originalUri.indexOf('#');
+        if (hashIdx != -1) {
+            uriWithoutFragment = originalUri.substring(0, hashIdx);
+            fragment = originalUri.substring(hashIdx);
+        }
+        final String encodedKey = URLEncoder.encode(key, StandardCharsets.UTF_8);
+        final String encodedValue = URLEncoder.encode(value, StandardCharsets.UTF_8);
+        final String separator = uriWithoutFragment.contains("?") ? "&" : "?";
+        return uriWithoutFragment + separator + encodedKey + "=" + encodedValue + fragment;
     }
 }
