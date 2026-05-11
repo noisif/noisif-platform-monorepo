@@ -1,0 +1,59 @@
+CORE_SERVICES = \
+	jwizard-rabbitmq \
+	jwizard-redis \
+	jwizard-postgres \
+	jwizard-neo4j
+
+UI_SERVICES = \
+	jwizard-redis-ui \
+	jwizard-postgres-ui
+
+# up all core services (without ui panels)
+.PHONY: up-core
+up-core:
+	docker compose up -d $(CORE_SERVICES)
+
+# up all ui panels
+.PHONY: up-ui
+up-ui:
+	docker compose up -d $(UI_SERVICES)
+
+# up all (ui panels + core services)
+.PHONY: up-all
+up-all:
+	docker compose up -d
+
+# down all without removing data
+.PHONY: down
+down:
+	docker compose down
+
+# down all and remove data
+.PHONY: clean
+clean:
+	docker compose down -v
+
+# recreate container (soft reset)
+# usage: make rec s=<service name>
+.PHONY: rec
+rec:
+	@test $(s)
+	docker compose up -d --force-recreate --no-deps $(s)
+
+# recreate all containers
+.PHONY: rec-all
+rec-all:
+	docker compose up -d --force-recreate
+
+# down and up container (hard reset)
+# usage: make hard s=<service name>
+.PHONY: hard
+hard:
+	@test $(s)
+	docker compose stop $(s)
+	docker compose rm -f $(s)
+	docker compose up -d --no-deps $(s)
+
+# down and up all containers
+.PHONY: hard-all
+hard-all: down up-all

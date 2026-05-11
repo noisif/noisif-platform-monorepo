@@ -1,8 +1,23 @@
-test-%:
+MODULE_DIRS := $(wildcard jws-*)
+MODULES := $(patsubst jws-%,%,$(MODULE_DIRS))
+
+TEST_TARGETS  := $(addprefix test-, $(MODULES))
+RUN_TARGETS   := $(addprefix run-, $(MODULES))
+JAR_TARGETS   := $(addprefix jar-, $(MODULES))
+PROTO_TARGETS := $(addprefix proto-, $(MODULES))
+
+.PHONY: $(TEST_TARGETS)
+$(TEST_TARGETS): test-%:
 	./gradlew :jws-$*:test
 
-run-%:
+.PHONY: $(RUN_TARGETS)
+$(RUN_TARGETS): run-%:
 	./gradlew :jws-$*:run -q
 
-jar-%:
+.PHONY: $(JAR_TARGETS)
+$(JAR_TARGETS): jar-%:
 	./gradlew :jws-$*:shadowJar
+
+.PHONY: $(PROTO_TARGETS)
+$(PROTO_TARGETS): proto-%:
+	./gradlew :jws-$*:generateProto
