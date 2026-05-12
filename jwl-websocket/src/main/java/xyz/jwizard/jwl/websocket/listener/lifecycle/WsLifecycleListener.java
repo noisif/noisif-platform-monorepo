@@ -15,9 +15,10 @@
  */
 package xyz.jwizard.jwl.websocket.listener.lifecycle;
 
+import xyz.jwizard.jwl.common.Ordered;
 import xyz.jwizard.jwl.websocket.WsSession;
 
-public interface WsLifecycleListener {
+public interface WsLifecycleListener extends Ordered {
     default void onConnect(WsSession session) {
     }
 
@@ -25,10 +26,5 @@ public interface WsLifecycleListener {
     }
 
     default void onError(WsSession session, Throwable cause) {
-    }
-
-    // lower = started after
-    default int getPriority() {
-        return Integer.MAX_VALUE;
     }
 }

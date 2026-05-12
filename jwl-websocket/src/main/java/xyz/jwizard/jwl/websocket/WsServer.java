@@ -18,7 +18,6 @@ package xyz.jwizard.jwl.websocket;
 import java.time.Duration;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -137,7 +136,7 @@ public abstract class WsServer extends IdempotentService {
     private WsLifecycleListener loadLifecycleListeners(ComponentProvider componentProvider) {
         final List<WsLifecycleListener> lifecycleListeners = componentProvider
             .getInstancesOf(WsLifecycleListener.class).stream()
-            .sorted(Comparator.comparing(WsLifecycleListener::getPriority).reversed())
+            .sorted(WsLifecycleListener.COMPARATOR)
             .toList();
         if (log.isDebugEnabled()) {
             final String pipeline = lifecycleListeners.stream()
