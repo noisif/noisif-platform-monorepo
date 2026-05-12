@@ -21,8 +21,8 @@ import java.util.function.BiConsumer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import xyz.jwizard.jwl.common.util.io.RunnableWithException;
 import xyz.jwizard.jwl.common.util.thread.ThreadUtil;
-import xyz.jwizard.jwl.common.util.thread.ThrowingRunnable;
 import xyz.jwizard.jwl.kv.jedis.pubsub.pattern.RegexChannelParamExtractor;
 import xyz.jwizard.jwl.kv.pubsub.PubSubRegistrar;
 import xyz.jwizard.jwl.kv.pubsub.pattern.ChannelParamExtractor;
@@ -95,7 +95,7 @@ public class JedisPubSubRegistrar implements PubSubRegistrar {
     }
 
     private void registerAsync(String logType, String threadPrefix, String channelOrPattern,
-                               ThrowingRunnable redisAction) {
+                               RunnableWithException redisAction) {
         LOG.debug("Registering {} listener on: '{}'", logType, channelOrPattern);
         ThreadUtil.runAsync(threadPrefix + channelOrPattern, () -> {
             try {

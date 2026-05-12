@@ -26,6 +26,7 @@ import xyz.jwizard.jwl.codec.envelope.EnvelopeSerializer;
 import xyz.jwizard.jwl.codec.envelope.UnsupportedEnvelopeDataTypeException;
 import xyz.jwizard.jwl.common.limit.RateLimiter;
 import xyz.jwizard.jwl.common.util.concurrent.ConcurrentOperationException;
+import xyz.jwizard.jwl.common.util.io.RunnableWithException;
 import xyz.jwizard.jwl.websocket.WsSession;
 import xyz.jwizard.jwl.websocket.listener.WsMessageListener;
 import xyz.jwizard.jwl.websocket.listener.action.WsOpCode;
@@ -117,7 +118,7 @@ public class JettyWsListenerAdapter implements Session.Listener.AutoDemanding {
         processMessageInternal(callback, () -> messageListener.onMessage(sessionAdapter, bytes));
     }
 
-    private void processMessageInternal(Callback callback, MessageAction action) {
+    private void processMessageInternal(Callback callback, RunnableWithException action) {
         final String sessionId = getSafeSessionId();
         try {
             if (!rateLimiter.tryAcquire(principalId)) {
@@ -128,7 +129,7 @@ public class JettyWsListenerAdapter implements Session.Listener.AutoDemanding {
                 completeCallback(callback, null);
                 return;
             }
-            action.execute();
+            action.run();
             completeCallback(callback, null);
         } catch (UnsupportedEnvelopeDataTypeException ex) {
             handleFatalProcessingError(ex, 1003, "Unsupported Frame Type", callback);
