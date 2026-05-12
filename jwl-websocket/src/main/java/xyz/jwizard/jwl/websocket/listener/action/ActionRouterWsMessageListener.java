@@ -101,11 +101,11 @@ public class ActionRouterWsMessageListener extends WsMessageListener {
         final WsAction<Object> handler = CastUtil.unsafeCast(actionHandlers.get(envelope.op()));
         if (handler != null) {
             handler.handle(session, envelope.data());
-        } else {
-            LOG.warn("No action handler found for OP code: {} from session: {}",
-                envelope.op(), session.getSessionId());
-            session.sendEnvelope(WsOpCode.UNKNOWN_ACTION);
+            return;
         }
+        LOG.warn("No action handler found for OP code: {} from session: {}",
+            envelope.op(), session.getSessionId());
+        session.sendEnvelope(WsOpCode.UNKNOWN_ACTION);
     }
 
     private void handleProcessingError(WsSession session, Exception ex) {
