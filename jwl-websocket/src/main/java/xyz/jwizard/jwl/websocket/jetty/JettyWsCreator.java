@@ -25,33 +25,34 @@ import org.slf4j.LoggerFactory;
 
 import xyz.jwizard.jwl.codec.envelope.EnvelopeSerializer;
 import xyz.jwizard.jwl.common.limit.RateLimiter;
+import xyz.jwizard.jwl.net.bus.RawBusListener;
+import xyz.jwizard.jwl.net.lifecycle.NetworkSessionLifecycleListener;
 import xyz.jwizard.jwl.websocket.WsHandshakeRequest;
+import xyz.jwizard.jwl.websocket.WsSession;
 import xyz.jwizard.jwl.websocket.auth.WsAuthenticator;
 import xyz.jwizard.jwl.websocket.auth.handler.WsAuthFailureHandler;
 import xyz.jwizard.jwl.websocket.jetty.adapter.JettyWsHandshakeRequestAdapter;
 import xyz.jwizard.jwl.websocket.jetty.adapter.JettyWsListenerAdapter;
-import xyz.jwizard.jwl.websocket.listener.WsMessageListener;
-import xyz.jwizard.jwl.websocket.listener.lifecycle.WsLifecycleListener;
 import xyz.jwizard.jwl.websocket.negotation.WsSerializerResolver;
 import xyz.jwizard.jwl.websocket.registry.WsSessionRegistry;
 
 public class JettyWsCreator implements WebSocketCreator {
     private static final Logger LOG = LoggerFactory.getLogger(JettyWsCreator.class);
 
-    private final WsLifecycleListener lifecycleListener;
-    private final WsMessageListener messageListener;
+    private final NetworkSessionLifecycleListener<WsSession> lifecycleListener;
+    private final RawBusListener<WsSession> busListener;
     private final WsSessionRegistry sessionRegistry;
     private final WsAuthenticator authenticator;
     private final WsAuthFailureHandler failureHandler;
     private final RateLimiter rateLimiter;
     private final WsSerializerResolver serializerResolver;
 
-    public JettyWsCreator(WsLifecycleListener lifecycleListener, WsMessageListener messageListener,
-                          WsSessionRegistry sessionRegistry, WsAuthenticator authenticator,
-                          WsAuthFailureHandler failureHandler, RateLimiter rateLimiter,
-                          WsSerializerResolver serializerResolver) {
+    public JettyWsCreator(NetworkSessionLifecycleListener<WsSession> lifecycleListener,
+                          RawBusListener<WsSession> busListener, WsSessionRegistry sessionRegistry,
+                          WsAuthenticator authenticator, WsAuthFailureHandler failureHandler,
+                          RateLimiter rateLimiter, WsSerializerResolver serializerResolver) {
         this.lifecycleListener = lifecycleListener;
-        this.messageListener = messageListener;
+        this.busListener = busListener;
         this.sessionRegistry = sessionRegistry;
         this.authenticator = authenticator;
         this.failureHandler = failureHandler;
@@ -77,7 +78,7 @@ public class JettyWsCreator implements WebSocketCreator {
             LOG.debug("WebSocket authentication successful for principal: {}", principalId);
             return new JettyWsListenerAdapter(
                 lifecycleListener,
-                messageListener,
+                busListener,
                 sessionRegistry,
                 rateLimiter,
                 serializer,

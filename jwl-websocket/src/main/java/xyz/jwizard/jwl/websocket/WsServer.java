@@ -34,6 +34,10 @@ import xyz.jwizard.jwl.common.limit.NoOpRateLimiter;
 import xyz.jwizard.jwl.common.limit.RateLimiter;
 import xyz.jwizard.jwl.common.util.Assert;
 import xyz.jwizard.jwl.common.util.CastUtil;
+import xyz.jwizard.jwl.net.bus.CompositeBusListener;
+import xyz.jwizard.jwl.net.bus.RawBusListener;
+import xyz.jwizard.jwl.net.lifecycle.CompositeNetworkSessionLifecycleListener;
+import xyz.jwizard.jwl.net.lifecycle.NetworkSessionLifecycleListener;
 import xyz.jwizard.jwl.websocket.auth.CompositeWsAuthenticator;
 import xyz.jwizard.jwl.websocket.auth.WsAuthenticator;
 import xyz.jwizard.jwl.websocket.auth.handler.WsAuthFailureHandler;
@@ -42,11 +46,6 @@ import xyz.jwizard.jwl.websocket.broadcast.WsMessageSink;
 import xyz.jwizard.jwl.websocket.broadcast.WsMessageSinkBroadcaster;
 import xyz.jwizard.jwl.websocket.dispatcher.LocalSessionDispatcher;
 import xyz.jwizard.jwl.websocket.dispatcher.factory.LocalSessionDispatcherFactory;
-import xyz.jwizard.jwl.websocket.listener.CompositeWsMessageListeners;
-import xyz.jwizard.jwl.websocket.listener.WsMessageListener;
-import xyz.jwizard.jwl.websocket.listener.action.pool.WsActionPool;
-import xyz.jwizard.jwl.websocket.listener.lifecycle.CompositeWsLifecycleListener;
-import xyz.jwizard.jwl.websocket.listener.lifecycle.WsLifecycleListener;
 import xyz.jwizard.jwl.websocket.negotation.WsSerializerResolver;
 import xyz.jwizard.jwl.websocket.negotation.WsSerializerResolverFactory;
 import xyz.jwizard.jwl.websocket.registry.WsSessionRegistry;
@@ -64,8 +63,8 @@ public abstract class WsServer extends IdempotentService {
     protected final WsSessionRegistry sessionRegistry;
     protected final WsAuthenticator authenticator;
     protected final WsAuthFailureHandler authFailureHandler;
-    protected final WsLifecycleListener lifecycleListener;
-    protected final WsMessageListener messageListener;
+    protected final NetworkSessionLifecycleListener<WsSession> lifecycleListener;
+    protected final RawBusListener<WsSession> busListener;
     protected final LocalSessionDispatcher localSessionDispatcher;
     protected final WsBroadcaster broadcaster;
 
@@ -79,9 +78,9 @@ public abstract class WsServer extends IdempotentService {
         serializerResolver = builder.serializerResolverFactory.create(serializerRegistry);
         sessionRegistry = builder.sessionRegistry;
         authFailureHandler = builder.authFailureHandler;
-        messageListener = loadWsMessageListeners(builder.messageListeners);
+        busListener = CompositeBusListener.load(builder.busListeners);
         authenticator = loadWsAuthenticators(builder.componentProvider, builder.authenticators);
-        lifecycleListener = loadLifecycleListeners(builder.componentProvider);
+        lifecycleListener = CompositeNetworkSessionLifecycleListener.load(builder.componentProvider);
         localSessionDispatcher = builder.localSessionDispatcherFactory.create(sessionRegistry);
         broadcaster = determinateWsBroadcaster(builder);
     }
@@ -118,36 +117,6 @@ public abstract class WsServer extends IdempotentService {
         return new CompositeWsAuthenticator(sortedAuthenticators);
     }
 
-    private WsMessageListener loadWsMessageListeners(List<WsMessageListener> messageListeners) {
-        if (log.isDebugEnabled()) {
-            final String pipeline = messageListeners.stream()
-                .map(listener -> {
-                    final WsActionPool pool = listener.getPool();
-                    final String name = listener.getClass().getSimpleName();
-                    return pool != null ? name + "[" + pool + "]" : name;
-                })
-                .collect(Collectors.joining(" -> "));
-            log.debug("CompositeWsMessageListeners initialized with pipeline: {}", pipeline);
-        }
-        log.info("Load {} WS message listener(s)", messageListeners.size());
-        return new CompositeWsMessageListeners(messageListeners);
-    }
-
-    private WsLifecycleListener loadLifecycleListeners(ComponentProvider componentProvider) {
-        final List<WsLifecycleListener> lifecycleListeners = componentProvider
-            .getInstancesOf(WsLifecycleListener.class).stream()
-            .sorted(WsLifecycleListener.COMPARATOR)
-            .toList();
-        if (log.isDebugEnabled()) {
-            final String pipeline = lifecycleListeners.stream()
-                .map(listener -> listener.getClass().getSimpleName())
-                .collect(Collectors.joining(" -> "));
-            log.debug("CompositeWsLifecycleListener initialized with pipeline: {}", pipeline);
-        }
-        log.info("Load {} WS lifecycle listener(s)", lifecycleListeners.size());
-        return new CompositeWsLifecycleListener(lifecycleListeners);
-    }
-
     private WsBroadcaster determinateWsBroadcaster(AbstractBuilder<?> builder) {
         WsMessageSink messageSink = localSessionDispatcher;
         if (builder.messageSink != null) {
@@ -162,7 +131,7 @@ public abstract class WsServer extends IdempotentService {
     public abstract int getLocalPort();
 
     protected abstract static class AbstractBuilder<B extends AbstractBuilder<B>> {
-        private final List<WsMessageListener> messageListeners = new ArrayList<>();
+        private final List<RawBusListener<WsSession>> busListeners = new ArrayList<>();
         private final List<WsAuthenticator> authenticators = new ArrayList<>();
 
         private int port;
@@ -185,8 +154,8 @@ public abstract class WsServer extends IdempotentService {
             return CastUtil.unsafeCast(this);
         }
 
-        public B addMessageListener(WsMessageListener messageListener) {
-            messageListeners.add(messageListener);
+        public B addBusListener(RawBusListener<WsSession> busListener) {
+            busListeners.add(busListener);
             return self();
         }
 
@@ -256,8 +225,8 @@ public abstract class WsServer extends IdempotentService {
         }
 
         protected void validate() {
-            Assert.notEmpty(messageListeners, "WsMessageListeners cannot be empty");
-            Assert.notNullAll(messageListeners, "All WsMessageListeners must be initialized");
+            Assert.notEmpty(busListeners, "EnvelopeBusListeners cannot be empty");
+            Assert.notNullAll(busListeners, "All EnvelopeBusListeners must be initialized");
             Assert.notNullAll(authenticators, "All WsAuthenticators must be initialized");
             Assert.state(port >= 0 && port < 65536, "Invalid port number");
             Assert.notNull(path, "Path cannot be null");

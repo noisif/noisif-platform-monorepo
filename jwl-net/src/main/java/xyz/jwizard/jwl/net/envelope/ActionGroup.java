@@ -13,9 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package xyz.jwizard.jwl.websocket.jetty.adapter;
+package xyz.jwizard.jwl.net.envelope;
 
-@FunctionalInterface
-public interface MessageAction {
-    void execute() throws Exception;
+public interface ActionGroup {
+    ActionGroup GLOBAL = () -> "GLOBAL";
+
+    String groupName();
 }

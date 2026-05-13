@@ -13,11 +13,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package xyz.jwizard.jwl.websocket;
+package xyz.jwizard.jwl.net.lifecycle;
 
-import xyz.jwizard.jwl.net.NetworkSender;
-import xyz.jwizard.jwl.net.envelope.EnvelopeSession;
+import xyz.jwizard.jwl.common.Ordered;
+import xyz.jwizard.jwl.net.NetworkSession;
 
-public interface WsSession extends NetworkSender, EnvelopeSession {
-    void sendAdapted(byte[] payload);
+public interface NetworkSessionLifecycleListener<S extends NetworkSession> extends Ordered {
+    default void onConnect(S session) {
+    }
+
+    default void onClose(S session, int statusCode, String reason) {
+    }
+
+    default void onError(S session, Throwable cause) {
+    }
 }

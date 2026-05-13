@@ -61,7 +61,7 @@ public class JettyWsServer extends WsServer {
                 container.setMaxTextMessageSize(maxMessageSize);
                 container.addMapping(path, new JettyWsCreator(
                     lifecycleListener,
-                    messageListener,
+                    busListener,
                     sessionRegistry,
                     authenticator,
                     authFailureHandler,

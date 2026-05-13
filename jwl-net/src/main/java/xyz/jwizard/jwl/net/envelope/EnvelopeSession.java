@@ -13,18 +13,22 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package xyz.jwizard.jwl.websocket.listener.lifecycle;
+package xyz.jwizard.jwl.net.envelope;
 
-import xyz.jwizard.jwl.common.Ordered;
-import xyz.jwizard.jwl.websocket.WsSession;
+import java.util.function.Function;
 
-public interface WsLifecycleListener extends Ordered {
-    default void onConnect(WsSession session) {
+import xyz.jwizard.jwl.codec.envelope.MessageEnvelope;
+import xyz.jwizard.jwl.codec.envelope.OpCode;
+import xyz.jwizard.jwl.net.NetworkSession;
+
+public interface EnvelopeSession extends NetworkSession {
+    void sendEnvelope(OpCode opCode, Object data);
+
+    default void sendEnvelope(OpCode opCode) {
+        sendEnvelope(opCode, null);
     }
 
-    default void onClose(WsSession session, int statusCode, String reason) {
-    }
+    MessageEnvelope<?> unwrap(byte[] payload, Function<Integer, Class<?>> typeResolver);
 
-    default void onError(WsSession session, Throwable cause) {
-    }
+    MessageEnvelope<?> unwrap(String payload, Function<Integer, Class<?>> typeResolver);
 }

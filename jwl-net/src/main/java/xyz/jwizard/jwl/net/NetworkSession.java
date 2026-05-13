@@ -13,11 +13,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package xyz.jwizard.jwl.websocket;
+package xyz.jwizard.jwl.net;
 
-import xyz.jwizard.jwl.net.NetworkSender;
-import xyz.jwizard.jwl.net.envelope.EnvelopeSession;
+public interface NetworkSession {
+    String getSessionId();
 
-public interface WsSession extends NetworkSender, EnvelopeSession {
-    void sendAdapted(byte[] payload);
+    String getPrincipalId();
+
+    void close(int statusCode, String reason);
+
+    boolean isClosed();
 }

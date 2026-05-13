@@ -25,12 +25,13 @@ import xyz.jwizard.jwl.common.bootstrap.lifecycle.LifecycleHook;
 import xyz.jwizard.jwl.common.di.ComponentProvider;
 import xyz.jwizard.jwl.common.limit.TokenBucketRateLimiter;
 import xyz.jwizard.jwl.common.reflect.ClassScanner;
+import xyz.jwizard.jwl.net.envelope.ActionGroup;
 import xyz.jwizard.jwl.websocket.WsServer;
 import xyz.jwizard.jwl.websocket.auth.WsTokenAuthenticator;
 import xyz.jwizard.jwl.websocket.broadcast.WsBroadcaster;
 import xyz.jwizard.jwl.websocket.dispatcher.ConcurrentLocalSessionDispatcher;
 import xyz.jwizard.jwl.websocket.jetty.JettyWsServer;
-import xyz.jwizard.jwl.websocket.listener.action.ActionRouterWsMessageListener;
+import xyz.jwizard.jwl.websocket.listener.ActionRouterWsMessageListener;
 import xyz.jwizard.jwl.websocket.negotation.QueryParamSerializerResolver;
 import xyz.jwizard.jwl.websocket.registry.InMemoryWsSessionRegistry;
 import xyz.jwizard.jwl.websocket.registry.WsSubscriptionRegistry;
@@ -67,9 +68,9 @@ class WsServerLifecycle implements LifecycleHook {
                 .encodingParamName("encoding")
                 .frameParamName("frame")
                 .build())
-            .addMessageListener(ActionRouterWsMessageListener.builder()
+            .addBusListener(ActionRouterWsMessageListener.builder()
+                .actionGroup(ActionGroup.GLOBAL)
                 .componentProvider(componentProvider)
-                .pool(null)
                 .build()
             )
             .localSessionDispatcherFactory(ConcurrentLocalSessionDispatcher::createVirtual)

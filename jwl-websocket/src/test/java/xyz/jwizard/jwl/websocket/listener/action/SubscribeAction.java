@@ -16,6 +16,7 @@
 package xyz.jwizard.jwl.websocket.listener.action;
 
 import xyz.jwizard.jwl.codec.envelope.OpCode;
+import xyz.jwizard.jwl.net.envelope.EnvelopeAction;
 import xyz.jwizard.jwl.websocket.WsSession;
 import xyz.jwizard.jwl.websocket.broadcast.TestWsTopic;
 import xyz.jwizard.jwl.websocket.registry.WsSubscriptionRegistry;
@@ -24,7 +25,7 @@ import jakarta.inject.Inject;
 import jakarta.inject.Singleton;
 
 @Singleton
-class SubscribeAction implements WsAction<Void> {
+class SubscribeAction implements EnvelopeAction<WsSession, Void> {
     private final WsSubscriptionRegistry registry;
 
     @Inject

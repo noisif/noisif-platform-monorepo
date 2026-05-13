@@ -19,9 +19,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import xyz.jwizard.jwl.codec.envelope.OpCode;
+import xyz.jwizard.jwl.net.envelope.EnvelopeAction;
 import xyz.jwizard.jwl.websocket.WsSession;
 
-public class HeartbeatAction implements WsAction<Void> {
+public class HeartbeatAction implements EnvelopeAction<WsSession, Void> {
     private static final Logger LOG = LoggerFactory.getLogger(HeartbeatAction.class);
 
     @Override

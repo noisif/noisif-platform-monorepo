@@ -13,11 +13,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package xyz.jwizard.jwl.websocket;
+package xyz.jwizard.jwl.net.envelope;
 
-import xyz.jwizard.jwl.net.NetworkSender;
-import xyz.jwizard.jwl.net.envelope.EnvelopeSession;
+import xyz.jwizard.jwl.codec.envelope.OpCode;
 
-public interface WsSession extends NetworkSender, EnvelopeSession {
-    void sendAdapted(byte[] payload);
+public interface EnvelopeAction<C extends EnvelopeSession, P> {
+    void handle(C channel, P data);
+
+    OpCode opCode();
+
+    Class<P> payloadClass();
+
+    default ActionGroup group() {
+        return ActionGroup.GLOBAL;
+    }
 }

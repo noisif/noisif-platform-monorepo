@@ -29,6 +29,7 @@ dependencies {
     implementation(project(":jwl-contracts"))
     implementation(project(":jwl-http"))
     implementation(project(":jwl-kv"))
+    implementation(project(":jwl-net"))
     implementation(project(":jwl-queue"))
     implementation(project(":jwl-websocket"))
 

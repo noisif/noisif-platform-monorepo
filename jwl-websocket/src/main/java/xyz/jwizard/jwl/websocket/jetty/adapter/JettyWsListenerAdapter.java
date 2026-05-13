@@ -27,17 +27,17 @@ import xyz.jwizard.jwl.codec.envelope.UnsupportedEnvelopeDataTypeException;
 import xyz.jwizard.jwl.common.limit.RateLimiter;
 import xyz.jwizard.jwl.common.util.concurrent.ConcurrentOperationException;
 import xyz.jwizard.jwl.common.util.io.RunnableWithException;
+import xyz.jwizard.jwl.net.bus.RawBusListener;
+import xyz.jwizard.jwl.net.lifecycle.NetworkSessionLifecycleListener;
 import xyz.jwizard.jwl.websocket.WsSession;
-import xyz.jwizard.jwl.websocket.listener.WsMessageListener;
 import xyz.jwizard.jwl.websocket.listener.action.WsOpCode;
-import xyz.jwizard.jwl.websocket.listener.lifecycle.WsLifecycleListener;
 import xyz.jwizard.jwl.websocket.registry.WsSessionRegistry;
 
 public class JettyWsListenerAdapter implements Session.Listener.AutoDemanding {
     private static final Logger LOG = LoggerFactory.getLogger(JettyWsListenerAdapter.class);
 
-    private final WsLifecycleListener lifecycleListener;
-    private final WsMessageListener messageListener;
+    private final NetworkSessionLifecycleListener<WsSession> lifecycleListener;
+    private final RawBusListener<WsSession> busListener;
     private final WsSessionRegistry registry;
     private final RateLimiter rateLimiter;
     private final EnvelopeSerializer<?> envelopeSerializer;
@@ -45,12 +45,12 @@ public class JettyWsListenerAdapter implements Session.Listener.AutoDemanding {
 
     private WsSession sessionAdapter;
 
-    public JettyWsListenerAdapter(WsLifecycleListener lifecycleListener,
-                                  WsMessageListener messageListener, WsSessionRegistry registry,
-                                  RateLimiter rateLimiter, EnvelopeSerializer<?> envelopeSerializer,
-                                  String principalId) {
+    public JettyWsListenerAdapter(NetworkSessionLifecycleListener<WsSession> lifecycleListener,
+                                  RawBusListener<WsSession> busListener,
+                                  WsSessionRegistry registry, RateLimiter rateLimiter,
+                                  EnvelopeSerializer<?> envelopeSerializer, String principalId) {
         this.lifecycleListener = lifecycleListener;
-        this.messageListener = messageListener;
+        this.busListener = busListener;
         this.registry = registry;
         this.rateLimiter = rateLimiter;
         this.envelopeSerializer = envelopeSerializer;
@@ -104,7 +104,7 @@ public class JettyWsListenerAdapter implements Session.Listener.AutoDemanding {
             LOG.trace("Received text message, session: {}, size: {} chars", getSafeSessionId(),
                 message.length());
         }
-        processMessageInternal(null, () -> messageListener.onMessage(sessionAdapter, message));
+        processMessageInternal(null, () -> busListener.dispatch(sessionAdapter, message));
     }
 
     @Override
@@ -115,7 +115,7 @@ public class JettyWsListenerAdapter implements Session.Listener.AutoDemanding {
             LOG.trace("Received binary message, session: {}, size: {} bytes", getSafeSessionId(),
                 bytes.length);
         }
-        processMessageInternal(callback, () -> messageListener.onMessage(sessionAdapter, bytes));
+        processMessageInternal(callback, () -> busListener.dispatch(sessionAdapter, bytes));
     }
 
     private void processMessageInternal(Callback callback, RunnableWithException action) {

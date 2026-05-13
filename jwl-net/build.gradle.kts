@@ -15,6 +15,7 @@
  */
 
 dependencies {
+    implementation(project(":jwl-codec"))
     implementation(project(":jwl-common"))
 
     testImplementation(testFixtures(project(":jwl-common")))

@@ -19,7 +19,6 @@ import java.time.Duration;
 import java.util.List;
 
 import xyz.jwizard.jwl.codec.envelope.EnvelopeSerializerRegistry;
-import xyz.jwizard.jwl.codec.envelope.protobuf.ProtobufEnvelopeSerializer;
 import xyz.jwizard.jwl.codec.serialization.json.JacksonSerializer;
 import xyz.jwizard.jwl.codec.serialization.protobuf.ProtobufSerializer;
 import xyz.jwizard.jwl.common.bootstrap.lifecycle.LifecycleHook;
@@ -27,13 +26,14 @@ import xyz.jwizard.jwl.common.di.ComponentProvider;
 import xyz.jwizard.jwl.common.limit.TokenBucketRateLimiter;
 import xyz.jwizard.jwl.common.reflect.ClassScanner;
 import xyz.jwizard.jwl.kv.pubsub.PubSubBroadcaster;
+import xyz.jwizard.jwl.net.envelope.ActionGroup;
 import xyz.jwizard.jwl.websocket.WsServer;
 import xyz.jwizard.jwl.websocket.auth.WsTokenAuthenticator;
 import xyz.jwizard.jwl.websocket.broadcast.WsBroadcaster;
 import xyz.jwizard.jwl.websocket.dispatcher.ConcurrentLocalSessionDispatcher;
 import xyz.jwizard.jwl.websocket.dispatcher.LocalSessionDispatcher;
 import xyz.jwizard.jwl.websocket.jetty.JettyWsServer;
-import xyz.jwizard.jwl.websocket.listener.action.ActionRouterWsMessageListener;
+import xyz.jwizard.jwl.websocket.listener.ActionRouterWsMessageListener;
 import xyz.jwizard.jwl.websocket.negotation.QueryParamSerializerResolver;
 import xyz.jwizard.jwl.websocket.registry.InMemoryWsSessionRegistry;
 import xyz.jwizard.jwl.websocket.registry.WsSubscriptionRegistry;
@@ -65,17 +65,16 @@ class WsServerLifecycle implements LifecycleHook {
             .rateLimiter(TokenBucketRateLimiter.createDefault())
             .serializerRegistry(EnvelopeSerializerRegistry.createEnvelopeRegistry()
                 .registerJsonDefaults(JacksonSerializer.createLenientForMessaging())
-                .register(ProtobufEnvelopeSerializer
-                    .createDefault(ProtobufSerializer.createDefault(scanner)))
+                .registerProtobufDefaults(ProtobufSerializer.createDefault(scanner))
             )
             .serializerResolverFactory(registry -> QueryParamSerializerResolver.builder()
                 .registry(registry)
                 .encodingParamName("encoding")
                 .frameParamName("frame")
                 .build())
-            .addMessageListener(ActionRouterWsMessageListener.builder()
+            .addBusListener(ActionRouterWsMessageListener.builder()
+                .actionGroup(ActionGroup.GLOBAL)
                 .componentProvider(componentProvider)
-                .pool(null)
                 .build()
             )
             .localSessionDispatcherFactory(ConcurrentLocalSessionDispatcher::createVirtual)

@@ -13,9 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package xyz.jwizard.jwl.common.util.thread;
+package xyz.jwizard.jwl.net;
 
-@FunctionalInterface
-public interface ThrowingRunnable {
-    void run() throws Exception;
+public interface NetworkSender {
+    void send(byte[] message);
+
+    void send(String message);
 }

@@ -44,6 +44,7 @@ import xyz.jwizard.jwl.common.di.GuiceComponentProvider;
 import xyz.jwizard.jwl.common.reflect.ClassGraphScanner;
 import xyz.jwizard.jwl.common.reflect.ClassScanner;
 import xyz.jwizard.jwl.common.util.io.IoUtil;
+import xyz.jwizard.jwl.net.envelope.ActionGroup;
 import xyz.jwizard.jwl.net.http.cookie.CommonCookieName;
 import xyz.jwizard.jwl.net.http.header.CommonHttpHeaderName;
 import xyz.jwizard.jwl.websocket.TestConstants;
@@ -52,7 +53,7 @@ import xyz.jwizard.jwl.websocket.auth.WsTokenAuthenticator;
 import xyz.jwizard.jwl.websocket.auth.handler.TestWsCookieAuthenticator;
 import xyz.jwizard.jwl.websocket.broadcast.TestWsTopic;
 import xyz.jwizard.jwl.websocket.dispatcher.ConcurrentLocalSessionDispatcher;
-import xyz.jwizard.jwl.websocket.listener.action.ActionRouterWsMessageListener;
+import xyz.jwizard.jwl.websocket.listener.ActionRouterWsMessageListener;
 import xyz.jwizard.jwl.websocket.listener.action.TestOpCode;
 import xyz.jwizard.jwl.websocket.listener.action.WsOpCode;
 import xyz.jwizard.jwl.websocket.negotation.QueryParamSerializerResolver;
@@ -95,9 +96,9 @@ class JettyWsServerIntegrationTest {
                 .withQueryParameterCheck("auth_token")
                 .build())
             .addAuthenticator(new TestWsCookieAuthenticator())
-            .addMessageListener(ActionRouterWsMessageListener.builder()
+            .addBusListener(ActionRouterWsMessageListener.builder()
+                .actionGroup(ActionGroup.GLOBAL)
                 .componentProvider(componentProvider)
-                .pool(null)
                 .build()
             )
             .build();

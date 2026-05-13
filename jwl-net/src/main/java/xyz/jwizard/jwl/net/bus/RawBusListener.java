@@ -13,24 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package xyz.jwizard.jwl.websocket.listener.action;
+package xyz.jwizard.jwl.net.bus;
 
-import org.jspecify.annotations.Nullable;
+import xyz.jwizard.jwl.common.Ordered;
+import xyz.jwizard.jwl.net.NetworkSession;
 
-import xyz.jwizard.jwl.codec.envelope.OpCode;
-import xyz.jwizard.jwl.websocket.WsSession;
-import xyz.jwizard.jwl.websocket.listener.action.pool.WsActionPool;
+public interface RawBusListener<S extends NetworkSession> extends Ordered {
+    void dispatch(S session, byte[] message);
 
-public interface WsAction<T> {
-    void handle(WsSession session, T data);
-
-    OpCode opCode();
-
-    Class<T> payloadClass();
-
-    // null means root pool handled by non-pooled action websocket handler
-    @Nullable
-    default WsActionPool pool() {
-        return null;
-    }
+    void dispatch(S session, String message);
 }
