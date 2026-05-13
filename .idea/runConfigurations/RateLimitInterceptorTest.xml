@@ -1,0 +1,19 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="RateLimitInterceptorTest" type="JUnit" factoryName="JUnit" folderName="jwl-netclient" nameIsGenerated="true">
+    <module name="jwizard-platform-monorepo.jwl-netclient.test" />
+    <extension name="coverage">
+      <pattern>
+        <option name="PATTERN" value="xyz.jwizard.jwl.netclient.rest.intercept.*" />
+        <option name="ENABLED" value="true" />
+      </pattern>
+    </extension>
+    <option name="PACKAGE_NAME" value="xyz.jwizard.jwl.netclient.rest.intercept" />
+    <option name="MAIN_CLASS_NAME" value="xyz.jwizard.jwl.netclient.rest.intercept.RateLimitInterceptorTest" />
+    <option name="METHOD_NAME" value="" />
+    <option name="TEST_OBJECT" value="class" />
+    <option name="VM_PARAMETERS" value="-ea -XX:+EnableDynamicAgentLoading -Xshare:off" />
+    <method v="2">
+      <option name="Make" enabled="true" />
+    </method>
+  </configuration>
+</component>
