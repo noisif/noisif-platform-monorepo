@@ -28,6 +28,4 @@ public interface EnvelopeSerializerCache {
     default EnvelopeSerializer<?> find(SerializerFormat encoding, EnvelopeDataType dataType) {
         return find(encoding.getFormat(), dataType.getCode());
     }
-
-    boolean exists(String encoding, String frame);
 }

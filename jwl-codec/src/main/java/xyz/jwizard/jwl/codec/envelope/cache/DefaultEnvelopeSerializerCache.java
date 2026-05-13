@@ -80,11 +80,4 @@ public class DefaultEnvelopeSerializerCache implements EnvelopeSerializerCache {
             encoding, frames.keySet());
         return null;
     }
-
-    @Override
-    public boolean exists(String encoding, String frame) {
-        final boolean result = find(encoding, frame) != null;
-        LOG.trace("Exists check for [{} / {}]: {}", encoding, frame, result);
-        return result;
-    }
 }
