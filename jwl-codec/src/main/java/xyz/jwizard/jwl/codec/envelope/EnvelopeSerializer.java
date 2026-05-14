@@ -17,6 +17,7 @@ package xyz.jwizard.jwl.codec.envelope;
 
 import java.util.function.Function;
 
+import xyz.jwizard.jwl.codec.DataType;
 import xyz.jwizard.jwl.codec.serialization.Serializer;
 import xyz.jwizard.jwl.codec.serialization.SerializerFormat;
 
@@ -28,7 +29,7 @@ public interface EnvelopeSerializer<T> extends Serializer {
         return EnvelopeSerializerFormat.from(baseFormat(), getCodecDataType());
     }
 
-    EnvelopeDataType getCodecDataType();
+    DataType getCodecDataType();
 
     T serializeForSession(OpCode opCode, Object payload);
 

@@ -23,6 +23,7 @@ import java.util.function.Function;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
+import xyz.jwizard.jwl.codec.DataType;
 import xyz.jwizard.jwl.codec.serialization.SerializerFormat;
 import xyz.jwizard.jwl.codec.serialization.StandardSerializerFormat;
 
@@ -32,14 +33,14 @@ class EnvelopeSerializerFormatTest {
     void shouldCombineFormatAndDataType() {
         // given
         final SerializerFormat base = StandardSerializerFormat.JSON;
-        final EnvelopeDataType type = EnvelopeDataType.TEXT;
+        final DataType type = DataType.TEXT;
         // when
         final EnvelopeSerializerFormat format = EnvelopeSerializerFormat.from(base, type);
         // then
         assertThat(format.getFormat()).isEqualTo("json+text");
         assertThat(format.toString()).isEqualTo("json+text");
         assertThat(format.baseFormat()).isEqualTo(base);
-        assertThat(format.envelopeDataType()).isEqualTo(type);
+        assertThat(format.dataType()).isEqualTo(type);
     }
 
     @Test
@@ -53,8 +54,8 @@ class EnvelopeSerializerFormatTest {
             }
 
             @Override
-            public EnvelopeDataType getCodecDataType() {
-                return EnvelopeDataType.BINARY;
+            public DataType getCodecDataType() {
+                return DataType.BINARY;
             }
 
             @Override

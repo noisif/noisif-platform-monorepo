@@ -13,18 +13,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package xyz.jwizard.jwl.codec.envelope;
+package xyz.jwizard.jwl.codec;
 
 import xyz.jwizard.jwl.common.Identifiable;
 
-public enum EnvelopeDataType implements Identifiable<String> {
+public enum DataType implements Identifiable<String> {
     TEXT("text"),
     BINARY("binary"),
     ;
 
     private final String code;
 
-    EnvelopeDataType(String code) {
+    DataType(String code) {
         this.code = code;
     }
 

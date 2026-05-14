@@ -15,7 +15,7 @@
  */
 package xyz.jwizard.jwl.codec.envelope.cache;
 
-import xyz.jwizard.jwl.codec.envelope.EnvelopeDataType;
+import xyz.jwizard.jwl.codec.DataType;
 import xyz.jwizard.jwl.codec.envelope.EnvelopeSerializer;
 import xyz.jwizard.jwl.codec.envelope.EnvelopeSerializerRegistry;
 import xyz.jwizard.jwl.codec.serialization.SerializerFormat;
@@ -25,7 +25,7 @@ public interface EnvelopeSerializerCache {
 
     EnvelopeSerializer<?> find(String encoding, String frame);
 
-    default EnvelopeSerializer<?> find(SerializerFormat encoding, EnvelopeDataType dataType) {
+    default EnvelopeSerializer<?> find(SerializerFormat encoding, DataType dataType) {
         return find(encoding.getFormat(), dataType.getCode());
     }
 }

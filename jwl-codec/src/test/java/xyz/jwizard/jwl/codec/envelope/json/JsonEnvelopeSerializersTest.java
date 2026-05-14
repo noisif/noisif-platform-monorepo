@@ -30,8 +30,8 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import xyz.jwizard.jwl.codec.DataType;
 import xyz.jwizard.jwl.codec.envelope.EncodedPayloadVisitor;
-import xyz.jwizard.jwl.codec.envelope.EnvelopeDataType;
 import xyz.jwizard.jwl.codec.envelope.TestOpCode;
 import xyz.jwizard.jwl.codec.serialization.json.JsonSerializer;
 
@@ -58,7 +58,7 @@ class JsonEnvelopeSerializersTest {
         final String mockJson = "{\"op\":65636,\"data\":\"hello\"}";
         when(jsonSerializerMock.serialize(any())).thenReturn(mockJson);
         // when
-        assertThat(textSerializer.getCodecDataType()).isEqualTo(EnvelopeDataType.TEXT);
+        assertThat(textSerializer.getCodecDataType()).isEqualTo(DataType.TEXT);
         textSerializer.serializeAndAccept(TestOpCode.USER_DATA, "hello", visitorMock);
         // then
         verify(visitorMock).accept(mockJson);
@@ -78,7 +78,7 @@ class JsonEnvelopeSerializersTest {
         final byte[] mockBytes = {1, 2, 3};
         when(jsonSerializerMock.serializeToBytes(any())).thenReturn(mockBytes);
         // when
-        assertThat(binarySerializer.getCodecDataType()).isEqualTo(EnvelopeDataType.BINARY);
+        assertThat(binarySerializer.getCodecDataType()).isEqualTo(DataType.BINARY);
         binarySerializer.serializeAndAccept(TestOpCode.USER_DATA, "hello", visitorMock);
         // then
         verify(visitorMock).accept(mockBytes);

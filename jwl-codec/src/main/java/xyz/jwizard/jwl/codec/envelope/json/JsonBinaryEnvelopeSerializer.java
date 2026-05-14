@@ -15,8 +15,8 @@
  */
 package xyz.jwizard.jwl.codec.envelope.json;
 
+import xyz.jwizard.jwl.codec.DataType;
 import xyz.jwizard.jwl.codec.envelope.EncodedPayloadVisitor;
-import xyz.jwizard.jwl.codec.envelope.EnvelopeDataType;
 import xyz.jwizard.jwl.codec.envelope.OpCode;
 import xyz.jwizard.jwl.codec.serialization.json.JsonSerializer;
 
@@ -30,8 +30,8 @@ public class JsonBinaryEnvelopeSerializer extends JsonEnvelopeSerializer<byte[]>
     }
 
     @Override
-    public EnvelopeDataType getCodecDataType() {
-        return EnvelopeDataType.BINARY;
+    public DataType getCodecDataType() {
+        return DataType.BINARY;
     }
 
     @Override

@@ -20,8 +20,8 @@ import java.util.function.Function;
 import com.google.protobuf.ByteString;
 import com.google.protobuf.MessageLite;
 
+import xyz.jwizard.jwl.codec.DataType;
 import xyz.jwizard.jwl.codec.envelope.EncodedPayloadVisitor;
-import xyz.jwizard.jwl.codec.envelope.EnvelopeDataType;
 import xyz.jwizard.jwl.codec.envelope.EnvelopeSerializer;
 import xyz.jwizard.jwl.codec.envelope.MessageEnvelope;
 import xyz.jwizard.jwl.codec.envelope.OpCode;
@@ -47,8 +47,8 @@ public class ProtobufEnvelopeSerializer implements EnvelopeSerializer<byte[]> {
     }
 
     @Override
-    public EnvelopeDataType getCodecDataType() {
-        return EnvelopeDataType.BINARY;
+    public DataType getCodecDataType() {
+        return DataType.BINARY;
     }
 
     @Override

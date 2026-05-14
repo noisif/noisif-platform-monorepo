@@ -17,8 +17,8 @@ package xyz.jwizard.jwl.codec.envelope.json;
 
 import java.nio.charset.StandardCharsets;
 
+import xyz.jwizard.jwl.codec.DataType;
 import xyz.jwizard.jwl.codec.envelope.EncodedPayloadVisitor;
-import xyz.jwizard.jwl.codec.envelope.EnvelopeDataType;
 import xyz.jwizard.jwl.codec.envelope.OpCode;
 import xyz.jwizard.jwl.codec.serialization.json.JsonSerializer;
 
@@ -32,8 +32,8 @@ public class JsonTextEnvelopeSerializer extends JsonEnvelopeSerializer<String> {
     }
 
     @Override
-    public EnvelopeDataType getCodecDataType() {
-        return EnvelopeDataType.TEXT;
+    public DataType getCodecDataType() {
+        return DataType.TEXT;
     }
 
     @Override

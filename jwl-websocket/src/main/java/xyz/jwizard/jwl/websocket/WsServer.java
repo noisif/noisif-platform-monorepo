@@ -23,7 +23,7 @@ import java.util.stream.Collectors;
 
 import org.jspecify.annotations.Nullable;
 
-import xyz.jwizard.jwl.codec.envelope.EnvelopeDataType;
+import xyz.jwizard.jwl.codec.DataType;
 import xyz.jwizard.jwl.codec.envelope.EnvelopeSerializer;
 import xyz.jwizard.jwl.codec.envelope.EnvelopeSerializerFormat;
 import xyz.jwizard.jwl.codec.envelope.EnvelopeSerializerRegistry;
@@ -123,8 +123,7 @@ public abstract class WsServer extends IdempotentService {
             messageSink = builder.messageSink;
         }
         final EnvelopeSerializer<?> envelopeSerializer = serializerRegistry
-            .get(EnvelopeSerializerFormat.from(StandardSerializerFormat.JSON,
-                EnvelopeDataType.BINARY));
+            .get(EnvelopeSerializerFormat.from(StandardSerializerFormat.JSON, DataType.BINARY));
         return new WsMessageSinkBroadcaster(messageSink, envelopeSerializer);
     }
 

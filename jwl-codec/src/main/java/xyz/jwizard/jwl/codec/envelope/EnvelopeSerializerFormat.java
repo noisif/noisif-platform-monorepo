@@ -17,26 +17,27 @@ package xyz.jwizard.jwl.codec.envelope;
 
 import org.jspecify.annotations.NonNull;
 
+import xyz.jwizard.jwl.codec.DataType;
 import xyz.jwizard.jwl.codec.serialization.SerializerFormat;
 
 public record EnvelopeSerializerFormat(
     SerializerFormat baseFormat,
-    EnvelopeDataType envelopeDataType
+    DataType dataType
 ) implements SerializerFormat {
     public static EnvelopeSerializerFormat from(SerializerFormat format,
-                                                EnvelopeDataType dataType) {
+                                                DataType dataType) {
         return new EnvelopeSerializerFormat(format, dataType);
     }
 
     @Override
     public String getFormat() {
-        return baseFormat.getFormat() + "+" + envelopeDataType.getCode();
+        return baseFormat.getFormat() + "+" + dataType.getCode();
     }
 
     @Override
     public String getMimeType() {
         // application/x-jwl-[envelope]+[base]
-        return "application/x-jwl-" + envelopeDataType.getCode() + "+" + baseFormat.getFormat();
+        return "application/x-jwl-" + dataType.getCode() + "+" + baseFormat.getFormat();
     }
 
     @Override

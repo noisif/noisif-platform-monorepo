@@ -35,8 +35,8 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import com.google.protobuf.ByteString;
 
+import xyz.jwizard.jwl.codec.DataType;
 import xyz.jwizard.jwl.codec.envelope.EncodedPayloadVisitor;
-import xyz.jwizard.jwl.codec.envelope.EnvelopeDataType;
 import xyz.jwizard.jwl.codec.envelope.MessageEnvelope;
 import xyz.jwizard.jwl.codec.envelope.TestOpCode;
 import xyz.jwizard.jwl.codec.serialization.StandardSerializerFormat;
@@ -63,7 +63,7 @@ class ProtobufEnvelopeSerializerTest {
     @DisplayName("should have proper base format and BINARY data type")
     void shouldHaveProperFormats() {
         assertThat(serializer.baseFormat()).isEqualTo(StandardSerializerFormat.PROTOBUF);
-        assertThat(serializer.getCodecDataType()).isEqualTo(EnvelopeDataType.BINARY);
+        assertThat(serializer.getCodecDataType()).isEqualTo(DataType.BINARY);
         assertThat(serializer.format().getFormat()).isEqualTo("protobuf+binary");
     }
 
