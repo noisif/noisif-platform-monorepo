@@ -28,7 +28,15 @@ public abstract class TypedMessageBusListener<T, S extends RawMessageSession>
     @Override
     public void dispatch(S session, byte[] message) {
         try {
+            if (log.isTraceEnabled()) {
+                log.trace("Received raw binary message ({} bytes) in session {}",
+                    message.length, session.getSessionId());
+            }
             final T parsedMessage = session.parse(message, getTargetType());
+            if (log.isDebugEnabled()) {
+                log.debug("Successfully parsed binary message to {} in session {}",
+                    getTargetType().getSimpleName(), session.getSessionId());
+            }
             handle(session, parsedMessage);
         } catch (Exception ex) {
             handleError(session, ex);
@@ -38,7 +46,15 @@ public abstract class TypedMessageBusListener<T, S extends RawMessageSession>
     @Override
     public void dispatch(S session, String message) {
         try {
+            if (log.isTraceEnabled()) {
+                log.trace("Received raw text message ({} chars) in session {}",
+                    message.length(), session.getSessionId());
+            }
             final T parsedMessage = session.parse(message, getTargetType());
+            if (log.isDebugEnabled()) {
+                log.debug("Successfully parsed text message to {} in session {}",
+                    getTargetType().getSimpleName(), session.getSessionId());
+            }
             handle(session, parsedMessage);
         } catch (Exception ex) {
             handleError(session, ex);
