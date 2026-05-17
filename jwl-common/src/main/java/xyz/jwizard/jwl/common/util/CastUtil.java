@@ -22,7 +22,7 @@ public class CastUtil {
         throw new ForbiddenInstantiationException(CastUtil.class);
     }
 
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings({"TypeParameterUnusedInFormals", "unchecked"})
     public static <T> T unsafeCast(Object obj) {
         return (T) obj;
     }
