@@ -40,8 +40,9 @@ public class QueryParamSerializerResolver implements WsSerializerResolver {
 
     @Override
     public EnvelopeSerializer<?> resolve(WsHandshakeRequest req) {
-        final String encoding = CollectionUtil.getFirst(req.getQueryParameter(encodingParamName));
-        final String frame = CollectionUtil.getFirst(req.getQueryParameter(frameParamName));
+        final String encoding = CollectionUtil
+            .getFirstSafety(req.getQueryParameter(encodingParamName));
+        final String frame = CollectionUtil.getFirstSafety(req.getQueryParameter(frameParamName));
         return cache.find(encoding, frame);
     }
 

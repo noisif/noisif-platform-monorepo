@@ -90,7 +90,7 @@ public class CollectionUtil {
         }
     }
 
-    public static String getFirst(List<String> values) {
+    public static String getFirstSafety(List<String> values) {
         if (values == null || values.isEmpty()) {
             return null;
         }
