@@ -18,6 +18,7 @@ package xyz.jwizard.jwl.sql.config;
 import java.util.Map;
 
 import xyz.jwizard.jwl.common.bootstrap.CriticalBootstrapException;
+import xyz.jwizard.jwl.common.util.StringUtil;
 import xyz.jwizard.jwl.net.HostPort;
 
 public enum SqlDatabaseDialect {
@@ -39,7 +40,7 @@ public enum SqlDatabaseDialect {
 
     public static SqlDatabaseDialect fromString(String dialectName) {
         try {
-            return SqlDatabaseDialect.valueOf(dialectName.toUpperCase());
+            return SqlDatabaseDialect.valueOf(StringUtil.toUpperCase(dialectName));
         } catch (IllegalArgumentException ex) {
             throw new CriticalBootstrapException("Unsupported database dialect: "
                 + dialectName, ex);
