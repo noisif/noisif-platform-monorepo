@@ -17,11 +17,14 @@ package xyz.jwizard.jwl.kv.jedis.factory;
 
 import java.util.Set;
 
+import com.google.errorprone.annotations.Immutable;
+
 import redis.clients.jedis.ConnectionPoolConfig;
 import redis.clients.jedis.HostAndPort;
 import redis.clients.jedis.JedisClientConfig;
 import redis.clients.jedis.UnifiedJedis;
 
+@Immutable
 public interface JedisClientFactory {
     UnifiedJedis create(Set<HostAndPort> nodes, JedisClientConfig config,
                         ConnectionPoolConfig poolConfig);
