@@ -4,6 +4,8 @@ assertj = "3.27.7"
 bucket4j = "8.18.0"
 clazzGraph = "4.8.184"
 erlangJinterface = "1.6.1"
+errorProne = "2.49.0"
+errorPronePlugin = "5.1.0"
 guava = "33.5.0-jre"
 guice = "7.0.0"
 graalvm = "25.0.2"
@@ -37,6 +39,8 @@ assertj-core = { module = "org.assertj:assertj-core", version.ref = "assertj" }
 bucket4j = { module = "com.bucket4j:bucket4j_jdk17-core", version.ref = "bucket4j" }
 clazz-graph = { module = "io.github.classgraph:classgraph", version.ref = "clazzGraph" }
 erlang-jinterface = { module = "org.erlang.otp:jinterface", version.ref = "erlangJinterface" }
+error-prone-annotation = { module = "com.google.errorprone:error_prone_annotations", version.ref = "errorProne" }
+error-prone-core = { module = "com.google.errorprone:error_prone_core", version.ref = "errorProne" }
 guava = { module = "com.google.guava:guava", version.ref = "guava" }
 guice = { module = "com.google.inject:guice", version.ref = "guice" }
 graalvm-polyglot = { module = "org.graalvm.polyglot:polyglot", version.ref = "graalvm" }
@@ -75,8 +79,9 @@ testcontainers-redis = { module = "com.redis:testcontainers-redis", version.ref 
 wiremock = { module = "org.wiremock:wiremock-standalone", version.ref = "wiremock" }
 
 [plugins]
-java = { id = "java" }
+error-prone = { id = "net.ltgt.errorprone", version.ref = "errorPronePlugin" }
 idea = { id = "idea" }
+java = { id = "java" }
 java-gradle-plugin = { id = "java-gradle-plugin" }
 java-library = { id = "java-library" }
 kotlin-dsl = { id = "org.gradle.kotlin.kotlin-dsl", version.ref = "kotlinDsl" }
