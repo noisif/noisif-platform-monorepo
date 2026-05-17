@@ -107,18 +107,15 @@ class GraalJsEngineTest {
 
     @Test
     @DisplayName("should safely clean up variables even if the script throws an exception")
-    void shouldCleanupVariablesEvenIfScriptThrowsException() {
+    void shouldCleanupVariablesEvenIfScriptThrowsException() throws Exception {
         // given
         engine.start();
         final Map<String, Object> vars = Map.of("injectedA", "Will Fail");
-
+        // when & then
         assertThatThrownBy(() -> engine.executeScript(TestScript.VARS, vars, Integer.class))
             .isInstanceOf(Exception.class);
-        try {
-            final String typeofInjectedA = engine.executeScript(TestScript.CLEANUP, String.class);
-            assertThat(typeofInjectedA).isEqualTo("undefined");
-        } catch (Exception ignored) {
-        }
+        final String typeofInjectedA = engine.executeScript(TestScript.CLEANUP, String.class);
+        assertThat(typeofInjectedA).isEqualTo("undefined");
     }
 
     @Test
