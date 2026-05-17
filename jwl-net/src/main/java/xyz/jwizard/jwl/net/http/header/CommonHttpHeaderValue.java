@@ -30,6 +30,6 @@ public enum CommonHttpHeaderValue implements HttpHeaderValue {
 
     @Override
     public String buildWithArgs(Object... args) {
-        return format(code, args);
+        return String.format(code, args);
     }
 }

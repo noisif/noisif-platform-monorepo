@@ -16,9 +16,5 @@
 package xyz.jwizard.jwl.net.http.header;
 
 public interface HttpHeaderValue {
-    default String format(String raw, Object... args) {
-        return raw.formatted(args);
-    }
-
     String buildWithArgs(Object... args);
 }
