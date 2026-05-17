@@ -66,6 +66,7 @@ class TaskExecutorTest {
             try {
                 Thread.sleep(500);
             } catch (InterruptedException ignored) {
+                Thread.currentThread().interrupt();
             }
             taskFinished.countDown();
         });
