@@ -37,6 +37,7 @@ import xyz.jwizard.jwl.common.di.ComponentProvider;
 import xyz.jwizard.jwl.common.di.GuiceComponentProvider;
 import xyz.jwizard.jwl.common.reflect.ClassGraphScanner;
 import xyz.jwizard.jwl.common.reflect.ClassScanner;
+import xyz.jwizard.jwl.common.util.StringUtil;
 import xyz.jwizard.jwl.common.util.io.IoUtil;
 import xyz.jwizard.jwl.http.HttpServer;
 import xyz.jwizard.jwl.http.TestConstants;
@@ -307,7 +308,7 @@ public class JettyHttpServerIntegrationTest {
         "limit (Fast-Fail via Content-Length)")
     void shouldFailFastOnExceedingDeclaredContentLength() throws Exception {
         // given
-        final byte[] payload = "123456789012345".getBytes();
+        final byte[] payload = StringUtil.getBytes("123456789012345");
         final HttpRequest request = HttpRequest.newBuilder()
             .uri(URI.create("http://localhost:" + dynamicPort + "/api/limited"))
             .header("Content-Type", "application/octet-stream")
