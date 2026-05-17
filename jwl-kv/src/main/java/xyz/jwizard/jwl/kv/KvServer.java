@@ -131,9 +131,7 @@ public abstract class KvServer extends IdempotentService implements KeyValueStor
         protected AbstractBuilder() {
         }
 
-        protected B self() {
-            return CastUtil.unsafeCast(this);
-        }
+        protected abstract B self();
 
         public B nodes(Set<HostPort> nodes) {
             this.nodes = nodes;

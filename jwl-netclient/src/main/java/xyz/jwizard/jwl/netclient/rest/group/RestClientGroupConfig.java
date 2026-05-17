@@ -65,6 +65,14 @@ public class RestClientGroupConfig extends GenericClientGroupConfig {
         private SerializerFormat defaultFormat = StandardSerializerFormat.JSON;
         private RetryPolicy retryPolicy = RetryPolicy.none();
 
+        private Builder() {
+        }
+
+        @Override
+        protected Builder self() {
+            return this;
+        }
+
         public Builder defaultFormat(SerializerFormat defaultFormat) {
             this.defaultFormat = defaultFormat;
             return this;

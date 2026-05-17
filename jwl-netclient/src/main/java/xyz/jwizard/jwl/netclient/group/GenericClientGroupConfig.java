@@ -16,7 +16,6 @@
 package xyz.jwizard.jwl.netclient.group;
 
 import xyz.jwizard.jwl.common.util.Assert;
-import xyz.jwizard.jwl.common.util.CastUtil;
 import xyz.jwizard.jwl.common.util.io.IoUtil;
 
 public class GenericClientGroupConfig implements ClientGroupConfig {
@@ -46,9 +45,7 @@ public class GenericClientGroupConfig implements ClientGroupConfig {
         protected AbstractBuilder() {
         }
 
-        protected final B self() {
-            return CastUtil.unsafeCast(this);
-        }
+        protected abstract B self();
 
         public B url(String url) {
             this.url = IoUtil.removeTrailingSlash(url);

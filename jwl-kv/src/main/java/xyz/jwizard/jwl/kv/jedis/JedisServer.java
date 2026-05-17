@@ -149,6 +149,11 @@ public class JedisServer extends KvServer {
         private Builder() {
         }
 
+        @Override
+        protected Builder self() {
+            return this;
+        }
+
         public Builder poolMaxTotal(int poolMaxTotal) {
             this.poolMaxTotal = poolMaxTotal;
             return this;

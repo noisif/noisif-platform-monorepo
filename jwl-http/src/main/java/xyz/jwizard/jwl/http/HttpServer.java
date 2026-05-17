@@ -27,7 +27,6 @@ import xyz.jwizard.jwl.codec.serialization.json.JsonSerializer;
 import xyz.jwizard.jwl.common.bootstrap.lifecycle.IdempotentService;
 import xyz.jwizard.jwl.common.di.ComponentProvider;
 import xyz.jwizard.jwl.common.util.Assert;
-import xyz.jwizard.jwl.common.util.CastUtil;
 import xyz.jwizard.jwl.common.util.CollectionUtil;
 import xyz.jwizard.jwl.http.annotation.Validator;
 import xyz.jwizard.jwl.http.exception.handler.AnnotatedExceptionHandler;
@@ -150,9 +149,7 @@ public abstract class HttpServer extends IdempotentService {
         protected AbstractBuilder() {
         }
 
-        protected B self() {
-            return CastUtil.unsafeCast(this);
-        }
+        protected abstract B self();
 
         public B componentProvider(ComponentProvider componentProvider) {
             this.componentProvider = componentProvider;

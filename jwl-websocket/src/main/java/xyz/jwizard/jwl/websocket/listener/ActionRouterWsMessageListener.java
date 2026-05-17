@@ -47,6 +47,12 @@ public class ActionRouterWsMessageListener extends EnvelopeBusListener<WsSession
         protected Builder() {
         }
 
+        @Override
+        protected Builder self() {
+            return this;
+        }
+
+        @Override
         public EnvelopeBusListener<WsSession> build() {
             super.validate();
             return new ActionRouterWsMessageListener(this);

@@ -20,7 +20,6 @@ import java.util.function.Function;
 
 import xyz.jwizard.jwl.common.bootstrap.lifecycle.IdempotentService;
 import xyz.jwizard.jwl.common.util.Assert;
-import xyz.jwizard.jwl.common.util.CastUtil;
 import xyz.jwizard.jwl.common.util.io.IoUtil;
 import xyz.jwizard.jwl.graph.client.GraphClient;
 import xyz.jwizard.jwl.graph.client.factory.GraphClientFactory;
@@ -80,9 +79,7 @@ public abstract class GraphServer<C extends GraphConfig> extends IdempotentServi
         protected AbstractBuilder() {
         }
 
-        protected B self() {
-            return CastUtil.unsafeCast(this);
-        }
+        protected abstract B self();
 
         public B config(C config) {
             this.config = config;

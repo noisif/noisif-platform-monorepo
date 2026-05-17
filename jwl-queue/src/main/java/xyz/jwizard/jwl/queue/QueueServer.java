@@ -28,7 +28,6 @@ import xyz.jwizard.jwl.common.bootstrap.lifecycle.IdempotentService;
 import xyz.jwizard.jwl.common.di.ComponentProvider;
 import xyz.jwizard.jwl.common.reflect.TypeReference;
 import xyz.jwizard.jwl.common.util.Assert;
-import xyz.jwizard.jwl.common.util.CastUtil;
 import xyz.jwizard.jwl.net.HostPort;
 import xyz.jwizard.jwl.net.NetworkUtil;
 
@@ -119,9 +118,7 @@ public abstract class QueueServer extends IdempotentService {
         protected AbstractBuilder() {
         }
 
-        protected B self() {
-            return CastUtil.unsafeCast(this);
-        }
+        protected abstract B self();
 
         public B nodes(Set<HostPort> nodes) {
             this.nodes = nodes;

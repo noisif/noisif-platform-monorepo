@@ -161,6 +161,11 @@ public class RabbitMqServer extends QueueServer {
         private Builder() {
         }
 
+        @Override
+        protected Builder self() {
+            return this;
+        }
+
         public Builder withConnector(ConnectorType connectorType) {
             connector = connectorType.getConnector();
             return this;

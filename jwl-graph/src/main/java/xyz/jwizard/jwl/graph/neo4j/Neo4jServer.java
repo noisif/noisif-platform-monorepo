@@ -33,6 +33,11 @@ public class Neo4jServer extends GraphServer<Neo4jConfig> {
         }
 
         @Override
+        protected Builder self() {
+            return this;
+        }
+
+        @Override
         protected void validate() {
             super.validate();
             Assert.notNull(config.getUsername(), "Username cannot be null");

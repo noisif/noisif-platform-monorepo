@@ -20,7 +20,6 @@ import org.slf4j.LoggerFactory;
 
 import xyz.jwizard.jwl.common.bootstrap.lifecycle.IdempotentService;
 import xyz.jwizard.jwl.common.util.Assert;
-import xyz.jwizard.jwl.common.util.CastUtil;
 import xyz.jwizard.jwl.netclient.group.ClientGroup;
 import xyz.jwizard.jwl.netclient.group.ClientGroupConfig;
 import xyz.jwizard.jwl.netclient.group.ClientRegistry;
@@ -41,9 +40,7 @@ public abstract class NetworkClient<T extends ClientGroupConfig> extends Idempot
         protected AbstractBaseBuilder() {
         }
 
-        protected final B self() {
-            return CastUtil.unsafeCast(this);
-        }
+        protected abstract B self();
 
         public B clientsRegistry(ClientRegistry<T> clientsRegistry) {
             this.clientsRegistry = clientsRegistry;

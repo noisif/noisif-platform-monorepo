@@ -81,6 +81,11 @@ public class JettyHttpServer extends HttpServer {
         }
 
         @Override
+        protected Builder self() {
+            return this;
+        }
+
+        @Override
         public HttpServer build() {
             validate();
             return new JettyHttpServer(this);

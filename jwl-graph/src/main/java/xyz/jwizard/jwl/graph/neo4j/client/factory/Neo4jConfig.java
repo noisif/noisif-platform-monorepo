@@ -47,6 +47,11 @@ public class Neo4jConfig extends GraphConfig {
         private Builder() {
         }
 
+        @Override
+        protected Builder self() {
+            return this;
+        }
+
         public Builder username(String username) {
             this.username = username;
             return this;

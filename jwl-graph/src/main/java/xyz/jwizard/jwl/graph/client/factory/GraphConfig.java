@@ -16,7 +16,6 @@
 package xyz.jwizard.jwl.graph.client.factory;
 
 import xyz.jwizard.jwl.common.util.Assert;
-import xyz.jwizard.jwl.common.util.CastUtil;
 import xyz.jwizard.jwl.graph.GraphProtocol;
 import xyz.jwizard.jwl.net.HostPort;
 
@@ -42,9 +41,7 @@ public abstract class GraphConfig {
         protected GraphProtocol protocol;
         protected HostPort address;
 
-        protected B self() {
-            return CastUtil.unsafeCast(this);
-        }
+        protected abstract B self();
 
         public B protocol(GraphProtocol protocol) {
             this.protocol = protocol;

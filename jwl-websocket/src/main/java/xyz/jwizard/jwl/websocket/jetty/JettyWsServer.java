@@ -92,6 +92,11 @@ public class JettyWsServer extends WsServer {
         }
 
         @Override
+        protected Builder self() {
+            return this;
+        }
+
+        @Override
         public WsServer build() {
             validate();
             return new JettyWsServer(this);

@@ -122,9 +122,7 @@ public abstract class EnvelopeBusListener<S extends EnvelopeSession> implements 
         private Integer order = Ordered.HIGHEST_PRIORITY;
         private ComponentProvider componentProvider;
 
-        private B self() {
-            return CastUtil.unsafeCast(this);
-        }
+        protected abstract B self();
 
         public B actionGroup(ActionGroup actionGroup) {
             this.actionGroup = actionGroup;

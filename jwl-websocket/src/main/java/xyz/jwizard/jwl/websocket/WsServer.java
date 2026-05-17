@@ -33,7 +33,6 @@ import xyz.jwizard.jwl.common.di.ComponentProvider;
 import xyz.jwizard.jwl.common.limit.NoOpRateLimiter;
 import xyz.jwizard.jwl.common.limit.RateLimiter;
 import xyz.jwizard.jwl.common.util.Assert;
-import xyz.jwizard.jwl.common.util.CastUtil;
 import xyz.jwizard.jwl.net.bus.CompositeBusListener;
 import xyz.jwizard.jwl.net.bus.RawBusListener;
 import xyz.jwizard.jwl.net.lifecycle.CompositeNetworkSessionLifecycleListener;
@@ -149,9 +148,7 @@ public abstract class WsServer extends IdempotentService {
         protected AbstractBuilder() {
         }
 
-        protected B self() {
-            return CastUtil.unsafeCast(this);
-        }
+        protected abstract B self();
 
         public B addBusListener(RawBusListener<WsSession> busListener) {
             busListeners.add(busListener);

@@ -123,6 +123,11 @@ public class JettyRestClient extends GenericRestClient {
         private Builder() {
         }
 
+        @Override
+        protected Builder self() {
+            return this;
+        }
+
         public Builder maxQueuedRequests(int maxQueuedRequests) {
             this.maxQueuedRequests = maxQueuedRequests;
             return this;
