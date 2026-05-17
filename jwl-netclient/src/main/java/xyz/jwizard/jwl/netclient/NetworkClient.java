@@ -15,9 +15,6 @@
  */
 package xyz.jwizard.jwl.netclient;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import xyz.jwizard.jwl.common.bootstrap.lifecycle.IdempotentService;
 import xyz.jwizard.jwl.common.util.Assert;
 import xyz.jwizard.jwl.netclient.group.ClientGroup;
@@ -26,7 +23,6 @@ import xyz.jwizard.jwl.netclient.group.ClientRegistry;
 import xyz.jwizard.jwl.netclient.group.InMemoryClientRegistry;
 
 public abstract class NetworkClient<T extends ClientGroupConfig> extends IdempotentService {
-    protected final Logger log = LoggerFactory.getLogger(getClass());
     protected final ClientRegistry<T> clientsRegistry;
 
     protected NetworkClient(AbstractBaseBuilder<T, ?> builder) {
