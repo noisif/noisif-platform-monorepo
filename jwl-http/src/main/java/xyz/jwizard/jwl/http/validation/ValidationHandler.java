@@ -53,7 +53,12 @@ public class ValidationHandler {
                 clazz.getSimpleName());
         }
         for (final ValidationStep step : steps) {
-            step.execute(target);
+            try {
+                step.execute(target);
+            } catch (IllegalAccessException ex) {
+                throw new RuntimeException("Security restriction: cannot access field '"
+                    + step.getField().getName() + "' in class " + target.getClass().getName(), ex);
+            }
         }
     }
 

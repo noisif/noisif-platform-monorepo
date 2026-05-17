@@ -27,13 +27,15 @@ class NestedStep implements ValidationStep {
     }
 
     @Override
-    public void execute(Object target) {
-        try {
-            final Object nestedObject = field.get(target);
-            if (nestedObject != null) {
-                validationHandler.validate(nestedObject);
-            }
-        } catch (IllegalAccessException ignored) {
+    public void execute(Object target) throws IllegalAccessException {
+        final Object nestedObject = field.get(target);
+        if (nestedObject != null) {
+            validationHandler.validate(nestedObject);
         }
+    }
+
+    @Override
+    public Field getField() {
+        return field;
     }
 }

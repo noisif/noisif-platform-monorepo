@@ -32,11 +32,13 @@ class ConstraintStep implements ValidationStep {
     }
 
     @Override
-    public void execute(Object target) {
-        try {
-            Object value = field.get(target);
-            validator.validate(annotation, field, value);
-        } catch (IllegalAccessException ignored) {
-        }
+    public void execute(Object target) throws IllegalAccessException {
+        final Object value = field.get(target);
+        validator.validate(annotation, field, value);
+    }
+
+    @Override
+    public Field getField() {
+        return field;
     }
 }
