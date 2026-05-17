@@ -141,7 +141,7 @@ class JettyWsServerIntegrationTest {
         final boolean result = opened.get(5, TimeUnit.SECONDS);
         assertThat(result).isTrue();
         // cleanup
-        webSocket.sendClose(WebSocket.NORMAL_CLOSURE, "Done");
+        webSocket.sendClose(WebSocket.NORMAL_CLOSURE, "Done").join();
     }
 
     @Test
@@ -167,14 +167,14 @@ class JettyWsServerIntegrationTest {
             null
         ));
         // when
-        webSocket.sendText(heartbeatRequest, true);
+        webSocket.sendText(heartbeatRequest, true).join();
         // then
         final String rawResponse = responses.poll(5, TimeUnit.SECONDS);
         assertThat(rawResponse).isNotNull();
         final Map<?, ?> responseEnvelope = jsonSerializer.deserialize(rawResponse, Map.class);
         assertThat(responseEnvelope.get("op")).isEqualTo(WsOpCode.HEARTBEAT.getCode());
         // cleanup
-        webSocket.sendClose(WebSocket.NORMAL_CLOSURE, "bye");
+        webSocket.sendClose(WebSocket.NORMAL_CLOSURE, "bye").join();
     }
 
     @Test
@@ -201,7 +201,7 @@ class JettyWsServerIntegrationTest {
                     return WebSocket.Listener.super.onText(webSocket, data, last);
                 }
             }).get(5, TimeUnit.SECONDS);
-        webSocket.sendText(jsonRequest, true);
+        webSocket.sendText(jsonRequest, true).join();
         // then
         final String rawResponse = responses.poll(5, TimeUnit.SECONDS);
         assertThat(rawResponse)
@@ -269,8 +269,8 @@ class JettyWsServerIntegrationTest {
             null
         ));
         // when
-        wsUser1.sendText(subscribeReq, true);
-        wsUser2.sendText(subscribeReq, true);
+        wsUser1.sendText(subscribeReq, true).join();
+        wsUser2.sendText(subscribeReq, true).join();
         // then
         final String ackAlice = user1Queue.poll(5, TimeUnit.SECONDS);
         final String ackBob = user2Queue.poll(5, TimeUnit.SECONDS);
@@ -326,14 +326,14 @@ class JettyWsServerIntegrationTest {
             }).join();
         final String badRequest = jsonSerializer.serialize(Map.of("op", 999999, "data", "test"));
         // when
-        webSocket.sendText(badRequest, true);
+        webSocket.sendText(badRequest, true).join();
         // then
         final String rawResponse = responses.poll(5, TimeUnit.SECONDS);
         assertThat(rawResponse).isNotNull();
         final Map<?, ?> responseEnvelope = jsonSerializer.deserialize(rawResponse, Map.class);
         assertThat(responseEnvelope.get("op")).isEqualTo(WsOpCode.UNKNOWN_ACTION.getCode());
         // cleanup
-        webSocket.sendClose(WebSocket.NORMAL_CLOSURE, "bye");
+        webSocket.sendClose(WebSocket.NORMAL_CLOSURE, "bye").join();
     }
 
     @Test
@@ -354,14 +354,14 @@ class JettyWsServerIntegrationTest {
                 }
             }).join();
         // when
-        webSocket.sendText("{ bad_json: is here }", true);
+        webSocket.sendText("{ bad_json: is here }", true).join();
         // then
         final String rawResponse = responses.poll(5, TimeUnit.SECONDS);
         assertThat(rawResponse).isNotNull();
         final Map<?, ?> responseEnvelope = jsonSerializer.deserialize(rawResponse, Map.class);
         assertThat(responseEnvelope.get("op")).isEqualTo(WsOpCode.INVALID_PAYLOAD.getCode());
         // cleanup
-        webSocket.sendClose(WebSocket.NORMAL_CLOSURE, "bye");
+        webSocket.sendClose(WebSocket.NORMAL_CLOSURE, "bye").join();
     }
 
     @Test
@@ -390,7 +390,7 @@ class JettyWsServerIntegrationTest {
         ));
         final byte[] payloadBytes = heartbeatRequest.getBytes(StandardCharsets.UTF_8);
         // when
-        webSocket.sendBinary(java.nio.ByteBuffer.wrap(payloadBytes), true);
+        webSocket.sendBinary(ByteBuffer.wrap(payloadBytes), true).join();
         // then
         final byte[] rawResponse = responses.poll(5, TimeUnit.SECONDS);
         assertThat(rawResponse).isNotNull();
