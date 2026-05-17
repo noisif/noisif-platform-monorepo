@@ -15,10 +15,10 @@
  */
 package xyz.jwizard.jwl.common.bootstrap.lifecycle;
 
+import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.LinkedHashMap;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Queue;
@@ -105,7 +105,7 @@ public class KahnLifecycleGraph implements LifecycleGraph {
 
     private List<LifecycleHook> executeKahnAlgorithm(Map<Class<?>, List<Class<?>>> adjacencyList,
                                                      Map<Class<?>, Integer> inDegrees) {
-        final Queue<Class<?>> readyQueue = new LinkedList<>();
+        final Queue<Class<?>> readyQueue = new ArrayDeque<>();
         final List<LifecycleHook> sortedResult = new ArrayList<>();
         for (final Map.Entry<Class<?>, Integer> entry : inDegrees.entrySet()) {
             if (entry.getValue() == 0) {
