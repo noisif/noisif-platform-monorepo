@@ -17,6 +17,7 @@ package xyz.jwizard.jwl.common.util.thread;
 
 import java.io.Closeable;
 import java.io.IOException;
+import java.time.Duration;
 import java.util.concurrent.Executor;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -34,7 +35,7 @@ public class TaskExecutor implements Executor, Closeable {
     private final long timeout;
     private final TimeUnit unit;
 
-    public TaskExecutor(String name, long timeout, TimeUnit unit) {
+    private TaskExecutor(String name, long timeout, TimeUnit unit) {
         this.delegate = Executors.newVirtualThreadPerTaskExecutor();
         this.name = name;
         this.timeout = timeout;
@@ -42,8 +43,12 @@ public class TaskExecutor implements Executor, Closeable {
         LOG.debug("Initialized virtual thread executor: {}", name);
     }
 
-    public TaskExecutor(String name) {
-        this(name, 30, TimeUnit.SECONDS);
+    public static TaskExecutor create(String name, Duration timeout) {
+        return new TaskExecutor(name, timeout.toMillis(), TimeUnit.MILLISECONDS);
+    }
+
+    public static TaskExecutor createDefault(String name) {
+        return new TaskExecutor(name, 30, TimeUnit.SECONDS);
     }
 
     public ExecutorService getDelegate() {

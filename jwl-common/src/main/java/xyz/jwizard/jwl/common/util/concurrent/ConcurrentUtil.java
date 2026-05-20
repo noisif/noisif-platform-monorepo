@@ -17,9 +17,12 @@ package xyz.jwizard.jwl.common.util.concurrent;
 
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionException;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
 import java.util.function.Consumer;
 
 import xyz.jwizard.jwl.common.bootstrap.ForbiddenInstantiationException;
+import xyz.jwizard.jwl.common.util.thread.ThreadUtil;
 
 public class ConcurrentUtil {
     private ConcurrentUtil() {
@@ -49,5 +52,9 @@ public class ConcurrentUtil {
             }
             throw new ConcurrentOperationException(cause);
         }
+    }
+
+    public static ScheduledExecutorService singleThread(String name) {
+        return Executors.newSingleThreadScheduledExecutor(ThreadUtil.createThreadFactory(name));
     }
 }

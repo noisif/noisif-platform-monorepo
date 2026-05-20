@@ -15,6 +15,8 @@
  */
 package xyz.jwizard.jwl.common.util.thread;
 
+import java.util.concurrent.ThreadFactory;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -38,5 +40,9 @@ public class ThreadUtil {
                     LOG.error("Critical error in async task: {}", name, ex);
                 }
             });
+    }
+
+    public static ThreadFactory createThreadFactory(String name) {
+        return new DefaultThreadFactory(name);
     }
 }

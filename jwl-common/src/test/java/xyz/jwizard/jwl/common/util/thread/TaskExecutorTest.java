@@ -18,6 +18,7 @@ package xyz.jwizard.jwl.common.util.thread;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import java.io.IOException;
+import java.time.Duration;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -40,7 +41,7 @@ class TaskExecutorTest {
     @DisplayName("should execute task using virtual threads")
     void shouldExecuteTask() throws InterruptedException {
         // given
-        executor = new TaskExecutor("test-executor");
+        executor = TaskExecutor.createDefault("test-executor");
         final CountDownLatch latch = new CountDownLatch(1);
         final AtomicBoolean executed = new AtomicBoolean(false);
         // when
@@ -58,7 +59,7 @@ class TaskExecutorTest {
     @DisplayName("should wait for tasks to finish during graceful shutdown")
     void shouldShutdownGracefully() throws IOException, InterruptedException {
         // given
-        executor = new TaskExecutor("shutdown-test", 1, TimeUnit.SECONDS);
+        executor = TaskExecutor.create("shutdown-test", Duration.ofSeconds(1));
         final CountDownLatch taskStarted = new CountDownLatch(1);
         final CountDownLatch taskFinished = new CountDownLatch(1);
         executor.execute(() -> {
@@ -83,7 +84,7 @@ class TaskExecutorTest {
     @DisplayName("should force shutdown when tasks exceed timeout")
     void shouldForceShutdownOnTimeout() throws IOException, InterruptedException {
         // given
-        executor = new TaskExecutor("timeout-test", 100, TimeUnit.MILLISECONDS);
+        executor = TaskExecutor.create("timeout-test", Duration.ofMillis(100));
         final CountDownLatch taskStarted = new CountDownLatch(1);
         final AtomicBoolean interrupted = new AtomicBoolean(false);
         executor.execute(() -> {

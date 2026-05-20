@@ -68,7 +68,7 @@ public class RabbitMqServer extends QueueServer {
         factory.setPassword(password);
         factory.setVirtualHost(virtualHost);
         // virtual threads
-        taskExecutor = new TaskExecutor("rabbitmq-worker");
+        taskExecutor = TaskExecutor.createDefault("rabbitmq-worker");
         factory.setThreadFactory(Thread.ofVirtual().name("rabbit-vt-", 1).factory());
         factory.setSharedExecutor(taskExecutor.getDelegate());
 
