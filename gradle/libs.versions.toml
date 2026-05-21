@@ -1,5 +1,6 @@
 [versions]
 amqpClient = "5.29.0"
+awaitility = "4.3.0"
 assertj = "3.27.7"
 bucket4j = "8.18.0"
 clazzGraph = "4.8.184"
@@ -32,9 +33,11 @@ slf4j = "2.0.17"
 testcontainers = "2.0.4"
 testcontainersRedis = "2.2.4"
 wiremock = "3.13.2"
+wsMockServer = "1.5.7"
 
 [libraries]
 ampq-client = { module = "com.rabbitmq:amqp-client", version.ref = "amqpClient" }
+awaitility = { module = "org.awaitility:awaitility", version.ref = "awaitility" }
 assertj-core = { module = "org.assertj:assertj-core", version.ref = "assertj" }
 bucket4j = { module = "com.bucket4j:bucket4j_jdk17-core", version.ref = "bucket4j" }
 clazz-graph = { module = "io.github.classgraph:classgraph", version.ref = "clazzGraph" }
@@ -77,6 +80,7 @@ testcontainers-postgresql = { module = "org.testcontainers:testcontainers-postgr
 testcontainers-rabbitmq = { module = "org.testcontainers:testcontainers-rabbitmq", version.ref = "testcontainers" }
 testcontainers-redis = { module = "com.redis:testcontainers-redis", version.ref = "testcontainersRedis" }
 wiremock = { module = "org.wiremock:wiremock-standalone", version.ref = "wiremock" }
+ws-mock-server = { module = "org.java-websocket:Java-WebSocket", version.ref = "wsMockServer" }
 
 [plugins]
 error-prone = { id = "net.ltgt.errorprone", version.ref = "errorPronePlugin" }

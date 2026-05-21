@@ -13,6 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+import xyz.jwizard.buildconfig.JwProtobufPlugin
+
+apply<JwProtobufPlugin>()
 
 dependencies {
     implementation(libs.jetty.client)
@@ -22,7 +25,11 @@ dependencies {
     implementation(project(":jwl-common"))
     implementation(project(":jwl-net"))
 
+    testImplementation(libs.awaitility)
+    testImplementation(libs.protobuf.java)
     testImplementation(libs.wiremock)
+    testImplementation(libs.ws.mock.server)
 
+    testImplementation(project(":jwl-websocket"))
     testImplementation(testFixtures(project(":jwl-common")))
 }
