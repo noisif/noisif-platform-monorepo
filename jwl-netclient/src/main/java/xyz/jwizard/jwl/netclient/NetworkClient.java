@@ -15,6 +15,8 @@
  */
 package xyz.jwizard.jwl.netclient;
 
+import java.time.Duration;
+
 import xyz.jwizard.jwl.common.bootstrap.lifecycle.IdempotentService;
 import xyz.jwizard.jwl.common.util.Assert;
 import xyz.jwizard.jwl.netclient.group.ClientGroup;
@@ -23,20 +25,28 @@ import xyz.jwizard.jwl.netclient.group.ClientRegistry;
 import xyz.jwizard.jwl.netclient.group.InMemoryClientRegistry;
 
 public abstract class NetworkClient<T extends ClientGroupConfig> extends IdempotentService {
+    protected final Duration connectTimeout;
     protected final ClientRegistry<T> clientsRegistry;
 
     protected NetworkClient(AbstractBaseBuilder<T, ?> builder) {
+        connectTimeout = builder.connectTimeout;
         clientsRegistry = builder.clientsRegistry;
     }
 
     protected abstract static class AbstractBaseBuilder<T extends ClientGroupConfig,
         B extends AbstractBaseBuilder<T, B>> {
+        private Duration connectTimeout = Duration.ofMinutes(1);
         private ClientRegistry<T> clientsRegistry = InMemoryClientRegistry.createDefault();
 
         protected AbstractBaseBuilder() {
         }
 
         protected abstract B self();
+
+        public B connectTimeout(Duration connectTimeout) {
+            this.connectTimeout = connectTimeout;
+            return self();
+        }
 
         public B clientsRegistry(ClientRegistry<T> clientsRegistry) {
             this.clientsRegistry = clientsRegistry;
@@ -54,6 +64,7 @@ public abstract class NetworkClient<T extends ClientGroupConfig> extends Idempot
         }
 
         protected void validate() {
+            Assert.notNull(connectTimeout, "ConnectTimeout cannot be null");
             Assert.notNull(clientsRegistry, "ClientsRegistry cannot be null");
             Assert.notNullAll(clientsRegistry.getEntries(),
                 "All ClientGroupConfigs must be initialized");
