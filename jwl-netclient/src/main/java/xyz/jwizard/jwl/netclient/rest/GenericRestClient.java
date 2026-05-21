@@ -15,8 +15,6 @@
  */
 package xyz.jwizard.jwl.netclient.rest;
 
-import java.time.Duration;
-
 import xyz.jwizard.jwl.codec.serialization.MessageSerializer;
 import xyz.jwizard.jwl.codec.serialization.SerializerRegistry;
 import xyz.jwizard.jwl.common.reflect.ClassScanner;
@@ -26,7 +24,6 @@ import xyz.jwizard.jwl.netclient.rest.group.RestClientGroupConfig;
 
 public abstract class GenericRestClient extends NetworkClient<RestClientGroupConfig>
     implements RestClient {
-    protected final Duration connectTimeout;
     protected final boolean followRedirects;
     protected final int maxRedirects;
     protected final SerializerRegistry<MessageSerializer> serializerRegistry;
@@ -34,7 +31,6 @@ public abstract class GenericRestClient extends NetworkClient<RestClientGroupCon
 
     protected GenericRestClient(AbstractBuilder<?> builder) {
         super(builder);
-        connectTimeout = builder.connectTimeout;
         followRedirects = builder.followRedirects;
         maxRedirects = builder.maxRedirects;
         serializerRegistry = builder.serializerRegistry;
@@ -43,7 +39,6 @@ public abstract class GenericRestClient extends NetworkClient<RestClientGroupCon
 
     protected abstract static class AbstractBuilder<B extends AbstractBuilder<B>>
         extends AbstractBaseBuilder<RestClientGroupConfig, B> {
-        private Duration connectTimeout = Duration.ofMinutes(1);
         private boolean followRedirects = true;
         private int maxRedirects = 8;
         private SerializerRegistry<MessageSerializer> serializerRegistry;
@@ -51,11 +46,6 @@ public abstract class GenericRestClient extends NetworkClient<RestClientGroupCon
 
         protected AbstractBuilder() {
             super();
-        }
-
-        public B connectTimeout(Duration connectTimeout) {
-            this.connectTimeout = connectTimeout;
-            return self();
         }
 
         public B followRedirects(boolean followRedirects) {
@@ -81,7 +71,6 @@ public abstract class GenericRestClient extends NetworkClient<RestClientGroupCon
         @Override
         protected void validate() {
             super.validate();
-            Assert.notNull(connectTimeout, "ConnectTimeout cannot be null");
             Assert.state(maxRedirects > 0, "MaxRedirects must be greater than zero");
             Assert.notNull(serializerRegistry, "SerializerRegistry cannot be null");
             Assert.notNull(scanner, "ClassScanner cannot be null");

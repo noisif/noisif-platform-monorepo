@@ -124,9 +124,9 @@ public class RestClientGroupConfig extends GenericClientGroupConfig {
         }
 
         @Override
-        public Builder principalName(String principalName) {
-            super.principalName(principalName);
-            interceptors.add(new UserAgentInterceptor(principalName));
+        public Builder principalId(String principalId) {
+            super.principalId(principalId);
+            interceptors.add(new UserAgentInterceptor(principalId));
             return this;
         }
 

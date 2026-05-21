@@ -20,11 +20,11 @@ import xyz.jwizard.jwl.common.util.io.IoUtil;
 
 public class GenericClientGroupConfig implements ClientGroupConfig {
     protected final String url;
-    protected final String principalName;
+    protected final String principalId;
 
     protected GenericClientGroupConfig(AbstractBuilder<?, ?> builder) {
         url = builder.url;
-        principalName = builder.principalName;
+        principalId = builder.principalId;
     }
 
     @Override
@@ -33,14 +33,14 @@ public class GenericClientGroupConfig implements ClientGroupConfig {
     }
 
     @Override
-    public String getPrincipalName() {
-        return principalName;
+    public String getPrincipalId() {
+        return principalId;
     }
 
     public abstract static class AbstractBuilder<B extends AbstractBuilder<B, C>,
         C extends GenericClientGroupConfig> {
         private String url;
-        private String principalName;
+        private String principalId;
 
         protected AbstractBuilder() {
         }
@@ -52,14 +52,14 @@ public class GenericClientGroupConfig implements ClientGroupConfig {
             return self();
         }
 
-        public B principalName(String principalName) {
-            this.principalName = principalName;
+        public B principalId(String principalId) {
+            this.principalId = principalId;
             return self();
         }
 
         protected void validate() {
             Assert.notNull(url, "Url cannot be null");
-            Assert.notNull(principalName, "PrincipalName cannot be null");
+            Assert.notNull(principalId, "PrincipalId cannot be null");
         }
 
         public abstract C build();
