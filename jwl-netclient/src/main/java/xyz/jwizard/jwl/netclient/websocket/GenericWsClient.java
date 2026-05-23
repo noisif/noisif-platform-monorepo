@@ -85,7 +85,6 @@ public abstract class GenericWsClient extends NetworkClient<WsClientGroupConfig>
 
     @Override
     public void send(ClientGroup clientGroup, String message) {
-
         executeOnSession(clientGroup, "text", session -> session.send(message));
     }
 
