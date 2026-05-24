@@ -67,7 +67,7 @@ class JwServicePlugin : Plugin<Project> {
         if (!propertyRef.get(this).isPresent) {
             throw GradleException(
                 "Error in '$projectName': Missing required value '${propertyRef.name}' in " +
-                    "jwizard { } block."
+                    "jwizard { } block.",
             )
         }
     }
