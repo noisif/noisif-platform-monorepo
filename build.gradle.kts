@@ -81,8 +81,6 @@ allprojects {
                 "(?m)^([ \\t]*)(.*?)(,\\s*;)",
                 "$1$2,\n$1;",
             )
-            // related to eclipse style in .editorconfig, Google makes one gigantic ugly block :(
-            importOrder("\\#", "java", "javax", "org", "com", "xyz", "")
             licenseHeader(buildLicense(rawLicenseFile, "/*", " * ", " */"))
             trimTrailingWhitespace()
             endWithNewline()
@@ -100,6 +98,7 @@ allprojects {
         format("xml") {
             target("src/**/*.xml")
             eclipseWtp(EclipseWtpFormatterStep.XML)
+                .configFile(rootProject.file("spotless/wtp-xml.prefs"))
             licenseHeader(buildLicense(rawLicenseFile, "<!--", "  ~ ", "  -->"), "^(<[^!?])")
             trimTrailingWhitespace()
             endWithNewline()
