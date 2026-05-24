@@ -1,17 +1,19 @@
 /*
- * Copyright 2026 by JWizard
+ * Copyright (c) 2022-2026 JWizard. All Rights Reserved.
  *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
+ * NOTICE: This source code is publicly available for reference
+ * and educational purposes only. It is NOT open-source software.
  *
- *     http://www.apache.org/licenses/LICENSE-2.0
+ * You are granted permission to view this code. However, you are strictly
+ * PROHIBITED from copying, modifying, or merging this code into other software,
+ * distributing, publishing, or sublicensing this code, using this code for
+ * commercial purposes or in production environments.
  *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ * THIS SOFTWARE IS PROVIDED "AS IS" WITHOUT WARRANTY OF ANY KIND, EITHER
+ * EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO WARRANTIES OF
+ * MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE.
+ *
+ * Please refer to the LICENSE file in the root directory for full restrictions.
  */
 
 plugins {
@@ -20,6 +22,7 @@ plugins {
     alias(libs.plugins.kotlin.dsl)
     alias(libs.plugins.protobuf) apply false
     alias(libs.plugins.shadow) apply false
+    alias(libs.plugins.spotless)
 }
 
 repositories {
@@ -56,8 +59,32 @@ gradlePlugin {
     }
 }
 
+spotless {
+    val baseDir = rootProject.projectDir.parentFile
+    var rawLicenseFile = File(baseDir, "spotless/license-header.txt")
+    kotlin {
+        target("src/**/*.kt")
+        licenseHeader(buildLicense(rawLicenseFile))
+        ktlint()
+        trimTrailingWhitespace()
+        endWithNewline()
+    }
+    kotlinGradle {
+        target("*.gradle.kts")
+        licenseHeader(buildLicense(rawLicenseFile), """(?m)^\s*[a-zA-Z@_]""")
+        ktlint()
+        trimTrailingWhitespace()
+        endWithNewline()
+    }
+}
+
 idea {
     module {
         excludeDirs.add(file(".kotlin"))
     }
+}
+
+fun buildLicense(rawTextFile: File): String {
+    val rawText = rawTextFile.readText().trim()
+    return "/*\n" + rawText.lines().joinToString("\n") { " * $it".trimEnd() } + "\n */"
 }

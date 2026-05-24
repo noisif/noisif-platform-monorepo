@@ -30,6 +30,7 @@ protobuf = "4.34.1"
 protobufPlugin = "0.10.0"
 shadow = "8.3.0"
 slf4j = "2.0.17"
+spotless = "8.5.1"
 testcontainers = "2.0.4"
 testcontainersRedis = "2.2.4"
 wiremock = "3.13.2"
@@ -91,4 +92,5 @@ java-library = { id = "java-library" }
 kotlin-dsl = { id = "org.gradle.kotlin.kotlin-dsl", version.ref = "kotlinDsl" }
 protobuf = { id = "com.google.protobuf", version.ref = "protobufPlugin" }
 shadow = { id = "com.gradleup.shadow", version.ref = "shadow" }
+spotless = { id = "com.diffplug.spotless", version.ref = "spotless" }
 test-fixtures = { id = "java-test-fixtures" }
