@@ -4,6 +4,11 @@
 no-argument:
 	$(error error: running 'make' without an argument is forbidden)
 
+.PHONY: init-hooks
+init-hooks:
+	-chmod +x .githooks/pre-commit
+	git config core.hooksPath .githooks
+
 .PHONY: build
 build:
 	./gradlew build --rerun-tasks --continue

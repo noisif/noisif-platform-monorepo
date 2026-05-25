@@ -1,0 +1,15 @@
+#!/bin/bash
+
+./gradlew spotlessApply -q
+
+if [ $? -ne 0 ]; then
+    echo "spotless formatting error"
+    exit 1
+fi
+
+# update in git stage only  commited files
+git diff --cached --name-only --diff-filter=ACM | while read FILE; do
+  if [ -f "$FILE" ]; then
+    git add "$FILE"
+  fi
+done
