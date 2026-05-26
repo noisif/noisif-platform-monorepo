@@ -17,10 +17,10 @@
  */
 package xyz.jwizard.jwl.common.di;
 
+import com.google.inject.AbstractModule;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import com.google.inject.AbstractModule;
 
 import xyz.jwizard.jwl.common.util.CastUtil;
 

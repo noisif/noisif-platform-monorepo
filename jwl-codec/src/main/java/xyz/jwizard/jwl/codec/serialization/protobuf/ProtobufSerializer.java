@@ -17,12 +17,12 @@
  */
 package xyz.jwizard.jwl.codec.serialization.protobuf;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.google.protobuf.InvalidProtocolBufferException;
 import com.google.protobuf.MessageLite;
 import com.google.protobuf.Parser;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import xyz.jwizard.jwl.codec.DataType;
 import xyz.jwizard.jwl.codec.EncodedPayloadVisitor;

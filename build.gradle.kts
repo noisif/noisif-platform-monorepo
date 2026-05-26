@@ -82,7 +82,7 @@ allprojects {
                 "$1$2,\n$1;",
             )
             // related to eclipse style in .editorconfig, Google makes one gigantic ugly block :(
-            importOrder("\\#", "org", "com", "xyz", "", "java", "javax")
+            importOrder("\\#", "com", "org", "xyz.jwizard", "", "jakarta", "java", "javax")
             licenseHeader(buildLicense(rawLicenseFile, "/*", " * ", " */"))
             trimTrailingWhitespace()
             endWithNewline()

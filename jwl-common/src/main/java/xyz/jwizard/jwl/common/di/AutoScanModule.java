@@ -17,13 +17,13 @@
  */
 package xyz.jwizard.jwl.common.di;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.google.inject.AbstractModule;
 import com.google.inject.Injector;
 import com.google.inject.Provider;
 import com.google.inject.Scopes;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import xyz.jwizard.jwl.common.reflect.ClassScanner;
 import xyz.jwizard.jwl.common.util.CastUtil;
