@@ -113,13 +113,14 @@ public abstract class GenericWsClient extends NetworkClient<WsClientGroupConfig>
         }
         sessionRegistry
                 .getAnySession(clientGroup)
-                .ifPresentOrElse(
-                        action,
-                        () ->
-                                log.error(
-                                        "Not found any session for WS group: {} (type: {})",
-                                        clientGroup.getClientGroupName(),
-                                        type));
+                .ifPresentOrElse(action, () -> logMissingSession(clientGroup, type));
+    }
+
+    private void logMissingSession(ClientGroup group, String type) {
+        log.error(
+                "Not found any session for WS group: {} (type: {})",
+                group.getClientGroupName(),
+                type);
     }
 
     private void connectWithRetry(ClientGroup group, WsClientGroupConfig config, int attempt) {
