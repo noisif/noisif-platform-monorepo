@@ -105,6 +105,13 @@ allprojects {
             trimTrailingWhitespace()
             endWithNewline()
         }
+        format("properties") {
+            target("*.properties", "src/**/*.properties")
+            targetExclude("build/**/*.properties")
+            licenseHeader(buildLicense(rawLicenseFile, "#", "# ", "#"), """[a-zA-Z]""")
+            trimTrailingWhitespace()
+            endWithNewline()
+        }
     }
 }
 
