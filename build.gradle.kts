@@ -145,8 +145,8 @@ subprojects {
             "-XX:+UseZGC",
             "-XX:+ZGenerational", // high-performance, low-latency gc for java 21+
             // memory
-            "-Xms2G",
-            "-Xmx2G",
+            "-Xms1G",
+            "-Xmx1G",
             "-XX:MaxMetaspaceSize=512m", // 512 for protobuf one-class-per-file convention
             "-XX:+AlwaysPreTouch", // zero latency spikes on memory allocation by pre-touching pages
             "-XX:+UseStringDeduplication", // saves ram by removing duplicate strings from heap
@@ -154,7 +154,6 @@ subprojects {
             "-Dfile.encoding=UTF-8",
             "-XX:+ExitOnOutOfMemoryError",
         )
-        maxParallelForks = Runtime.getRuntime().availableProcessors() / 2
         systemProperty(
             // avoids port conflicts during parallel execution by forcing testcontainers to use
             // the unix socket strategy
