@@ -154,6 +154,13 @@ subprojects {
             "-Dfile.encoding=UTF-8",
             "-XX:+ExitOnOutOfMemoryError",
         )
+        maxParallelForks = Runtime.getRuntime().availableProcessors() / 2
+        systemProperty(
+            // avoids port conflicts during parallel execution by forcing testcontainers to use
+            // the unix socket strategy
+            "org.testcontainers.docker-client.strategy",
+            "org.testcontainers.dockerclient.UnixSocketClientProviderStrategy",
+        )
     }
 
     tasks.withType<JavaCompile> {

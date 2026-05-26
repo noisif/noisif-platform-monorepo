@@ -1,6 +1,6 @@
 #!/bin/bash
 
-./gradlew spotlessApply -q
+./gradlew spotlessApply --daemon --parallel -q
 
 if [ $? -ne 0 ]; then
     echo "spotless formatting error"
@@ -13,3 +13,5 @@ git diff --cached --name-only --diff-filter=ACM | while read FILE; do
     git add "$FILE"
   fi
 done
+
+echo "[OK] code formatted"

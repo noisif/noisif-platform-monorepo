@@ -1,7 +1,9 @@
 #!/bin/bash
 
-./gradlew test
+./gradlew test --daemon --parallel -q
 
 if [ $? -ne 0 ]; then
   exit 1
 fi
+
+echo "[OK] all tests passed"
