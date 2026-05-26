@@ -63,9 +63,9 @@ import java.util.concurrent.TimeUnit;
 
 @Testcontainers
 @ExtendWith(MockitoExtension.class)
-public class RabbitMqServerIntegrationTest {
+class RabbitMqServerIntegrationTest {
     @Container
-    static final RabbitMQContainer rabbitMQ =
+    static final RabbitMQContainer rabbitMq =
             new RabbitMQContainer(DockerImageName.parse("rabbitmq:3-management"));
 
     private QueueServer server;
@@ -152,9 +152,9 @@ public class RabbitMqServerIntegrationTest {
         server =
                 RabbitMqServer.builder()
                         .withConnector(ConnectorType.SINGLE_NODE)
-                        .nodes(Set.of(HostPort.from(rabbitMQ.getHost(), rabbitMQ.getAmqpPort())))
-                        .username(rabbitMQ.getAdminUsername())
-                        .password(rabbitMQ.getAdminPassword())
+                        .nodes(Set.of(HostPort.from(rabbitMq.getHost(), rabbitMq.getAmqpPort())))
+                        .username(rabbitMq.getAdminUsername())
+                        .password(rabbitMq.getAdminPassword())
                         .virtualHost("/")
                         .componentProvider(componentProvider)
                         .serializerRegistry(serializerRegistry)
@@ -165,10 +165,10 @@ public class RabbitMqServerIntegrationTest {
 
     private Connection createDirectConnection() throws Exception {
         final ConnectionFactory factory = new ConnectionFactory();
-        factory.setHost(rabbitMQ.getHost());
-        factory.setPort(rabbitMQ.getAmqpPort());
-        factory.setUsername(rabbitMQ.getAdminUsername());
-        factory.setPassword(rabbitMQ.getAdminPassword());
+        factory.setHost(rabbitMq.getHost());
+        factory.setPort(rabbitMq.getAmqpPort());
+        factory.setUsername(rabbitMq.getAdminUsername());
+        factory.setPassword(rabbitMq.getAdminPassword());
         return factory.newConnection();
     }
 
