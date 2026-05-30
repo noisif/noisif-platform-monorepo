@@ -26,30 +26,30 @@ import java.util.List;
 import java.util.Map;
 
 public class WsClientUpgradeRequest {
-    private final Map<String, List<String>> headers = new HashMap<>();
-    private String uri;
+  private final Map<String, List<String>> headers = new HashMap<>();
+  private String uri;
 
-    public WsClientUpgradeRequest(URI uri) {
-        this.uri = uri.toASCIIString();
-    }
+  public WsClientUpgradeRequest(URI uri) {
+    this.uri = uri.toASCIIString();
+  }
 
-    public void setHeader(HttpHeaderName name, List<String> value) {
-        headers.put(name.getCode(), value);
-    }
+  public void setHeader(HttpHeaderName name, List<String> value) {
+    headers.put(name.getCode(), value);
+  }
 
-    public void setHeader(HttpHeaderName name, String value) {
-        setHeader(name, List.of(value));
-    }
+  public void setHeader(HttpHeaderName name, String value) {
+    setHeader(name, List.of(value));
+  }
 
-    public void addQueryParameter(String key, String value) {
-        uri = NetworkUtil.addQueryParameter(uri, key, value);
-    }
+  public void addQueryParameter(String key, String value) {
+    uri = NetworkUtil.addQueryParameter(uri, key, value);
+  }
 
-    public URI getUri() {
-        return URI.create(uri);
-    }
+  public URI getUri() {
+    return URI.create(uri);
+  }
 
-    public Map<String, List<String>> getHeaders() {
-        return headers;
-    }
+  public Map<String, List<String>> getHeaders() {
+    return headers;
+  }
 }

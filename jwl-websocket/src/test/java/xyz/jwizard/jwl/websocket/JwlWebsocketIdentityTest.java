@@ -20,13 +20,13 @@ package xyz.jwizard.jwl.websocket;
 import xyz.jwizard.jwl.common.ModuleIdentityTest;
 
 class JwlWebsocketIdentityTest extends ModuleIdentityTest {
-    @Override
-    protected String getModuleName() {
-        return "websocket";
-    }
+  @Override
+  protected String getModuleName() {
+    return "websocket";
+  }
 
-    @Override
-    protected String getPackageSuffix() {
-        return "jwl";
-    }
+  @Override
+  protected String getPackageSuffix() {
+    return "jwl";
+  }
 }

@@ -21,13 +21,13 @@ import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 
 public class TestQueueProvider {
-    private final BlockingQueue<Object> queue = new LinkedBlockingQueue<>();
+  private final BlockingQueue<Object> queue = new LinkedBlockingQueue<>();
 
-    public BlockingQueue<Object> get() {
-        return queue;
-    }
+  public BlockingQueue<Object> get() {
+    return queue;
+  }
 
-    public void clear() {
-        queue.clear();
-    }
+  public void clear() {
+    queue.clear();
+  }
 }

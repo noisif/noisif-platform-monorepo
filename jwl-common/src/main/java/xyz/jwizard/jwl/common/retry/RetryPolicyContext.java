@@ -18,11 +18,11 @@
 package xyz.jwizard.jwl.common.retry;
 
 public interface RetryPolicyContext<C> {
-    boolean shouldRetry(int currentAttempt, C context);
+  boolean shouldRetry(int currentAttempt, C context);
 
-    boolean isEnabled();
+  boolean isEnabled();
 
-    long getBackoffMs();
+  long getBackoffMs();
 
-    long getMaxBackoffMs();
+  long getMaxBackoffMs();
 }

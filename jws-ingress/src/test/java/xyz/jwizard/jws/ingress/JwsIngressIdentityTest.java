@@ -20,13 +20,13 @@ package xyz.jwizard.jws.ingress;
 import xyz.jwizard.jwl.common.ModuleIdentityTest;
 
 class JwsIngressIdentityTest extends ModuleIdentityTest {
-    @Override
-    protected String getModuleName() {
-        return "ingress";
-    }
+  @Override
+  protected String getModuleName() {
+    return "ingress";
+  }
 
-    @Override
-    protected String getPackageSuffix() {
-        return "jws";
-    }
+  @Override
+  protected String getPackageSuffix() {
+    return "jws";
+  }
 }

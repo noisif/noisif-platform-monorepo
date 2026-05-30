@@ -23,9 +23,9 @@ import xyz.jwizard.jwl.net.http.header.HttpHeaderName;
 import java.util.List;
 
 public interface WsHandshakeRequest {
-    String getHeader(HttpHeaderName header);
+  String getHeader(HttpHeaderName header);
 
-    String getCookie(CookieName cookie);
+  String getCookie(CookieName cookie);
 
-    List<String> getQueryParameter(String key);
+  List<String> getQueryParameter(String key);
 }

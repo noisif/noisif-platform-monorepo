@@ -30,75 +30,75 @@ import java.util.List;
 import java.util.Locale;
 
 public class StringUtil {
-    private StringUtil() {
-        throw new ForbiddenInstantiationException(StringUtil.class);
-    }
+  private StringUtil() {
+    throw new ForbiddenInstantiationException(StringUtil.class);
+  }
 
-    public static String toLowerCase(String str) {
-        if (str == null) {
-            return null;
-        }
-        return str.toLowerCase(Locale.ROOT);
+  public static String toLowerCase(String str) {
+    if (str == null) {
+      return null;
     }
+    return str.toLowerCase(Locale.ROOT);
+  }
 
-    public static String toUpperCase(String str) {
-        if (str == null) {
-            return null;
-        }
-        return str.toUpperCase(Locale.ROOT);
+  public static String toUpperCase(String str) {
+    if (str == null) {
+      return null;
     }
+    return str.toUpperCase(Locale.ROOT);
+  }
 
-    // splits by char using fast indexOf() to avoid regex overhead, unpredictable
-    // trim patterns
-    public static List<String> split(String str, char separator) {
-        if (str == null) {
-            return new ArrayList<>();
-        }
-        final List<String> result = new ArrayList<>();
-        int start = 0;
-        int nextSeparator;
-        while ((nextSeparator = str.indexOf(separator, start)) != -1) {
-            result.add(str.substring(start, nextSeparator));
-            start = nextSeparator + 1;
-        }
-        result.add(str.substring(start));
-        return result;
+  // splits by char using fast indexOf() to avoid regex overhead, unpredictable
+  // trim patterns
+  public static List<String> split(String str, char separator) {
+    if (str == null) {
+      return new ArrayList<>();
     }
+    final List<String> result = new ArrayList<>();
+    int start = 0;
+    int nextSeparator;
+    while ((nextSeparator = str.indexOf(separator, start)) != -1) {
+      result.add(str.substring(start, nextSeparator));
+      start = nextSeparator + 1;
+    }
+    result.add(str.substring(start));
+    return result;
+  }
 
-    public static String splitAndGetFirst(String str, char separator) {
-        final List<String> results = split(str, separator);
-        if (results.isEmpty()) {
-            return null;
-        }
-        return results.getFirst();
+  public static String splitAndGetFirst(String str, char separator) {
+    final List<String> results = split(str, separator);
+    if (results.isEmpty()) {
+      return null;
     }
+    return results.getFirst();
+  }
 
-    public static byte[] getBytes(String str) {
-        if (str == null) {
-            return new byte[0];
-        }
-        return str.getBytes(StandardCharsets.UTF_8);
+  public static byte[] getBytes(String str) {
+    if (str == null) {
+      return new byte[0];
     }
+    return str.getBytes(StandardCharsets.UTF_8);
+  }
 
-    public static String truncateToUtf8Bytes(String text, int maxBytes) {
-        if (text == null || text.isEmpty()) {
-            return text;
-        }
-        final byte[] bytes = text.getBytes(StandardCharsets.UTF_8);
-        if (bytes.length <= maxBytes) {
-            return text;
-        }
-        final CharsetDecoder decoder =
-                StandardCharsets.UTF_8
-                        .newDecoder()
-                        .onMalformedInput(CodingErrorAction.IGNORE)
-                        .onUnmappableCharacter(CodingErrorAction.IGNORE);
-        try {
-            final ByteBuffer buffer = ByteBuffer.wrap(bytes, 0, maxBytes);
-            final CharBuffer decoded = decoder.decode(buffer);
-            return decoded.toString();
-        } catch (CharacterCodingException ignored) {
-            return "";
-        }
+  public static String truncateToUtf8Bytes(String text, int maxBytes) {
+    if (text == null || text.isEmpty()) {
+      return text;
     }
+    final byte[] bytes = text.getBytes(StandardCharsets.UTF_8);
+    if (bytes.length <= maxBytes) {
+      return text;
+    }
+    final CharsetDecoder decoder =
+        StandardCharsets.UTF_8
+            .newDecoder()
+            .onMalformedInput(CodingErrorAction.IGNORE)
+            .onUnmappableCharacter(CodingErrorAction.IGNORE);
+    try {
+      final ByteBuffer buffer = ByteBuffer.wrap(bytes, 0, maxBytes);
+      final CharBuffer decoded = decoder.decode(buffer);
+      return decoded.toString();
+    } catch (CharacterCodingException ignored) {
+      return "";
+    }
+  }
 }

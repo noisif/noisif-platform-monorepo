@@ -27,37 +27,37 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.function.Consumer;
 
 public class ConcurrentUtil {
-    private ConcurrentUtil() {
-        throw new ForbiddenInstantiationException(ConcurrentUtil.class);
-    }
+  private ConcurrentUtil() {
+    throw new ForbiddenInstantiationException(ConcurrentUtil.class);
+  }
 
-    public static void await(Consumer<IoCallback> action) {
-        final CompletableFuture<Void> future = new CompletableFuture<>();
-        final IoCallback callback =
-                new IoCallback() {
-                    @Override
-                    public void onSuccess() {
-                        future.complete(null);
-                    }
+  public static void await(Consumer<IoCallback> action) {
+    final CompletableFuture<Void> future = new CompletableFuture<>();
+    final IoCallback callback =
+        new IoCallback() {
+          @Override
+          public void onSuccess() {
+            future.complete(null);
+          }
 
-                    @Override
-                    public void onFailure(Throwable cause) {
-                        future.completeExceptionally(cause);
-                    }
-                };
-        try {
-            action.accept(callback);
-            future.join();
-        } catch (CompletionException ex) {
-            final Throwable cause = ex.getCause();
-            if (cause instanceof RuntimeException runtimeEx) {
-                throw runtimeEx;
-            }
-            throw new ConcurrentOperationException(cause);
-        }
+          @Override
+          public void onFailure(Throwable cause) {
+            future.completeExceptionally(cause);
+          }
+        };
+    try {
+      action.accept(callback);
+      future.join();
+    } catch (CompletionException ex) {
+      final Throwable cause = ex.getCause();
+      if (cause instanceof RuntimeException runtimeEx) {
+        throw runtimeEx;
+      }
+      throw new ConcurrentOperationException(cause);
     }
+  }
 
-    public static ScheduledExecutorService singleThread(String name) {
-        return Executors.newSingleThreadScheduledExecutor(ThreadUtil.createThreadFactory(name));
-    }
+  public static ScheduledExecutorService singleThread(String name) {
+    return Executors.newSingleThreadScheduledExecutor(ThreadUtil.createThreadFactory(name));
+  }
 }

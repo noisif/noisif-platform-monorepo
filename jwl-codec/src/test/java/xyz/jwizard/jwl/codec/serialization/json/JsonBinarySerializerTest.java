@@ -32,25 +32,25 @@ import xyz.jwizard.jwl.codec.EncodedPayloadVisitor;
 
 @ExtendWith(MockitoExtension.class)
 class JsonBinarySerializerTest {
-    @Mock private JsonSerializer engineMock;
-    @Mock private EncodedPayloadVisitor visitorMock;
+  @Mock private JsonSerializer engineMock;
+  @Mock private EncodedPayloadVisitor visitorMock;
 
-    @Test
-    @DisplayName("should delegate binary serialization and call visitor")
-    void shouldDelegateBinaryOperations() {
-        // given
-        final JsonBinarySerializer serializer = JsonBinarySerializer.create(engineMock);
-        final Object dummyPayload = new Object();
-        final byte[] expectedBytes = {0x01, 0x02, 0x03};
-        given(engineMock.serializeToBytes(dummyPayload)).willReturn(expectedBytes);
-        given(engineMock.deserializeFromBytes(expectedBytes, String.class)).willReturn("parsed");
-        // when
-        final String parsed = serializer.deserializePayload(expectedBytes, String.class);
-        // when
-        serializer.serializeAndAccept(dummyPayload, visitorMock);
-        // then
-        assertThat(parsed).isEqualTo("parsed");
-        assertThat(serializer.getCodecDataType()).isEqualTo(DataType.BINARY);
-        verify(visitorMock).accept(expectedBytes);
-    }
+  @Test
+  @DisplayName("should delegate binary serialization and call visitor")
+  void shouldDelegateBinaryOperations() {
+    // given
+    final JsonBinarySerializer serializer = JsonBinarySerializer.create(engineMock);
+    final Object dummyPayload = new Object();
+    final byte[] expectedBytes = {0x01, 0x02, 0x03};
+    given(engineMock.serializeToBytes(dummyPayload)).willReturn(expectedBytes);
+    given(engineMock.deserializeFromBytes(expectedBytes, String.class)).willReturn("parsed");
+    // when
+    final String parsed = serializer.deserializePayload(expectedBytes, String.class);
+    // when
+    serializer.serializeAndAccept(dummyPayload, visitorMock);
+    // then
+    assertThat(parsed).isEqualTo("parsed");
+    assertThat(serializer.getCodecDataType()).isEqualTo(DataType.BINARY);
+    verify(visitorMock).accept(expectedBytes);
+  }
 }

@@ -27,16 +27,16 @@ import java.lang.reflect.Field;
 
 @Validator
 public class NotNullValidator implements AnnotationValidator<NotNull> {
-    @Override
-    public boolean supports(Class<? extends Annotation> annotationType) {
-        return NotNull.class.equals(annotationType);
-    }
+  @Override
+  public boolean supports(Class<? extends Annotation> annotationType) {
+    return NotNull.class.equals(annotationType);
+  }
 
-    @Override
-    public void validate(NotNull annotation, Field field, Object value) {
-        if (value != null) {
-            return;
-        }
-        throw new ValidationException("Field '" + field.getName() + "' " + annotation.message());
+  @Override
+  public void validate(NotNull annotation, Field field, Object value) {
+    if (value != null) {
+      return;
     }
+    throw new ValidationException("Field '" + field.getName() + "' " + annotation.message());
+  }
 }

@@ -20,15 +20,15 @@ package xyz.jwizard.jwl.common.util.math;
 import xyz.jwizard.jwl.common.bootstrap.ForbiddenInstantiationException;
 
 public class MemSize {
-    private MemSize() {
-        throw new ForbiddenInstantiationException(MemSize.class);
-    }
+  private MemSize() {
+    throw new ForbiddenInstantiationException(MemSize.class);
+  }
 
-    public static long of(long size, MemUnit unit) {
-        return unit.toBytes(size);
-    }
+  public static long of(long size, MemUnit unit) {
+    return unit.toBytes(size);
+  }
 
-    public static int of(int size, MemUnit unit) {
-        return Math.toIntExact(unit.toBytes(size));
-    }
+  public static int of(int size, MemUnit unit) {
+    return Math.toIntExact(unit.toBytes(size));
+  }
 }

@@ -22,35 +22,35 @@ import xyz.jwizard.jwl.codec.serialization.StandardSerializerFormat;
 import java.util.concurrent.CountDownLatch;
 
 public class HappyPathListener implements QueueListener<byte[]> {
-    private final CountDownLatch latch = new CountDownLatch(1);
-    private byte[] receivedMessage;
+  private final CountDownLatch latch = new CountDownLatch(1);
+  private byte[] receivedMessage;
 
-    @Override
-    public String getQueueName() {
-        return "test.happy.queue";
-    }
+  @Override
+  public String getQueueName() {
+    return "test.happy.queue";
+  }
 
-    @Override
-    public Class<byte[]> getMessageType() {
-        return byte[].class;
-    }
+  @Override
+  public Class<byte[]> getMessageType() {
+    return byte[].class;
+  }
 
-    @Override
-    public StandardSerializerFormat getFormat() {
-        return StandardSerializerFormat.RAW;
-    }
+  @Override
+  public StandardSerializerFormat getFormat() {
+    return StandardSerializerFormat.RAW;
+  }
 
-    @Override
-    public void onMessage(byte[] message) {
-        this.receivedMessage = message;
-        latch.countDown();
-    }
+  @Override
+  public void onMessage(byte[] message) {
+    this.receivedMessage = message;
+    latch.countDown();
+  }
 
-    public CountDownLatch getLatch() {
-        return latch;
-    }
+  public CountDownLatch getLatch() {
+    return latch;
+  }
 
-    public byte[] getReceivedMessage() {
-        return receivedMessage;
-    }
+  public byte[] getReceivedMessage() {
+    return receivedMessage;
+  }
 }

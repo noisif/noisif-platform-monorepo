@@ -23,11 +23,11 @@ import xyz.jwizard.jwl.graph.model.GraphNode;
 import java.util.List;
 
 public interface GraphWriter {
-    GraphNode saveNode(GraphNode node);
+  GraphNode saveNode(GraphNode node);
 
-    GraphEdge saveEdge(GraphEdge edge);
+  GraphEdge saveEdge(GraphEdge edge);
 
-    void upsertNodes(List<GraphNode> nodes);
+  void upsertNodes(List<GraphNode> nodes);
 
-    void createEdges(List<GraphEdge> edges);
+  void createEdges(List<GraphEdge> edges);
 }

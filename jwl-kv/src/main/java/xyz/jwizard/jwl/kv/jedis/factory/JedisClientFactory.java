@@ -28,8 +28,8 @@ import java.util.Set;
 
 @Immutable
 public interface JedisClientFactory {
-    UnifiedJedis create(
-            Set<HostAndPort> nodes, JedisClientConfig config, ConnectionPoolConfig poolConfig);
+  UnifiedJedis create(
+      Set<HostAndPort> nodes, JedisClientConfig config, ConnectionPoolConfig poolConfig);
 
-    FactoryType type();
+  FactoryType type();
 }

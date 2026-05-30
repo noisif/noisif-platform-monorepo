@@ -18,7 +18,7 @@
 package xyz.jwizard.jwl.net.envelope;
 
 public interface ActionGroup {
-    ActionGroup GLOBAL = () -> "GLOBAL";
+  ActionGroup GLOBAL = () -> "GLOBAL";
 
-    String groupName();
+  String groupName();
 }

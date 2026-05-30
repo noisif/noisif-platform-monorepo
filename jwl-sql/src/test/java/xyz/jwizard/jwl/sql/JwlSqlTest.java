@@ -20,13 +20,13 @@ package xyz.jwizard.jwl.sql;
 import xyz.jwizard.jwl.common.ModuleIdentityTest;
 
 class JwlSqlTest extends ModuleIdentityTest {
-    @Override
-    protected String getModuleName() {
-        return "sql";
-    }
+  @Override
+  protected String getModuleName() {
+    return "sql";
+  }
 
-    @Override
-    protected String getPackageSuffix() {
-        return "jwl";
-    }
+  @Override
+  protected String getPackageSuffix() {
+    return "jwl";
+  }
 }

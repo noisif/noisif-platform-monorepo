@@ -28,18 +28,18 @@ import jakarta.inject.Singleton;
 
 @Singleton
 public class DummySecurityFilter implements HttpFilter {
-    @Override
-    public boolean supports(Route route) {
-        return true;
-    }
+  @Override
+  public boolean supports(Route route) {
+    return true;
+  }
 
-    @Override
-    public boolean preHandle(HttpRequest req, HttpResponse res) {
-        res.setHeader(TestHttpHeaderName.X_TEST_FILTER, TestHttpHeaderValue.EXECUTED);
-        if ("/api/blocked".equals(req.getPath())) {
-            res.setStatus(HttpStatus.FORBIDDEN_403);
-            return false;
-        }
-        return true;
+  @Override
+  public boolean preHandle(HttpRequest req, HttpResponse res) {
+    res.setHeader(TestHttpHeaderName.X_TEST_FILTER, TestHttpHeaderValue.EXECUTED);
+    if ("/api/blocked".equals(req.getPath())) {
+      res.setStatus(HttpStatus.FORBIDDEN_403);
+      return false;
     }
+    return true;
+  }
 }

@@ -18,27 +18,27 @@
 package xyz.jwizard.jwl.codec.envelope;
 
 public enum TestOpCode implements OpCode {
-    USER_DATA(0x01, 0x64), // 65636 (0x010064)
-    ;
+  USER_DATA(0x01, 0x64), // 65636 (0x010064)
+  ;
 
-    private final int code;
+  private final int code;
 
-    TestOpCode(int category, int action) {
-        code = OpCode.combine(category, action);
-    }
+  TestOpCode(int category, int action) {
+    code = OpCode.combine(category, action);
+  }
 
-    @Override
-    public int getCode() {
-        return code;
-    }
+  @Override
+  public int getCode() {
+    return code;
+  }
 
-    @Override
-    public String getName() {
-        return name();
-    }
+  @Override
+  public String getName() {
+    return name();
+  }
 
-    @Override
-    public String toString() {
-        return asString();
-    }
+  @Override
+  public String toString() {
+    return asString();
+  }
 }

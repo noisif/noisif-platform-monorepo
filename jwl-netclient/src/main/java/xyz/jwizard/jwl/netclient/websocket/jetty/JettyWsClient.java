@@ -36,68 +36,68 @@ import xyz.jwizard.jwl.netclient.websocket.jetty.adapter.JettyWsClientListenerAd
 import java.util.concurrent.Executors;
 
 public class JettyWsClient extends GenericWsClient {
-    private WebSocketClient jettyWsClient;
+  private WebSocketClient jettyWsClient;
 
-    private JettyWsClient(AbstractBuilder<?> builder) {
-        super(builder);
-    }
+  private JettyWsClient(AbstractBuilder<?> builder) {
+    super(builder);
+  }
 
-    public static Builder builder() {
-        return new Builder();
+  public static Builder builder() {
+    return new Builder();
+  }
+
+  @Override
+  protected void onStart() throws Exception {
+    final HttpClient jettyHttpClient = new HttpClient();
+    jettyHttpClient.setConnectTimeout(connectTimeout.toMillis());
+
+    // virtual threads
+    final QueuedThreadPool threadPool = new QueuedThreadPool();
+    threadPool.setName("ws-vt-pool");
+    threadPool.setVirtualThreadsExecutor(Executors.newVirtualThreadPerTaskExecutor());
+    jettyHttpClient.setExecutor(threadPool);
+
+    jettyWsClient = new WebSocketClient(jettyHttpClient);
+
+    jettyWsClient.start();
+    super.onStart();
+  }
+
+  @Override
+  protected void onClientGroupStart(
+      ClientGroup clientGroup,
+      WsClientGroupConfig config,
+      WsClientUpgradeRequest req,
+      WsSessionCodec sessionCodec,
+      NetworkSessionLifecycleListener<WsClientSession> lifecycleListener)
+      throws Exception {
+    final ClientUpgradeRequest request = new ClientUpgradeRequest(req.getUri());
+    request.setHeaders(req.getHeaders());
+    final JettyWsClientListenerAdapter listener =
+        new JettyWsClientListenerAdapter(
+            clientGroup, config, sessionRegistry, sessionCodec, lifecycleListener);
+    jettyWsClient.connect(listener, request).get();
+  }
+
+  @Override
+  protected void onStop() {
+    IoUtil.closeQuietly(jettyWsClient, AbstractLifeCycle::stop);
+    IoUtil.closeQuietly(jettyWsClient);
+    super.onStop();
+  }
+
+  public static class Builder extends AbstractBuilder<Builder> {
+    private Builder() {}
+
+    @Override
+    protected Builder self() {
+      return this;
     }
 
     @Override
-    protected void onStart() throws Exception {
-        final HttpClient jettyHttpClient = new HttpClient();
-        jettyHttpClient.setConnectTimeout(connectTimeout.toMillis());
-
-        // virtual threads
-        final QueuedThreadPool threadPool = new QueuedThreadPool();
-        threadPool.setName("ws-vt-pool");
-        threadPool.setVirtualThreadsExecutor(Executors.newVirtualThreadPerTaskExecutor());
-        jettyHttpClient.setExecutor(threadPool);
-
-        jettyWsClient = new WebSocketClient(jettyHttpClient);
-
-        jettyWsClient.start();
-        super.onStart();
+    public GenericWsClient build() {
+      super.validate();
+      return new JettyWsClient(this);
     }
-
-    @Override
-    protected void onClientGroupStart(
-            ClientGroup clientGroup,
-            WsClientGroupConfig config,
-            WsClientUpgradeRequest req,
-            WsSessionCodec sessionCodec,
-            NetworkSessionLifecycleListener<WsClientSession> lifecycleListener)
-            throws Exception {
-        final ClientUpgradeRequest request = new ClientUpgradeRequest(req.getUri());
-        request.setHeaders(req.getHeaders());
-        final JettyWsClientListenerAdapter listener =
-                new JettyWsClientListenerAdapter(
-                        clientGroup, config, sessionRegistry, sessionCodec, lifecycleListener);
-        jettyWsClient.connect(listener, request).get();
-    }
-
-    @Override
-    protected void onStop() {
-        IoUtil.closeQuietly(jettyWsClient, AbstractLifeCycle::stop);
-        IoUtil.closeQuietly(jettyWsClient);
-        super.onStop();
-    }
-
-    public static class Builder extends AbstractBuilder<Builder> {
-        private Builder() {}
-
-        @Override
-        protected Builder self() {
-            return this;
-        }
-
-        @Override
-        public GenericWsClient build() {
-            super.validate();
-            return new JettyWsClient(this);
-        }
-    }
+  }
 }

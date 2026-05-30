@@ -20,20 +20,20 @@ package xyz.jwizard.jwl.http.header;
 import xyz.jwizard.jwl.net.http.header.HttpHeaderName;
 
 public enum TestHttpHeaderName implements HttpHeaderName {
-    X_SECURED_BY("X-Secured-By"),
-    X_TEST_FILTER("X-Test-Filter"),
-    X_FILTER_ORDER("X-Filter-Order"),
-    X_INSPECT_HEADER("X-Inspect-Header"),
-    ;
+  X_SECURED_BY("X-Secured-By"),
+  X_TEST_FILTER("X-Test-Filter"),
+  X_FILTER_ORDER("X-Filter-Order"),
+  X_INSPECT_HEADER("X-Inspect-Header"),
+  ;
 
-    private final String code;
+  private final String code;
 
-    TestHttpHeaderName(String code) {
-        this.code = code;
-    }
+  TestHttpHeaderName(String code) {
+    this.code = code;
+  }
 
-    @Override
-    public String getCode() {
-        return code;
-    }
+  @Override
+  public String getCode() {
+    return code;
+  }
 }

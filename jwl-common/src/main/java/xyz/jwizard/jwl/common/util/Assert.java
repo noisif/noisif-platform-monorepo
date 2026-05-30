@@ -25,34 +25,34 @@ import java.util.Map;
 import java.util.Objects;
 
 public class Assert {
-    private Assert() {
-        throw new ForbiddenInstantiationException(Assert.class);
-    }
+  private Assert() {
+    throw new ForbiddenInstantiationException(Assert.class);
+  }
 
-    public static <T> void notNull(T object, String message) {
-        state(object != null, message);
-    }
+  public static <T> void notNull(T object, String message) {
+    state(object != null, message);
+  }
 
-    public static <T> T notNullAndGet(T object, String message) {
-        state(object != null, message);
-        return object;
-    }
+  public static <T> T notNullAndGet(T object, String message) {
+    state(object != null, message);
+    return object;
+  }
 
-    public static void notEmpty(Collection<?> collection, String message) {
-        state(collection != null && !collection.isEmpty(), message);
-    }
+  public static void notEmpty(Collection<?> collection, String message) {
+    state(collection != null && !collection.isEmpty(), message);
+  }
 
-    public static void notNullAll(Collection<?> collection, String message) {
-        state(collection != null && collection.stream().allMatch(Objects::nonNull), message);
-    }
+  public static void notNullAll(Collection<?> collection, String message) {
+    state(collection != null && collection.stream().allMatch(Objects::nonNull), message);
+  }
 
-    public static void notNullAll(Map<?, ?> collection, String message) {
-        notNullAll(collection.values(), message);
-    }
+  public static void notNullAll(Map<?, ?> collection, String message) {
+    notNullAll(collection.values(), message);
+  }
 
-    public static void state(boolean expression, String message) {
-        if (!expression) {
-            throw new CriticalBootstrapException(message);
-        }
+  public static void state(boolean expression, String message) {
+    if (!expression) {
+      throw new CriticalBootstrapException(message);
     }
+  }
 }

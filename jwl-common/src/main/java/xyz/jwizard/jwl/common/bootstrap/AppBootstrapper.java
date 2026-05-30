@@ -25,5 +25,5 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.TYPE)
 public @interface AppBootstrapper {
-    String[] scanPackages() default {};
+  String[] scanPackages() default {};
 }

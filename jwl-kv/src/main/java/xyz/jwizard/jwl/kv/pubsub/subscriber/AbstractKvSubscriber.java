@@ -18,15 +18,15 @@
 package xyz.jwizard.jwl.kv.pubsub.subscriber;
 
 public abstract class AbstractKvSubscriber<T> implements KvSubscriber<T> {
-    private volatile boolean subscribed = false;
+  private volatile boolean subscribed = false;
 
-    @Override
-    public boolean isSubscribed() {
-        return subscribed;
-    }
+  @Override
+  public boolean isSubscribed() {
+    return subscribed;
+  }
 
-    @Override
-    public void setSubscribed(boolean subscribed) {
-        this.subscribed = subscribed;
-    }
+  @Override
+  public void setSubscribed(boolean subscribed) {
+    this.subscribed = subscribed;
+  }
 }

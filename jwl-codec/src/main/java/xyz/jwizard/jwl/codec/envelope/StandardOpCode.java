@@ -18,31 +18,31 @@
 package xyz.jwizard.jwl.codec.envelope;
 
 public enum StandardOpCode implements OpCode {
-    RATE_LIMIT_EXCEEDED(0x01, 0x01), // 65537 (0x010001)
-    UNKNOWN_ACTION(0x01, 0x02), // 65538 (0x010002)
-    INVALID_PAYLOAD(0x01, 0x03), // 65539 (0x010003)
-    INTERNAL_ERROR(0x01, 0x04), // 65540 (0x010004)
-    HEARTBEAT(0x01, 0x05), // 65541 (0x010005)
-    ;
+  RATE_LIMIT_EXCEEDED(0x01, 0x01), // 65537 (0x010001)
+  UNKNOWN_ACTION(0x01, 0x02), // 65538 (0x010002)
+  INVALID_PAYLOAD(0x01, 0x03), // 65539 (0x010003)
+  INTERNAL_ERROR(0x01, 0x04), // 65540 (0x010004)
+  HEARTBEAT(0x01, 0x05), // 65541 (0x010005)
+  ;
 
-    private final int code;
+  private final int code;
 
-    StandardOpCode(int category, int action) {
-        code = OpCode.combine(category, action);
-    }
+  StandardOpCode(int category, int action) {
+    code = OpCode.combine(category, action);
+  }
 
-    @Override
-    public int getCode() {
-        return code;
-    }
+  @Override
+  public int getCode() {
+    return code;
+  }
 
-    @Override
-    public String getName() {
-        return name();
-    }
+  @Override
+  public String getName() {
+    return name();
+  }
 
-    @Override
-    public String toString() {
-        return asString();
-    }
+  @Override
+  public String toString() {
+    return asString();
+  }
 }

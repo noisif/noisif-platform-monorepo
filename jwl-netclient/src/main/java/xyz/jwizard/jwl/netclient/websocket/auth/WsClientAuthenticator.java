@@ -21,5 +21,5 @@ import xyz.jwizard.jwl.common.Ordered;
 import xyz.jwizard.jwl.netclient.websocket.WsClientUpgradeRequest;
 
 public interface WsClientAuthenticator extends Ordered {
-    void applyAuthentication(WsClientUpgradeRequest req);
+  void applyAuthentication(WsClientUpgradeRequest req);
 }

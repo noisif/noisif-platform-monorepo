@@ -23,8 +23,8 @@ import xyz.jwizard.jwl.http.HttpResponse;
 import xyz.jwizard.jwl.http.route.Route;
 
 public interface HttpFilter extends Ordered {
-    boolean supports(Route route);
+  boolean supports(Route route);
 
-    // true = go forward, false = stop request
-    boolean preHandle(HttpRequest req, HttpResponse res) throws Exception;
+  // true = go forward, false = stop request
+  boolean preHandle(HttpRequest req, HttpResponse res) throws Exception;
 }

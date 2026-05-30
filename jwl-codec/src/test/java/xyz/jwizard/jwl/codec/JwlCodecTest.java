@@ -20,13 +20,13 @@ package xyz.jwizard.jwl.codec;
 import xyz.jwizard.jwl.common.ModuleIdentityTest;
 
 class JwlCodecTest extends ModuleIdentityTest {
-    @Override
-    protected String getModuleName() {
-        return "codec";
-    }
+  @Override
+  protected String getModuleName() {
+    return "codec";
+  }
 
-    @Override
-    protected String getPackageSuffix() {
-        return "jwl";
-    }
+  @Override
+  protected String getPackageSuffix() {
+    return "jwl";
+  }
 }

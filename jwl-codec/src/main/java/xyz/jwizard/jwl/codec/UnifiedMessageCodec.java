@@ -26,16 +26,16 @@ import xyz.jwizard.jwl.codec.serialization.TypedSerializerFormat;
 import java.util.function.Function;
 
 public interface UnifiedMessageCodec extends TypedSerializer {
-    SerializerFormat getBaseFormat();
+  SerializerFormat getBaseFormat();
 
-    @Override
-    default SerializerFormat getFormat() {
-        return TypedSerializerFormat.from(getBaseFormat(), getCodecDataType());
-    }
+  @Override
+  default SerializerFormat getFormat() {
+    return TypedSerializerFormat.from(getBaseFormat(), getCodecDataType());
+  }
 
-    void serializeAndAcceptEnvelope(OpCode opCode, Object data, EncodedPayloadVisitor visitor);
+  void serializeAndAcceptEnvelope(OpCode opCode, Object data, EncodedPayloadVisitor visitor);
 
-    MessageEnvelope<?> unwrap(byte[] payload, Function<Integer, Class<?>> typeResolver);
+  MessageEnvelope<?> unwrap(byte[] payload, Function<Integer, Class<?>> typeResolver);
 
-    MessageEnvelope<?> unwrap(String payload, Function<Integer, Class<?>> typeResolver);
+  MessageEnvelope<?> unwrap(String payload, Function<Integer, Class<?>> typeResolver);
 }

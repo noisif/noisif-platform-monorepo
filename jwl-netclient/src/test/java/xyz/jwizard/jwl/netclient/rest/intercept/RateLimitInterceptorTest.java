@@ -40,45 +40,45 @@ import xyz.jwizard.jwl.netclient.rest.RestResponse;
 
 @ExtendWith(MockitoExtension.class)
 class RateLimitInterceptorTest {
-    @Mock private RateLimiter rateLimiter;
-    @Mock private InterceptorContext context;
-    @Mock private RequestView view;
-    @Mock private ClientGroup clientGroup;
+  @Mock private RateLimiter rateLimiter;
+  @Mock private InterceptorContext context;
+  @Mock private RequestView view;
+  @Mock private ClientGroup clientGroup;
 
-    @Captor private ArgumentCaptor<RestResponse<?>> responseCaptor;
+  @Captor private ArgumentCaptor<RestResponse<?>> responseCaptor;
 
-    private RateLimitInterceptor interceptor;
+  private RateLimitInterceptor interceptor;
 
-    @BeforeEach
-    void setUp() {
-        interceptor = new RateLimitInterceptor(rateLimiter);
-        lenient().when(context.getView()).thenReturn(view);
-        lenient().when(view.getGroup()).thenReturn(clientGroup);
-        lenient().when(clientGroup.getClientGroupName()).thenReturn("DISCORD_API");
-    }
+  @BeforeEach
+  void setUp() {
+    interceptor = new RateLimitInterceptor(rateLimiter);
+    lenient().when(context.getView()).thenReturn(view);
+    lenient().when(view.getGroup()).thenReturn(clientGroup);
+    lenient().when(clientGroup.getClientGroupName()).thenReturn("DISCORD_API");
+  }
 
-    @Test
-    @DisplayName("should let request pass when rate limit is not exceeded")
-    void shouldLetRequestPass() {
-        // given
-        when(rateLimiter.tryAcquire("DISCORD_API")).thenReturn(true);
-        // when
-        interceptor.intercept(context);
-        // then
-        verify(context, never()).abortWith(any());
-    }
+  @Test
+  @DisplayName("should let request pass when rate limit is not exceeded")
+  void shouldLetRequestPass() {
+    // given
+    when(rateLimiter.tryAcquire("DISCORD_API")).thenReturn(true);
+    // when
+    interceptor.intercept(context);
+    // then
+    verify(context, never()).abortWith(any());
+  }
 
-    @Test
-    @DisplayName("should abort request with 429 when rate limit is exceeded")
-    void shouldAbortWhenRateLimitExceeded() {
-        // given
-        when(rateLimiter.tryAcquire("DISCORD_API")).thenReturn(false);
-        // when
-        interceptor.intercept(context);
-        // then
-        verify(context).abortWith(responseCaptor.capture());
-        final RestResponse<?> capturedResponse = responseCaptor.getValue();
-        assertThat(capturedResponse.getStatus()).isEqualTo(HttpStatus.TOO_MANY_REQUESTS_429);
-        assertThat(capturedResponse.getBody()).isNull();
-    }
+  @Test
+  @DisplayName("should abort request with 429 when rate limit is exceeded")
+  void shouldAbortWhenRateLimitExceeded() {
+    // given
+    when(rateLimiter.tryAcquire("DISCORD_API")).thenReturn(false);
+    // when
+    interceptor.intercept(context);
+    // then
+    verify(context).abortWith(responseCaptor.capture());
+    final RestResponse<?> capturedResponse = responseCaptor.getValue();
+    assertThat(capturedResponse.getStatus()).isEqualTo(HttpStatus.TOO_MANY_REQUESTS_429);
+    assertThat(capturedResponse.getBody()).isNull();
+  }
 }

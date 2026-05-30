@@ -21,26 +21,26 @@ import xyz.jwizard.jwl.net.envelope.bus.EnvelopeBusListener;
 import xyz.jwizard.jwl.netclient.websocket.WsClientSession;
 
 public class WsClientEnvelopeBusListener extends EnvelopeBusListener<WsClientSession> {
-    private WsClientEnvelopeBusListener(Builder builder) {
-        super(builder);
+  private WsClientEnvelopeBusListener(Builder builder) {
+    super(builder);
+  }
+
+  public static Builder builder() {
+    return new Builder();
+  }
+
+  public static class Builder extends AbstractBuilder<WsClientSession, Builder> {
+    private Builder() {}
+
+    @Override
+    protected Builder self() {
+      return this;
     }
 
-    public static Builder builder() {
-        return new Builder();
+    @Override
+    public EnvelopeBusListener<WsClientSession> build() {
+      super.validate();
+      return new WsClientEnvelopeBusListener(this);
     }
-
-    public static class Builder extends AbstractBuilder<WsClientSession, Builder> {
-        private Builder() {}
-
-        @Override
-        protected Builder self() {
-            return this;
-        }
-
-        @Override
-        public EnvelopeBusListener<WsClientSession> build() {
-            super.validate();
-            return new WsClientEnvelopeBusListener(this);
-        }
-    }
+  }
 }

@@ -23,14 +23,14 @@ import xyz.jwizard.jwl.net.http.header.HttpHeaderName;
 import xyz.jwizard.jwl.netclient.rest.spec.HeaderConsumer;
 
 public class JettyHeaderConsumer implements HeaderConsumer {
-    private final Request request;
+  private final Request request;
 
-    public JettyHeaderConsumer(Request request) {
-        this.request = request;
-    }
+  public JettyHeaderConsumer(Request request) {
+    this.request = request;
+  }
 
-    @Override
-    public void addHeader(HttpHeaderName name, String value) {
-        request.headers(h -> h.put(name.getCode(), value));
-    }
+  @Override
+  public void addHeader(HttpHeaderName name, String value) {
+    request.headers(h -> h.put(name.getCode(), value));
+  }
 }

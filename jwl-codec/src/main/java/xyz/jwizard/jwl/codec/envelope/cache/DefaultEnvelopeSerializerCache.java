@@ -31,71 +31,63 @@ import java.util.stream.Collectors;
 
 // for O(1)
 public class DefaultEnvelopeSerializerCache implements EnvelopeSerializerCache {
-    private static final Logger LOG = LoggerFactory.getLogger(DefaultEnvelopeSerializerCache.class);
+  private static final Logger LOG = LoggerFactory.getLogger(DefaultEnvelopeSerializerCache.class);
 
-    private final Map<String, Map<String, EnvelopeSerializer<?>>> cache = new ConcurrentHashMap<>();
+  private final Map<String, Map<String, EnvelopeSerializer<?>>> cache = new ConcurrentHashMap<>();
 
-    private DefaultEnvelopeSerializerCache() {}
+  private DefaultEnvelopeSerializerCache() {}
 
-    public static DefaultEnvelopeSerializerCache createDefault() {
-        return new DefaultEnvelopeSerializerCache();
+  public static DefaultEnvelopeSerializerCache createDefault() {
+    return new DefaultEnvelopeSerializerCache();
+  }
+
+  @Override
+  public EnvelopeSerializerCache init(EnvelopeSerializerRegistry registry) {
+    cache.putAll(
+        registry.getAll().stream()
+            .collect(
+                Collectors.groupingBy(
+                    s -> StringUtil.toLowerCase(s.getBaseFormat().getFormatName()),
+                    Collectors.toMap(
+                        s -> StringUtil.toLowerCase(s.getCodecDataType().getCode()),
+                        Function.identity()))));
+    if (LOG.isDebugEnabled()) {
+      final int totalSerializers = cache.values().stream().mapToInt(Map::size).sum();
+      LOG.debug(
+          "EnvelopeSerializerCache initialized: loaded {} encodings with {} total "
+              + "frame serializers",
+          cache.size(),
+          totalSerializers);
     }
+    return this;
+  }
 
-    @Override
-    public EnvelopeSerializerCache init(EnvelopeSerializerRegistry registry) {
-        cache.putAll(
-                registry.getAll().stream()
-                        .collect(
-                                Collectors.groupingBy(
-                                        s ->
-                                                StringUtil.toLowerCase(
-                                                        s.getBaseFormat().getFormatName()),
-                                        Collectors.toMap(
-                                                s ->
-                                                        StringUtil.toLowerCase(
-                                                                s.getCodecDataType().getCode()),
-                                                Function.identity()))));
-        if (LOG.isDebugEnabled()) {
-            final int totalSerializers = cache.values().stream().mapToInt(Map::size).sum();
-            LOG.debug(
-                    "EnvelopeSerializerCache initialized: loaded {} encodings with {} total "
-                            + "frame serializers",
-                    cache.size(),
-                    totalSerializers);
-        }
-        return this;
+  @Override
+  public EnvelopeSerializer<?> find(String encoding, String frame) {
+    LOG.trace("Searching for serializer: encoding={}, frame={}", encoding, frame);
+    if (encoding == null || frame == null) {
+      LOG.warn("Lookup failed: encoding or frame is null (encoding={}, frame={})", encoding, frame);
+      return null;
     }
-
-    @Override
-    public EnvelopeSerializer<?> find(String encoding, String frame) {
-        LOG.trace("Searching for serializer: encoding={}, frame={}", encoding, frame);
-        if (encoding == null || frame == null) {
-            LOG.warn(
-                    "Lookup failed: encoding or frame is null (encoding={}, frame={})",
-                    encoding,
-                    frame);
-            return null;
-        }
-        final Map<String, EnvelopeSerializer<?>> frames =
-                cache.get(StringUtil.toLowerCase(encoding));
-        if (frames == null) {
-            LOG.debug("No serializers found for encoding: '{}'", encoding);
-            return null;
-        }
-        final EnvelopeSerializer<?> serializer = frames.get(StringUtil.toLowerCase(frame));
-        if (serializer != null) {
-            LOG.debug(
-                    "Successfully resolved serializer: {} for [{} / {}]",
-                    serializer.getClass().getSimpleName(),
-                    encoding,
-                    frame);
-            return serializer;
-        }
-        LOG.warn(
-                "No frame serializer '{}' found for encoding '{}', available frames: {}",
-                frame,
-                encoding,
-                frames.keySet());
-        return null;
+    final Map<String, EnvelopeSerializer<?>> frames = cache.get(StringUtil.toLowerCase(encoding));
+    if (frames == null) {
+      LOG.debug("No serializers found for encoding: '{}'", encoding);
+      return null;
     }
+    final EnvelopeSerializer<?> serializer = frames.get(StringUtil.toLowerCase(frame));
+    if (serializer != null) {
+      LOG.debug(
+          "Successfully resolved serializer: {} for [{} / {}]",
+          serializer.getClass().getSimpleName(),
+          encoding,
+          frame);
+      return serializer;
+    }
+    LOG.warn(
+        "No frame serializer '{}' found for encoding '{}', available frames: {}",
+        frame,
+        encoding,
+        frames.keySet());
+    return null;
+  }
 }

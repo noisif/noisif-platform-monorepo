@@ -39,56 +39,56 @@ import java.nio.charset.StandardCharsets;
 
 @ExtendWith(MockitoExtension.class)
 class JsonEnvelopeSerializersTest {
-    @Mock private JsonSerializer jsonSerializerMock;
-    @Mock private EncodedPayloadVisitor visitorMock;
-    private JsonTextEnvelopeSerializer textSerializer;
-    private JsonBinaryEnvelopeSerializer binarySerializer;
+  @Mock private JsonSerializer jsonSerializerMock;
+  @Mock private EncodedPayloadVisitor visitorMock;
+  private JsonTextEnvelopeSerializer textSerializer;
+  private JsonBinaryEnvelopeSerializer binarySerializer;
 
-    @BeforeEach
-    void setUp() {
-        textSerializer = JsonTextEnvelopeSerializer.createDefault(jsonSerializerMock);
-        binarySerializer = JsonBinaryEnvelopeSerializer.createDefault(jsonSerializerMock);
-    }
+  @BeforeEach
+  void setUp() {
+    textSerializer = JsonTextEnvelopeSerializer.createDefault(jsonSerializerMock);
+    binarySerializer = JsonBinaryEnvelopeSerializer.createDefault(jsonSerializerMock);
+  }
 
-    @Test
-    @DisplayName(
-            "JsonTextEnvelopeSerializer should dispatch to accept(String) "
-                    + "and convert raw bytes to String")
-    void testJsonTextSerializer() {
-        // given
-        final String mockJson = "{\"op\":65636,\"data\":\"hello\"}";
-        when(jsonSerializerMock.serialize(any())).thenReturn(mockJson);
-        // when
-        assertThat(textSerializer.getCodecDataType()).isEqualTo(DataType.TEXT);
-        textSerializer.serializeAndAcceptEnvelope(TestOpCode.USER_DATA, "hello", visitorMock);
-        // then
-        verify(visitorMock).accept(mockJson);
-        // when
-        final byte[] rawInput = "raw_test".getBytes(StandardCharsets.UTF_8);
-        textSerializer.acceptRaw(rawInput, visitorMock);
-        // then
-        verify(visitorMock).accept("raw_test"); // Bytes are converted to String!
-        verifyNoMoreInteractions(visitorMock);
-    }
+  @Test
+  @DisplayName(
+      "JsonTextEnvelopeSerializer should dispatch to accept(String) "
+          + "and convert raw bytes to String")
+  void testJsonTextSerializer() {
+    // given
+    final String mockJson = "{\"op\":65636,\"data\":\"hello\"}";
+    when(jsonSerializerMock.serialize(any())).thenReturn(mockJson);
+    // when
+    assertThat(textSerializer.getCodecDataType()).isEqualTo(DataType.TEXT);
+    textSerializer.serializeAndAcceptEnvelope(TestOpCode.USER_DATA, "hello", visitorMock);
+    // then
+    verify(visitorMock).accept(mockJson);
+    // when
+    final byte[] rawInput = "raw_test".getBytes(StandardCharsets.UTF_8);
+    textSerializer.acceptRaw(rawInput, visitorMock);
+    // then
+    verify(visitorMock).accept("raw_test"); // Bytes are converted to String!
+    verifyNoMoreInteractions(visitorMock);
+  }
 
-    @Test
-    @DisplayName(
-            "JsonBinaryEnvelopeSerializer should dispatch to accept(byte[]) "
-                    + "and pass raw bytes directly")
-    void testJsonBinarySerializer() {
-        // given
-        final byte[] mockBytes = {1, 2, 3};
-        when(jsonSerializerMock.serializeToBytes(any())).thenReturn(mockBytes);
-        // when
-        assertThat(binarySerializer.getCodecDataType()).isEqualTo(DataType.BINARY);
-        binarySerializer.serializeAndAcceptEnvelope(TestOpCode.USER_DATA, "hello", visitorMock);
-        // then
-        verify(visitorMock).accept(mockBytes);
-        // when
-        final byte[] rawInput = {9, 8, 7};
-        binarySerializer.acceptRaw(rawInput, visitorMock);
-        // then
-        verify(visitorMock).accept(rawInput);
-        verifyNoMoreInteractions(visitorMock);
-    }
+  @Test
+  @DisplayName(
+      "JsonBinaryEnvelopeSerializer should dispatch to accept(byte[]) "
+          + "and pass raw bytes directly")
+  void testJsonBinarySerializer() {
+    // given
+    final byte[] mockBytes = {1, 2, 3};
+    when(jsonSerializerMock.serializeToBytes(any())).thenReturn(mockBytes);
+    // when
+    assertThat(binarySerializer.getCodecDataType()).isEqualTo(DataType.BINARY);
+    binarySerializer.serializeAndAcceptEnvelope(TestOpCode.USER_DATA, "hello", visitorMock);
+    // then
+    verify(visitorMock).accept(mockBytes);
+    // when
+    final byte[] rawInput = {9, 8, 7};
+    binarySerializer.acceptRaw(rawInput, visitorMock);
+    // then
+    verify(visitorMock).accept(rawInput);
+    verifyNoMoreInteractions(visitorMock);
+  }
 }

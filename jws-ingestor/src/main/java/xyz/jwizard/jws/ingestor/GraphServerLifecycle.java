@@ -38,58 +38,54 @@ import java.util.List;
 
 @Singleton
 class GraphServerLifecycle implements LifecycleHook {
-    private final GraphServer<Neo4jConfig> graphServer;
+  private final GraphServer<Neo4jConfig> graphServer;
 
-    GraphServerLifecycle() {
-        graphServer =
-                Neo4jServer.builder()
-                        .config(
-                                Neo4jConfig.builder()
-                                        .protocol(
-                                                Neo4jGraphProtocol
-                                                        .BOLT) /* TODO: incoming from config server */
-                                        .address(
-                                                HostPort.from(
-                                                        "localhost",
-                                                        9118)) /* TODO: incoming from config server */
-                                        .username("neo4j") /* TODO: incoming from config server */
-                                        .password("root") /* TODO: incoming from config server */
-                                        .build())
-                        .clientFactory(DefaultNeo4jClientFactory.create())
-                        .repositoryFactory(Neo4jGraphRepository::createDefault)
-                        .build();
-    }
+  GraphServerLifecycle() {
+    graphServer =
+        Neo4jServer.builder()
+            .config(
+                Neo4jConfig.builder()
+                    .protocol(Neo4jGraphProtocol.BOLT) /* TODO: incoming from config server */
+                    .address(
+                        HostPort.from("localhost", 9118)) /* TODO: incoming from config server */
+                    .username("neo4j") /* TODO: incoming from config server */
+                    .password("root") /* TODO: incoming from config server */
+                    .build())
+            .clientFactory(DefaultNeo4jClientFactory.create())
+            .repositoryFactory(Neo4jGraphRepository::createDefault)
+            .build();
+  }
 
-    @Override
-    public void onStart(ComponentProvider componentProvider, ClassScanner scanner) {
-        graphServer.start();
-    }
+  @Override
+  public void onStart(ComponentProvider componentProvider, ClassScanner scanner) {
+    graphServer.start();
+  }
 
-    @Override
-    public void onStop() {
-        graphServer.close();
-    }
+  @Override
+  public void onStop() {
+    graphServer.close();
+  }
 
-    @Override
-    public List<Class<? extends LifecycleHook>> dependsOn() {
-        return List.of(JsEngineLifecycle.class);
-    }
+  @Override
+  public List<Class<? extends LifecycleHook>> dependsOn() {
+    return List.of(JsEngineLifecycle.class);
+  }
 
-    @Produces
-    @Singleton
-    GraphReader graphReader() {
-        return graphServer.getRepository();
-    }
+  @Produces
+  @Singleton
+  GraphReader graphReader() {
+    return graphServer.getRepository();
+  }
 
-    @Produces
-    @Singleton
-    GraphWriter graphWriter() {
-        return graphServer.getRepository();
-    }
+  @Produces
+  @Singleton
+  GraphWriter graphWriter() {
+    return graphServer.getRepository();
+  }
 
-    @Produces
-    @Singleton
-    GraphClient graphClient() {
-        return graphServer.getClient();
-    }
+  @Produces
+  @Singleton
+  GraphClient graphClient() {
+    return graphServer.getClient();
+  }
 }

@@ -17,15 +17,15 @@
  */
 
 dependencies {
-    implementation(libs.hikari.cp)
+  implementation(libs.hikari.cp)
 
-    implementation(project(":jwl-common"))
-    implementation(project(":jwl-net"))
+  implementation(project(":jwl-common"))
+  implementation(project(":jwl-net"))
 
-    testImplementation(libs.postgresql)
-    testImplementation(libs.testcontainers)
-    testImplementation(libs.testcontainers.jupyter)
-    testImplementation(libs.testcontainers.postgresql)
+  testImplementation(libs.postgresql)
+  testImplementation(libs.testcontainers)
+  testImplementation(libs.testcontainers.jupyter)
+  testImplementation(libs.testcontainers.postgresql)
 
-    testImplementation(testFixtures(project(":jwl-common")))
+  testImplementation(testFixtures(project(":jwl-common")))
 }

@@ -35,137 +35,125 @@ import java.util.UUID;
 import java.util.function.Function;
 
 public abstract class GenericWsSessionAdapter
-        implements NetworkSender, EncodedPayloadVisitor, EnvelopeSession {
-    private static final String UNKNOWN_ENVELOPE = "UNKNOWN";
+    implements NetworkSender, EncodedPayloadVisitor, EnvelopeSession {
+  private static final String UNKNOWN_ENVELOPE = "UNKNOWN";
 
-    protected final Logger log = LoggerFactory.getLogger(getClass());
-    protected final String sessionId;
-    protected final String principalId;
-    protected final UnifiedMessageCodec messageCodec;
+  protected final Logger log = LoggerFactory.getLogger(getClass());
+  protected final String sessionId;
+  protected final String principalId;
+  protected final UnifiedMessageCodec messageCodec;
 
-    protected GenericWsSessionAdapter(String principalId, UnifiedMessageCodec messageCodec) {
-        sessionId = UUID.randomUUID().toString();
-        this.principalId = principalId;
-        this.messageCodec = messageCodec;
+  protected GenericWsSessionAdapter(String principalId, UnifiedMessageCodec messageCodec) {
+    sessionId = UUID.randomUUID().toString();
+    this.principalId = principalId;
+    this.messageCodec = messageCodec;
+  }
+
+  @Override
+  public final void send(byte[] message) {
+    sendSafely(
+        () ->
+            log.trace(
+                "Sending binary message, sessionId: {}, size: {} bytes", sessionId, message.length),
+        () -> onSend(message));
+  }
+
+  @Override
+  public final void send(String message) {
+    sendSafely(
+        () ->
+            log.trace(
+                "Sending text message, sessionId: {}, size: {} chars", sessionId, message.length()),
+        () -> onSend(message));
+  }
+
+  @Override
+  public final void sendEnvelope(OpCode opCode, Object data) {
+    final String opName = opCode != null ? opCode.getName() : UNKNOWN_ENVELOPE;
+    if (isClosed()) {
+      log.debug("Skipping send: session is closed, sessionId: {}, OP: {}", sessionId, opName);
+      return;
     }
-
-    @Override
-    public final void send(byte[] message) {
-        sendSafely(
-                () ->
-                        log.trace(
-                                "Sending binary message, sessionId: {}, size: {} bytes",
-                                sessionId,
-                                message.length),
-                () -> onSend(message));
+    log.debug(
+        "Preparing {} envelope, sessionId: {}, OP: {} (ID: {})",
+        messageCodec.getFormat().getFormatName(),
+        sessionId,
+        opName,
+        opCode != null ? opCode.getCode() : "null");
+    try {
+      messageCodec.serializeAndAcceptEnvelope(opCode, data, this);
+    } catch (UnsupportedDataTypeException | MessageSerializerException ex) {
+      log.error(
+          "Message error for {}: {}", messageCodec.getFormat().getFormatName(), ex.getMessage());
+    } catch (Exception ex) {
+      log.error("Unexpected error during processing, sessionId: {}, OP: {}", sessionId, opName, ex);
     }
+  }
 
-    @Override
-    public final void send(String message) {
-        sendSafely(
-                () ->
-                        log.trace(
-                                "Sending text message, sessionId: {}, size: {} chars",
-                                sessionId,
-                                message.length()),
-                () -> onSend(message));
+  @Override
+  public final void accept(byte[] payload) {
+    send(payload);
+  }
+
+  @Override
+  public final void accept(String payload) {
+    send(payload);
+  }
+
+  @Override
+  public final MessageEnvelope<?> unwrap(byte[] payload, Function<Integer, Class<?>> typeResolver) {
+    return messageCodec.unwrap(payload, typeResolver);
+  }
+
+  @Override
+  public final MessageEnvelope<?> unwrap(String payload, Function<Integer, Class<?>> typeResolver) {
+    return messageCodec.unwrap(payload, typeResolver);
+  }
+
+  @Override
+  public final String getSessionId() {
+    return sessionId;
+  }
+
+  @Override
+  public final String getPrincipalId() {
+    return principalId;
+  }
+
+  @Override
+  public final void close(CloseCode closeCode) {
+    if (isClosed()) {
+      return;
     }
+    log.debug(
+        "Initiating session closure, sessionId: {}, status: {}, reason: '{}'",
+        sessionId,
+        closeCode.getCode(),
+        closeCode.getDefaultReason());
+    onClose(closeCode.getCode(), closeCode.getDefaultReason());
+  }
 
-    @Override
-    public final void sendEnvelope(OpCode opCode, Object data) {
-        final String opName = opCode != null ? opCode.getName() : UNKNOWN_ENVELOPE;
-        if (isClosed()) {
-            log.debug("Skipping send: session is closed, sessionId: {}, OP: {}", sessionId, opName);
-            return;
-        }
-        log.debug(
-                "Preparing {} envelope, sessionId: {}, OP: {} (ID: {})",
-                messageCodec.getFormat().getFormatName(),
-                sessionId,
-                opName,
-                opCode != null ? opCode.getCode() : "null");
-        try {
-            messageCodec.serializeAndAcceptEnvelope(opCode, data, this);
-        } catch (UnsupportedDataTypeException | MessageSerializerException ex) {
-            log.error(
-                    "Message error for {}: {}",
-                    messageCodec.getFormat().getFormatName(),
-                    ex.getMessage());
-        } catch (Exception ex) {
-            log.error(
-                    "Unexpected error during processing, sessionId: {}, OP: {}",
-                    sessionId,
-                    opName,
-                    ex);
-        }
+  protected abstract void onSend(String message) throws Exception;
+
+  protected abstract void onSend(byte[] message) throws Exception;
+
+  protected abstract void onClose(int code, String reason);
+
+  private void sendSafely(Runnable logAction, RunnableWithException transportAction) {
+    if (isClosed()) {
+      log.trace("Skipping send: session is closed, sessionId: {}", sessionId);
+      return;
     }
-
-    @Override
-    public final void accept(byte[] payload) {
-        send(payload);
+    if (log.isTraceEnabled()) {
+      logAction.run();
     }
-
-    @Override
-    public final void accept(String payload) {
-        send(payload);
+    try {
+      transportAction.run();
+    } catch (Exception ex) {
+      log.error(
+          "Transport layer failed to deliver message for session {}: {}",
+          sessionId,
+          ex.getMessage());
     }
-
-    @Override
-    public final MessageEnvelope<?> unwrap(
-            byte[] payload, Function<Integer, Class<?>> typeResolver) {
-        return messageCodec.unwrap(payload, typeResolver);
-    }
-
-    @Override
-    public final MessageEnvelope<?> unwrap(
-            String payload, Function<Integer, Class<?>> typeResolver) {
-        return messageCodec.unwrap(payload, typeResolver);
-    }
-
-    @Override
-    public final String getSessionId() {
-        return sessionId;
-    }
-
-    @Override
-    public final String getPrincipalId() {
-        return principalId;
-    }
-
-    @Override
-    public final void close(CloseCode closeCode) {
-        if (isClosed()) {
-            return;
-        }
-        log.debug(
-                "Initiating session closure, sessionId: {}, status: {}, reason: '{}'",
-                sessionId,
-                closeCode.getCode(),
-                closeCode.getDefaultReason());
-        onClose(closeCode.getCode(), closeCode.getDefaultReason());
-    }
-
-    protected abstract void onSend(String message) throws Exception;
-
-    protected abstract void onSend(byte[] message) throws Exception;
-
-    protected abstract void onClose(int code, String reason);
-
-    private void sendSafely(Runnable logAction, RunnableWithException transportAction) {
-        if (isClosed()) {
-            log.trace("Skipping send: session is closed, sessionId: {}", sessionId);
-            return;
-        }
-        if (log.isTraceEnabled()) {
-            logAction.run();
-        }
-        try {
-            transportAction.run();
-        } catch (Exception ex) {
-            log.error(
-                    "Transport layer failed to deliver message for session {}: {}",
-                    sessionId,
-                    ex.getMessage());
-        }
-    }
+  }
 }

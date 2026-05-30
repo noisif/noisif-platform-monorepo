@@ -17,15 +17,15 @@
  */
 
 dependencies {
-    implementation(libs.neo4j.driver)
-    implementation(libs.slf4j.jdk.platform) // for neo4j logger
+  implementation(libs.neo4j.driver)
+  implementation(libs.slf4j.jdk.platform) // for neo4j logger
 
-    implementation(project(":jwl-common"))
-    implementation(project(":jwl-net"))
+  implementation(project(":jwl-common"))
+  implementation(project(":jwl-net"))
 
-    testImplementation(libs.testcontainers)
-    testImplementation(libs.testcontainers.jupyter)
-    testImplementation(libs.testcontainers.neo4j)
+  testImplementation(libs.testcontainers)
+  testImplementation(libs.testcontainers.jupyter)
+  testImplementation(libs.testcontainers.neo4j)
 
-    testImplementation(testFixtures(project(":jwl-common")))
+  testImplementation(testFixtures(project(":jwl-common")))
 }

@@ -20,9 +20,9 @@ import xyz.jwizard.buildconfig.JwProtobufPlugin
 apply<JwProtobufPlugin>()
 
 dependencies {
-    implementation(libs.jackson.databind)
-    implementation(libs.protobuf.java)
-    implementation(project(":jwl-common"))
+  implementation(libs.jackson.databind)
+  implementation(libs.protobuf.java)
+  implementation(project(":jwl-common"))
 
-    testImplementation(testFixtures(project(":jwl-common")))
+  testImplementation(testFixtures(project(":jwl-common")))
 }

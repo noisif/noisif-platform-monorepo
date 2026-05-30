@@ -35,107 +35,107 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class RestClientGroupConfig extends GenericClientGroupConfig {
-    private final SerializerFormat defaultFormat;
-    private final RetryPolicy retryPolicy;
-    private final List<RequestInterceptor> interceptors;
+  private final SerializerFormat defaultFormat;
+  private final RetryPolicy retryPolicy;
+  private final List<RequestInterceptor> interceptors;
 
-    private RestClientGroupConfig(Builder builder) {
-        super(builder);
-        defaultFormat = builder.defaultFormat;
-        retryPolicy = builder.retryPolicy;
-        interceptors = builder.interceptors;
+  private RestClientGroupConfig(Builder builder) {
+    super(builder);
+    defaultFormat = builder.defaultFormat;
+    retryPolicy = builder.retryPolicy;
+    interceptors = builder.interceptors;
+  }
+
+  public static Builder builder() {
+    return new Builder();
+  }
+
+  public SerializerFormat getDefaultFormat() {
+    return defaultFormat;
+  }
+
+  public RetryPolicy getRetryPolicy() {
+    return retryPolicy;
+  }
+
+  public List<RequestInterceptor> getInterceptors() {
+    return interceptors;
+  }
+
+  public static class Builder extends AbstractBuilder<Builder, RestClientGroupConfig> {
+    private final List<RequestInterceptor> interceptors = new ArrayList<>();
+    private SerializerFormat defaultFormat = StandardSerializerFormat.JSON;
+    private RetryPolicy retryPolicy = RetryPolicy.none();
+
+    private Builder() {}
+
+    @Override
+    protected Builder self() {
+      return this;
     }
 
-    public static Builder builder() {
-        return new Builder();
+    public Builder defaultFormat(SerializerFormat defaultFormat) {
+      this.defaultFormat = defaultFormat;
+      return this;
     }
 
-    public SerializerFormat getDefaultFormat() {
-        return defaultFormat;
+    public Builder retryOnSafeMethods(int maxRetries, Duration backoff) {
+      retryPolicy = RetryPolicy.withSafeMethods(maxRetries + 1, backoff);
+      return this;
     }
 
-    public RetryPolicy getRetryPolicy() {
-        return retryPolicy;
+    public Builder retryOnSafeMethods(int maxRetries, Duration backoff, Duration maxBackoff) {
+      retryPolicy = RetryPolicy.withSafeMethods(maxRetries + 1, backoff, maxBackoff);
+      return this;
     }
 
-    public List<RequestInterceptor> getInterceptors() {
-        return interceptors;
+    public Builder retry(
+        int maxRetries, Duration backoff, Duration maxBackoff, HttpMethod... methods) {
+      retryPolicy = RetryPolicy.with(maxRetries + 1, backoff, maxBackoff, methods);
+      return this;
     }
 
-    public static class Builder extends AbstractBuilder<Builder, RestClientGroupConfig> {
-        private final List<RequestInterceptor> interceptors = new ArrayList<>();
-        private SerializerFormat defaultFormat = StandardSerializerFormat.JSON;
-        private RetryPolicy retryPolicy = RetryPolicy.none();
-
-        private Builder() {}
-
-        @Override
-        protected Builder self() {
-            return this;
-        }
-
-        public Builder defaultFormat(SerializerFormat defaultFormat) {
-            this.defaultFormat = defaultFormat;
-            return this;
-        }
-
-        public Builder retryOnSafeMethods(int maxRetries, Duration backoff) {
-            retryPolicy = RetryPolicy.withSafeMethods(maxRetries + 1, backoff);
-            return this;
-        }
-
-        public Builder retryOnSafeMethods(int maxRetries, Duration backoff, Duration maxBackoff) {
-            retryPolicy = RetryPolicy.withSafeMethods(maxRetries + 1, backoff, maxBackoff);
-            return this;
-        }
-
-        public Builder retry(
-                int maxRetries, Duration backoff, Duration maxBackoff, HttpMethod... methods) {
-            retryPolicy = RetryPolicy.with(maxRetries + 1, backoff, maxBackoff, methods);
-            return this;
-        }
-
-        public Builder retry(int maxRetries, Duration backoff, HttpMethod... methods) {
-            retryPolicy = RetryPolicy.with(maxRetries + 1, backoff, methods);
-            return this;
-        }
-
-        public Builder disableRetry() {
-            retryPolicy = RetryPolicy.none();
-            return this;
-        }
-
-        public Builder auth(AuthScheme scheme, String... credentials) {
-            return auth(Integer.MAX_VALUE, scheme, credentials);
-        }
-
-        public Builder auth(int order, AuthScheme scheme, String... credentials) {
-            interceptors.add(new AuthInterceptor(order, scheme, credentials));
-            return this;
-        }
-
-        public Builder rateLimit(RateLimiter rateLimiter) {
-            interceptors.add(new RateLimitInterceptor(rateLimiter));
-            return this;
-        }
-
-        public Builder interceptor(RequestInterceptor interceptor) {
-            interceptors.add(interceptor);
-            return this;
-        }
-
-        @Override
-        public Builder principalId(String principalId) {
-            super.principalId(principalId);
-            interceptors.add(new UserAgentInterceptor(principalId));
-            return this;
-        }
-
-        @Override
-        public RestClientGroupConfig build() {
-            super.validate();
-            interceptors.sort(Ordered.COMPARATOR);
-            return new RestClientGroupConfig(this);
-        }
+    public Builder retry(int maxRetries, Duration backoff, HttpMethod... methods) {
+      retryPolicy = RetryPolicy.with(maxRetries + 1, backoff, methods);
+      return this;
     }
+
+    public Builder disableRetry() {
+      retryPolicy = RetryPolicy.none();
+      return this;
+    }
+
+    public Builder auth(AuthScheme scheme, String... credentials) {
+      return auth(Integer.MAX_VALUE, scheme, credentials);
+    }
+
+    public Builder auth(int order, AuthScheme scheme, String... credentials) {
+      interceptors.add(new AuthInterceptor(order, scheme, credentials));
+      return this;
+    }
+
+    public Builder rateLimit(RateLimiter rateLimiter) {
+      interceptors.add(new RateLimitInterceptor(rateLimiter));
+      return this;
+    }
+
+    public Builder interceptor(RequestInterceptor interceptor) {
+      interceptors.add(interceptor);
+      return this;
+    }
+
+    @Override
+    public Builder principalId(String principalId) {
+      super.principalId(principalId);
+      interceptors.add(new UserAgentInterceptor(principalId));
+      return this;
+    }
+
+    @Override
+    public RestClientGroupConfig build() {
+      super.validate();
+      interceptors.sort(Ordered.COMPARATOR);
+      return new RestClientGroupConfig(this);
+    }
+  }
 }

@@ -26,19 +26,19 @@ import jakarta.inject.Singleton;
 
 @Singleton
 public class SendDataAction implements EnvelopeAction<WsSession, String> {
-    @Override
-    public void handle(WsSession channel, String data) {
-        final String response = "Send: " + data + " to: " + channel.getPrincipalId();
-        channel.sendEnvelope(TestWsOpCode.RECEIVE_DATA, response);
-    }
+  @Override
+  public void handle(WsSession channel, String data) {
+    final String response = "Send: " + data + " to: " + channel.getPrincipalId();
+    channel.sendEnvelope(TestWsOpCode.RECEIVE_DATA, response);
+  }
 
-    @Override
-    public OpCode opCode() {
-        return TestWsOpCode.SEND_DATA;
-    }
+  @Override
+  public OpCode opCode() {
+    return TestWsOpCode.SEND_DATA;
+  }
 
-    @Override
-    public Class<String> payloadClass() {
-        return String.class;
-    }
+  @Override
+  public Class<String> payloadClass() {
+    return String.class;
+  }
 }

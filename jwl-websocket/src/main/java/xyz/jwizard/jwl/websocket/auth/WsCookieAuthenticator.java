@@ -24,41 +24,38 @@ import xyz.jwizard.jwl.net.http.cookie.CookieName;
 import xyz.jwizard.jwl.websocket.WsHandshakeRequest;
 
 public abstract class WsCookieAuthenticator implements WsAuthenticator {
-    protected final Logger log = LoggerFactory.getLogger(getClass());
+  protected final Logger log = LoggerFactory.getLogger(getClass());
 
-    private final CookieName cookie;
+  private final CookieName cookie;
 
-    protected WsCookieAuthenticator(CookieName cookie) {
-        this.cookie = cookie;
+  protected WsCookieAuthenticator(CookieName cookie) {
+    this.cookie = cookie;
+  }
+
+  @Override
+  public String authenticate(WsHandshakeRequest req) {
+    final String cookieName = cookie.getCode();
+    if (log.isTraceEnabled()) {
+      log.trace("Attempting cookie authentication, looking for cookie: '{}'", cookieName);
     }
-
-    @Override
-    public String authenticate(WsHandshakeRequest req) {
-        final String cookieName = cookie.getCode();
-        if (log.isTraceEnabled()) {
-            log.trace("Attempting cookie authentication, looking for cookie: '{}'", cookieName);
-        }
-        final String cookieValue = req.getCookie(cookie);
-        if (cookieValue == null) {
-            log.debug(
-                    "Authentication failed: cookie '{}' is missing from the handshake request",
-                    cookieName);
-            return null;
-        }
-        if (log.isTraceEnabled()) {
-            log.trace("Cookie '{}' found, delegating validation to implementation", cookieName);
-        }
-        final String principalId = validateCookieAndGetPrincipal(cookieValue);
-        if (principalId != null) {
-            log.debug(
-                    "Authentication successful via cookie '{}' for principal: '{}'",
-                    cookieName,
-                    principalId);
-            return principalId;
-        }
-        log.debug("Authentication failed: invalid value for cookie '{}'", cookieName);
-        return null;
+    final String cookieValue = req.getCookie(cookie);
+    if (cookieValue == null) {
+      log.debug(
+          "Authentication failed: cookie '{}' is missing from the handshake request", cookieName);
+      return null;
     }
+    if (log.isTraceEnabled()) {
+      log.trace("Cookie '{}' found, delegating validation to implementation", cookieName);
+    }
+    final String principalId = validateCookieAndGetPrincipal(cookieValue);
+    if (principalId != null) {
+      log.debug(
+          "Authentication successful via cookie '{}' for principal: '{}'", cookieName, principalId);
+      return principalId;
+    }
+    log.debug("Authentication failed: invalid value for cookie '{}'", cookieName);
+    return null;
+  }
 
-    protected abstract String validateCookieAndGetPrincipal(String sid);
+  protected abstract String validateCookieAndGetPrincipal(String sid);
 }

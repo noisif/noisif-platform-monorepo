@@ -28,60 +28,59 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 public class ConcurrentLocalSessionDispatcher implements LocalSessionDispatcher {
-    private static final Logger LOG =
-            LoggerFactory.getLogger(ConcurrentLocalSessionDispatcher.class);
+  private static final Logger LOG = LoggerFactory.getLogger(ConcurrentLocalSessionDispatcher.class);
 
-    private final WsSessionRegistry registry;
-    private final ExecutorService executorService;
+  private final WsSessionRegistry registry;
+  private final ExecutorService executorService;
 
-    private ConcurrentLocalSessionDispatcher(
-            WsSessionRegistry registry, ExecutorService executorService) {
-        this.registry = registry;
-        this.executorService = executorService;
+  private ConcurrentLocalSessionDispatcher(
+      WsSessionRegistry registry, ExecutorService executorService) {
+    this.registry = registry;
+    this.executorService = executorService;
+  }
+
+  public static ConcurrentLocalSessionDispatcher createVirtual(WsSessionRegistry registry) {
+    return new ConcurrentLocalSessionDispatcher(
+        registry, Executors.newVirtualThreadPerTaskExecutor());
+  }
+
+  @Override
+  public void dispatchRaw(String topic, byte[] payload) {
+    broadcast(registry.getUnsafeSubscribers(topic), topic, payload);
+  }
+
+  @Override
+  public void dispatchRawAll(byte[] payload) {
+    broadcast(registry.getAllSessions(), null, payload);
+  }
+
+  private void broadcast(Collection<WsSession> sessions, String topic, byte[] payload) {
+    if (sessions.isEmpty()) {
+      return;
     }
-
-    public static ConcurrentLocalSessionDispatcher createVirtual(WsSessionRegistry registry) {
-        return new ConcurrentLocalSessionDispatcher(
-                registry, Executors.newVirtualThreadPerTaskExecutor());
+    if (LOG.isTraceEnabled()) {
+      LOG.trace(
+          "Broadcasting RAW payload to {} sessions (topic: {})",
+          sessions.size(),
+          topic != null ? topic : "GLOBAL");
     }
-
-    @Override
-    public void dispatchRaw(String topic, byte[] payload) {
-        broadcast(registry.getUnsafeSubscribers(topic), topic, payload);
+    for (final WsSession session : sessions) {
+      executorService.execute(() -> send(session, payload));
     }
+  }
 
-    @Override
-    public void dispatchRawAll(byte[] payload) {
-        broadcast(registry.getAllSessions(), null, payload);
+  private void send(WsSession session, byte[] payload) {
+    if (session.isClosed()) {
+      return;
     }
-
-    private void broadcast(Collection<WsSession> sessions, String topic, byte[] payload) {
-        if (sessions.isEmpty()) {
-            return;
-        }
-        if (LOG.isTraceEnabled()) {
-            LOG.trace(
-                    "Broadcasting RAW payload to {} sessions (topic: {})",
-                    sessions.size(),
-                    topic != null ? topic : "GLOBAL");
-        }
-        for (final WsSession session : sessions) {
-            executorService.execute(() -> send(session, payload));
-        }
+    try {
+      session.sendAdapted(payload);
+    } catch (Exception ex) {
+      LOG.warn(
+          "Send failed for session {}, removing. Reason: {}",
+          session.getSessionId(),
+          ex.getMessage());
+      registry.unregister(session);
     }
-
-    private void send(WsSession session, byte[] payload) {
-        if (session.isClosed()) {
-            return;
-        }
-        try {
-            session.sendAdapted(payload);
-        } catch (Exception ex) {
-            LOG.warn(
-                    "Send failed for session {}, removing. Reason: {}",
-                    session.getSessionId(),
-                    ex.getMessage());
-            registry.unregister(session);
-        }
-    }
+  }
 }

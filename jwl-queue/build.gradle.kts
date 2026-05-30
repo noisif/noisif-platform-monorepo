@@ -17,15 +17,15 @@
  */
 
 dependencies {
-    implementation(libs.ampq.client)
+  implementation(libs.ampq.client)
 
-    implementation(project(":jwl-codec"))
-    implementation(project(":jwl-common"))
-    implementation(project(":jwl-net"))
+  implementation(project(":jwl-codec"))
+  implementation(project(":jwl-common"))
+  implementation(project(":jwl-net"))
 
-    testImplementation(libs.testcontainers)
-    testImplementation(libs.testcontainers.jupyter)
-    testImplementation(libs.testcontainers.rabbitmq)
+  testImplementation(libs.testcontainers)
+  testImplementation(libs.testcontainers.jupyter)
+  testImplementation(libs.testcontainers.rabbitmq)
 
-    testImplementation(testFixtures(project(":jwl-common")))
+  testImplementation(testFixtures(project(":jwl-common")))
 }

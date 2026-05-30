@@ -18,11 +18,11 @@
 package xyz.jwizard.jwl.net;
 
 public interface NetworkSession {
-    String getSessionId();
+  String getSessionId();
 
-    String getPrincipalId();
+  String getPrincipalId();
 
-    void close(CloseCode closeCode);
+  void close(CloseCode closeCode);
 
-    boolean isClosed();
+  boolean isClosed();
 }

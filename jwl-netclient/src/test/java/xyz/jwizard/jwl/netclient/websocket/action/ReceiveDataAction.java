@@ -28,25 +28,25 @@ import jakarta.inject.Singleton;
 
 @Singleton
 public class ReceiveDataAction implements EnvelopeAction<WsClientSession, String> {
-    private final TestQueueProvider testQueueProvider;
+  private final TestQueueProvider testQueueProvider;
 
-    @Inject
-    public ReceiveDataAction(TestQueueProvider testQueueProvider) {
-        this.testQueueProvider = testQueueProvider;
-    }
+  @Inject
+  public ReceiveDataAction(TestQueueProvider testQueueProvider) {
+    this.testQueueProvider = testQueueProvider;
+  }
 
-    @Override
-    public void handle(WsClientSession channel, String data) {
-        testQueueProvider.get().add(data);
-    }
+  @Override
+  public void handle(WsClientSession channel, String data) {
+    testQueueProvider.get().add(data);
+  }
 
-    @Override
-    public OpCode opCode() {
-        return TestWsOpCode.RECEIVE_DATA;
-    }
+  @Override
+  public OpCode opCode() {
+    return TestWsOpCode.RECEIVE_DATA;
+  }
 
-    @Override
-    public Class<String> payloadClass() {
-        return String.class;
-    }
+  @Override
+  public Class<String> payloadClass() {
+    return String.class;
+  }
 }

@@ -24,25 +24,25 @@ apply<JwServicePlugin>()
 apply<JwPolyglotJsPlugin>()
 
 jwService {
-    packageSuffix.set("ingestor")
-    mainClass.set("JwsIngestorMain")
+  packageSuffix.set("ingestor")
+  mainClass.set("JwsIngestorMain")
 }
 
 jwPolyglotJs {
-    entryPoints.put("yarn-parser.bundle", "node_modules/@yarnpkg/parsers/lib/index.js")
-    npmDependencies.add("@yarnpkg/parsers")
+  entryPoints.put("yarn-parser.bundle", "node_modules/@yarnpkg/parsers/lib/index.js")
+  npmDependencies.add("@yarnpkg/parsers")
 }
 
 dependencies {
-    implementation(libs.graalvm.polyglot)
-    implementation(libs.graalvm.polyglot.js)
-    implementation(libs.gradle.tooling.api)
+  implementation(libs.graalvm.polyglot)
+  implementation(libs.graalvm.polyglot.js)
+  implementation(libs.gradle.tooling.api)
 
-    implementation(project(":jwl-codec"))
-    implementation(project(":jwl-common"))
-    implementation(project(":jwl-graph"))
-    implementation(project(":jwl-net"))
-    implementation(project(":jwl-websocket"))
+  implementation(project(":jwl-codec"))
+  implementation(project(":jwl-common"))
+  implementation(project(":jwl-graph"))
+  implementation(project(":jwl-net"))
+  implementation(project(":jwl-websocket"))
 
-    testImplementation(testFixtures(project(":jwl-common")))
+  testImplementation(testFixtures(project(":jwl-common")))
 }

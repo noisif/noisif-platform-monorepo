@@ -18,19 +18,19 @@
 package xyz.jwizard.jwl.common.util.math;
 
 public enum MemUnit {
-    BYTES(1L),
-    KB(1024L),
-    MB(1024L * 1024L),
-    GB(1024L * 1024L * 1024L),
-    ;
+  BYTES(1L),
+  KB(1024L),
+  MB(1024L * 1024L),
+  GB(1024L * 1024L * 1024L),
+  ;
 
-    private final long factor;
+  private final long factor;
 
-    MemUnit(long factor) {
-        this.factor = factor;
-    }
+  MemUnit(long factor) {
+    this.factor = factor;
+  }
 
-    public long toBytes(long value) {
-        return value * factor;
-    }
+  public long toBytes(long value) {
+    return value * factor;
+  }
 }

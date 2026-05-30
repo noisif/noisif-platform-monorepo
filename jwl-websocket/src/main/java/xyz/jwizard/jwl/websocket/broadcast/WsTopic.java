@@ -18,5 +18,5 @@
 package xyz.jwizard.jwl.websocket.broadcast;
 
 public interface WsTopic {
-    String getTopic();
+  String getTopic();
 }

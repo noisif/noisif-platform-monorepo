@@ -18,19 +18,19 @@
 package xyz.jwizard.jwl.codec.envelope;
 
 public record MessageEnvelope<T>(int op, T data) {
-    public static <T> MessageEnvelope<T> of(OpCode opCode) {
-        return new MessageEnvelope<>(opCode.getCode(), null);
-    }
+  public static <T> MessageEnvelope<T> of(OpCode opCode) {
+    return new MessageEnvelope<>(opCode.getCode(), null);
+  }
 
-    public boolean isCategory(int category) {
-        return ((op >> 16) & 0xFF) == category;
-    }
+  public boolean isCategory(int category) {
+    return ((op >> 16) & 0xFF) == category;
+  }
 
-    public int category() {
-        return (op >> 16) & 0xFF;
-    }
+  public int category() {
+    return (op >> 16) & 0xFF;
+  }
 
-    public int actionId() {
-        return op & 0xFF;
-    }
+  public int actionId() {
+    return op & 0xFF;
+  }
 }

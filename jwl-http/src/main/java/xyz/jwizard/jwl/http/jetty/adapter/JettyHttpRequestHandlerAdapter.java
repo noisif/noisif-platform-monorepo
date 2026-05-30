@@ -27,21 +27,21 @@ import xyz.jwizard.jwl.http.HttpRequestHandler;
 import xyz.jwizard.jwl.http.HttpResponse;
 
 public class JettyHttpRequestHandlerAdapter extends Handler.Abstract {
-    private final HttpRequestHandler httpRequestHandler;
+  private final HttpRequestHandler httpRequestHandler;
 
-    public JettyHttpRequestHandlerAdapter(HttpRequestHandler httpRequestHandler) {
-        this.httpRequestHandler = httpRequestHandler;
-    }
+  public JettyHttpRequestHandlerAdapter(HttpRequestHandler httpRequestHandler) {
+    this.httpRequestHandler = httpRequestHandler;
+  }
 
-    @Override
-    public boolean handle(Request request, Response response, Callback callback) {
-        final HttpRequest req = new JettyHttpRequestAdapter(request);
-        final HttpResponse res = new JettyHttpResponseAdapter(response, callback);
-        try {
-            httpRequestHandler.processRequest(req, res);
-        } catch (Exception ex) {
-            httpRequestHandler.handleException(req, res, ex);
-        }
-        return true;
+  @Override
+  public boolean handle(Request request, Response response, Callback callback) {
+    final HttpRequest req = new JettyHttpRequestAdapter(request);
+    final HttpResponse res = new JettyHttpResponseAdapter(response, callback);
+    try {
+      httpRequestHandler.processRequest(req, res);
+    } catch (Exception ex) {
+      httpRequestHandler.handleException(req, res, ex);
     }
+    return true;
+  }
 }

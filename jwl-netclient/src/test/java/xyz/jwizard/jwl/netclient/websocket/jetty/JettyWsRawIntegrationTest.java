@@ -53,135 +53,125 @@ import java.time.Duration;
 import java.util.Map;
 
 class JettyWsRawIntegrationTest {
-    private final TestQueueProvider testQueueProvider = new TestQueueProvider();
+  private final TestQueueProvider testQueueProvider = new TestQueueProvider();
 
-    private ClassScanner scanner;
-    private ComponentProvider componentProvider;
-    private WebsocketServerIntegrationMock webSocketServer;
-    private GenericWsClient client;
+  private ClassScanner scanner;
+  private ComponentProvider componentProvider;
+  private WebsocketServerIntegrationMock webSocketServer;
+  private GenericWsClient client;
 
-    @BeforeEach
-    void setUp() throws IOException {
-        scanner = new ClassGraphScanner("xyz.jwizard.jwl.netclient.websocket");
-        final ApplicationContext context =
-                ApplicationContext.create(
-                        scanner,
-                        Map.of(ComponentProvider.class, GuiceComponentProvider.class),
-                        Map.of(TestQueueProvider.class, testQueueProvider));
-        componentProvider = context.getComponentProvider();
-        // setup server
-        webSocketServer = createWsServer(getRandomPort());
-        webSocketServer.start();
-        // setup client
-        client = createWsClient(webSocketServer.getPort());
-        client.start();
+  @BeforeEach
+  void setUp() throws IOException {
+    scanner = new ClassGraphScanner("xyz.jwizard.jwl.netclient.websocket");
+    final ApplicationContext context =
+        ApplicationContext.create(
+            scanner,
+            Map.of(ComponentProvider.class, GuiceComponentProvider.class),
+            Map.of(TestQueueProvider.class, testQueueProvider));
+    componentProvider = context.getComponentProvider();
+    // setup server
+    webSocketServer = createWsServer(getRandomPort());
+    webSocketServer.start();
+    // setup client
+    client = createWsClient(webSocketServer.getPort());
+    client.start();
+  }
+
+  private WebsocketServerIntegrationMock createWsServer(int port) {
+    return new WebsocketServerIntegrationMock(port);
+  }
+
+  private GenericWsClient createWsClient(int port) {
+    return JettyWsClient.builder()
+        .defaultClientGroup(
+            WsClientGroupConfig.builder()
+                .url("ws://localhost:" + port)
+                .principalId(TestConstants.SERVICE_NAME)
+                .componentProvider(componentProvider)
+                .reconnectConfig(WsReconnectConfig.enabled(Duration.ofSeconds(2), 5))
+                .setTypedMessageMode()
+                .typedMessageBusConfig(
+                    config ->
+                        config
+                            .dataTypeParamName(TestConstants.DATA_TYPE_QUERY_PARAM_NAME)
+                            .serializer(RawTextSerializer.createDefault())
+                            .addBusListener(new RawTextBusListener(testQueueProvider)))
+                .build())
+        .clientGroup(
+            TestWsClientGroup.RAW_BYTE,
+            WsClientGroupConfig.builder()
+                .url("ws://localhost:" + port)
+                .principalId(TestConstants.SERVICE_NAME)
+                .componentProvider(componentProvider)
+                .reconnectConfig(WsReconnectConfig.enabled(Duration.ofSeconds(2), 5))
+                .setTypedMessageMode()
+                .typedMessageBusConfig(
+                    config ->
+                        config
+                            .dataTypeParamName(TestConstants.DATA_TYPE_QUERY_PARAM_NAME)
+                            .serializer(RawByteSerializer.createDefault())
+                            .addBusListener(new RawByteBusListener(testQueueProvider)))
+                .build())
+        .build();
+  }
+
+  private int getRandomPort() throws IOException {
+    int port;
+    try (final ServerSocket socket = new ServerSocket(0)) {
+      port = socket.getLocalPort();
     }
+    return port;
+  }
 
-    private WebsocketServerIntegrationMock createWsServer(int port) {
-        return new WebsocketServerIntegrationMock(port);
-    }
+  @AfterEach
+  void tearDown() {
+    IoUtil.closeQuietly(client);
+    IoUtil.closeQuietly(webSocketServer, WebSocketServer::stop);
+    IoUtil.closeQuietly(scanner);
+    testQueueProvider.clear();
+  }
 
-    private GenericWsClient createWsClient(int port) {
-        return JettyWsClient.builder()
-                .defaultClientGroup(
-                        WsClientGroupConfig.builder()
-                                .url("ws://localhost:" + port)
-                                .principalId(TestConstants.SERVICE_NAME)
-                                .componentProvider(componentProvider)
-                                .reconnectConfig(
-                                        WsReconnectConfig.enabled(Duration.ofSeconds(2), 5))
-                                .setTypedMessageMode()
-                                .typedMessageBusConfig(
-                                        config ->
-                                                config.dataTypeParamName(
-                                                                TestConstants
-                                                                        .DATA_TYPE_QUERY_PARAM_NAME)
-                                                        .serializer(
-                                                                RawTextSerializer.createDefault())
-                                                        .addBusListener(
-                                                                new RawTextBusListener(
-                                                                        testQueueProvider)))
-                                .build())
-                .clientGroup(
-                        TestWsClientGroup.RAW_BYTE,
-                        WsClientGroupConfig.builder()
-                                .url("ws://localhost:" + port)
-                                .principalId(TestConstants.SERVICE_NAME)
-                                .componentProvider(componentProvider)
-                                .reconnectConfig(
-                                        WsReconnectConfig.enabled(Duration.ofSeconds(2), 5))
-                                .setTypedMessageMode()
-                                .typedMessageBusConfig(
-                                        config ->
-                                                config.dataTypeParamName(
-                                                                TestConstants
-                                                                        .DATA_TYPE_QUERY_PARAM_NAME)
-                                                        .serializer(
-                                                                RawByteSerializer.createDefault())
-                                                        .addBusListener(
-                                                                new RawByteBusListener(
-                                                                        testQueueProvider)))
-                                .build())
-                .build();
-    }
+  @Test
+  @DisplayName("should send and receive raw bytes payload")
+  void shouldSendAndReceiveRawBytesPayload() {
+    // given
+    final byte[] originalBytes = new byte[] {0x01, 0x02, 0x03, 0x04, 0x05};
+    // when
+    final WebSocket session = webSocketServer.getSession(DataType.BINARY);
+    session.send(originalBytes);
+    await().atMost(5, SECONDS).until(() -> !testQueueProvider.get().isEmpty());
+    // then
+    final byte[] receivedBytes = (byte[]) testQueueProvider.get().poll();
+    assertThat(receivedBytes).isNotNull().containsExactly(originalBytes);
+  }
 
-    private int getRandomPort() throws IOException {
-        int port;
-        try (final ServerSocket socket = new ServerSocket(0)) {
-            port = socket.getLocalPort();
-        }
-        return port;
-    }
+  @Test
+  @DisplayName("should send and receive raw text payload")
+  void shouldSendAndReceiveRawTextPayload() {
+    // given
+    final String originalText = "hello ws";
+    // when
+    final WebSocket session = webSocketServer.getSession(DataType.TEXT);
+    session.send(originalText);
+    await().atMost(5, SECONDS).until(() -> !testQueueProvider.get().isEmpty());
+    // then
+    final String receivedText = (String) testQueueProvider.get().poll();
+    assertThat(receivedText).isNotNull().contains(receivedText);
+  }
 
-    @AfterEach
-    void tearDown() {
-        IoUtil.closeQuietly(client);
-        IoUtil.closeQuietly(webSocketServer, WebSocketServer::stop);
-        IoUtil.closeQuietly(scanner);
-        testQueueProvider.clear();
-    }
-
-    @Test
-    @DisplayName("should send and receive raw bytes payload")
-    void shouldSendAndReceiveRawBytesPayload() {
-        // given
-        final byte[] originalBytes = new byte[] {0x01, 0x02, 0x03, 0x04, 0x05};
-        // when
-        final WebSocket session = webSocketServer.getSession(DataType.BINARY);
-        session.send(originalBytes);
-        await().atMost(5, SECONDS).until(() -> !testQueueProvider.get().isEmpty());
-        // then
-        final byte[] receivedBytes = (byte[]) testQueueProvider.get().poll();
-        assertThat(receivedBytes).isNotNull().containsExactly(originalBytes);
-    }
-
-    @Test
-    @DisplayName("should send and receive raw text payload")
-    void shouldSendAndReceiveRawTextPayload() {
-        // given
-        final String originalText = "hello ws";
-        // when
-        final WebSocket session = webSocketServer.getSession(DataType.TEXT);
-        session.send(originalText);
-        await().atMost(5, SECONDS).until(() -> !testQueueProvider.get().isEmpty());
-        // then
-        final String receivedText = (String) testQueueProvider.get().poll();
-        assertThat(receivedText).isNotNull().contains(receivedText);
-    }
-
-    @Test
-    @DisplayName("should reconnect after server failure")
-    void shouldReconnectAfterServerFailure() throws InterruptedException {
-        // given
-        assertThat(client.isConnected()).isTrue();
-        final int originalPort = webSocketServer.getPort();
-        webSocketServer.stop();
-        // when
-        await().atMost(5, SECONDS).until(() -> !client.isConnected());
-        // then
-        webSocketServer = createWsServer(originalPort);
-        webSocketServer.start();
-        await().atMost(15, SECONDS).until(() -> client.isConnected());
-        assertThat(client.isConnected()).isTrue();
-    }
+  @Test
+  @DisplayName("should reconnect after server failure")
+  void shouldReconnectAfterServerFailure() throws InterruptedException {
+    // given
+    assertThat(client.isConnected()).isTrue();
+    final int originalPort = webSocketServer.getPort();
+    webSocketServer.stop();
+    // when
+    await().atMost(5, SECONDS).until(() -> !client.isConnected());
+    // then
+    webSocketServer = createWsServer(originalPort);
+    webSocketServer.start();
+    await().atMost(15, SECONDS).until(() -> client.isConnected());
+    assertThat(client.isConnected()).isTrue();
+  }
 }

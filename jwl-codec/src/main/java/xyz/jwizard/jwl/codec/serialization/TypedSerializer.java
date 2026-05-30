@@ -20,5 +20,5 @@ package xyz.jwizard.jwl.codec.serialization;
 import xyz.jwizard.jwl.codec.DataType;
 
 public interface TypedSerializer extends Serializer {
-    DataType getCodecDataType();
+  DataType getCodecDataType();
 }

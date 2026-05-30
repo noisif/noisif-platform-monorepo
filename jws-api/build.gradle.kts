@@ -21,18 +21,18 @@ import xyz.jwizard.buildconfig.jwService
 apply<JwServicePlugin>()
 
 jwService {
-    packageSuffix.set("api")
-    mainClass.set("JwsApiMain")
+  packageSuffix.set("api")
+  mainClass.set("JwsApiMain")
 }
 
 dependencies {
-    runtimeOnly(libs.postgresql)
+  runtimeOnly(libs.postgresql)
 
-    implementation(project(":jwl-codec"))
-    implementation(project(":jwl-common"))
-    implementation(project(":jwl-http"))
-    implementation(project(":jwl-kv"))
-    implementation(project(":jwl-sql"))
+  implementation(project(":jwl-codec"))
+  implementation(project(":jwl-common"))
+  implementation(project(":jwl-http"))
+  implementation(project(":jwl-kv"))
+  implementation(project(":jwl-sql"))
 
-    testImplementation(testFixtures(project(":jwl-common")))
+  testImplementation(testFixtures(project(":jwl-common")))
 }

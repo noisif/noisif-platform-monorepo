@@ -21,14 +21,14 @@ import java.io.IOException;
 import java.util.Map;
 
 public interface JsEngine {
-    <T> T executeScript(ScriptFile scriptFile, Map<String, Object> variables, Class<T> returnType)
-            throws IOException;
+  <T> T executeScript(ScriptFile scriptFile, Map<String, Object> variables, Class<T> returnType)
+      throws IOException;
 
-    <T> T executeScript(ScriptFile scriptFile, Class<T> returnType) throws IOException;
+  <T> T executeScript(ScriptFile scriptFile, Class<T> returnType) throws IOException;
 
-    void executeScript(ScriptFile scriptFile) throws IOException;
+  void executeScript(ScriptFile scriptFile) throws IOException;
 
-    <T> T callFunction(String functionName, Class<T> returnType, Object... args);
+  <T> T callFunction(String functionName, Class<T> returnType, Object... args);
 
-    void callFunction(String functionName, Object... args);
+  void callFunction(String functionName, Object... args);
 }

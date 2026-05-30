@@ -21,11 +21,11 @@ import java.util.Collection;
 import java.util.Map;
 
 public interface RegistryReader<K, V> {
-    V get(K key);
+  V get(K key);
 
-    V getOrNull(K key);
+  V getOrNull(K key);
 
-    Collection<V> getAll();
+  Collection<V> getAll();
 
-    Map<K, V> getEntries();
+  Map<K, V> getEntries();
 }

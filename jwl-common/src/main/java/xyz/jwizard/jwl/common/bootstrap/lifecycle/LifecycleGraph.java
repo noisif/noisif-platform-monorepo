@@ -21,9 +21,9 @@ import java.util.Collection;
 import java.util.List;
 
 public interface LifecycleGraph {
-    void addNode(LifecycleHook hook);
+  void addNode(LifecycleHook hook);
 
-    void addNodes(Collection<? extends LifecycleHook> hooks);
+  void addNodes(Collection<? extends LifecycleHook> hooks);
 
-    List<LifecycleHook> resolve();
+  List<LifecycleHook> resolve();
 }

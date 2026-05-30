@@ -22,19 +22,19 @@ import xyz.jwizard.jwl.netclient.websocket.TestQueueProvider;
 import xyz.jwizard.jwl.netclient.websocket.WsClientSession;
 
 public class RawTextBusListener extends TypedMessageBusListener<String, WsClientSession> {
-    private final TestQueueProvider testQueueProvider;
+  private final TestQueueProvider testQueueProvider;
 
-    public RawTextBusListener(TestQueueProvider testQueueProvider) {
-        this.testQueueProvider = testQueueProvider;
-    }
+  public RawTextBusListener(TestQueueProvider testQueueProvider) {
+    this.testQueueProvider = testQueueProvider;
+  }
 
-    @Override
-    protected void handle(WsClientSession session, String message) {
-        testQueueProvider.get().add(message);
-    }
+  @Override
+  protected void handle(WsClientSession session, String message) {
+    testQueueProvider.get().add(message);
+  }
 
-    @Override
-    protected Class<String> getTargetType() {
-        return String.class;
-    }
+  @Override
+  protected Class<String> getTargetType() {
+    return String.class;
+  }
 }

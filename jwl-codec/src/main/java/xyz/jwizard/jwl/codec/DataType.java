@@ -20,18 +20,18 @@ package xyz.jwizard.jwl.codec;
 import xyz.jwizard.jwl.common.Identifiable;
 
 public enum DataType implements Identifiable<String> {
-    TEXT("text"),
-    BINARY("binary"),
-    ;
+  TEXT("text"),
+  BINARY("binary"),
+  ;
 
-    private final String code;
+  private final String code;
 
-    DataType(String code) {
-        this.code = code;
-    }
+  DataType(String code) {
+    this.code = code;
+  }
 
-    @Override
-    public String getCode() {
-        return code;
-    }
+  @Override
+  public String getCode() {
+    return code;
+  }
 }

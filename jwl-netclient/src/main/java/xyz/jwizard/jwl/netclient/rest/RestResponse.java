@@ -23,29 +23,29 @@ import java.util.List;
 import java.util.Map;
 
 public class RestResponse<T> {
-    private final HttpStatus status;
-    private final Map<String, List<String>> headers;
-    private final T body;
+  private final HttpStatus status;
+  private final Map<String, List<String>> headers;
+  private final T body;
 
-    public RestResponse(int status, Map<String, List<String>> headers, T body) {
-        this.status = HttpStatus.fromCode(status);
-        this.headers = headers != null ? headers : Map.of();
-        this.body = body;
-    }
+  public RestResponse(int status, Map<String, List<String>> headers, T body) {
+    this.status = HttpStatus.fromCode(status);
+    this.headers = headers != null ? headers : Map.of();
+    this.body = body;
+  }
 
-    public boolean is(HttpStatus status) {
-        return this.status.equals(status);
-    }
+  public boolean is(HttpStatus status) {
+    return this.status.equals(status);
+  }
 
-    public HttpStatus getStatus() {
-        return status;
-    }
+  public HttpStatus getStatus() {
+    return status;
+  }
 
-    public Map<String, List<String>> getHeaders() {
-        return headers;
-    }
+  public Map<String, List<String>> getHeaders() {
+    return headers;
+  }
 
-    public T getBody() {
-        return body;
-    }
+  public T getBody() {
+    return body;
+  }
 }

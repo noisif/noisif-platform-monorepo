@@ -31,65 +31,64 @@ import xyz.jwizard.jwl.http.jetty.adapter.JettyHttpRequestHandlerAdapter;
 import java.util.concurrent.Executors;
 
 public class JettyHttpServer extends HttpServer {
-    private static final long SHUTDOWN_TIMEOUT_MS = 10000;
+  private static final long SHUTDOWN_TIMEOUT_MS = 10000;
 
-    private Server server;
-    private ServerConnector connector;
+  private Server server;
+  private ServerConnector connector;
 
-    protected JettyHttpServer(AbstractBuilder<?> builder) {
-        super(builder);
-    }
+  protected JettyHttpServer(AbstractBuilder<?> builder) {
+    super(builder);
+  }
 
-    public static Builder builder() {
-        return new Builder();
+  public static Builder builder() {
+    return new Builder();
+  }
+
+  @Override
+  protected final void onStart() throws Exception {
+    final HttpRequestHandler httpRequestHandler = prepareRequestHandler();
+
+    final QueuedThreadPool queuedThreadPool = new QueuedThreadPool();
+    queuedThreadPool.setVirtualThreadsExecutor(Executors.newVirtualThreadPerTaskExecutor());
+    queuedThreadPool.setName("http-vt-pool");
+
+    server = new Server(queuedThreadPool);
+    server.setStopTimeout(SHUTDOWN_TIMEOUT_MS);
+    server.setStopAtShutdown(false);
+
+    connector = new ServerConnector(server);
+    connector.setPort(port);
+
+    server.addConnector(connector);
+    server.setHandler(new JettyHttpRequestHandlerAdapter(httpRequestHandler));
+
+    server.start();
+    log.info("HTTP server started successfully with {}ms shutdown timeout", SHUTDOWN_TIMEOUT_MS);
+  }
+
+  @Override
+  protected final void onStop() {
+    IoUtil.closeQuietly(server, AbstractLifeCycle::stop);
+  }
+
+  @Override
+  public final int getLocalPort() {
+    Assert.state(connector != null && connector.isRunning(), "Connector is not running");
+    return connector.getLocalPort();
+  }
+
+  public static class Builder extends AbstractBuilder<Builder> {
+    private Builder() {}
+
+    @Override
+    protected Builder self() {
+      return this;
     }
 
     @Override
-    protected final void onStart() throws Exception {
-        final HttpRequestHandler httpRequestHandler = prepareRequestHandler();
-
-        final QueuedThreadPool queuedThreadPool = new QueuedThreadPool();
-        queuedThreadPool.setVirtualThreadsExecutor(Executors.newVirtualThreadPerTaskExecutor());
-        queuedThreadPool.setName("http-vt-pool");
-
-        server = new Server(queuedThreadPool);
-        server.setStopTimeout(SHUTDOWN_TIMEOUT_MS);
-        server.setStopAtShutdown(false);
-
-        connector = new ServerConnector(server);
-        connector.setPort(port);
-
-        server.addConnector(connector);
-        server.setHandler(new JettyHttpRequestHandlerAdapter(httpRequestHandler));
-
-        server.start();
-        log.info(
-                "HTTP server started successfully with {}ms shutdown timeout", SHUTDOWN_TIMEOUT_MS);
+    public HttpServer build() {
+      validate();
+      return new JettyHttpServer(this);
     }
-
-    @Override
-    protected final void onStop() {
-        IoUtil.closeQuietly(server, AbstractLifeCycle::stop);
-    }
-
-    @Override
-    public final int getLocalPort() {
-        Assert.state(connector != null && connector.isRunning(), "Connector is not running");
-        return connector.getLocalPort();
-    }
-
-    public static class Builder extends AbstractBuilder<Builder> {
-        private Builder() {}
-
-        @Override
-        protected Builder self() {
-            return this;
-        }
-
-        @Override
-        public HttpServer build() {
-            validate();
-            return new JettyHttpServer(this);
-        }
-    }
+  }
 }

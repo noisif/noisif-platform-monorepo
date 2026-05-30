@@ -28,90 +28,90 @@ import java.util.List;
 import java.util.function.Consumer;
 
 abstract class GenericWsBusConfig implements WsBusConfig {
-    protected final String encodingParamName;
-    protected final String dataTypeParamName;
-    protected final RawBusListener<WsClientSession> busListener;
+  protected final String encodingParamName;
+  protected final String dataTypeParamName;
+  protected final RawBusListener<WsClientSession> busListener;
 
-    protected GenericWsBusConfig(AbstractBuilder<?, ?> builder) {
-        this.encodingParamName = builder.encodingParamName;
-        this.dataTypeParamName = builder.dataTypeParamName;
-        this.busListener = CompositeBusListener.load(builder.busListeners);
+  protected GenericWsBusConfig(AbstractBuilder<?, ?> builder) {
+    this.encodingParamName = builder.encodingParamName;
+    this.dataTypeParamName = builder.dataTypeParamName;
+    this.busListener = CompositeBusListener.load(builder.busListeners);
+  }
+
+  @Override
+  public RawBusListener<WsClientSession> getBusListener() {
+    return busListener;
+  }
+
+  abstract static class AbstractBuilder<
+      B extends AbstractBuilder<B, C>, C extends GenericWsBusConfig> {
+    protected final List<RawBusListener<WsClientSession>> busListeners = new ArrayList<>();
+    private final boolean paramsRequired;
+    protected String encodingParamName;
+    protected String dataTypeParamName;
+
+    protected AbstractBuilder(
+        String encodingParamName, String dataTypeParamName, boolean paramsRequired) {
+      this.encodingParamName = encodingParamName;
+      this.dataTypeParamName = dataTypeParamName;
+      this.paramsRequired = paramsRequired;
     }
 
-    @Override
-    public RawBusListener<WsClientSession> getBusListener() {
-        return busListener;
+    protected AbstractBuilder(String encodingParamName, String dataTypeParamName) {
+      this(encodingParamName, dataTypeParamName, true);
     }
 
-    abstract static class AbstractBuilder<
-            B extends AbstractBuilder<B, C>, C extends GenericWsBusConfig> {
-        protected final List<RawBusListener<WsClientSession>> busListeners = new ArrayList<>();
-        private final boolean paramsRequired;
-        protected String encodingParamName;
-        protected String dataTypeParamName;
-
-        protected AbstractBuilder(
-                String encodingParamName, String dataTypeParamName, boolean paramsRequired) {
-            this.encodingParamName = encodingParamName;
-            this.dataTypeParamName = dataTypeParamName;
-            this.paramsRequired = paramsRequired;
-        }
-
-        protected AbstractBuilder(String encodingParamName, String dataTypeParamName) {
-            this(encodingParamName, dataTypeParamName, true);
-        }
-
-        protected AbstractBuilder() {
-            this(null, null, false);
-        }
-
-        protected abstract B self();
-
-        public B encodingParamName(String encodingParamName) {
-            this.encodingParamName = encodingParamName;
-            return self();
-        }
-
-        public B dataTypeParamName(String dataTypeParamName) {
-            this.dataTypeParamName = dataTypeParamName;
-            return self();
-        }
-
-        protected B addRawBusListener(RawBusListener<WsClientSession> listener) {
-            busListeners.add(listener);
-            return self();
-        }
-
-        protected void validate() {
-            if (paramsRequired) {
-                Assert.notNull(encodingParamName, "EncodingParamName cannot be null");
-                Assert.notNull(dataTypeParamName, "DataTypeParamName cannot be null");
-            }
-            Assert.notNullAll(busListeners, "All BusListeners must be initialized");
-        }
-
-        public abstract C build();
+    protected AbstractBuilder() {
+      this(null, null, false);
     }
 
-    abstract static class AbstractStep<
-            S extends AbstractStep<S, B>, B extends AbstractBuilder<B, ?>> {
-        protected final WsClientGroupConfig.Builder parent;
-        protected WsBusConfig busConfig;
+    protected abstract B self();
 
-        protected AbstractStep(WsClientGroupConfig.Builder parent) {
-            this.parent = parent;
-        }
-
-        protected abstract S self();
-
-        protected S configure(B builder, Consumer<B> configurer) {
-            configurer.accept(builder);
-            this.busConfig = builder.build();
-            return self();
-        }
-
-        public WsClientGroupConfig build() {
-            return new WsClientGroupConfig(parent, busConfig);
-        }
+    public B encodingParamName(String encodingParamName) {
+      this.encodingParamName = encodingParamName;
+      return self();
     }
+
+    public B dataTypeParamName(String dataTypeParamName) {
+      this.dataTypeParamName = dataTypeParamName;
+      return self();
+    }
+
+    protected B addRawBusListener(RawBusListener<WsClientSession> listener) {
+      busListeners.add(listener);
+      return self();
+    }
+
+    protected void validate() {
+      if (paramsRequired) {
+        Assert.notNull(encodingParamName, "EncodingParamName cannot be null");
+        Assert.notNull(dataTypeParamName, "DataTypeParamName cannot be null");
+      }
+      Assert.notNullAll(busListeners, "All BusListeners must be initialized");
+    }
+
+    public abstract C build();
+  }
+
+  abstract static class AbstractStep<
+      S extends AbstractStep<S, B>, B extends AbstractBuilder<B, ?>> {
+    protected final WsClientGroupConfig.Builder parent;
+    protected WsBusConfig busConfig;
+
+    protected AbstractStep(WsClientGroupConfig.Builder parent) {
+      this.parent = parent;
+    }
+
+    protected abstract S self();
+
+    protected S configure(B builder, Consumer<B> configurer) {
+      configurer.accept(builder);
+      this.busConfig = builder.build();
+      return self();
+    }
+
+    public WsClientGroupConfig build() {
+      return new WsClientGroupConfig(parent, busConfig);
+    }
+  }
 }

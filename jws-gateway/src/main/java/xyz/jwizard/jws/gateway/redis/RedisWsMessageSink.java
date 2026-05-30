@@ -23,23 +23,23 @@ import xyz.jwizard.jwl.websocket.broadcast.WsTopic;
 import xyz.jwizard.jws.gateway.WsKvChannel;
 
 public class RedisWsMessageSink implements WsMessageSink {
-    private final PubSubBroadcaster pubSubBroadcaster;
+  private final PubSubBroadcaster pubSubBroadcaster;
 
-    private RedisWsMessageSink(PubSubBroadcaster pubSubBroadcaster) {
-        this.pubSubBroadcaster = pubSubBroadcaster;
-    }
+  private RedisWsMessageSink(PubSubBroadcaster pubSubBroadcaster) {
+    this.pubSubBroadcaster = pubSubBroadcaster;
+  }
 
-    public static RedisWsMessageSink createDefault(PubSubBroadcaster pubSubBroadcaster) {
-        return new RedisWsMessageSink(pubSubBroadcaster);
-    }
+  public static RedisWsMessageSink createDefault(PubSubBroadcaster pubSubBroadcaster) {
+    return new RedisWsMessageSink(pubSubBroadcaster);
+  }
 
-    @Override
-    public void payload(WsTopic topic, byte[] payload) {
-        pubSubBroadcaster.publishBinary(WsKvChannel.TOPIC_BROADCAST, payload, topic.getTopic());
-    }
+  @Override
+  public void payload(WsTopic topic, byte[] payload) {
+    pubSubBroadcaster.publishBinary(WsKvChannel.TOPIC_BROADCAST, payload, topic.getTopic());
+  }
 
-    @Override
-    public void payloadAll(byte[] payload) {
-        pubSubBroadcaster.publishBinary(WsKvChannel.GLOBAL_BROADCAST, payload);
-    }
+  @Override
+  public void payloadAll(byte[] payload) {
+    pubSubBroadcaster.publishBinary(WsKvChannel.GLOBAL_BROADCAST, payload);
+  }
 }

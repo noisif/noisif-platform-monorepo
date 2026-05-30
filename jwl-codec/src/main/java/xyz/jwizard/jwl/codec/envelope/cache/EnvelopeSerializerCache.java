@@ -21,7 +21,7 @@ import xyz.jwizard.jwl.codec.envelope.EnvelopeSerializer;
 import xyz.jwizard.jwl.codec.envelope.EnvelopeSerializerRegistry;
 
 public interface EnvelopeSerializerCache {
-    EnvelopeSerializerCache init(EnvelopeSerializerRegistry registry);
+  EnvelopeSerializerCache init(EnvelopeSerializerRegistry registry);
 
-    EnvelopeSerializer<?> find(String encoding, String frame);
+  EnvelopeSerializer<?> find(String encoding, String frame);
 }

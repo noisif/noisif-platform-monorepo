@@ -33,144 +33,142 @@ import java.nio.ByteBuffer;
 import java.util.function.Consumer;
 
 public abstract class GenericWsListenerHandler<S extends NetworkSession> {
-    private static final String UNKNOWN_SESSION = "UNKNOWN_PENDING_SESSION";
+  private static final String UNKNOWN_SESSION = "UNKNOWN_PENDING_SESSION";
 
-    protected final Logger log = LoggerFactory.getLogger(getClass());
-    protected final RegistryTracker<S> registryTracker;
-    protected final NetworkSessionLifecycleListener<S> lifecycleListener;
-    protected final RawBusListener<S> busListener;
+  protected final Logger log = LoggerFactory.getLogger(getClass());
+  protected final RegistryTracker<S> registryTracker;
+  protected final NetworkSessionLifecycleListener<S> lifecycleListener;
+  protected final RawBusListener<S> busListener;
 
-    protected S sessionAdapter;
+  protected S sessionAdapter;
 
-    protected GenericWsListenerHandler(
-            RegistryTracker<S> registryTracker,
-            NetworkSessionLifecycleListener<S> lifecycleListener,
-            RawBusListener<S> busListener) {
-        this.registryTracker = registryTracker;
-        this.lifecycleListener = lifecycleListener;
-        this.busListener = busListener;
+  protected GenericWsListenerHandler(
+      RegistryTracker<S> registryTracker,
+      NetworkSessionLifecycleListener<S> lifecycleListener,
+      RawBusListener<S> busListener) {
+    this.registryTracker = registryTracker;
+    this.lifecycleListener = lifecycleListener;
+    this.busListener = busListener;
+  }
+
+  protected void handleConnect() {
+    try {
+      if (log.isTraceEnabled()) {
+        log.trace("Invoking onConnect for session: {}", getSafeSessionId());
+      }
+      lifecycleListener.onConnect(sessionAdapter);
+    } catch (Exception ex) {
+      handleFatalError("Exception during onConnect phase", ex);
     }
+  }
 
-    protected void handleConnect() {
-        try {
-            if (log.isTraceEnabled()) {
-                log.trace("Invoking onConnect for session: {}", getSafeSessionId());
-            }
-            lifecycleListener.onConnect(sessionAdapter);
-        } catch (Exception ex) {
-            handleFatalError("Exception during onConnect phase", ex);
-        }
+  protected void handleClose(int statusCode, String reason) {
+    log.debug(
+        "WebSocket connection closed, session: {}, status: {}, reason: '{}'",
+        getSafeSessionId(),
+        statusCode,
+        reason);
+    if (sessionAdapter != null) {
+      cleanupSession();
+      lifecycleListener.onClose(sessionAdapter, statusCode, reason);
     }
+  }
 
-    protected void handleClose(int statusCode, String reason) {
-        log.debug(
-                "WebSocket connection closed, session: {}, status: {}, reason: '{}'",
-                getSafeSessionId(),
-                statusCode,
-                reason);
-        if (sessionAdapter != null) {
-            cleanupSession();
-            lifecycleListener.onClose(sessionAdapter, statusCode, reason);
-        }
+  protected void handleError(Throwable cause) {
+    log.warn(
+        "WebSocket protocol/network error, session: {}, cause: {}",
+        getSafeSessionId(),
+        cause != null ? cause.getMessage() : "null");
+    if (sessionAdapter != null) {
+      cleanupSession();
+      lifecycleListener.onError(sessionAdapter, cause);
     }
+  }
 
-    protected void handleError(Throwable cause) {
-        log.warn(
-                "WebSocket protocol/network error, session: {}, cause: {}",
-                getSafeSessionId(),
-                cause != null ? cause.getMessage() : "null");
-        if (sessionAdapter != null) {
-            cleanupSession();
-            lifecycleListener.onError(sessionAdapter, cause);
-        }
+  protected void onText(String message) {
+    if (log.isTraceEnabled()) {
+      log.trace(
+          "Received text message, session: {}, size: {} chars",
+          getSafeSessionId(),
+          message.length());
     }
+    processMessageSafe(() -> busListener.dispatch(sessionAdapter, message), null, null);
+  }
 
-    protected void onText(String message) {
-        if (log.isTraceEnabled()) {
-            log.trace(
-                    "Received text message, session: {}, size: {} chars",
-                    getSafeSessionId(),
-                    message.length());
-        }
-        processMessageSafe(() -> busListener.dispatch(sessionAdapter, message), null, null);
+  protected void onBinary(ByteBuffer payload, Runnable onSuccess, Consumer<Throwable> onFailure) {
+    final byte[] bytes = new byte[payload.remaining()];
+    payload.get(bytes);
+    if (log.isTraceEnabled()) {
+      log.trace(
+          "Received binary message, session: {}, size: {} bytes", getSafeSessionId(), bytes.length);
     }
+    processMessageSafe(() -> busListener.dispatch(sessionAdapter, bytes), onSuccess, onFailure);
+  }
 
-    protected void onBinary(ByteBuffer payload, Runnable onSuccess, Consumer<Throwable> onFailure) {
-        final byte[] bytes = new byte[payload.remaining()];
-        payload.get(bytes);
-        if (log.isTraceEnabled()) {
-            log.trace(
-                    "Received binary message, session: {}, size: {} bytes",
-                    getSafeSessionId(),
-                    bytes.length);
-        }
-        processMessageSafe(() -> busListener.dispatch(sessionAdapter, bytes), onSuccess, onFailure);
-    }
-
-    protected void processMessageSafe(
-            RunnableWithException action, Runnable onSuccess, Consumer<Throwable> onFailure) {
-        final String sessionId = getSafeSessionId();
-        try {
-            if (!checkRateLimit()) {
-                log.warn("Rate limit exceeded for session {}, dropping message.", sessionId);
-                onRateLimitExceeded();
-                runOnSuccess(onSuccess);
-                return;
-            }
-            action.run();
-            runOnSuccess(onSuccess);
-        } catch (UnsupportedDataTypeException ex) {
-            handleFatalProcessingError(ex, WsCloseCode.UNSUPPORTED_FRAME_TYPE, onSuccess);
-        } catch (ConcurrentOperationException ex) {
-            handleFatalProcessingError(ex, WsCloseCode.SERVER_OVERLOADED, onSuccess);
-        } catch (RuntimeException ex) {
-            lifecycleListener.onError(sessionAdapter, ex);
-            log.error("Business logic error in session: {}", sessionId, ex);
-            onBusinessError();
-            runOnSuccess(onSuccess);
-        } catch (Exception ex) {
-            handleFatalError("Exception during message processing", ex);
-            if (onFailure != null) {
-                onFailure.accept(ex);
-            }
-        }
-    }
-
-    private void handleFatalProcessingError(Exception ex, CloseCode closeCode, Runnable onSuccess) {
-        lifecycleListener.onError(sessionAdapter, ex);
-        if (sessionAdapter != null) {
-            sessionAdapter.close(closeCode);
-        }
+  protected void processMessageSafe(
+      RunnableWithException action, Runnable onSuccess, Consumer<Throwable> onFailure) {
+    final String sessionId = getSafeSessionId();
+    try {
+      if (!checkRateLimit()) {
+        log.warn("Rate limit exceeded for session {}, dropping message.", sessionId);
+        onRateLimitExceeded();
         runOnSuccess(onSuccess);
+        return;
+      }
+      action.run();
+      runOnSuccess(onSuccess);
+    } catch (UnsupportedDataTypeException ex) {
+      handleFatalProcessingError(ex, WsCloseCode.UNSUPPORTED_FRAME_TYPE, onSuccess);
+    } catch (ConcurrentOperationException ex) {
+      handleFatalProcessingError(ex, WsCloseCode.SERVER_OVERLOADED, onSuccess);
+    } catch (RuntimeException ex) {
+      lifecycleListener.onError(sessionAdapter, ex);
+      log.error("Business logic error in session: {}", sessionId, ex);
+      onBusinessError();
+      runOnSuccess(onSuccess);
+    } catch (Exception ex) {
+      handleFatalError("Exception during message processing", ex);
+      if (onFailure != null) {
+        onFailure.accept(ex);
+      }
     }
+  }
 
-    private void handleFatalError(String context, Exception ex) {
-        log.error("Critical error, context: '{}', session: {}.", context, getSafeSessionId(), ex);
-        if (sessionAdapter != null) {
-            lifecycleListener.onError(sessionAdapter, ex);
-            sessionAdapter.close(WsCloseCode.INTERNAL_SERVER_ERROR);
-        }
+  private void handleFatalProcessingError(Exception ex, CloseCode closeCode, Runnable onSuccess) {
+    lifecycleListener.onError(sessionAdapter, ex);
+    if (sessionAdapter != null) {
+      sessionAdapter.close(closeCode);
     }
+    runOnSuccess(onSuccess);
+  }
 
-    private void runOnSuccess(Runnable onSuccess) {
-        if (onSuccess != null) {
-            onSuccess.run();
-        }
+  private void handleFatalError(String context, Exception ex) {
+    log.error("Critical error, context: '{}', session: {}.", context, getSafeSessionId(), ex);
+    if (sessionAdapter != null) {
+      lifecycleListener.onError(sessionAdapter, ex);
+      sessionAdapter.close(WsCloseCode.INTERNAL_SERVER_ERROR);
     }
+  }
 
-    protected String getSafeSessionId() {
-        return sessionAdapter != null ? sessionAdapter.getSessionId() : UNKNOWN_SESSION;
+  private void runOnSuccess(Runnable onSuccess) {
+    if (onSuccess != null) {
+      onSuccess.run();
     }
+  }
 
-    protected void cleanupSession() {
-        registryTracker.unregister(sessionAdapter);
-    }
+  protected String getSafeSessionId() {
+    return sessionAdapter != null ? sessionAdapter.getSessionId() : UNKNOWN_SESSION;
+  }
 
-    protected boolean checkRateLimit() {
-        return true;
-    }
+  protected void cleanupSession() {
+    registryTracker.unregister(sessionAdapter);
+  }
 
-    protected void onRateLimitExceeded() {}
+  protected boolean checkRateLimit() {
+    return true;
+  }
 
-    protected void onBusinessError() {}
+  protected void onRateLimitExceeded() {}
+
+  protected void onBusinessError() {}
 }

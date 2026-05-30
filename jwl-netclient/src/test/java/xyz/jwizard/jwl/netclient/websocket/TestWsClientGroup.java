@@ -20,12 +20,12 @@ package xyz.jwizard.jwl.netclient.websocket;
 import xyz.jwizard.jwl.netclient.group.ClientGroup;
 
 public enum TestWsClientGroup implements ClientGroup {
-    PROTOBUF,
-    RAW_BYTE,
-    ;
+  PROTOBUF,
+  RAW_BYTE,
+  ;
 
-    @Override
-    public String getClientGroupName() {
-        return name();
-    }
+  @Override
+  public String getClientGroupName() {
+    return name();
+  }
 }

@@ -20,13 +20,13 @@ package xyz.jwizard.jws.gateway;
 import xyz.jwizard.jwl.common.ModuleIdentityTest;
 
 class JwsGatewayIdentityTest extends ModuleIdentityTest {
-    @Override
-    protected String getModuleName() {
-        return "gateway";
-    }
+  @Override
+  protected String getModuleName() {
+    return "gateway";
+  }
 
-    @Override
-    protected String getPackageSuffix() {
-        return "jws";
-    }
+  @Override
+  protected String getPackageSuffix() {
+    return "jws";
+  }
 }

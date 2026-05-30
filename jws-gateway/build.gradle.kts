@@ -21,19 +21,19 @@ import xyz.jwizard.buildconfig.jwService
 apply<JwServicePlugin>()
 
 jwService {
-    packageSuffix.set("gateway")
-    mainClass.set("JwsGatewayMain")
+  packageSuffix.set("gateway")
+  mainClass.set("JwsGatewayMain")
 }
 
 dependencies {
-    implementation(project(":jwl-codec"))
-    implementation(project(":jwl-common"))
-    implementation(project(":jwl-contracts"))
-    implementation(project(":jwl-http"))
-    implementation(project(":jwl-kv"))
-    implementation(project(":jwl-net"))
-    implementation(project(":jwl-queue"))
-    implementation(project(":jwl-websocket"))
+  implementation(project(":jwl-codec"))
+  implementation(project(":jwl-common"))
+  implementation(project(":jwl-contracts"))
+  implementation(project(":jwl-http"))
+  implementation(project(":jwl-kv"))
+  implementation(project(":jwl-net"))
+  implementation(project(":jwl-queue"))
+  implementation(project(":jwl-websocket"))
 
-    testImplementation(testFixtures(project(":jwl-common")))
+  testImplementation(testFixtures(project(":jwl-common")))
 }

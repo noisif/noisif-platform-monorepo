@@ -20,25 +20,25 @@ package xyz.jwizard.jwl.netclient.group;
 import xyz.jwizard.jwl.common.registry.GenericConcurrentRegistry;
 
 public class InMemoryClientRegistry<T extends ClientGroupConfig>
-        extends GenericConcurrentRegistry<ClientGroup, T> implements ClientRegistry<T> {
-    private InMemoryClientRegistry() {
-        super();
-    }
+    extends GenericConcurrentRegistry<ClientGroup, T> implements ClientRegistry<T> {
+  private InMemoryClientRegistry() {
+    super();
+  }
 
-    public static <T extends ClientGroupConfig> ClientRegistry<T> createDefault() {
-        return new InMemoryClientRegistry<>();
-    }
+  public static <T extends ClientGroupConfig> ClientRegistry<T> createDefault() {
+    return new InMemoryClientRegistry<>();
+  }
 
-    @Override
-    public void register(ClientGroup clientGroup, T config) {
-        super.register(clientGroup, config);
-    }
+  @Override
+  public void register(ClientGroup clientGroup, T config) {
+    super.register(clientGroup, config);
+  }
 
-    @Override
-    public void register(T config) {
-        if (log.isDebugEnabled()) {
-            log.debug("Registering configuration under default GLOBAL client group");
-        }
-        super.register(ClientGroup.GLOBAL, config);
+  @Override
+  public void register(T config) {
+    if (log.isDebugEnabled()) {
+      log.debug("Registering configuration under default GLOBAL client group");
     }
+    super.register(ClientGroup.GLOBAL, config);
+  }
 }

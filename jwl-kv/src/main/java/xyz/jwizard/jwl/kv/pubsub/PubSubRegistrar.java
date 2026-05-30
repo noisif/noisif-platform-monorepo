@@ -20,11 +20,11 @@ package xyz.jwizard.jwl.kv.pubsub;
 import xyz.jwizard.jwl.kv.pubsub.subscriber.KvSubscriber;
 
 public interface PubSubRegistrar {
-    void subscribe(KvSubscriber<String> subscriber);
+  void subscribe(KvSubscriber<String> subscriber);
 
-    void subscribeBinary(KvSubscriber<byte[]> subscriber);
+  void subscribeBinary(KvSubscriber<byte[]> subscriber);
 
-    void pSubscribe(KvSubscriber<String> subscriber);
+  void pSubscribe(KvSubscriber<String> subscriber);
 
-    void pSubscribeBinary(KvSubscriber<byte[]> subscriber);
+  void pSubscribeBinary(KvSubscriber<byte[]> subscriber);
 }

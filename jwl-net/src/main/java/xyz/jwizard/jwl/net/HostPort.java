@@ -18,7 +18,7 @@
 package xyz.jwizard.jwl.net;
 
 public record HostPort(String host, int port) {
-    public static HostPort from(String host, int port) {
-        return new HostPort(host, port);
-    }
+  public static HostPort from(String host, int port) {
+    return new HostPort(host, port);
+  }
 }

@@ -20,9 +20,9 @@ package xyz.jwizard.jwl.codec.serialization.json;
 import xyz.jwizard.jwl.codec.serialization.MessageSerializer;
 
 public interface JsonSerializer extends MessageSerializer {
-    String serialize(Object value);
+  String serialize(Object value);
 
-    <T> T deserialize(String payload, Class<T> type);
+  <T> T deserialize(String payload, Class<T> type);
 
-    <T> T convert(Object source, Class<T> type);
+  <T> T convert(Object source, Class<T> type);
 }

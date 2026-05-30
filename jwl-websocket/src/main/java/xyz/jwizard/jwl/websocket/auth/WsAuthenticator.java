@@ -21,5 +21,5 @@ import xyz.jwizard.jwl.common.Ordered;
 import xyz.jwizard.jwl.websocket.WsHandshakeRequest;
 
 public interface WsAuthenticator extends Ordered {
-    String authenticate(WsHandshakeRequest req);
+  String authenticate(WsHandshakeRequest req);
 }

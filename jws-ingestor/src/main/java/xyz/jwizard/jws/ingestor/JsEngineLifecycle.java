@@ -29,25 +29,25 @@ import jakarta.inject.Singleton;
 
 @Singleton
 class JsEngineLifecycle implements LifecycleHook {
-    private final GraalJsEngine jsEngine;
+  private final GraalJsEngine jsEngine;
 
-    JsEngineLifecycle() {
-        jsEngine = GraalJsEngine.builder().withLibrary(IngestorScript.YARN_PARSER).build();
-    }
+  JsEngineLifecycle() {
+    jsEngine = GraalJsEngine.builder().withLibrary(IngestorScript.YARN_PARSER).build();
+  }
 
-    @Override
-    public void onStart(ComponentProvider componentProvider, ClassScanner scanner) {
-        jsEngine.start();
-    }
+  @Override
+  public void onStart(ComponentProvider componentProvider, ClassScanner scanner) {
+    jsEngine.start();
+  }
 
-    @Override
-    public void onStop() {
-        jsEngine.close();
-    }
+  @Override
+  public void onStop() {
+    jsEngine.close();
+  }
 
-    @Produces
-    @Singleton
-    JsEngine jsEngine() {
-        return jsEngine;
-    }
+  @Produces
+  @Singleton
+  JsEngine jsEngine() {
+    return jsEngine;
+  }
 }

@@ -22,15 +22,15 @@ import java.io.InputStream;
 import java.io.OutputStream;
 
 public interface MessageSerializer extends Serializer {
-    byte[] serializeToBytes(Object value);
+  byte[] serializeToBytes(Object value);
 
-    <T> T deserializeFromBytes(byte[] bytes, Class<T> type);
+  <T> T deserializeFromBytes(byte[] bytes, Class<T> type);
 
-    default void serializeToStream(Object value, OutputStream out) throws IOException {
-        out.write(serializeToBytes(value));
-    }
+  default void serializeToStream(Object value, OutputStream out) throws IOException {
+    out.write(serializeToBytes(value));
+  }
 
-    default <T> T deserializeFromStream(InputStream in, Class<T> type) throws IOException {
-        return deserializeFromBytes(in.readAllBytes(), type);
-    }
+  default <T> T deserializeFromStream(InputStream in, Class<T> type) throws IOException {
+    return deserializeFromBytes(in.readAllBytes(), type);
+  }
 }

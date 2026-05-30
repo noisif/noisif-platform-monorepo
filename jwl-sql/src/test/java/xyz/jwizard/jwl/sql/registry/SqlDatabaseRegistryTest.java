@@ -35,63 +35,63 @@ import xyz.jwizard.jwl.sql.pool.ConnectionPoolFactory;
 
 @ExtendWith(MockitoExtension.class)
 class SqlDatabaseRegistryTest {
-    @Mock private ConnectionPoolFactory mockPoolFactory;
+  @Mock private ConnectionPoolFactory mockPoolFactory;
 
-    @Test
-    @DisplayName("should register and retrieve SQL client successfully")
-    void shouldRegisterAndRetrieveClient() {
-        // given
-        final SqlDatabaseConfig config =
-                SqlDatabaseConfig.builder()
-                        .dialect(SqlDatabaseDialect.POSTGRESQL)
-                        .address("localhost:5432")
-                        .credentials("user", "pass")
-                        .databaseName("test_db")
-                        .build();
-        final SqlDatabaseRegistry registry =
+  @Test
+  @DisplayName("should register and retrieve SQL client successfully")
+  void shouldRegisterAndRetrieveClient() {
+    // given
+    final SqlDatabaseConfig config =
+        SqlDatabaseConfig.builder()
+            .dialect(SqlDatabaseDialect.POSTGRESQL)
+            .address("localhost:5432")
+            .credentials("user", "pass")
+            .databaseName("test_db")
+            .build();
+    final SqlDatabaseRegistry registry =
+        SqlDatabaseRegistry.builder()
+            .poolFactory(mockPoolFactory)
+            .register(config, JdbcSqlClient::new)
+            .build();
+    // when
+    final SqlClient client = registry.getClient("test_db");
+    // then
+    assertNotNull(client);
+  }
+
+  @Test
+  @DisplayName("should throw exception when registering duplicate database name")
+  void shouldThrowExceptionWhenRegisteringDuplicateDatabase() {
+    // given
+    final SqlDatabaseConfig config =
+        SqlDatabaseConfig.builder()
+            .dialect(SqlDatabaseDialect.POSTGRESQL)
+            .address("localhost:5432")
+            .credentials("user", "pass")
+            .databaseName("duplicate_db")
+            .build();
+    // when & then
+    final IllegalStateException exception =
+        assertThrows(
+            IllegalStateException.class,
+            () ->
                 SqlDatabaseRegistry.builder()
-                        .poolFactory(mockPoolFactory)
-                        .register(config, JdbcSqlClient::new)
-                        .build();
-        // when
-        final SqlClient client = registry.getClient("test_db");
-        // then
-        assertNotNull(client);
-    }
+                    .poolFactory(mockPoolFactory)
+                    .register(config, JdbcSqlClient::new)
+                    .register(config, JdbcSqlClient::new)
+                    .build());
+    assertTrue(exception.getMessage().contains("already registered"));
+  }
 
-    @Test
-    @DisplayName("should throw exception when registering duplicate database name")
-    void shouldThrowExceptionWhenRegisteringDuplicateDatabase() {
-        // given
-        final SqlDatabaseConfig config =
-                SqlDatabaseConfig.builder()
-                        .dialect(SqlDatabaseDialect.POSTGRESQL)
-                        .address("localhost:5432")
-                        .credentials("user", "pass")
-                        .databaseName("duplicate_db")
-                        .build();
-        // when & then
-        final IllegalStateException exception =
-                assertThrows(
-                        IllegalStateException.class,
-                        () ->
-                                SqlDatabaseRegistry.builder()
-                                        .poolFactory(mockPoolFactory)
-                                        .register(config, JdbcSqlClient::new)
-                                        .register(config, JdbcSqlClient::new)
-                                        .build());
-        assertTrue(exception.getMessage().contains("already registered"));
-    }
-
-    @Test
-    @DisplayName("should throw exception when getting non-existent database client")
-    void shouldThrowExceptionWhenGettingNonExistentDatabase() {
-        // given
-        final SqlDatabaseRegistry registry =
-                SqlDatabaseRegistry.builder().poolFactory(mockPoolFactory).build();
-        // when & then
-        final IllegalArgumentException exception =
-                assertThrows(IllegalArgumentException.class, () -> registry.getClient("ghost_db"));
-        assertTrue(exception.getMessage().contains("No registered element found"));
-    }
+  @Test
+  @DisplayName("should throw exception when getting non-existent database client")
+  void shouldThrowExceptionWhenGettingNonExistentDatabase() {
+    // given
+    final SqlDatabaseRegistry registry =
+        SqlDatabaseRegistry.builder().poolFactory(mockPoolFactory).build();
+    // when & then
+    final IllegalArgumentException exception =
+        assertThrows(IllegalArgumentException.class, () -> registry.getClient("ghost_db"));
+    assertTrue(exception.getMessage().contains("No registered element found"));
+  }
 }

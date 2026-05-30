@@ -20,19 +20,19 @@ package xyz.jwizard.jwl.netclient.rest;
 import xyz.jwizard.jwl.net.http.header.HttpHeaderValue;
 
 public enum TestHttpHeaderValue implements HttpHeaderValue {
-    REQ("Req-%s-%s"),
-    SIG("SIG-%s-%s"),
-    UPDATE("UPDATE"),
-    ;
+  REQ("Req-%s-%s"),
+  SIG("SIG-%s-%s"),
+  UPDATE("UPDATE"),
+  ;
 
-    private final String code;
+  private final String code;
 
-    TestHttpHeaderValue(String code) {
-        this.code = code;
-    }
+  TestHttpHeaderValue(String code) {
+    this.code = code;
+  }
 
-    @Override
-    public String buildWithArgs(Object... args) {
-        return String.format(code, args);
-    }
+  @Override
+  public String buildWithArgs(Object... args) {
+    return String.format(code, args);
+  }
 }

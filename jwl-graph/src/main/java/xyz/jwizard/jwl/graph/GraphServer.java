@@ -30,80 +30,80 @@ import java.net.URI;
 import java.util.function.Function;
 
 public abstract class GraphServer<C extends GraphConfig> extends IdempotentService {
-    protected final URI uri;
-    protected final C config;
-    protected final GraphClientFactory<C> clientFactory;
-    protected final Function<GraphClient, GraphRepository> repositoryFactory;
+  protected final URI uri;
+  protected final C config;
+  protected final GraphClientFactory<C> clientFactory;
+  protected final Function<GraphClient, GraphRepository> repositoryFactory;
 
-    protected GraphClient graphClient;
-    protected GraphRepository graphRepository;
+  protected GraphClient graphClient;
+  protected GraphRepository graphRepository;
 
-    protected GraphServer(AbstractBuilder<?, C> builder) {
-        uri = builder.uri;
-        config = builder.config;
-        clientFactory = builder.clientFactory;
-        repositoryFactory = builder.repositoryFactory;
+  protected GraphServer(AbstractBuilder<?, C> builder) {
+    uri = builder.uri;
+    config = builder.config;
+    clientFactory = builder.clientFactory;
+    repositoryFactory = builder.repositoryFactory;
+  }
+
+  @Override
+  protected final void onStart() {
+    log.info("Connecting to graph server on: {}", uri.toString());
+    graphClient = clientFactory.createAndInitClient(config);
+    graphRepository = repositoryFactory.apply(graphClient);
+  }
+
+  @Override
+  protected final void onStop() {
+    IoUtil.closeQuietly(graphClient);
+  }
+
+  public GraphClient getClient() {
+    if (graphClient == null) {
+      throw new IllegalStateException("Server not started");
+    }
+    return graphClient;
+  }
+
+  public GraphRepository getRepository() {
+    if (graphRepository == null) {
+      throw new IllegalStateException("Server not started");
+    }
+    return graphRepository;
+  }
+
+  protected abstract static class AbstractBuilder<
+      B extends AbstractBuilder<B, C>, C extends GraphConfig> {
+    protected C config;
+    private URI uri;
+    private GraphClientFactory<C> clientFactory;
+    private Function<GraphClient, GraphRepository> repositoryFactory;
+
+    protected AbstractBuilder() {}
+
+    protected abstract B self();
+
+    public B config(C config) {
+      this.config = config;
+      this.uri = NetworkUtil.parseToUri(config.getProtocol(), config.getAddress());
+      return self();
     }
 
-    @Override
-    protected final void onStart() {
-        log.info("Connecting to graph server on: {}", uri.toString());
-        graphClient = clientFactory.createAndInitClient(config);
-        graphRepository = repositoryFactory.apply(graphClient);
+    public B clientFactory(GraphClientFactory<C> clientFactory) {
+      this.clientFactory = clientFactory;
+      return self();
     }
 
-    @Override
-    protected final void onStop() {
-        IoUtil.closeQuietly(graphClient);
+    public B repositoryFactory(Function<GraphClient, GraphRepository> repositoryFactory) {
+      this.repositoryFactory = repositoryFactory;
+      return self();
     }
 
-    public GraphClient getClient() {
-        if (graphClient == null) {
-            throw new IllegalStateException("Server not started");
-        }
-        return graphClient;
+    protected void validate() {
+      Assert.notNull(config, "Config cannot be null");
+      Assert.notNull(clientFactory, "ClientFactory cannot be null");
+      Assert.notNull(repositoryFactory, "RepositoryFactory cannot be null");
     }
 
-    public GraphRepository getRepository() {
-        if (graphRepository == null) {
-            throw new IllegalStateException("Server not started");
-        }
-        return graphRepository;
-    }
-
-    protected abstract static class AbstractBuilder<
-            B extends AbstractBuilder<B, C>, C extends GraphConfig> {
-        protected C config;
-        private URI uri;
-        private GraphClientFactory<C> clientFactory;
-        private Function<GraphClient, GraphRepository> repositoryFactory;
-
-        protected AbstractBuilder() {}
-
-        protected abstract B self();
-
-        public B config(C config) {
-            this.config = config;
-            this.uri = NetworkUtil.parseToUri(config.getProtocol(), config.getAddress());
-            return self();
-        }
-
-        public B clientFactory(GraphClientFactory<C> clientFactory) {
-            this.clientFactory = clientFactory;
-            return self();
-        }
-
-        public B repositoryFactory(Function<GraphClient, GraphRepository> repositoryFactory) {
-            this.repositoryFactory = repositoryFactory;
-            return self();
-        }
-
-        protected void validate() {
-            Assert.notNull(config, "Config cannot be null");
-            Assert.notNull(clientFactory, "ClientFactory cannot be null");
-            Assert.notNull(repositoryFactory, "RepositoryFactory cannot be null");
-        }
-
-        public abstract GraphServer<C> build();
-    }
+    public abstract GraphServer<C> build();
+  }
 }

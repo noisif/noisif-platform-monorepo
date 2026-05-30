@@ -20,22 +20,22 @@ package xyz.jwizard.jwl.kv.pubsub.subscriber;
 import xyz.jwizard.jwl.kv.pubsub.KvChannel;
 
 public interface KvSubscriber<T> {
-    KvChannel getChannel();
+  KvChannel getChannel();
 
-    Class<T> getPayloadType();
+  Class<T> getPayloadType();
 
-    boolean isSubscribed();
+  boolean isSubscribed();
 
-    void setSubscribed(boolean subscribed);
+  void setSubscribed(boolean subscribed);
 
-    default Object[] getChannelParams() {
-        return new Object[0];
-    }
+  default Object[] getChannelParams() {
+    return new Object[0];
+  }
 
-    // for pattern subscribers
-    default SubscriptionMode getMode() {
-        return SubscriptionMode.EXACT;
-    }
+  // for pattern subscribers
+  default SubscriptionMode getMode() {
+    return SubscriptionMode.EXACT;
+  }
 
-    void handle(String channel, String[] params, T message);
+  void handle(String channel, String[] params, T message);
 }

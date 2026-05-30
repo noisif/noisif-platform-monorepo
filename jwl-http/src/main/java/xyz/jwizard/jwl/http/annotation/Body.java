@@ -27,7 +27,7 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.PARAMETER)
 public @interface Body {
-    long limit() default -1; // max size
+  long limit() default -1; // max size
 
-    MemUnit unit() default MemUnit.MB;
+  MemUnit unit() default MemUnit.MB;
 }

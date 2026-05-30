@@ -26,43 +26,42 @@ import java.io.Closeable;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 public abstract class IdempotentService implements Closeable {
-    protected final Logger log = LoggerFactory.getLogger(getClass());
+  protected final Logger log = LoggerFactory.getLogger(getClass());
 
-    private final AtomicBoolean running = new AtomicBoolean(false);
-    private final AtomicBoolean initialized = new AtomicBoolean(false);
+  private final AtomicBoolean running = new AtomicBoolean(false);
+  private final AtomicBoolean initialized = new AtomicBoolean(false);
 
-    public final void start() {
-        if (initialized.compareAndSet(false, true)) {
-            running.set(true);
-            try {
-                onStart();
-                log.info("Service '{}' started successfully", getClass().getSimpleName());
-            } catch (Exception ex) {
-                running.set(false);
-                initialized.set(false);
-                throw translateException(ex);
-            }
-        } else {
-            log.warn(
-                    "Service '{}' is already running or was already initialized",
-                    getClass().getSimpleName());
-        }
+  public final void start() {
+    if (initialized.compareAndSet(false, true)) {
+      running.set(true);
+      try {
+        onStart();
+        log.info("Service '{}' started successfully", getClass().getSimpleName());
+      } catch (Exception ex) {
+        running.set(false);
+        initialized.set(false);
+        throw translateException(ex);
+      }
+    } else {
+      log.warn(
+          "Service '{}' is already running or was already initialized", getClass().getSimpleName());
     }
+  }
 
-    @Override
-    public final void close() {
-        if (running.compareAndSet(true, false)) {
-            onStop();
-        }
+  @Override
+  public final void close() {
+    if (running.compareAndSet(true, false)) {
+      onStop();
     }
+  }
 
-    protected abstract void onStart() throws Exception;
+  protected abstract void onStart() throws Exception;
 
-    protected abstract void onStop();
+  protected abstract void onStop();
 
-    // available to overwrite for non-critical errors
-    protected RuntimeException translateException(Exception ex) {
-        return new CriticalBootstrapException(
-                "Failed to start service: " + getClass().getSimpleName(), ex);
-    }
+  // available to overwrite for non-critical errors
+  protected RuntimeException translateException(Exception ex) {
+    return new CriticalBootstrapException(
+        "Failed to start service: " + getClass().getSimpleName(), ex);
+  }
 }

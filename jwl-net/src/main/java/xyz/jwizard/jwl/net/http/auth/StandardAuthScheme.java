@@ -22,31 +22,30 @@ import xyz.jwizard.jwl.common.util.CodecUtil;
 import java.util.function.Function;
 
 public enum StandardAuthScheme implements AuthScheme {
-    BLANK("", 1, args -> args[0]),
-    BEARER("Bearer", 1, args -> args[0]),
-    BASIC("Basic", 2, args -> CodecUtil.encodeBase64(args[0] + ":" + args[1]));
+  BLANK("", 1, args -> args[0]),
+  BEARER("Bearer", 1, args -> args[0]),
+  BASIC("Basic", 2, args -> CodecUtil.encodeBase64(args[0] + ":" + args[1]));
 
-    private final String schemeName;
-    private final int requiredParams;
-    private final Function<String[], String> formatter;
+  private final String schemeName;
+  private final int requiredParams;
+  private final Function<String[], String> formatter;
 
-    StandardAuthScheme(
-            String schemeName, int requiredParams, Function<String[], String> formatter) {
-        this.schemeName = schemeName;
-        this.requiredParams = requiredParams;
-        this.formatter = formatter;
+  StandardAuthScheme(String schemeName, int requiredParams, Function<String[], String> formatter) {
+    this.schemeName = schemeName;
+    this.requiredParams = requiredParams;
+    this.formatter = formatter;
+  }
+
+  @Override
+  public String buildHeaderValue(String... credentials) {
+    final int providedCount = (credentials == null) ? 0 : credentials.length;
+    if (providedCount != requiredParams) {
+      throw new IllegalArgumentException(
+          String.format(
+              "%s auth requires exactly %d parameter(s), but got %d",
+              schemeName, requiredParams, providedCount));
     }
-
-    @Override
-    public String buildHeaderValue(String... credentials) {
-        final int providedCount = (credentials == null) ? 0 : credentials.length;
-        if (providedCount != requiredParams) {
-            throw new IllegalArgumentException(
-                    String.format(
-                            "%s auth requires exactly %d parameter(s), but got %d",
-                            schemeName, requiredParams, providedCount));
-        }
-        final String formattedCredentials = formatter.apply(credentials);
-        return schemeName + (schemeName.isBlank() ? "" : " ") + formattedCredentials;
-    }
+    final String formattedCredentials = formatter.apply(credentials);
+    return schemeName + (schemeName.isBlank() ? "" : " ") + formattedCredentials;
+  }
 }

@@ -27,19 +27,19 @@ import xyz.jwizard.jwl.http.validation.ValidationException;
 import xyz.jwizard.jwl.net.http.HttpStatus;
 
 public class BadRequestExceptionHandler implements ExceptionHandler {
-    private static final Logger LOG = LoggerFactory.getLogger(BadRequestExceptionHandler.class);
+  private static final Logger LOG = LoggerFactory.getLogger(BadRequestExceptionHandler.class);
 
-    @Override
-    public boolean supports(Throwable throwable) {
-        return throwable instanceof IllegalArgumentException
-                || throwable instanceof JsonSerializerException
-                || throwable instanceof ValidationException;
-    }
+  @Override
+  public boolean supports(Throwable throwable) {
+    return throwable instanceof IllegalArgumentException
+        || throwable instanceof JsonSerializerException
+        || throwable instanceof ValidationException;
+  }
 
-    @Override
-    public void handle(HttpRequest req, HttpResponse res, Throwable throwable) {
-        LOG.warn("Bad request [{}]: {}", req.getPath(), throwable.getMessage());
-        res.setStatus(HttpStatus.BAD_REQUEST_400);
-        res.end();
-    }
+  @Override
+  public void handle(HttpRequest req, HttpResponse res, Throwable throwable) {
+    LOG.warn("Bad request [{}]: {}", req.getPath(), throwable.getMessage());
+    res.setStatus(HttpStatus.BAD_REQUEST_400);
+    res.end();
+  }
 }

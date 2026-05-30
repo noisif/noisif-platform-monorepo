@@ -23,16 +23,16 @@ apply<JwServicePlugin>()
 apply<JwProtobufPlugin>()
 
 jwService {
-    packageSuffix.set("ingress")
-    mainClass.set("JwsIngressMain")
+  packageSuffix.set("ingress")
+  mainClass.set("JwsIngressMain")
 }
 
 dependencies {
-    implementation(libs.nv.websocket.client)
-    implementation(libs.erlang.jinterface)
+  implementation(libs.nv.websocket.client)
+  implementation(libs.erlang.jinterface)
 
-    implementation(project(":jwl-common"))
-    implementation(project(":jwl-codec"))
+  implementation(project(":jwl-common"))
+  implementation(project(":jwl-codec"))
 
-    testImplementation(testFixtures(project(":jwl-common")))
+  testImplementation(testFixtures(project(":jwl-common")))
 }

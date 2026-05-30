@@ -22,16 +22,16 @@ import org.jspecify.annotations.NonNull;
 import java.util.concurrent.ThreadFactory;
 
 class DefaultThreadFactory implements ThreadFactory {
-    private final String threadName;
+  private final String threadName;
 
-    DefaultThreadFactory(String threadName) {
-        this.threadName = threadName;
-    }
+  DefaultThreadFactory(String threadName) {
+    this.threadName = threadName;
+  }
 
-    @Override
-    public Thread newThread(@NonNull Runnable runnable) {
-        final Thread thread = new Thread(runnable, threadName);
-        thread.setDaemon(true);
-        return thread;
-    }
+  @Override
+  public Thread newThread(@NonNull Runnable runnable) {
+    final Thread thread = new Thread(runnable, threadName);
+    thread.setDaemon(true);
+    return thread;
+  }
 }

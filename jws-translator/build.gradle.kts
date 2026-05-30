@@ -21,15 +21,15 @@ import xyz.jwizard.buildconfig.jwService
 apply<JwServicePlugin>()
 
 jwService {
-    packageSuffix.set("translator")
-    mainClass.set("JwsTranslatorMain")
+  packageSuffix.set("translator")
+  mainClass.set("JwsTranslatorMain")
 }
 
 dependencies {
-    implementation(project(":jwl-codec"))
-    implementation(project(":jwl-common"))
-    implementation(project(":jwl-http"))
-    implementation(project(":jwl-i18n"))
+  implementation(project(":jwl-codec"))
+  implementation(project(":jwl-common"))
+  implementation(project(":jwl-http"))
+  implementation(project(":jwl-i18n"))
 
-    testImplementation(testFixtures(project(":jwl-common")))
+  testImplementation(testFixtures(project(":jwl-common")))
 }

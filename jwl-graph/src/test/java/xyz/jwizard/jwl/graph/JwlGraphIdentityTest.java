@@ -20,13 +20,13 @@ package xyz.jwizard.jwl.graph;
 import xyz.jwizard.jwl.common.ModuleIdentityTest;
 
 class JwlGraphIdentityTest extends ModuleIdentityTest {
-    @Override
-    protected String getModuleName() {
-        return "graph";
-    }
+  @Override
+  protected String getModuleName() {
+    return "graph";
+  }
 
-    @Override
-    protected String getPackageSuffix() {
-        return "jwl";
-    }
+  @Override
+  protected String getPackageSuffix() {
+    return "jwl";
+  }
 }

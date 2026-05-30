@@ -20,28 +20,28 @@ package xyz.jwizard.jwl.queue;
 import xyz.jwizard.jwl.codec.serialization.StandardSerializerFormat;
 
 public class FailingListener implements QueueListener<byte[]> {
-    @Override
-    public String getQueueName() {
-        return "test.fail.queue";
-    }
+  @Override
+  public String getQueueName() {
+    return "test.fail.queue";
+  }
 
-    @Override
-    public Class<byte[]> getMessageType() {
-        return byte[].class;
-    }
+  @Override
+  public Class<byte[]> getMessageType() {
+    return byte[].class;
+  }
 
-    @Override
-    public StandardSerializerFormat getFormat() {
-        return StandardSerializerFormat.RAW;
-    }
+  @Override
+  public StandardSerializerFormat getFormat() {
+    return StandardSerializerFormat.RAW;
+  }
 
-    @Override
-    public QueueTopology getTopology() {
-        return QueueTopology.builder().withDeadLetter().build();
-    }
+  @Override
+  public QueueTopology getTopology() {
+    return QueueTopology.builder().withDeadLetter().build();
+  }
 
-    @Override
-    public void onMessage(byte[] message) {
-        throw new RuntimeException("Simulated processing failure");
-    }
+  @Override
+  public void onMessage(byte[] message) {
+    throw new RuntimeException("Simulated processing failure");
+  }
 }

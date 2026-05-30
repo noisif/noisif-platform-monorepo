@@ -30,54 +30,51 @@ import org.gradle.kotlin.dsl.withType
 import kotlin.reflect.KProperty1
 
 class JwServicePlugin : Plugin<Project> {
-    override fun apply(target: Project) {
-        val extension = target.extensions.create("jwService", JwServiceExtension::class.java)
-        applyApplicationConventions(target, extension)
-        target.afterEvaluate {
-            extension.require(JwServiceExtension::packageSuffix, target.name)
-            extension.require(JwServiceExtension::mainClass, target.name)
-        }
+  override fun apply(target: Project) {
+    val extension = target.extensions.create("jwService", JwServiceExtension::class.java)
+    applyApplicationConventions(target, extension)
+    target.afterEvaluate {
+      extension.require(JwServiceExtension::packageSuffix, target.name)
+      extension.require(JwServiceExtension::mainClass, target.name)
     }
+  }
 
-    private fun applyApplicationConventions(
-        project: Project,
-        jwExt: JwServiceExtension,
-    ) {
-        project.pluginManager.apply(
-            project.libs
-                .getPlugin("shadow")
-                .get()
-                .pluginId,
-        )
-        project.pluginManager.apply("application")
-        project.dependencies {
-            add("runtimeOnly", project.libs.getLibrary("logback.classic"))
-        }
-        val mainClazzProvider =
-            jwExt.packageSuffix.zip(jwExt.mainClass) { suffix, clazz ->
-                "${project.group}.jws.$suffix.$clazz"
-            }
-        project.configure<JavaApplication> {
-            mainClass.set(mainClazzProvider)
-        }
-        project.tasks.withType<ShadowJar>().configureEach {
-            archiveFileName.set("${project.name}.jar")
-            destinationDirectory.set(project.layout.projectDirectory.dir(".bin"))
-            manifest {
-                attributes("Main-Class" to mainClazzProvider.get())
-            }
-        }
+  private fun applyApplicationConventions(project: Project, jwExt: JwServiceExtension) {
+    project.pluginManager.apply(
+      project.libs
+        .getPlugin("shadow")
+        .get()
+        .pluginId,
+    )
+    project.pluginManager.apply("application")
+    project.dependencies {
+      add("runtimeOnly", project.libs.getLibrary("logback.classic"))
     }
+    val mainClazzProvider =
+      jwExt.packageSuffix.zip(jwExt.mainClass) { suffix, clazz ->
+        "${project.group}.jws.$suffix.$clazz"
+      }
+    project.configure<JavaApplication> {
+      mainClass.set(mainClazzProvider)
+    }
+    project.tasks.withType<ShadowJar>().configureEach {
+      archiveFileName.set("${project.name}.jar")
+      destinationDirectory.set(project.layout.projectDirectory.dir(".bin"))
+      manifest {
+        attributes("Main-Class" to mainClazzProvider.get())
+      }
+    }
+  }
 
-    private fun JwServiceExtension.require(
-        propertyRef: KProperty1<JwServiceExtension, Property<*>>,
-        projectName: String,
-    ) {
-        if (!propertyRef.get(this).isPresent) {
-            throw GradleException(
-                "Error in '$projectName': Missing required value '${propertyRef.name}' in " +
-                    "jwizard { } block.",
-            )
-        }
+  private fun JwServiceExtension.require(
+    propertyRef: KProperty1<JwServiceExtension, Property<*>>,
+    projectName: String,
+  ) {
+    if (!propertyRef.get(this).isPresent) {
+      throw GradleException(
+        "Error in '$projectName': Missing required value '${propertyRef.name}' in " +
+          "jwizard { } block.",
+      )
     }
+  }
 }

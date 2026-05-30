@@ -23,32 +23,32 @@ import xyz.jwizard.jwl.codec.envelope.OpCode;
 import xyz.jwizard.jwl.codec.serialization.json.JsonSerializer;
 
 public class JsonBinaryEnvelopeSerializer extends JsonEnvelopeSerializer<byte[]> {
-    private JsonBinaryEnvelopeSerializer(JsonSerializer serializer) {
-        super(serializer);
-    }
+  private JsonBinaryEnvelopeSerializer(JsonSerializer serializer) {
+    super(serializer);
+  }
 
-    public static JsonBinaryEnvelopeSerializer createDefault(JsonSerializer serializer) {
-        return new JsonBinaryEnvelopeSerializer(serializer);
-    }
+  public static JsonBinaryEnvelopeSerializer createDefault(JsonSerializer serializer) {
+    return new JsonBinaryEnvelopeSerializer(serializer);
+  }
 
-    @Override
-    public DataType getCodecDataType() {
-        return DataType.BINARY;
-    }
+  @Override
+  public DataType getCodecDataType() {
+    return DataType.BINARY;
+  }
 
-    @Override
-    public byte[] serializeForSession(OpCode opCode, Object payload) {
-        return serializeEnvelopeAsBytes(opCode, payload);
-    }
+  @Override
+  public byte[] serializeForSession(OpCode opCode, Object payload) {
+    return serializeEnvelopeAsBytes(opCode, payload);
+  }
 
-    @Override
-    public void serializeAndAcceptEnvelope(
-            OpCode opCode, Object payload, EncodedPayloadVisitor visitor) {
-        visitor.accept(serializeForSession(opCode, payload));
-    }
+  @Override
+  public void serializeAndAcceptEnvelope(
+      OpCode opCode, Object payload, EncodedPayloadVisitor visitor) {
+    visitor.accept(serializeForSession(opCode, payload));
+  }
 
-    @Override
-    public void acceptRaw(byte[] rawPayload, EncodedPayloadVisitor visitor) {
-        visitor.accept(rawPayload);
-    }
+  @Override
+  public void acceptRaw(byte[] rawPayload, EncodedPayloadVisitor visitor) {
+    visitor.accept(rawPayload);
+  }
 }

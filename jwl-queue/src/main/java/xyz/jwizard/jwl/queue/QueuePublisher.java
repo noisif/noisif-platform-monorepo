@@ -24,48 +24,43 @@ import xyz.jwizard.jwl.codec.serialization.SerializerFormat;
 import xyz.jwizard.jwl.codec.serialization.StandardSerializerFormat;
 
 public class QueuePublisher implements MessagePublisher {
-    private static final Logger LOG = LoggerFactory.getLogger(QueuePublisher.class);
+  private static final Logger LOG = LoggerFactory.getLogger(QueuePublisher.class);
 
-    private final QueueServer queueServer;
+  private final QueueServer queueServer;
 
-    QueuePublisher(QueueServer queueServer) {
-        this.queueServer = queueServer;
+  QueuePublisher(QueueServer queueServer) {
+    this.queueServer = queueServer;
+  }
+
+  @Override
+  public <T> void publish(String exchange, String routingKey, T payload) {
+    publish(exchange, routingKey, payload, StandardSerializerFormat.JSON);
+  }
+
+  @Override
+  public <T> void publish(String exchange, String routingKey, T payload, SerializerFormat format) {
+    final String logExchange = (exchange == null || exchange.isBlank()) ? "<default>" : exchange;
+    try {
+      LOG.trace(
+          "Publishing message to exchange '{}' with routing key '{}'", logExchange, routingKey);
+      final byte[] body = queueServer.getSerializerRegistry().get(format).serializeToBytes(payload);
+      queueServer.onPublish(exchange, routingKey, body);
+    } catch (Exception ex) {
+      LOG.error(
+          "Failed to publish message to exchange '{}' with routing key '{}'",
+          logExchange,
+          routingKey,
+          ex);
     }
+  }
 
-    @Override
-    public <T> void publish(String exchange, String routingKey, T payload) {
-        publish(exchange, routingKey, payload, StandardSerializerFormat.JSON);
-    }
+  @Override
+  public <T> void publishToQueue(String queueName, T payload) {
+    publish("", queueName, payload);
+  }
 
-    @Override
-    public <T> void publish(
-            String exchange, String routingKey, T payload, SerializerFormat format) {
-        final String logExchange =
-                (exchange == null || exchange.isBlank()) ? "<default>" : exchange;
-        try {
-            LOG.trace(
-                    "Publishing message to exchange '{}' with routing key '{}'",
-                    logExchange,
-                    routingKey);
-            final byte[] body =
-                    queueServer.getSerializerRegistry().get(format).serializeToBytes(payload);
-            queueServer.onPublish(exchange, routingKey, body);
-        } catch (Exception ex) {
-            LOG.error(
-                    "Failed to publish message to exchange '{}' with routing key '{}'",
-                    logExchange,
-                    routingKey,
-                    ex);
-        }
-    }
-
-    @Override
-    public <T> void publishToQueue(String queueName, T payload) {
-        publish("", queueName, payload);
-    }
-
-    @Override
-    public <T> void publishToQueue(String queueName, T payload, SerializerFormat format) {
-        publish("", queueName, payload, format);
-    }
+  @Override
+  public <T> void publishToQueue(String queueName, T payload, SerializerFormat format) {
+    publish("", queueName, payload, format);
+  }
 }

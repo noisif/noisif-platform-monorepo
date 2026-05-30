@@ -17,22 +17,22 @@
  */
 
 plugins {
-    alias(libs.plugins.test.fixtures)
+  alias(libs.plugins.test.fixtures)
 }
 
 dependencies {
-    implementation(libs.bucket4j)
-    implementation(libs.clazz.graph)
-    implementation(libs.guava)
-    implementation(libs.guice) {
-        // 7.0.0 has vulnerable old guava version, fetch the newest version explicitly
-        exclude(group = "com.google.guava", module = "guava")
-    }
+  implementation(libs.bucket4j)
+  implementation(libs.clazz.graph)
+  implementation(libs.guava)
+  implementation(libs.guice) {
+    // 7.0.0 has vulnerable old guava version, fetch the newest version explicitly
+    exclude(group = "com.google.guava", module = "guava")
+  }
 
-    api(libs.jakarta.inject.api)
-    api(libs.jakarta.cdi.api)
+  api(libs.jakarta.inject.api)
+  api(libs.jakarta.cdi.api)
 
-    testFixturesApi(libs.assertj.core)
-    testFixturesApi(libs.junit.jupiter)
-    testFixturesApi(libs.slf4j.api)
+  testFixturesApi(libs.assertj.core)
+  testFixturesApi(libs.junit.jupiter)
+  testFixturesApi(libs.slf4j.api)
 }

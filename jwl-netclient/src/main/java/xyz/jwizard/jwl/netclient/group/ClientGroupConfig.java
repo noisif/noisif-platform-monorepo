@@ -18,7 +18,7 @@
 package xyz.jwizard.jwl.netclient.group;
 
 public interface ClientGroupConfig {
-    String getUrl();
+  String getUrl();
 
-    String getPrincipalId();
+  String getPrincipalId();
 }

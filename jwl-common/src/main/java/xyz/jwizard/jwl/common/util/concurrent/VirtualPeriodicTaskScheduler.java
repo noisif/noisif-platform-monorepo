@@ -28,77 +28,74 @@ import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 
 public class VirtualPeriodicTaskScheduler implements PeriodicTaskScheduler {
-    private static final Logger LOG = LoggerFactory.getLogger(VirtualPeriodicTaskScheduler.class);
+  private static final Logger LOG = LoggerFactory.getLogger(VirtualPeriodicTaskScheduler.class);
 
-    private final ScheduledExecutorService ticker;
-    private final ExecutorService virtualWorkers;
-    private final Map<String, ScheduledFuture<?>> activeTasks = new ConcurrentHashMap<>();
+  private final ScheduledExecutorService ticker;
+  private final ExecutorService virtualWorkers;
+  private final Map<String, ScheduledFuture<?>> activeTasks = new ConcurrentHashMap<>();
 
-    private VirtualPeriodicTaskScheduler(
-            ScheduledExecutorService ticker, ExecutorService virtualWorkers) {
-        this.ticker = ticker;
-        this.virtualWorkers = virtualWorkers;
+  private VirtualPeriodicTaskScheduler(
+      ScheduledExecutorService ticker, ExecutorService virtualWorkers) {
+    this.ticker = ticker;
+    this.virtualWorkers = virtualWorkers;
+  }
+
+  public static PeriodicTaskScheduler create(
+      ScheduledExecutorService ticker, ExecutorService virtualWorkers) {
+    return new VirtualPeriodicTaskScheduler(ticker, virtualWorkers);
+  }
+
+  @Override
+  public void scheduleAtFixedRate(
+      String taskId, Runnable task, long initialDelay, long period, TimeUnit unit) {
+    if (taskId == null || task == null) {
+      return;
     }
-
-    public static PeriodicTaskScheduler create(
-            ScheduledExecutorService ticker, ExecutorService virtualWorkers) {
-        return new VirtualPeriodicTaskScheduler(ticker, virtualWorkers);
+    LOG.debug(
+        "Scheduling periodic task '{}' with initial delay {}ms, period {}ms",
+        taskId,
+        unit.toMillis(initialDelay),
+        unit.toMillis(period));
+    final ScheduledFuture<?> future =
+        ticker.scheduleAtFixedRate(
+            () -> {
+              try {
+                if (LOG.isTraceEnabled()) {
+                  LOG.trace("Ticker triggered task: '{}'", taskId);
+                }
+                virtualWorkers.execute(task);
+              } catch (Exception ex) {
+                LOG.error("Failed to submit periodic task '{}' to virtual worker pool", taskId, ex);
+              }
+            },
+            initialDelay,
+            period,
+            unit);
+    final ScheduledFuture<?> previous = activeTasks.put(taskId, future);
+    if (previous != null) {
+      LOG.debug("Task '{}' was already scheduled, replacing existing future", taskId);
+      previous.cancel(false);
     }
+  }
 
-    @Override
-    public void scheduleAtFixedRate(
-            String taskId, Runnable task, long initialDelay, long period, TimeUnit unit) {
-        if (taskId == null || task == null) {
-            return;
-        }
-        LOG.debug(
-                "Scheduling periodic task '{}' with initial delay {}ms, period {}ms",
-                taskId,
-                unit.toMillis(initialDelay),
-                unit.toMillis(period));
-        final ScheduledFuture<?> future =
-                ticker.scheduleAtFixedRate(
-                        () -> {
-                            try {
-                                if (LOG.isTraceEnabled()) {
-                                    LOG.trace("Ticker triggered task: '{}'", taskId);
-                                }
-                                virtualWorkers.execute(task);
-                            } catch (Exception ex) {
-                                LOG.error(
-                                        "Failed to submit periodic task '{}' to virtual worker pool",
-                                        taskId,
-                                        ex);
-                            }
-                        },
-                        initialDelay,
-                        period,
-                        unit);
-        final ScheduledFuture<?> previous = activeTasks.put(taskId, future);
-        if (previous != null) {
-            LOG.debug("Task '{}' was already scheduled, replacing existing future", taskId);
-            previous.cancel(false);
-        }
+  @Override
+  public void cancel(String taskId) {
+    if (taskId == null) {
+      return;
     }
+    final ScheduledFuture<?> future = activeTasks.remove(taskId);
+    if (future != null) {
+      LOG.debug("Cancelling periodic task: '{}'", taskId);
+      future.cancel(false);
+    }
+  }
 
-    @Override
-    public void cancel(String taskId) {
-        if (taskId == null) {
-            return;
-        }
-        final ScheduledFuture<?> future = activeTasks.remove(taskId);
-        if (future != null) {
-            LOG.debug("Cancelling periodic task: '{}'", taskId);
-            future.cancel(false);
-        }
+  @Override
+  public void cancelAll() {
+    LOG.debug("Cancelling all {} active periodic tasks", activeTasks.size());
+    for (final ScheduledFuture<?> future : activeTasks.values()) {
+      future.cancel(true);
     }
-
-    @Override
-    public void cancelAll() {
-        LOG.debug("Cancelling all {} active periodic tasks", activeTasks.size());
-        for (final ScheduledFuture<?> future : activeTasks.values()) {
-            future.cancel(true);
-        }
-        activeTasks.clear();
-    }
+    activeTasks.clear();
+  }
 }

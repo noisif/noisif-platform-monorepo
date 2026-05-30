@@ -18,19 +18,19 @@
 package xyz.jwizard.jwl.kv.pubsub;
 
 public enum TestKvChannel implements KvChannel {
-    TEST_EVENTS("test:channel:events"),
-    USER_NOTIFICATIONS("user:%s:notifications"),
-    USER_EVENTS_WILDCARD("integration:users:*:events"),
-    ;
+  TEST_EVENTS("test:channel:events"),
+  USER_NOTIFICATIONS("user:%s:notifications"),
+  USER_EVENTS_WILDCARD("integration:users:*:events"),
+  ;
 
-    private final String pattern;
+  private final String pattern;
 
-    TestKvChannel(String pattern) {
-        this.pattern = pattern;
-    }
+  TestKvChannel(String pattern) {
+    this.pattern = pattern;
+  }
 
-    @Override
-    public String buildChannel(Object... params) {
-        return String.format(pattern, params);
-    }
+  @Override
+  public String buildChannel(Object... params) {
+    return String.format(pattern, params);
+  }
 }

@@ -38,190 +38,190 @@ import xyz.jwizard.buildconfig.getPluginId
 import xyz.jwizard.buildconfig.registerTestSummaryService
 
 plugins {
-    alias(libs.plugins.error.prone)
-    alias(libs.plugins.java)
-    alias(libs.plugins.idea)
-    alias(libs.plugins.spotless)
+  alias(libs.plugins.error.prone)
+  alias(libs.plugins.java)
+  alias(libs.plugins.idea)
+  alias(libs.plugins.spotless)
 }
 
 allprojects {
-    apply(plugin = getPluginId(rootProject.libs.plugins.idea))
-    apply(plugin = getPluginId(rootProject.libs.plugins.spotless))
+  apply(plugin = getPluginId(rootProject.libs.plugins.idea))
+  apply(plugin = getPluginId(rootProject.libs.plugins.spotless))
 
-    group = "xyz.jwizard"
-    version = getEnv("VERSION", "0.0.0")
+  group = "xyz.jwizard"
+  version = getEnv("VERSION", "0.0.0")
 
-    repositories {
-        mavenCentral()
-        maven {
-            // for gradle tooling api
-            url = uri("https://repo.gradle.org/gradle/libs-releases")
-        }
+  repositories {
+    mavenCentral()
+    maven {
+      // for gradle tooling api
+      url = uri("https://repo.gradle.org/gradle/libs-releases")
     }
+  }
 
-    configure<IdeaModel> {
-        module {
-            excludeDirs.add(file(".bin"))
-            excludeDirs.add(file(".kotlin"))
-        }
+  configure<IdeaModel> {
+    module {
+      excludeDirs.add(file(".bin"))
+      excludeDirs.add(file(".kotlin"))
     }
+  }
 
-    spotless {
-        val rawLicenseFile = rootProject.file("spotless/license-header.txt")
-        java {
-            target("src/**/*.java")
-            targetExclude("build/generated/**/*.java")
-            googleJavaFormat().aosp() // aosp with 4 space indentation
-            // force enums to be as:
-            // VALUE1,
-            // VALUE2,
-            // ;
-            replaceRegex(
-                "Force enum semicolon to new line with indent",
-                "(?m)^([ \\t]*)(.*?)(,\\s*;)",
-                "$1$2,\n$1;",
-            )
-            // related to eclipse style in .editorconfig, Google makes one gigantic ugly block :(
-            importOrder("\\#", "com", "org", "xyz.jwizard", "", "jakarta", "java", "javax")
-            licenseHeader(buildLicense(rawLicenseFile, "/*", " * ", " */"))
-            trimTrailingWhitespace()
-            endWithNewline()
-        }
-        kotlinGradle {
-            target("*.gradle.kts")
-            licenseHeader(
-                buildLicense(rawLicenseFile, "/*", " * ", " */"),
-                """(?m)^\s*[a-zA-Z@_]""",
-            )
-            ktlint()
-            trimTrailingWhitespace()
-            endWithNewline()
-        }
-        format("xml") {
-            target("src/**/*.xml")
-            eclipseWtp(EclipseWtpFormatterStep.XML)
-                .configFile(rootProject.file("spotless/wtp-xml.prefs"))
-            licenseHeader(buildLicense(rawLicenseFile, "<!--", "  ~ ", "  -->"), "^(<[^!?])")
-            trimTrailingWhitespace()
-            endWithNewline()
-        }
-        format("properties") {
-            target("*.properties", "src/**/*.properties")
-            targetExclude("build/**/*.properties")
-            licenseHeader(buildLicense(rawLicenseFile, "#", "# ", "#"), """[a-zA-Z]""")
-            trimTrailingWhitespace()
-            endWithNewline()
-        }
+  spotless {
+    val rawLicenseFile = rootProject.file("spotless/license-header.txt")
+    java {
+      target("src/**/*.java")
+      targetExclude("build/generated/**/*.java")
+      googleJavaFormat() // with 2 space indentation
+      // force enums to be as:
+      // VALUE1,
+      // VALUE2,
+      // ;
+      replaceRegex(
+        "Force enum semicolon to new line with indent",
+        "(?m)^([ \\t]*)(.*?)(,\\s*;)",
+        "$1$2,\n$1;",
+      )
+      // related to eclipse style in .editorconfig, Google makes one gigantic ugly block :(
+      importOrder("\\#", "com", "org", "xyz.jwizard", "", "jakarta", "java", "javax")
+      licenseHeader(buildLicense(rawLicenseFile, "/*", " * ", " */"))
+      trimTrailingWhitespace()
+      endWithNewline()
     }
+    kotlinGradle {
+      target("**/*.gradle.kts")
+      licenseHeader(
+        buildLicense(rawLicenseFile, "/*", " * ", " */"),
+        """(?m)^\s*[a-zA-Z@_]""",
+      )
+      ktlint().editorConfigOverride(mapOf("indent_size" to "2"))
+      trimTrailingWhitespace()
+      endWithNewline()
+    }
+    format("xml") {
+      target("src/**/*.xml")
+      eclipseWtp(EclipseWtpFormatterStep.XML)
+        .configFile(rootProject.file("spotless/wtp-xml.prefs"))
+      licenseHeader(buildLicense(rawLicenseFile, "<!--", "  ~ ", "  -->"), "^(<[^!?])")
+      trimTrailingWhitespace()
+      endWithNewline()
+    }
+    format("properties") {
+      target("*.properties", "src/**/*.properties")
+      targetExclude("build/**/*.properties")
+      licenseHeader(buildLicense(rawLicenseFile, "#", "# ", "#"), """[a-zA-Z]""")
+      trimTrailingWhitespace()
+      endWithNewline()
+    }
+  }
 }
 
 subprojects {
-    apply(plugin = getPluginId(rootProject.libs.plugins.java.library))
-    apply(plugin = getPluginId(rootProject.libs.plugins.error.prone))
+  apply(plugin = getPluginId(rootProject.libs.plugins.java.library))
+  apply(plugin = getPluginId(rootProject.libs.plugins.error.prone))
 
-    java {
-        toolchain.languageVersion.set(JavaLanguageVersion.of(21))
-    }
+  java {
+    toolchain.languageVersion.set(JavaLanguageVersion.of(21))
+  }
 
-    dependencies {
-        implementation(rootProject.libs.slf4j.api)
-        compileOnly(rootProject.libs.jspecify)
-        errorprone(rootProject.libs.error.prone.core)
-        compileOnly(rootProject.libs.error.prone.annotation)
-        testImplementation(rootProject.libs.assertj.core)
-        testImplementation(rootProject.libs.junit.jupiter)
-        testImplementation(rootProject.libs.mockito.core)
-        testImplementation(rootProject.libs.mockito.jupiter)
-        testRuntimeOnly(rootProject.libs.logback.classic)
-    }
+  dependencies {
+    implementation(rootProject.libs.slf4j.api)
+    compileOnly(rootProject.libs.jspecify)
+    errorprone(rootProject.libs.error.prone.core)
+    compileOnly(rootProject.libs.error.prone.annotation)
+    testImplementation(rootProject.libs.assertj.core)
+    testImplementation(rootProject.libs.junit.jupiter)
+    testImplementation(rootProject.libs.mockito.core)
+    testImplementation(rootProject.libs.mockito.jupiter)
+    testRuntimeOnly(rootProject.libs.logback.classic)
+  }
 
-    tasks.withType<Test> {
-        useJUnitPlatform()
-        testLogging {
-            showStandardStreams = false
-        }
-        val summaryService = registerTestSummaryService()
-        usesService(summaryService)
-        addTestListener(CompactTestOutputListener(summaryService.get()))
-        // suppress JDK 21+ warnings regarding dynamic agent loading (used by mockito)
-        // -Xshare:off: disables class data sharing
-        jvmArgs(
-            "-XX:+EnableDynamicAgentLoading",
-            "-Xshare:off",
-            // GC
-            "-XX:+UseZGC",
-            "-XX:+ZGenerational", // high-performance, low-latency gc for java 21+
-            // memory
-            "-Xms1G",
-            "-Xmx1G",
-            "-XX:MaxMetaspaceSize=512m", // 512 for protobuf one-class-per-file convention
-            "-XX:+AlwaysPreTouch", // zero latency spikes on memory allocation by pre-touching pages
-            "-XX:+UseStringDeduplication", // saves ram by removing duplicate strings from heap
-            // others
-            "-Dfile.encoding=UTF-8",
-            "-XX:+ExitOnOutOfMemoryError",
-        )
-        systemProperty(
-            // avoids port conflicts during parallel execution by forcing testcontainers to use
-            // the unix socket strategy
-            "org.testcontainers.docker-client.strategy",
-            "org.testcontainers.dockerclient.UnixSocketClientProviderStrategy",
-        )
+  tasks.withType<Test> {
+    useJUnitPlatform()
+    testLogging {
+      showStandardStreams = false
     }
+    val summaryService = registerTestSummaryService()
+    usesService(summaryService)
+    addTestListener(CompactTestOutputListener(summaryService.get()))
+    // suppress JDK 21+ warnings regarding dynamic agent loading (used by mockito)
+    // -Xshare:off: disables class data sharing
+    jvmArgs(
+      "-XX:+EnableDynamicAgentLoading",
+      "-Xshare:off",
+      // GC
+      "-XX:+UseZGC",
+      "-XX:+ZGenerational", // high-performance, low-latency gc for java 21+
+      // memory
+      "-Xms1G",
+      "-Xmx1G",
+      "-XX:MaxMetaspaceSize=512m", // 512 for protobuf one-class-per-file convention
+      "-XX:+AlwaysPreTouch", // zero latency spikes on memory allocation by pre-touching pages
+      "-XX:+UseStringDeduplication", // saves ram by removing duplicate strings from heap
+      // others
+      "-Dfile.encoding=UTF-8",
+      "-XX:+ExitOnOutOfMemoryError",
+    )
+    systemProperty(
+      // avoids port conflicts during parallel execution by forcing testcontainers to use
+      // the unix socket strategy
+      "org.testcontainers.docker-client.strategy",
+      "org.testcontainers.dockerclient.UnixSocketClientProviderStrategy",
+    )
+  }
 
-    tasks.withType<JavaCompile> {
-        options.compilerArgs.addAll(
-            listOf(
-                "-Werror", // change warnings to errors
-                "-Xdoclint:all,-missing", // for Javadoc
-                "-Xlint:cast",
-                "-Xlint:deprecation",
-                "-Xlint:fallthrough", // for classic switch statements
-                "-Xlint:rawtypes",
-                "-Xlint:serial", // for serialization
-                "-Xlint:unchecked", // show all unchecked and insecure java casts
-            ),
-        )
-        options.errorprone {
-            disableWarningsInGeneratedCode.set(true) // ignore autogenerated code to cut noise
-            disable(
-                // allow for using lists, arrays and lambdas inside enum fields
-                "ImmutableEnumChecker",
-                // for enable creating meta-annotations
-                "InjectScopeAnnotationOnInterfaceOrAbstractClass",
-            )
-            error(
-                "CheckReturnValue", // fail build if return value is ignored
-                // no fire-and-forget async tasks, forces handling future results
-                "FutureReturnValueIgnored",
-                // block e.printstacktrace(), force proper logging via slf4j
-                "CatchAndPrintStackTrace",
-                "SystemOut", // block sysout to keep console clean and force logger usage
-                "DefaultCharset", // force explicit charset to prevent prod encoding bugs
-                // force nested classes to be static to prevent hidden memory leaks
-                "ClassCanBeStatic",
-                // block map.get() with wrong key types (prevents always-null bugs)
-                "CollectionIncompatibleType",
-                // strictly require @override to catch silently broken api contracts
-                "MissingOverride",
-            )
-        }
+  tasks.withType<JavaCompile> {
+    options.compilerArgs.addAll(
+      listOf(
+        "-Werror", // change warnings to errors
+        "-Xdoclint:all,-missing", // for Javadoc
+        "-Xlint:cast",
+        "-Xlint:deprecation",
+        "-Xlint:fallthrough", // for classic switch statements
+        "-Xlint:rawtypes",
+        "-Xlint:serial", // for serialization
+        "-Xlint:unchecked", // show all unchecked and insecure java casts
+      ),
+    )
+    options.errorprone {
+      disableWarningsInGeneratedCode.set(true) // ignore autogenerated code to cut noise
+      disable(
+        // allow for using lists, arrays and lambdas inside enum fields
+        "ImmutableEnumChecker",
+        // for enable creating meta-annotations
+        "InjectScopeAnnotationOnInterfaceOrAbstractClass",
+      )
+      error(
+        "CheckReturnValue", // fail build if return value is ignored
+        // no fire-and-forget async tasks, forces handling future results
+        "FutureReturnValueIgnored",
+        // block e.printstacktrace(), force proper logging via slf4j
+        "CatchAndPrintStackTrace",
+        "SystemOut", // block sysout to keep console clean and force logger usage
+        "DefaultCharset", // force explicit charset to prevent prod encoding bugs
+        // force nested classes to be static to prevent hidden memory leaks
+        "ClassCanBeStatic",
+        // block map.get() with wrong key types (prevents always-null bugs)
+        "CollectionIncompatibleType",
+        // strictly require @override to catch silently broken api contracts
+        "MissingOverride",
+      )
     }
+  }
 
-    tasks.withType<JavaExec> {
-        jvmArgs(
-            "-Dlogback.configurationFile=logback-dev.xml",
-            // GC
-            "-XX:+UseZGC",
-            "-XX:+ZGenerational",
-            // memory
-            "-Xms4G",
-            "-Xmx4G",
-            "-XX:MaxMetaspaceSize=512m",
-            "-XX:+AlwaysPreTouch",
-            "-XX:+UseStringDeduplication",
-            "-Dfile.encoding=UTF-8",
-            "-XX:+ExitOnOutOfMemoryError",
-        )
-    }
+  tasks.withType<JavaExec> {
+    jvmArgs(
+      "-Dlogback.configurationFile=logback-dev.xml",
+      // GC
+      "-XX:+UseZGC",
+      "-XX:+ZGenerational",
+      // memory
+      "-Xms4G",
+      "-Xmx4G",
+      "-XX:MaxMetaspaceSize=512m",
+      "-XX:+AlwaysPreTouch",
+      "-XX:+UseStringDeduplication",
+      "-Dfile.encoding=UTF-8",
+      "-XX:+ExitOnOutOfMemoryError",
+    )
+  }
 }

@@ -26,23 +26,23 @@ import xyz.jwizard.jwl.net.envelope.EnvelopeAction;
 import xyz.jwizard.jwl.websocket.WsSession;
 
 public class HeartbeatAction implements EnvelopeAction<WsSession, Void> {
-    private static final Logger LOG = LoggerFactory.getLogger(HeartbeatAction.class);
+  private static final Logger LOG = LoggerFactory.getLogger(HeartbeatAction.class);
 
-    @Override
-    public void handle(WsSession session, Void data) {
-        if (LOG.isTraceEnabled()) {
-            LOG.trace("Heartbeat received from session: {}", session.getSessionId());
-        }
-        session.sendEnvelope(StandardOpCode.HEARTBEAT);
+  @Override
+  public void handle(WsSession session, Void data) {
+    if (LOG.isTraceEnabled()) {
+      LOG.trace("Heartbeat received from session: {}", session.getSessionId());
     }
+    session.sendEnvelope(StandardOpCode.HEARTBEAT);
+  }
 
-    @Override
-    public OpCode opCode() {
-        return StandardOpCode.HEARTBEAT;
-    }
+  @Override
+  public OpCode opCode() {
+    return StandardOpCode.HEARTBEAT;
+  }
 
-    @Override
-    public Class<Void> payloadClass() {
-        return Void.class;
-    }
+  @Override
+  public Class<Void> payloadClass() {
+    return Void.class;
+  }
 }

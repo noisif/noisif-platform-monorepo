@@ -23,9 +23,9 @@ import xyz.jwizard.jwl.graph.model.GraphNode;
 import java.util.List;
 
 public interface GraphReader {
-    List<GraphNode> findAllNodes(String label);
+  List<GraphNode> findAllNodes(String label);
 
-    List<GraphEdge> findAllEdges();
+  List<GraphEdge> findAllEdges();
 
-    GraphNode findNodeById(String id);
+  GraphNode findNodeById(String id);
 }

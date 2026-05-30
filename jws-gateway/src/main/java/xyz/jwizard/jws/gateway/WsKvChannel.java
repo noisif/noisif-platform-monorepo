@@ -20,19 +20,19 @@ package xyz.jwizard.jws.gateway;
 import xyz.jwizard.jwl.kv.pubsub.KvChannel;
 
 public enum WsKvChannel implements KvChannel {
-    TOPIC_BROADCAST("ws:topic:%s"),
-    TOPIC_RECEIVE_EVENTS("ws:topic:*:events"),
-    GLOBAL_BROADCAST("ws:global"),
-    ;
+  TOPIC_BROADCAST("ws:topic:%s"),
+  TOPIC_RECEIVE_EVENTS("ws:topic:*:events"),
+  GLOBAL_BROADCAST("ws:global"),
+  ;
 
-    private final String pattern;
+  private final String pattern;
 
-    WsKvChannel(String pattern) {
-        this.pattern = pattern;
-    }
+  WsKvChannel(String pattern) {
+    this.pattern = pattern;
+  }
 
-    @Override
-    public String buildChannel(Object... params) {
-        return String.format(pattern, params);
-    }
+  @Override
+  public String buildChannel(Object... params) {
+    return String.format(pattern, params);
+  }
 }

@@ -30,49 +30,48 @@ import xyz.jwizard.jwl.netclient.rest.intercept.RequestInterceptor;
 import java.time.Duration;
 
 public interface RequestSpec {
-    RequestSpec group(ClientGroup clientGroup);
+  RequestSpec group(ClientGroup clientGroup);
 
-    default RequestSpec header(HttpHeaderName name, HttpHeaderValue value, Object... args) {
-        return unsafeHeader(name, value.buildWithArgs(args));
-    }
+  default RequestSpec header(HttpHeaderName name, HttpHeaderValue value, Object... args) {
+    return unsafeHeader(name, value.buildWithArgs(args));
+  }
 
-    RequestSpec unsafeHeader(HttpHeaderName name, String value);
+  RequestSpec unsafeHeader(HttpHeaderName name, String value);
 
-    default RequestSpec auth(AuthScheme scheme, String... credentials) {
-        return unsafeHeader(
-                CommonHttpHeaderName.AUTHORIZATION, scheme.buildHeaderValue(credentials));
-    }
+  default RequestSpec auth(AuthScheme scheme, String... credentials) {
+    return unsafeHeader(CommonHttpHeaderName.AUTHORIZATION, scheme.buildHeaderValue(credentials));
+  }
 
-    default RequestSpec bearerAuth(String token) {
-        return auth(StandardAuthScheme.BEARER, token);
-    }
+  default RequestSpec bearerAuth(String token) {
+    return auth(StandardAuthScheme.BEARER, token);
+  }
 
-    default RequestSpec basicAuth(String username, String password) {
-        return auth(StandardAuthScheme.BASIC, username, password);
-    }
+  default RequestSpec basicAuth(String username, String password) {
+    return auth(StandardAuthScheme.BASIC, username, password);
+  }
 
-    RequestSpec queryParam(String name, String value);
+  RequestSpec queryParam(String name, String value);
 
-    RequestSpec formParam(String name, String value);
+  RequestSpec formParam(String name, String value);
 
-    RequestSpec body(Object body);
+  RequestSpec body(Object body);
 
-    RequestSpec serializer(SerializerFormat format);
+  RequestSpec serializer(SerializerFormat format);
 
-    RequestSpec timeout(Duration timeout);
+  RequestSpec timeout(Duration timeout);
 
-    // maxAttempts = maxRetries + 1
-    RequestSpec retry(int maxRetries, Duration backoffMs);
+  // maxAttempts = maxRetries + 1
+  RequestSpec retry(int maxRetries, Duration backoffMs);
 
-    RequestSpec retry(int maxRetries, Duration backoffMs, Duration maxBackoffMs);
+  RequestSpec retry(int maxRetries, Duration backoffMs, Duration maxBackoffMs);
 
-    RequestSpec disableRetry();
+  RequestSpec disableRetry();
 
-    RequestSpec interceptor(RequestInterceptor interceptor);
+  RequestSpec interceptor(RequestInterceptor interceptor);
 
-    <T> RestResponse<T> send(Class<T> responseType);
+  <T> RestResponse<T> send(Class<T> responseType);
 
-    default RestResponse<Void> send() {
-        return send(Void.class);
-    }
+  default RestResponse<Void> send() {
+    return send(Void.class);
+  }
 }

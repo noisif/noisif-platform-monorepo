@@ -23,5 +23,5 @@ import xyz.jwizard.jwl.net.message.RawMessageSession;
 import xyz.jwizard.jwl.netclient.group.ClientGroup;
 
 public interface WsClientSession extends NetworkSender, EnvelopeSession, RawMessageSession {
-    ClientGroup getGroup();
+  ClientGroup getGroup();
 }

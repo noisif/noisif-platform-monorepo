@@ -33,29 +33,29 @@ import java.util.Set;
 
 @Singleton
 class HttpServerLifecycle implements LifecycleHook {
-    private final HttpServer httpServer;
+  private final HttpServer httpServer;
 
-    @Inject
-    HttpServerLifecycle(ComponentProvider componentProvider) {
-        httpServer =
-                JettyHttpServer.builder()
-                        .componentProvider(componentProvider)
-                        .serializerRegistry(
-                                SerializerRegistry.createDefault()
-                                        .register(JacksonSerializer.createDefaultStrictMapper())
-                                        .register(RawByteSerializer.createDefault()))
-                        .ignoredPaths(Set.of())
-                        .port(9094) /* TODO: incoming from config server */
-                        .build();
-    }
+  @Inject
+  HttpServerLifecycle(ComponentProvider componentProvider) {
+    httpServer =
+        JettyHttpServer.builder()
+            .componentProvider(componentProvider)
+            .serializerRegistry(
+                SerializerRegistry.createDefault()
+                    .register(JacksonSerializer.createDefaultStrictMapper())
+                    .register(RawByteSerializer.createDefault()))
+            .ignoredPaths(Set.of())
+            .port(9094) /* TODO: incoming from config server */
+            .build();
+  }
 
-    @Override
-    public void onStart(ComponentProvider componentProvider, ClassScanner scanner) {
-        httpServer.start();
-    }
+  @Override
+  public void onStart(ComponentProvider componentProvider, ClassScanner scanner) {
+    httpServer.start();
+  }
 
-    @Override
-    public void onStop() {
-        httpServer.close();
-    }
+  @Override
+  public void onStop() {
+    httpServer.close();
+  }
 }

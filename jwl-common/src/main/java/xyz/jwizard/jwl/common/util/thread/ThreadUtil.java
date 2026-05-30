@@ -26,26 +26,26 @@ import xyz.jwizard.jwl.common.util.io.RunnableWithException;
 import java.util.concurrent.ThreadFactory;
 
 public class ThreadUtil {
-    private static final Logger LOG = LoggerFactory.getLogger(ThreadUtil.class);
+  private static final Logger LOG = LoggerFactory.getLogger(ThreadUtil.class);
 
-    private ThreadUtil() {
-        throw new ForbiddenInstantiationException(ThreadUtil.class);
-    }
+  private ThreadUtil() {
+    throw new ForbiddenInstantiationException(ThreadUtil.class);
+  }
 
-    public static void runAsync(String name, RunnableWithException task) {
-        Thread.ofVirtual()
-                .name(name)
-                .start(
-                        () -> {
-                            try {
-                                task.run();
-                            } catch (Exception ex) {
-                                LOG.error("Critical error in async task: {}", name, ex);
-                            }
-                        });
-    }
+  public static void runAsync(String name, RunnableWithException task) {
+    Thread.ofVirtual()
+        .name(name)
+        .start(
+            () -> {
+              try {
+                task.run();
+              } catch (Exception ex) {
+                LOG.error("Critical error in async task: {}", name, ex);
+              }
+            });
+  }
 
-    public static ThreadFactory createThreadFactory(String name) {
-        return new DefaultThreadFactory(name);
-    }
+  public static ThreadFactory createThreadFactory(String name) {
+    return new DefaultThreadFactory(name);
+  }
 }

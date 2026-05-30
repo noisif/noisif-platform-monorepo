@@ -33,64 +33,60 @@ import java.lang.reflect.Parameter;
 import java.util.Arrays;
 
 public class RequestBodyResolver implements ArgumentResolver {
-    private final SerializerRegistry<MessageSerializer> serializerRegistry;
-    private final ValidationHandler validationHandler;
+  private final SerializerRegistry<MessageSerializer> serializerRegistry;
+  private final ValidationHandler validationHandler;
 
-    public RequestBodyResolver(
-            SerializerRegistry<MessageSerializer> serializerRegistry,
-            ValidationHandler validationHandler) {
-        this.serializerRegistry = serializerRegistry;
-        this.validationHandler = validationHandler;
+  public RequestBodyResolver(
+      SerializerRegistry<MessageSerializer> serializerRegistry,
+      ValidationHandler validationHandler) {
+    this.serializerRegistry = serializerRegistry;
+    this.validationHandler = validationHandler;
+  }
+
+  @Override
+  public boolean supports(Parameter parameter) {
+    return parameter.isAnnotationPresent(Body.class);
+  }
+
+  @Override
+  public Object resolve(Parameter parameter, HttpRequest req, MatchResult match) throws Exception {
+    final long contentLength = req.getLength();
+    if (contentLength == 0) {
+      return null;
     }
+    final BodyMediaSerializer mapping =
+        BodyMediaSerializer.resolve(parameter.getType(), req.getContentType());
 
-    @Override
-    public boolean supports(Parameter parameter) {
-        return parameter.isAnnotationPresent(Body.class);
+    final Body annotation = parameter.getAnnotation(Body.class);
+    final long limit =
+        (annotation != null && annotation.limit() > 0)
+            ? annotation.unit().toBytes(annotation.limit())
+            : mapping.getMaxSizeBytes();
+    if (contentLength > limit) {
+      throw new RequestTooLargeException(
+          String.format(
+              "Declared Content-Length: %d bytes, max allowed: %d bytes", contentLength, limit));
     }
-
-    @Override
-    public Object resolve(Parameter parameter, HttpRequest req, MatchResult match)
-            throws Exception {
-        final long contentLength = req.getLength();
-        if (contentLength == 0) {
-            return null;
-        }
-        final BodyMediaSerializer mapping =
-                BodyMediaSerializer.resolve(parameter.getType(), req.getContentType());
-
-        final Body annotation = parameter.getAnnotation(Body.class);
-        final long limit =
-                (annotation != null && annotation.limit() > 0)
-                        ? annotation.unit().toBytes(annotation.limit())
-                        : mapping.getMaxSizeBytes();
-        if (contentLength > limit) {
-            throw new RequestTooLargeException(
-                    String.format(
-                            "Declared Content-Length: %d bytes, max allowed: %d bytes",
-                            contentLength, limit));
-        }
-        final MessageSerializer serializer = serializerRegistry.get(mapping.getFormat());
-        if (serializer == null) {
-            throw new IllegalStateException(
-                    "No serializer registered for format: " + mapping.getFormat());
-        }
-        try (final InputStream in = new LimitedInputStream(req.getInputStream(), limit)) {
-            final Object body = serializer.deserializeFromStream(in, parameter.getType());
-            if (body != null && mapping.isValidate()) {
-                validationHandler.validate(body);
-            }
-            return body;
-        }
+    final MessageSerializer serializer = serializerRegistry.get(mapping.getFormat());
+    if (serializer == null) {
+      throw new IllegalStateException(
+          "No serializer registered for format: " + mapping.getFormat());
     }
-
-    @Override
-    public void validate(Method method) throws RouteValidationException {
-        final long bodyParams =
-                Arrays.stream(method.getParameters()).filter(this::supports).count();
-        if (bodyParams > 1) {
-            throw new RouteValidationException(
-                    method,
-                    "Multiple @Body parameters detected, only one request body is allowed per route");
-        }
+    try (final InputStream in = new LimitedInputStream(req.getInputStream(), limit)) {
+      final Object body = serializer.deserializeFromStream(in, parameter.getType());
+      if (body != null && mapping.isValidate()) {
+        validationHandler.validate(body);
+      }
+      return body;
     }
+  }
+
+  @Override
+  public void validate(Method method) throws RouteValidationException {
+    final long bodyParams = Arrays.stream(method.getParameters()).filter(this::supports).count();
+    if (bodyParams > 1) {
+      throw new RouteValidationException(
+          method, "Multiple @Body parameters detected, only one request body is allowed per route");
+    }
+  }
 }

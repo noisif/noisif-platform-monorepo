@@ -18,5 +18,5 @@
 package xyz.jwizard.jwl.net;
 
 public interface NetworkProtocol {
-    String getScheme();
+  String getScheme();
 }

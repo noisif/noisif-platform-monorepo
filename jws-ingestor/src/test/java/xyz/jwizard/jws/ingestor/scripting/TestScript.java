@@ -18,22 +18,22 @@
 package xyz.jwizard.jws.ingestor.scripting;
 
 public enum TestScript implements ScriptFile {
-    CLEANUP("scripting/test-check-cleanup.js"),
-    CHECK_SIDE_EFFECT("scripting/test-check-side-effect.js"),
-    EXECUTE("scripting/test-execute.js"),
-    PRELOAD("scripting/test-preload.js"),
-    SIDE_EFFECT("scripting/test-side-effect.js"),
-    VARS("scripting/test-vars.js"),
-    ;
+  CLEANUP("scripting/test-check-cleanup.js"),
+  CHECK_SIDE_EFFECT("scripting/test-check-side-effect.js"),
+  EXECUTE("scripting/test-execute.js"),
+  PRELOAD("scripting/test-preload.js"),
+  SIDE_EFFECT("scripting/test-side-effect.js"),
+  VARS("scripting/test-vars.js"),
+  ;
 
-    private final String code;
+  private final String code;
 
-    TestScript(String code) {
-        this.code = code;
-    }
+  TestScript(String code) {
+    this.code = code;
+  }
 
-    @Override
-    public String getCode() {
-        return code;
-    }
+  @Override
+  public String getCode() {
+    return code;
+  }
 }

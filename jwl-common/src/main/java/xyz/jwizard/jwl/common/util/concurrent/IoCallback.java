@@ -18,7 +18,7 @@
 package xyz.jwizard.jwl.common.util.concurrent;
 
 public interface IoCallback {
-    void onSuccess();
+  void onSuccess();
 
-    void onFailure(Throwable cause);
+  void onFailure(Throwable cause);
 }

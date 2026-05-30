@@ -20,24 +20,24 @@ package xyz.jwizard.jwl.codec.serialization;
 import xyz.jwizard.jwl.common.registry.GenericConcurrentRegistry;
 
 public class SerializerRegistry<S extends Serializer> extends GenericConcurrentRegistry<String, S> {
-    protected SerializerRegistry() {
-        super();
-    }
+  protected SerializerRegistry() {
+    super();
+  }
 
-    public static SerializerRegistry<MessageSerializer> createDefault() {
-        return new SerializerRegistry<>();
-    }
+  public static SerializerRegistry<MessageSerializer> createDefault() {
+    return new SerializerRegistry<>();
+  }
 
-    public static <S extends Serializer> SerializerRegistry<S> create() {
-        return new SerializerRegistry<>();
-    }
+  public static <S extends Serializer> SerializerRegistry<S> create() {
+    return new SerializerRegistry<>();
+  }
 
-    public SerializerRegistry<S> register(S serializer) {
-        super.register(serializer.getFormat().getFormatName(), serializer);
-        return this;
-    }
+  public SerializerRegistry<S> register(S serializer) {
+    super.register(serializer.getFormat().getFormatName(), serializer);
+    return this;
+  }
 
-    public S get(SerializerFormat format) {
-        return super.get(format.getFormatName());
-    }
+  public S get(SerializerFormat format) {
+    return super.get(format.getFormatName());
+  }
 }

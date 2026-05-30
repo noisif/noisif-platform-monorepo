@@ -21,59 +21,59 @@ import xyz.jwizard.jwl.common.util.Assert;
 import xyz.jwizard.jwl.graph.client.factory.GraphConfig;
 
 public class Neo4jConfig extends GraphConfig {
-    private final String username;
-    private final String password;
+  private final String username;
+  private final String password;
 
-    protected Neo4jConfig(Builder builder) {
-        super(builder);
-        this.username = builder.username;
-        this.password = builder.password;
+  protected Neo4jConfig(Builder builder) {
+    super(builder);
+    this.username = builder.username;
+    this.password = builder.password;
+  }
+
+  public static Builder builder() {
+    return new Builder();
+  }
+
+  public String getUsername() {
+    return username;
+  }
+
+  public String getPassword() {
+    return password;
+  }
+
+  public static final class Builder extends AbstractBuilder<Builder, Neo4jConfig> {
+    private String username;
+    private String password;
+
+    private Builder() {}
+
+    @Override
+    protected Builder self() {
+      return this;
     }
 
-    public static Builder builder() {
-        return new Builder();
+    public Builder username(String username) {
+      this.username = username;
+      return this;
     }
 
-    public String getUsername() {
-        return username;
+    public Builder password(String password) {
+      this.password = password;
+      return this;
     }
 
-    public String getPassword() {
-        return password;
+    @Override
+    protected void validate() {
+      super.validate();
+      Assert.notNull(username, "Username cannot be null");
+      Assert.notNull(password, "Password cannot be null");
     }
 
-    public static final class Builder extends AbstractBuilder<Builder, Neo4jConfig> {
-        private String username;
-        private String password;
-
-        private Builder() {}
-
-        @Override
-        protected Builder self() {
-            return this;
-        }
-
-        public Builder username(String username) {
-            this.username = username;
-            return this;
-        }
-
-        public Builder password(String password) {
-            this.password = password;
-            return this;
-        }
-
-        @Override
-        protected void validate() {
-            super.validate();
-            Assert.notNull(username, "Username cannot be null");
-            Assert.notNull(password, "Password cannot be null");
-        }
-
-        @Override
-        public Neo4jConfig build() {
-            validate();
-            return new Neo4jConfig(this);
-        }
+    @Override
+    public Neo4jConfig build() {
+      validate();
+      return new Neo4jConfig(this);
     }
+  }
 }

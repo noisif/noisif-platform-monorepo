@@ -20,5 +20,5 @@ package xyz.jwizard.jwl.netclient.rest.intercept;
 import xyz.jwizard.jwl.common.Ordered;
 
 public interface RequestInterceptor extends Ordered {
-    void intercept(InterceptorContext context);
+  void intercept(InterceptorContext context);
 }

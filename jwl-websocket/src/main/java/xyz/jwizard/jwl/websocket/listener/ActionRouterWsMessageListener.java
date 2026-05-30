@@ -24,39 +24,39 @@ import xyz.jwizard.jwl.websocket.WsSession;
 import xyz.jwizard.jwl.websocket.listener.action.HeartbeatAction;
 
 public class ActionRouterWsMessageListener extends EnvelopeBusListener<WsSession> {
-    private ActionRouterWsMessageListener(Builder builder) {
-        super(builder);
-        registerManually(new HeartbeatAction());
-    }
+  private ActionRouterWsMessageListener(Builder builder) {
+    super(builder);
+    registerManually(new HeartbeatAction());
+  }
 
-    public static Builder builder() {
-        return new Builder();
+  public static Builder builder() {
+    return new Builder();
+  }
+
+  @Override
+  protected void handleProcessUnknownAction(WsSession session, MessageEnvelope<?> envelope) {
+    super.handleProcessUnknownAction(session, envelope);
+    session.sendEnvelope(StandardOpCode.UNKNOWN_ACTION);
+  }
+
+  @Override
+  protected void handleProcessingError(WsSession session, Exception ex) {
+    super.handleProcessingError(session, ex);
+    session.sendEnvelope(StandardOpCode.INVALID_PAYLOAD);
+  }
+
+  public static class Builder extends AbstractBuilder<WsSession, Builder> {
+    protected Builder() {}
+
+    @Override
+    protected Builder self() {
+      return this;
     }
 
     @Override
-    protected void handleProcessUnknownAction(WsSession session, MessageEnvelope<?> envelope) {
-        super.handleProcessUnknownAction(session, envelope);
-        session.sendEnvelope(StandardOpCode.UNKNOWN_ACTION);
+    public EnvelopeBusListener<WsSession> build() {
+      super.validate();
+      return new ActionRouterWsMessageListener(this);
     }
-
-    @Override
-    protected void handleProcessingError(WsSession session, Exception ex) {
-        super.handleProcessingError(session, ex);
-        session.sendEnvelope(StandardOpCode.INVALID_PAYLOAD);
-    }
-
-    public static class Builder extends AbstractBuilder<WsSession, Builder> {
-        protected Builder() {}
-
-        @Override
-        protected Builder self() {
-            return this;
-        }
-
-        @Override
-        public EnvelopeBusListener<WsSession> build() {
-            super.validate();
-            return new ActionRouterWsMessageListener(this);
-        }
-    }
+  }
 }

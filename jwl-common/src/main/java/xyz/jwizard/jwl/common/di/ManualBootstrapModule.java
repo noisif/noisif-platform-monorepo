@@ -27,37 +27,37 @@ import xyz.jwizard.jwl.common.util.CastUtil;
 import java.util.Map;
 
 class ManualBootstrapModule extends AbstractModule {
-    private static final Logger LOG = LoggerFactory.getLogger(ManualBootstrapModule.class);
+  private static final Logger LOG = LoggerFactory.getLogger(ManualBootstrapModule.class);
 
-    private final Map<Class<?>, Class<?>> components;
-    private final Map<Class<?>, Object> instanceComponents;
+  private final Map<Class<?>, Class<?>> components;
+  private final Map<Class<?>, Object> instanceComponents;
 
-    ManualBootstrapModule(
-            Map<Class<?>, Class<?>> components, Map<Class<?>, Object> instanceComponents) {
-        this.components = components;
-        this.instanceComponents = instanceComponents;
+  ManualBootstrapModule(
+      Map<Class<?>, Class<?>> components, Map<Class<?>, Object> instanceComponents) {
+    this.components = components;
+    this.instanceComponents = instanceComponents;
+  }
+
+  @Override
+  protected void configure() {
+    LOG.debug("Configuring bootstrap module");
+    for (Map.Entry<Class<?>, Class<?>> entry : components.entrySet()) {
+      final Class<Object> interfaceClass = CastUtil.unsafeCast(entry.getKey());
+      final Class<Object> implementationClass = CastUtil.unsafeCast(entry.getValue());
+      LOG.debug(
+          "Binding infrastructure class: {} -> {}",
+          interfaceClass.getSimpleName(),
+          implementationClass.getSimpleName());
+      bind(interfaceClass).to(implementationClass).asEagerSingleton();
     }
-
-    @Override
-    protected void configure() {
-        LOG.debug("Configuring bootstrap module");
-        for (Map.Entry<Class<?>, Class<?>> entry : components.entrySet()) {
-            final Class<Object> interfaceClass = CastUtil.unsafeCast(entry.getKey());
-            final Class<Object> implementationClass = CastUtil.unsafeCast(entry.getValue());
-            LOG.debug(
-                    "Binding infrastructure class: {} -> {}",
-                    interfaceClass.getSimpleName(),
-                    implementationClass.getSimpleName());
-            bind(interfaceClass).to(implementationClass).asEagerSingleton();
-        }
-        for (Map.Entry<Class<?>, Object> entry : instanceComponents.entrySet()) {
-            final Class<Object> type = CastUtil.unsafeCast(entry.getKey());
-            final Object instance = entry.getValue();
-            LOG.debug(
-                    "Binding existing instance: {} -> instance of {}",
-                    type.getSimpleName(),
-                    instance.getClass().getSimpleName());
-            bind(type).toInstance(instance);
-        }
+    for (Map.Entry<Class<?>, Object> entry : instanceComponents.entrySet()) {
+      final Class<Object> type = CastUtil.unsafeCast(entry.getKey());
+      final Object instance = entry.getValue();
+      LOG.debug(
+          "Binding existing instance: {} -> instance of {}",
+          type.getSimpleName(),
+          instance.getClass().getSimpleName());
+      bind(type).toInstance(instance);
     }
+  }
 }

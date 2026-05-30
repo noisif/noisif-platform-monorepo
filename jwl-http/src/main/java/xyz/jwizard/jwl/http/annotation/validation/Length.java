@@ -25,9 +25,9 @@ import java.lang.annotation.Target;
 @Target(ElementType.FIELD)
 @Retention(RetentionPolicy.RUNTIME)
 public @interface Length {
-    int min() default 0;
+  int min() default 0;
 
-    int max() default Integer.MAX_VALUE;
+  int max() default Integer.MAX_VALUE;
 
-    String message() default "length must be between {min} and {max}";
+  String message() default "length must be between {min} and {max}";
 }

@@ -24,46 +24,46 @@ import xyz.jwizard.jwl.common.util.Assert;
 import xyz.jwizard.jwl.netclient.websocket.WsClientUpgradeRequest;
 
 public class WsQueryParamAuthenticator implements WsClientAuthenticator {
-    private static final Logger LOG = LoggerFactory.getLogger(WsQueryParamAuthenticator.class);
+  private static final Logger LOG = LoggerFactory.getLogger(WsQueryParamAuthenticator.class);
 
-    private final String queryParameterKey;
-    private final String queryParameterValue;
+  private final String queryParameterKey;
+  private final String queryParameterValue;
 
-    private WsQueryParamAuthenticator(Builder builder) {
-        queryParameterKey = builder.queryParameterKey;
-        queryParameterValue = builder.queryParameterValue;
+  private WsQueryParamAuthenticator(Builder builder) {
+    queryParameterKey = builder.queryParameterKey;
+    queryParameterValue = builder.queryParameterValue;
+  }
+
+  public static Builder builder() {
+    return new Builder();
+  }
+
+  @Override
+  public void applyAuthentication(WsClientUpgradeRequest req) {
+    LOG.trace("Applying authentication via query parameter: '?{}='", queryParameterKey);
+    req.addQueryParameter(queryParameterKey, queryParameterValue);
+  }
+
+  public static class Builder {
+    private String queryParameterKey = "token";
+    private String queryParameterValue = null;
+
+    private Builder() {}
+
+    public Builder queryParameterKey(String queryParameterKey) {
+      this.queryParameterKey = queryParameterKey;
+      return this;
     }
 
-    public static Builder builder() {
-        return new Builder();
+    public Builder queryParameterValue(String queryParameterValue) {
+      this.queryParameterValue = queryParameterValue;
+      return this;
     }
 
-    @Override
-    public void applyAuthentication(WsClientUpgradeRequest req) {
-        LOG.trace("Applying authentication via query parameter: '?{}='", queryParameterKey);
-        req.addQueryParameter(queryParameterKey, queryParameterValue);
+    public WsQueryParamAuthenticator build() {
+      Assert.notNull(queryParameterKey, "QueryParameterKey cannot be null");
+      Assert.notNull(queryParameterValue, "QueryParameterValue cannot be null");
+      return new WsQueryParamAuthenticator(this);
     }
-
-    public static class Builder {
-        private String queryParameterKey = "token";
-        private String queryParameterValue = null;
-
-        private Builder() {}
-
-        public Builder queryParameterKey(String queryParameterKey) {
-            this.queryParameterKey = queryParameterKey;
-            return this;
-        }
-
-        public Builder queryParameterValue(String queryParameterValue) {
-            this.queryParameterValue = queryParameterValue;
-            return this;
-        }
-
-        public WsQueryParamAuthenticator build() {
-            Assert.notNull(queryParameterKey, "QueryParameterKey cannot be null");
-            Assert.notNull(queryParameterValue, "QueryParameterValue cannot be null");
-            return new WsQueryParamAuthenticator(this);
-        }
-    }
+  }
 }

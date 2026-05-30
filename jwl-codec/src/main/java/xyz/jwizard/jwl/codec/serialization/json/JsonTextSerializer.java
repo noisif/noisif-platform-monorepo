@@ -21,33 +21,33 @@ import xyz.jwizard.jwl.codec.DataType;
 import xyz.jwizard.jwl.codec.EncodedPayloadVisitor;
 
 public class JsonTextSerializer extends TypedJsonSerializer<String> {
-    private final JsonSerializer jsonSerializer;
+  private final JsonSerializer jsonSerializer;
 
-    private JsonTextSerializer(JsonSerializer jsonSerializer) {
-        this.jsonSerializer = jsonSerializer;
-    }
+  private JsonTextSerializer(JsonSerializer jsonSerializer) {
+    this.jsonSerializer = jsonSerializer;
+  }
 
-    public static JsonTextSerializer create(JsonSerializer jsonSerializer) {
-        return new JsonTextSerializer(jsonSerializer);
-    }
+  public static JsonTextSerializer create(JsonSerializer jsonSerializer) {
+    return new JsonTextSerializer(jsonSerializer);
+  }
 
-    @Override
-    public String serializePayload(Object payload) {
-        return jsonSerializer.serialize(payload);
-    }
+  @Override
+  public String serializePayload(Object payload) {
+    return jsonSerializer.serialize(payload);
+  }
 
-    @Override
-    public <T> T deserializePayload(String payload, Class<T> type) {
-        return jsonSerializer.deserialize(payload, type);
-    }
+  @Override
+  public <T> T deserializePayload(String payload, Class<T> type) {
+    return jsonSerializer.deserialize(payload, type);
+  }
 
-    @Override
-    public void serializeAndAccept(Object payload, EncodedPayloadVisitor visitor) {
-        visitor.accept(serializePayload(payload));
-    }
+  @Override
+  public void serializeAndAccept(Object payload, EncodedPayloadVisitor visitor) {
+    visitor.accept(serializePayload(payload));
+  }
 
-    @Override
-    public DataType getCodecDataType() {
-        return DataType.TEXT;
-    }
+  @Override
+  public DataType getCodecDataType() {
+    return DataType.TEXT;
+  }
 }

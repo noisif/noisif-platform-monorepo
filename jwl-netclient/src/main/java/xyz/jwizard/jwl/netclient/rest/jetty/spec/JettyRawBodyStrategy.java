@@ -30,26 +30,26 @@ import xyz.jwizard.jwl.netclient.rest.spec.HeaderConsumer;
 
 @LoadedViaReflection
 public class JettyRawBodyStrategy implements JettyBodyStrategy {
-    private static final Logger LOG = LoggerFactory.getLogger(JettyRawBodyStrategy.class);
+  private static final Logger LOG = LoggerFactory.getLogger(JettyRawBodyStrategy.class);
 
-    @Override
-    public boolean supports(GenericRequestSpec spec) {
-        return spec.getBody() != null
-                && (spec.getFormParams() == null || spec.getFormParams().isEmpty());
-    }
+  @Override
+  public boolean supports(GenericRequestSpec spec) {
+    return spec.getBody() != null
+        && (spec.getFormParams() == null || spec.getFormParams().isEmpty());
+  }
 
-    @Override
-    public Request.Content buildContent(
-            GenericRequestSpec spec, MessageSerializer serializer, HeaderConsumer headerConsumer) {
-        final String mimeType = serializer.getFormat().getMimeType();
-        LOG.trace(
-                "Building raw body, format: {}, mime type: {}",
-                serializer.getFormat().getFormatName(),
-                mimeType);
-        if (mimeType != null) {
-            headerConsumer.addHeader(CommonHttpHeaderName.CONTENT_TYPE, mimeType);
-        }
-        final byte[] serializedBytes = serializer.serializeToBytes(spec.getBody());
-        return new BytesRequestContent(serializedBytes);
+  @Override
+  public Request.Content buildContent(
+      GenericRequestSpec spec, MessageSerializer serializer, HeaderConsumer headerConsumer) {
+    final String mimeType = serializer.getFormat().getMimeType();
+    LOG.trace(
+        "Building raw body, format: {}, mime type: {}",
+        serializer.getFormat().getFormatName(),
+        mimeType);
+    if (mimeType != null) {
+      headerConsumer.addHeader(CommonHttpHeaderName.CONTENT_TYPE, mimeType);
     }
+    final byte[] serializedBytes = serializer.serializeToBytes(spec.getBody());
+    return new BytesRequestContent(serializedBytes);
+  }
 }

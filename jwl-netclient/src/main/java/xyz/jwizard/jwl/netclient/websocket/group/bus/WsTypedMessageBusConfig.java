@@ -31,73 +31,71 @@ import xyz.jwizard.jwl.netclient.websocket.group.codec.WsTypedMessageSessionCode
 import java.util.function.Consumer;
 
 public class WsTypedMessageBusConfig extends GenericWsBusConfig {
-    private final TypedMessageSerializer<?> typedMessageSerializer;
+  private final TypedMessageSerializer<?> typedMessageSerializer;
 
-    private WsTypedMessageBusConfig(Builder builder) {
-        super(builder);
-        typedMessageSerializer = builder.typedMessageSerializer;
+  private WsTypedMessageBusConfig(Builder builder) {
+    super(builder);
+    typedMessageSerializer = builder.typedMessageSerializer;
+  }
+
+  public static Builder builder() {
+    return new Builder();
+  }
+
+  @Override
+  public WsSessionCodec configureProtocol(WsClientUpgradeRequest req) {
+    if (encodingParamName != null) {
+      req.addQueryParameter(encodingParamName, typedMessageSerializer.getFormat().getFormatName());
     }
+    if (dataTypeParamName != null) {
+      req.addQueryParameter(dataTypeParamName, typedMessageSerializer.getCodecDataType().getCode());
+    }
+    return new WsTypedMessageSessionCodec(typedMessageSerializer);
+  }
 
-    public static Builder builder() {
-        return new Builder();
+  public static class Builder extends AbstractBuilder<Builder, WsTypedMessageBusConfig> {
+    private TypedMessageSerializer<?> typedMessageSerializer;
+
+    private Builder() {
+      super();
     }
 
     @Override
-    public WsSessionCodec configureProtocol(WsClientUpgradeRequest req) {
-        if (encodingParamName != null) {
-            req.addQueryParameter(
-                    encodingParamName, typedMessageSerializer.getFormat().getFormatName());
-        }
-        if (dataTypeParamName != null) {
-            req.addQueryParameter(
-                    dataTypeParamName, typedMessageSerializer.getCodecDataType().getCode());
-        }
-        return new WsTypedMessageSessionCodec(typedMessageSerializer);
+    protected Builder self() {
+      return this;
     }
 
-    public static class Builder extends AbstractBuilder<Builder, WsTypedMessageBusConfig> {
-        private TypedMessageSerializer<?> typedMessageSerializer;
-
-        private Builder() {
-            super();
-        }
-
-        @Override
-        protected Builder self() {
-            return this;
-        }
-
-        @CanIgnoreReturnValue
-        public Builder serializer(TypedMessageSerializer<?> typedMessageSerializer) {
-            this.typedMessageSerializer = typedMessageSerializer;
-            return this;
-        }
-
-        @CanIgnoreReturnValue
-        public Builder addBusListener(TypedMessageBusListener<?, WsClientSession> busListener) {
-            return super.addRawBusListener(busListener);
-        }
-
-        @Override
-        public WsTypedMessageBusConfig build() {
-            super.validate();
-            Assert.notNull(typedMessageSerializer, "TypedMessageSerializer cannot be null");
-            return new WsTypedMessageBusConfig(this);
-        }
+    @CanIgnoreReturnValue
+    public Builder serializer(TypedMessageSerializer<?> typedMessageSerializer) {
+      this.typedMessageSerializer = typedMessageSerializer;
+      return this;
     }
 
-    public static class Step extends AbstractStep<Step, Builder> {
-        public Step(WsClientGroupConfig.Builder parent) {
-            super(parent);
-        }
-
-        @Override
-        protected Step self() {
-            return this;
-        }
-
-        public Step typedMessageBusConfig(Consumer<Builder> configurer) {
-            return super.configure(WsTypedMessageBusConfig.builder(), configurer);
-        }
+    @CanIgnoreReturnValue
+    public Builder addBusListener(TypedMessageBusListener<?, WsClientSession> busListener) {
+      return super.addRawBusListener(busListener);
     }
+
+    @Override
+    public WsTypedMessageBusConfig build() {
+      super.validate();
+      Assert.notNull(typedMessageSerializer, "TypedMessageSerializer cannot be null");
+      return new WsTypedMessageBusConfig(this);
+    }
+  }
+
+  public static class Step extends AbstractStep<Step, Builder> {
+    public Step(WsClientGroupConfig.Builder parent) {
+      super(parent);
+    }
+
+    @Override
+    protected Step self() {
+      return this;
+    }
+
+    public Step typedMessageBusConfig(Consumer<Builder> configurer) {
+      return super.configure(WsTypedMessageBusConfig.builder(), configurer);
+    }
+  }
 }

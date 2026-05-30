@@ -24,21 +24,21 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public abstract class ModuleIdentityTest {
-    private final Logger log = LoggerFactory.getLogger(getClass());
+  private final Logger log = LoggerFactory.getLogger(getClass());
 
-    @Test
-    void shouldIdentifyModule() {
-        // given
-        final String moduleName = getPackageSuffix() + "-" + getModuleName();
-        final String packageName = getClass().getPackageName();
-        // when
-        log.info("running smoke test for module: {} (package: {})", moduleName, packageName);
-        // then
-        assertThat(moduleName).isNotBlank();
-        assertThat(packageName).startsWith("xyz.jwizard." + getPackageSuffix());
-    }
+  @Test
+  void shouldIdentifyModule() {
+    // given
+    final String moduleName = getPackageSuffix() + "-" + getModuleName();
+    final String packageName = getClass().getPackageName();
+    // when
+    log.info("running smoke test for module: {} (package: {})", moduleName, packageName);
+    // then
+    assertThat(moduleName).isNotBlank();
+    assertThat(packageName).startsWith("xyz.jwizard." + getPackageSuffix());
+  }
 
-    protected abstract String getModuleName();
+  protected abstract String getModuleName();
 
-    protected abstract String getPackageSuffix();
+  protected abstract String getPackageSuffix();
 }

@@ -21,8 +21,8 @@ import xyz.jwizard.jwl.http.annotation.SecuredRoute;
 import xyz.jwizard.jwl.http.route.Route;
 
 public abstract class SecureRouteFilter implements HttpFilter {
-    @Override
-    public final boolean supports(Route route) {
-        return route.method().isAnnotationPresent(SecuredRoute.class);
-    }
+  @Override
+  public final boolean supports(Route route) {
+    return route.method().isAnnotationPresent(SecuredRoute.class);
+  }
 }

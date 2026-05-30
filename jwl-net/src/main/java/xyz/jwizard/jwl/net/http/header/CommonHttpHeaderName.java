@@ -18,19 +18,19 @@
 package xyz.jwizard.jwl.net.http.header;
 
 public enum CommonHttpHeaderName implements HttpHeaderName {
-    CONTENT_TYPE("Content-Type"),
-    AUTHORIZATION("Authorization"),
-    USER_AGENT("User-Agent"),
-    ;
+  CONTENT_TYPE("Content-Type"),
+  AUTHORIZATION("Authorization"),
+  USER_AGENT("User-Agent"),
+  ;
 
-    private final String code;
+  private final String code;
 
-    CommonHttpHeaderName(String code) {
-        this.code = code;
-    }
+  CommonHttpHeaderName(String code) {
+    this.code = code;
+  }
 
-    @Override
-    public String getCode() {
-        return code;
-    }
+  @Override
+  public String getCode() {
+    return code;
+  }
 }

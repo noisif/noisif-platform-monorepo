@@ -23,13 +23,13 @@ import xyz.jwizard.jwl.http.route.MatchResult;
 import java.lang.reflect.Parameter;
 
 public class HttpRequestArgumentResolver implements ArgumentResolver {
-    @Override
-    public boolean supports(Parameter parameter) {
-        return HttpRequest.class.isAssignableFrom(parameter.getType());
-    }
+  @Override
+  public boolean supports(Parameter parameter) {
+    return HttpRequest.class.isAssignableFrom(parameter.getType());
+  }
 
-    @Override
-    public Object resolve(Parameter parameter, HttpRequest req, MatchResult match) {
-        return req;
-    }
+  @Override
+  public Object resolve(Parameter parameter, HttpRequest req, MatchResult match) {
+    return req;
+  }
 }

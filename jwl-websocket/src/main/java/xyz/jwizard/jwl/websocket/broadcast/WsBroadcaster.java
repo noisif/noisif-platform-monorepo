@@ -22,27 +22,27 @@ import xyz.jwizard.jwl.codec.envelope.OpCode;
 import java.nio.charset.StandardCharsets;
 
 public interface WsBroadcaster {
-    void broadcast(OpCode op, Object payload);
+  void broadcast(OpCode op, Object payload);
 
-    void broadcast(WsTopic topic, OpCode op, Object payload);
+  void broadcast(WsTopic topic, OpCode op, Object payload);
 
-    default void broadcast(OpCode op) {
-        broadcast(op, null);
-    }
+  default void broadcast(OpCode op) {
+    broadcast(op, null);
+  }
 
-    default void broadcast(WsTopic topic, OpCode op) {
-        broadcast(topic, op, null);
-    }
+  default void broadcast(WsTopic topic, OpCode op) {
+    broadcast(topic, op, null);
+  }
 
-    void broadcastRaw(byte[] payload);
+  void broadcastRaw(byte[] payload);
 
-    void broadcastRaw(WsTopic topic, byte[] payload);
+  void broadcastRaw(WsTopic topic, byte[] payload);
 
-    default void broadcastRaw(String payload) {
-        broadcastRaw(payload.getBytes(StandardCharsets.UTF_8));
-    }
+  default void broadcastRaw(String payload) {
+    broadcastRaw(payload.getBytes(StandardCharsets.UTF_8));
+  }
 
-    default void broadcastRaw(WsTopic topic, String payload) {
-        broadcastRaw(topic, payload.getBytes(StandardCharsets.UTF_8));
-    }
+  default void broadcastRaw(WsTopic topic, String payload) {
+    broadcastRaw(topic, payload.getBytes(StandardCharsets.UTF_8));
+  }
 }

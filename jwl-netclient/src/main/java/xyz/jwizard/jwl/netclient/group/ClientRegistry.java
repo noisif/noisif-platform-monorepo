@@ -21,6 +21,6 @@ import xyz.jwizard.jwl.common.registry.RegistryReader;
 import xyz.jwizard.jwl.common.registry.RegistryWriter;
 
 public interface ClientRegistry<T extends ClientGroupConfig>
-        extends RegistryReader<ClientGroup, T>, RegistryWriter<ClientGroup, T> {
-    void register(T config);
+    extends RegistryReader<ClientGroup, T>, RegistryWriter<ClientGroup, T> {
+  void register(T config);
 }

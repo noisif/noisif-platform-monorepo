@@ -60,183 +60,165 @@ import java.time.Duration;
 import java.util.Map;
 
 class JettyWsEnvelopeIntegrationTest {
-    private final JsonSerializer jsonSerializer = TestConstants.JSON_SERIALIZER;
-    private final TestQueueProvider testQueueProvider = new TestQueueProvider();
+  private final JsonSerializer jsonSerializer = TestConstants.JSON_SERIALIZER;
+  private final TestQueueProvider testQueueProvider = new TestQueueProvider();
 
-    private ClassScanner scanner;
-    private ProtobufSerializer protobufSerializer;
-    private InMemoryWsSessionRegistry registry;
-    private ComponentProvider componentProvider;
-    private WsServer server;
-    private GenericWsClient client;
+  private ClassScanner scanner;
+  private ProtobufSerializer protobufSerializer;
+  private InMemoryWsSessionRegistry registry;
+  private ComponentProvider componentProvider;
+  private WsServer server;
+  private GenericWsClient client;
 
-    @BeforeEach
-    void setUp() {
-        scanner =
-                new ClassGraphScanner(
-                        "xyz.jwizard.jwl.netclient.websocket",
-                        "xyz.jwizard.jwl.codec.envelope.protobuf" // for protobuf
-                        );
-        protobufSerializer = ProtobufSerializer.createDefault(scanner);
-        registry = InMemoryWsSessionRegistry.createDefault();
-        final ApplicationContext context =
-                ApplicationContext.create(
-                        scanner,
-                        Map.of(ComponentProvider.class, GuiceComponentProvider.class),
-                        Map.of(
-                                TestQueueProvider.class, testQueueProvider,
-                                WsSubscriptionRegistry.class, registry));
-        componentProvider = context.getComponentProvider();
-        // setup server
-        server = createWsServer(0);
-        server.start();
-        // setup client
-        client = createWsClient(server.getLocalPort());
-        client.start();
-    }
+  @BeforeEach
+  void setUp() {
+    scanner =
+        new ClassGraphScanner(
+            "xyz.jwizard.jwl.netclient.websocket",
+            "xyz.jwizard.jwl.codec.envelope.protobuf" // for protobuf
+            );
+    protobufSerializer = ProtobufSerializer.createDefault(scanner);
+    registry = InMemoryWsSessionRegistry.createDefault();
+    final ApplicationContext context =
+        ApplicationContext.create(
+            scanner,
+            Map.of(ComponentProvider.class, GuiceComponentProvider.class),
+            Map.of(
+                TestQueueProvider.class, testQueueProvider,
+                WsSubscriptionRegistry.class, registry));
+    componentProvider = context.getComponentProvider();
+    // setup server
+    server = createWsServer(0);
+    server.start();
+    // setup client
+    client = createWsClient(server.getLocalPort());
+    client.start();
+  }
 
-    private WsServer createWsServer(int port) {
-        return JettyWsServer.builder()
-                .port(port)
-                .path("/v1")
+  private WsServer createWsServer(int port) {
+    return JettyWsServer.builder()
+        .port(port)
+        .path("/v1")
+        .componentProvider(componentProvider)
+        .serializerRegistry(
+            EnvelopeSerializerRegistry.createEnvelopeRegistry()
+                .registerJsonDefaults(jsonSerializer)
+                .registerProtobufDefaults(protobufSerializer))
+        .sessionRegistry(registry)
+        .serializerResolverFactory(
+            reg -> QueryParamSerializerResolver.builder().registry(reg).build())
+        .localSessionDispatcherFactory(ConcurrentLocalSessionDispatcher::createVirtual)
+        .addAuthenticator(
+            WsTokenAuthenticator.builder()
+                .expectedToken(TestConstants.SECRET_TOKEN)
+                .principalId(TestConstants.SERVICE_NAME)
+                .withQueryParameterCheck("auth_token")
+                .build())
+        .addBusListener(
+            ActionRouterWsMessageListener.builder()
+                .actionGroup(ActionGroup.GLOBAL)
                 .componentProvider(componentProvider)
-                .serializerRegistry(
-                        EnvelopeSerializerRegistry.createEnvelopeRegistry()
-                                .registerJsonDefaults(jsonSerializer)
-                                .registerProtobufDefaults(protobufSerializer))
-                .sessionRegistry(registry)
-                .serializerResolverFactory(
-                        reg -> QueryParamSerializerResolver.builder().registry(reg).build())
-                .localSessionDispatcherFactory(ConcurrentLocalSessionDispatcher::createVirtual)
-                .addAuthenticator(
-                        WsTokenAuthenticator.builder()
-                                .expectedToken(TestConstants.SECRET_TOKEN)
-                                .principalId(TestConstants.SERVICE_NAME)
-                                .withQueryParameterCheck("auth_token")
-                                .build())
-                .addBusListener(
-                        ActionRouterWsMessageListener.builder()
-                                .actionGroup(ActionGroup.GLOBAL)
-                                .componentProvider(componentProvider)
-                                .build())
-                .build();
-    }
+                .build())
+        .build();
+  }
 
-    private GenericWsClient createWsClient(int port) {
-        return JettyWsClient.builder()
-                .defaultClientGroup(
-                        WsClientGroupConfig.builder()
-                                .url(
-                                        "ws://localhost:"
-                                                + port
-                                                + "/v1?auth_token="
-                                                + TestConstants.SECRET_TOKEN)
-                                .principalId(TestConstants.SERVICE_NAME)
-                                .componentProvider(componentProvider)
-                                .reconnectConfig(
-                                        WsReconnectConfig.enabled(Duration.ofSeconds(1), 4))
-                                .setEnvelopeMode()
-                                .envelopeBusConfig(
-                                        config ->
-                                                config.encodingParamName("encoding")
-                                                        .dataTypeParamName("frame")
-                                                        .serializer(
-                                                                JsonBinaryEnvelopeSerializer
-                                                                        .createDefault(
-                                                                                jsonSerializer))
-                                                        .addBusListener(
-                                                                WsClientEnvelopeBusListener
-                                                                        .builder()
-                                                                        .actionGroup(
-                                                                                ActionGroup.GLOBAL)
-                                                                        .componentProvider(
-                                                                                componentProvider)
-                                                                        .build()))
-                                .build())
-                .clientGroup(
-                        TestWsClientGroup.PROTOBUF,
-                        WsClientGroupConfig.builder()
-                                .url(
-                                        "ws://localhost:"
-                                                + port
-                                                + "/v1?auth_token="
-                                                + TestConstants.SECRET_TOKEN)
-                                .principalId(TestConstants.SERVICE_NAME)
-                                .componentProvider(componentProvider)
-                                .setEnvelopeMode()
-                                .envelopeBusConfig(
-                                        config ->
-                                                config.encodingParamName("encoding")
-                                                        .dataTypeParamName("frame")
-                                                        .serializer(
-                                                                ProtobufEnvelopeSerializer
-                                                                        .createDefault(
-                                                                                protobufSerializer))
-                                                        .addBusListener(
-                                                                WsClientEnvelopeBusListener
-                                                                        .builder()
-                                                                        .actionGroup(
-                                                                                ActionGroup.GLOBAL)
-                                                                        .componentProvider(
-                                                                                componentProvider)
-                                                                        .build()))
-                                .build())
-                .build();
-    }
+  private GenericWsClient createWsClient(int port) {
+    return JettyWsClient.builder()
+        .defaultClientGroup(
+            WsClientGroupConfig.builder()
+                .url("ws://localhost:" + port + "/v1?auth_token=" + TestConstants.SECRET_TOKEN)
+                .principalId(TestConstants.SERVICE_NAME)
+                .componentProvider(componentProvider)
+                .reconnectConfig(WsReconnectConfig.enabled(Duration.ofSeconds(1), 4))
+                .setEnvelopeMode()
+                .envelopeBusConfig(
+                    config ->
+                        config
+                            .encodingParamName("encoding")
+                            .dataTypeParamName("frame")
+                            .serializer(JsonBinaryEnvelopeSerializer.createDefault(jsonSerializer))
+                            .addBusListener(
+                                WsClientEnvelopeBusListener.builder()
+                                    .actionGroup(ActionGroup.GLOBAL)
+                                    .componentProvider(componentProvider)
+                                    .build()))
+                .build())
+        .clientGroup(
+            TestWsClientGroup.PROTOBUF,
+            WsClientGroupConfig.builder()
+                .url("ws://localhost:" + port + "/v1?auth_token=" + TestConstants.SECRET_TOKEN)
+                .principalId(TestConstants.SERVICE_NAME)
+                .componentProvider(componentProvider)
+                .setEnvelopeMode()
+                .envelopeBusConfig(
+                    config ->
+                        config
+                            .encodingParamName("encoding")
+                            .dataTypeParamName("frame")
+                            .serializer(
+                                ProtobufEnvelopeSerializer.createDefault(protobufSerializer))
+                            .addBusListener(
+                                WsClientEnvelopeBusListener.builder()
+                                    .actionGroup(ActionGroup.GLOBAL)
+                                    .componentProvider(componentProvider)
+                                    .build()))
+                .build())
+        .build();
+  }
 
-    @AfterEach
-    void tearDown() {
-        IoUtil.closeQuietly(client);
-        IoUtil.closeQuietly(server);
-        IoUtil.closeQuietly(scanner);
-        testQueueProvider.clear();
-    }
+  @AfterEach
+  void tearDown() {
+    IoUtil.closeQuietly(client);
+    IoUtil.closeQuietly(server);
+    IoUtil.closeQuietly(scanner);
+    testQueueProvider.clear();
+  }
 
-    @Test
-    @DisplayName("should perform send and receive exchange via envelopes")
-    void shouldPerformSendAndReceiveExchangeViaEnvelopes() throws Exception {
-        // given
-        final String testMessage = "Hello WebSocket";
-        // when
-        client.sendEnvelope(TestWsOpCode.SEND_DATA, testMessage);
-        // then
-        final Object response = testQueueProvider.get().poll(5, SECONDS);
-        final String expected = "Send: " + testMessage + " to: " + TestConstants.SERVICE_NAME;
-        assertThat(response).isEqualTo(expected);
-    }
+  @Test
+  @DisplayName("should perform send and receive exchange via envelopes")
+  void shouldPerformSendAndReceiveExchangeViaEnvelopes() throws Exception {
+    // given
+    final String testMessage = "Hello WebSocket";
+    // when
+    client.sendEnvelope(TestWsOpCode.SEND_DATA, testMessage);
+    // then
+    final Object response = testQueueProvider.get().poll(5, SECONDS);
+    final String expected = "Send: " + testMessage + " to: " + TestConstants.SERVICE_NAME;
+    assertThat(response).isEqualTo(expected);
+  }
 
-    @Test
-    @DisplayName("should send and receive protobuf payload natively")
-    void shouldSendAndReceiveProtobufPayload() {
-        // given
-        final String message = "hello";
-        final TestPayloadProto.MyMessage requestMsg =
-                TestPayloadProto.MyMessage.newBuilder().setId(404).setContent(message).build();
-        // when
-        client.sendEnvelope(TestWsClientGroup.PROTOBUF, TestWsOpCode.SEND_DATA_PROTO, requestMsg);
-        await().atMost(5, SECONDS).until(() -> !testQueueProvider.get().isEmpty());
-        // then
-        final Object receivedObject = testQueueProvider.get().poll();
-        assertThat(receivedObject).isNotNull();
-        assertThat(receivedObject).isInstanceOf(TestPayloadProto.MyMessage.class);
-        final TestPayloadProto.MyMessage responseMsg = (TestPayloadProto.MyMessage) receivedObject;
-        assertThat(responseMsg.getId()).isEqualTo(404);
-        assertThat(responseMsg.getContent()).isEqualTo("Received: " + message);
-    }
+  @Test
+  @DisplayName("should send and receive protobuf payload natively")
+  void shouldSendAndReceiveProtobufPayload() {
+    // given
+    final String message = "hello";
+    final TestPayloadProto.MyMessage requestMsg =
+        TestPayloadProto.MyMessage.newBuilder().setId(404).setContent(message).build();
+    // when
+    client.sendEnvelope(TestWsClientGroup.PROTOBUF, TestWsOpCode.SEND_DATA_PROTO, requestMsg);
+    await().atMost(5, SECONDS).until(() -> !testQueueProvider.get().isEmpty());
+    // then
+    final Object receivedObject = testQueueProvider.get().poll();
+    assertThat(receivedObject).isNotNull();
+    assertThat(receivedObject).isInstanceOf(TestPayloadProto.MyMessage.class);
+    final TestPayloadProto.MyMessage responseMsg = (TestPayloadProto.MyMessage) receivedObject;
+    assertThat(responseMsg.getId()).isEqualTo(404);
+    assertThat(responseMsg.getContent()).isEqualTo("Received: " + message);
+  }
 
-    @Test
-    @DisplayName("should reconnect after server failure")
-    void shouldReconnectAfterServerFailure() {
-        // given
-        assertThat(client.isConnected()).isTrue();
-        final int originalPort = server.getLocalPort();
-        server.close();
-        // when
-        await().atMost(5, SECONDS).until(() -> !client.isConnected());
-        // then
-        server = createWsServer(originalPort);
-        server.start();
-        await().atMost(15, SECONDS).until(() -> client.isConnected());
-        assertThat(client.isConnected()).isTrue();
-    }
+  @Test
+  @DisplayName("should reconnect after server failure")
+  void shouldReconnectAfterServerFailure() {
+    // given
+    assertThat(client.isConnected()).isTrue();
+    final int originalPort = server.getLocalPort();
+    server.close();
+    // when
+    await().atMost(5, SECONDS).until(() -> !client.isConnected());
+    // then
+    server = createWsServer(originalPort);
+    server.start();
+    await().atMost(15, SECONDS).until(() -> client.isConnected());
+    assertThat(client.isConnected()).isTrue();
+  }
 }

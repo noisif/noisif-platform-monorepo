@@ -22,7 +22,7 @@ import xyz.jwizard.jwl.common.bootstrap.DefaultBootstrapper;
 
 @AppBootstrapper
 public class JwsIngestorMain {
-    public static void main(String[] args) {
-        DefaultBootstrapper.run(JwsIngestorMain.class);
-    }
+  public static void main(String[] args) {
+    DefaultBootstrapper.run(JwsIngestorMain.class);
+  }
 }

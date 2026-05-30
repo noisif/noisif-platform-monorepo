@@ -20,7 +20,7 @@ package xyz.jwizard.jwl.graph;
 import xyz.jwizard.jwl.net.NetworkProtocol;
 
 public interface GraphProtocol extends NetworkProtocol {
-    boolean isEncrypted();
+  boolean isEncrypted();
 
-    boolean requestStrictTlsValidation();
+  boolean requestStrictTlsValidation();
 }

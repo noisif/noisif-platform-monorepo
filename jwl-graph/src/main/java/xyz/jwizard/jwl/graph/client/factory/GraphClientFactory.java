@@ -20,5 +20,5 @@ package xyz.jwizard.jwl.graph.client.factory;
 import xyz.jwizard.jwl.graph.client.GraphClient;
 
 public interface GraphClientFactory<C extends GraphConfig> {
-    GraphClient createAndInitClient(C config);
+  GraphClient createAndInitClient(C config);
 }

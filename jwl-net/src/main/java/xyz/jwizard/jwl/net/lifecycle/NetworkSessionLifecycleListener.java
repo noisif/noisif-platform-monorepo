@@ -21,9 +21,9 @@ import xyz.jwizard.jwl.common.Ordered;
 import xyz.jwizard.jwl.net.NetworkSession;
 
 public interface NetworkSessionLifecycleListener<S extends NetworkSession> extends Ordered {
-    default void onConnect(S session) {}
+  default void onConnect(S session) {}
 
-    default void onClose(S session, int statusCode, String reason) {}
+  default void onClose(S session, int statusCode, String reason) {}
 
-    default void onError(S session, Throwable cause) {}
+  default void onError(S session, Throwable cause) {}
 }

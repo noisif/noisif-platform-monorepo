@@ -23,17 +23,17 @@ import xyz.jwizard.jwl.netclient.group.ClientGroup;
 import java.util.Map;
 
 public interface RequestView {
-    HttpMethod getMethod();
+  HttpMethod getMethod();
 
-    String getUrl();
+  String getUrl();
 
-    ClientGroup getGroup();
+  ClientGroup getGroup();
 
-    Map<String, String> getHeaders();
+  Map<String, String> getHeaders();
 
-    Map<String, String> getQueryParams();
+  Map<String, String> getQueryParams();
 
-    Map<String, String> getFormParams();
+  Map<String, String> getFormParams();
 
-    Object getBody();
+  Object getBody();
 }

@@ -24,58 +24,58 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 class CodecUtilTest {
-    @Test
-    @DisplayName("should encode string to Base64 format")
-    void shouldEncodeBase64() {
-        // given
-        final String rawText = "jwl:secretPassword123!";
-        final String expectedBase64 = "andsOnNlY3JldFBhc3N3b3JkMTIzIQ==";
-        // when
-        final String encoded = CodecUtil.encodeBase64(rawText);
-        // then
-        assertThat(encoded).isEqualTo(expectedBase64);
-    }
+  @Test
+  @DisplayName("should encode string to Base64 format")
+  void shouldEncodeBase64() {
+    // given
+    final String rawText = "jwl:secretPassword123!";
+    final String expectedBase64 = "andsOnNlY3JldFBhc3N3b3JkMTIzIQ==";
+    // when
+    final String encoded = CodecUtil.encodeBase64(rawText);
+    // then
+    assertThat(encoded).isEqualTo(expectedBase64);
+  }
 
-    @Test
-    @DisplayName("should decode Base64 string to raw text")
-    void shouldDecodeBase64() {
-        // given
-        final String encodedBase64 = "andsOnNlY3JldFBhc3N3b3JkMTIzIQ==";
-        final String expectedText = "jwl:secretPassword123!";
-        // when
-        final String decoded = CodecUtil.decodeBase64(encodedBase64);
-        // then
-        assertThat(decoded).isEqualTo(expectedText);
-    }
+  @Test
+  @DisplayName("should decode Base64 string to raw text")
+  void shouldDecodeBase64() {
+    // given
+    final String encodedBase64 = "andsOnNlY3JldFBhc3N3b3JkMTIzIQ==";
+    final String expectedText = "jwl:secretPassword123!";
+    // when
+    final String decoded = CodecUtil.decodeBase64(encodedBase64);
+    // then
+    assertThat(decoded).isEqualTo(expectedText);
+  }
 
-    @Test
-    @DisplayName("should encode and decode special UTF-8 characters correctly")
-    void shouldHandleUtf8Characters() {
-        // given
-        final String rawText = "Zażółć gęślą jaźń";
-        // when
-        final String encoded = CodecUtil.encodeBase64(rawText);
-        final String decoded = CodecUtil.decodeBase64(encoded);
-        // then
-        assertThat(encoded).isNotEqualTo(rawText);
-        assertThat(decoded).isEqualTo(rawText);
-    }
+  @Test
+  @DisplayName("should encode and decode special UTF-8 characters correctly")
+  void shouldHandleUtf8Characters() {
+    // given
+    final String rawText = "Zażółć gęślą jaźń";
+    // when
+    final String encoded = CodecUtil.encodeBase64(rawText);
+    final String decoded = CodecUtil.decodeBase64(encoded);
+    // then
+    assertThat(encoded).isNotEqualTo(rawText);
+    assertThat(decoded).isEqualTo(rawText);
+  }
 
-    @Test
-    @DisplayName("should return null when input is null")
-    void shouldReturnNullForNullInput() {
-        // when & then
-        assertThat(CodecUtil.encodeBase64(null)).isNull();
-        assertThat(xyz.jwizard.jwl.common.util.CodecUtil.decodeBase64(null)).isNull();
-    }
+  @Test
+  @DisplayName("should return null when input is null")
+  void shouldReturnNullForNullInput() {
+    // when & then
+    assertThat(CodecUtil.encodeBase64(null)).isNull();
+    assertThat(xyz.jwizard.jwl.common.util.CodecUtil.decodeBase64(null)).isNull();
+  }
 
-    @Test
-    @DisplayName("should throw exception when decoding invalid Base64 string")
-    void shouldThrowExceptionForInvalidBase64() {
-        // given
-        final String invalidBase64 = "This is not valid base64!@#";
-        // when & then
-        assertThatThrownBy(() -> xyz.jwizard.jwl.common.util.CodecUtil.decodeBase64(invalidBase64))
-                .isInstanceOf(IllegalArgumentException.class);
-    }
+  @Test
+  @DisplayName("should throw exception when decoding invalid Base64 string")
+  void shouldThrowExceptionForInvalidBase64() {
+    // given
+    final String invalidBase64 = "This is not valid base64!@#";
+    // when & then
+    assertThatThrownBy(() -> xyz.jwizard.jwl.common.util.CodecUtil.decodeBase64(invalidBase64))
+        .isInstanceOf(IllegalArgumentException.class);
+  }
 }

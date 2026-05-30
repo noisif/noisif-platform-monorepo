@@ -21,69 +21,61 @@ import org.gradle.api.tasks.testing.TestDescriptor
 import org.gradle.api.tasks.testing.TestListener
 import org.gradle.api.tasks.testing.TestResult
 
-class CompactTestOutputListener(
-    private val summaryService: TestSummaryService,
-) : TestListener {
-    override fun beforeSuite(suite: TestDescriptor) {
+class CompactTestOutputListener(private val summaryService: TestSummaryService) : TestListener {
+  override fun beforeSuite(suite: TestDescriptor) {
+  }
+
+  override fun afterSuite(suite: TestDescriptor, result: TestResult) {
+    if (suite.parent != null) {
+      return
     }
+    val passed = result.successfulTestCount
+    val failed = result.failedTestCount
+    val skipped = result.skippedTestCount
+    val total = result.testCount
 
-    override fun afterSuite(
-        suite: TestDescriptor,
-        result: TestResult,
-    ) {
-        if (suite.parent != null) {
-            return
-        }
-        val passed = result.successfulTestCount
-        val failed = result.failedTestCount
-        val skipped = result.skippedTestCount
-        val total = result.testCount
+    summaryService.addResults(passed, failed, skipped)
 
-        summaryService.addResults(passed, failed, skipped)
+    val plainPassedStr = "$passed PASSED"
+    val plainFailedStr = "$failed FAILED"
+    val plainSkippedStr = "$skipped SKIPPED"
 
-        val plainPassedStr = "$passed PASSED"
-        val plainFailedStr = "$failed FAILED"
-        val plainSkippedStr = "$skipped SKIPPED"
+    val summaryLine = "Test summary: $plainPassedStr, $plainFailedStr, $plainSkippedStr"
+    val totalLine = "Total tests : $total"
 
-        val summaryLine = "Test summary: $plainPassedStr, $plainFailedStr, $plainSkippedStr"
-        val totalLine = "Total tests : $total"
+    val maxLength = maxOf(summaryLine.length, totalLine.length)
+    val separator = "=".repeat(maxLength)
 
-        val maxLength = maxOf(summaryLine.length, totalLine.length)
-        val separator = "=".repeat(maxLength)
+    val passedStr = "$GREEN$plainPassedStr$RESET"
+    val failedStr = "$RED$plainFailedStr$RESET"
+    val skippedStr = "$YELLOW$plainSkippedStr$RESET"
 
-        val passedStr = "$GREEN$plainPassedStr$RESET"
-        val failedStr = "$RED$plainFailedStr$RESET"
-        val skippedStr = "$YELLOW$plainSkippedStr$RESET"
+    println("\n$separator")
+    println("Test summary: $passedStr, $failedStr, $skippedStr")
+    println("Total tests : $total")
+    println("$separator\n")
+  }
 
-        println("\n$separator")
-        println("Test summary: $passedStr, $failedStr, $skippedStr")
-        println("Total tests : $total")
-        println("$separator\n")
+  override fun beforeTest(testDescriptor: TestDescriptor) {
+  }
+
+  override fun afterTest(testDescriptor: TestDescriptor, result: TestResult) {
+    val name = testDescriptor.displayName
+    val simpleClassName = testDescriptor.className?.substringAfterLast('.') ?: "UnknownClass"
+    when (result.resultType) {
+      TestResult.ResultType.SUCCESS -> {
+        println("$simpleClassName > $name ${GREEN}PASSED$RESET")
+      }
+
+      TestResult.ResultType.FAILURE -> {
+        println("$simpleClassName > $name ${RED}FAILED$RESET")
+      }
+
+      TestResult.ResultType.SKIPPED -> {
+        println("$simpleClassName > $name ${YELLOW}SKIPPED$RESET")
+      }
+
+      else -> {}
     }
-
-    override fun beforeTest(testDescriptor: TestDescriptor) {
-    }
-
-    override fun afterTest(
-        testDescriptor: TestDescriptor,
-        result: TestResult,
-    ) {
-        val name = testDescriptor.displayName
-        val simpleClassName = testDescriptor.className?.substringAfterLast('.') ?: "UnknownClass"
-        when (result.resultType) {
-            TestResult.ResultType.SUCCESS -> {
-                println("$simpleClassName > $name ${GREEN}PASSED$RESET")
-            }
-
-            TestResult.ResultType.FAILURE -> {
-                println("$simpleClassName > $name ${RED}FAILED$RESET")
-            }
-
-            TestResult.ResultType.SKIPPED -> {
-                println("$simpleClassName > $name ${YELLOW}SKIPPED$RESET")
-            }
-
-            else -> {}
-        }
-    }
+  }
 }

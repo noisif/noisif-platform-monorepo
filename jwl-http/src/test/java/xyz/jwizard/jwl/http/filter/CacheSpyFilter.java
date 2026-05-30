@@ -27,24 +27,24 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 @Singleton
 public class CacheSpyFilter implements HttpFilter {
-    public static final AtomicInteger supportsCounter = new AtomicInteger(0);
+  public static final AtomicInteger supportsCounter = new AtomicInteger(0);
 
-    @Override
-    public boolean supports(Route route) {
-        if ("/api/map".equals(route.path())) {
-            supportsCounter.incrementAndGet();
-            return true;
-        }
-        return false;
+  @Override
+  public boolean supports(Route route) {
+    if ("/api/map".equals(route.path())) {
+      supportsCounter.incrementAndGet();
+      return true;
     }
+    return false;
+  }
 
-    @Override
-    public boolean preHandle(HttpRequest req, HttpResponse res) {
-        return true;
-    }
+  @Override
+  public boolean preHandle(HttpRequest req, HttpResponse res) {
+    return true;
+  }
 
-    @Override
-    public int order() {
-        return Integer.MIN_VALUE;
-    }
+  @Override
+  public int order() {
+    return Integer.MIN_VALUE;
+  }
 }

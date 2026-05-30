@@ -18,7 +18,7 @@
 package xyz.jwizard.jwl.codec;
 
 public interface EncodedPayloadVisitor {
-    void accept(byte[] payload);
+  void accept(byte[] payload);
 
-    void accept(String payload);
+  void accept(String payload);
 }

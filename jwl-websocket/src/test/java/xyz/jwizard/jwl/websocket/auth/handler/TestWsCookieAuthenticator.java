@@ -21,19 +21,19 @@ import xyz.jwizard.jwl.net.http.cookie.CommonCookieName;
 import xyz.jwizard.jwl.websocket.auth.WsCookieAuthenticator;
 
 public class TestWsCookieAuthenticator extends WsCookieAuthenticator {
-    public TestWsCookieAuthenticator() {
-        super(CommonCookieName.SID);
-    }
+  public TestWsCookieAuthenticator() {
+    super(CommonCookieName.SID);
+  }
 
-    @Override
-    protected String validateCookieAndGetPrincipal(String sid) {
-        if (sid == null || sid.isBlank()) {
-            return null;
-        }
-        if (sid.startsWith("valid-")) {
-            return "user-" + sid.substring(6);
-        }
-        log.warn("Invalid session cookie attempt: {}", sid);
-        return null;
+  @Override
+  protected String validateCookieAndGetPrincipal(String sid) {
+    if (sid == null || sid.isBlank()) {
+      return null;
     }
+    if (sid.startsWith("valid-")) {
+      return "user-" + sid.substring(6);
+    }
+    log.warn("Invalid session cookie attempt: {}", sid);
+    return null;
+  }
 }

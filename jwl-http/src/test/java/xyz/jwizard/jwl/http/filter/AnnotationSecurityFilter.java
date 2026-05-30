@@ -29,19 +29,19 @@ import jakarta.inject.Singleton;
 
 @Singleton
 public class AnnotationSecurityFilter extends SecureRouteFilter {
-    @Override
-    public boolean preHandle(HttpRequest req, HttpResponse res) {
-        final String token = req.getHeader(CommonHttpHeaderName.AUTHORIZATION);
-        if (!TestConstants.TEST_PASSWORD.equals(token)) {
-            res.setStatus(HttpStatus.UNAUTHORIZED_401);
-            return false;
-        }
-        res.setHeader(TestHttpHeaderName.X_SECURED_BY, TestHttpHeaderValue.ANNOTATION_FILTER);
-        return true;
+  @Override
+  public boolean preHandle(HttpRequest req, HttpResponse res) {
+    final String token = req.getHeader(CommonHttpHeaderName.AUTHORIZATION);
+    if (!TestConstants.TEST_PASSWORD.equals(token)) {
+      res.setStatus(HttpStatus.UNAUTHORIZED_401);
+      return false;
     }
+    res.setHeader(TestHttpHeaderName.X_SECURED_BY, TestHttpHeaderValue.ANNOTATION_FILTER);
+    return true;
+  }
 
-    @Override
-    public int order() {
-        return 1000;
-    }
+  @Override
+  public int order() {
+    return 1000;
+  }
 }

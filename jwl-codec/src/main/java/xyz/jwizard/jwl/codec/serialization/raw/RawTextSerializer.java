@@ -29,58 +29,58 @@ import xyz.jwizard.jwl.common.util.CastUtil;
 import java.nio.charset.StandardCharsets;
 
 public class RawTextSerializer implements MessageSerializer, TypedMessageSerializer<String> {
-    private RawTextSerializer() {}
+  private RawTextSerializer() {}
 
-    public static RawTextSerializer createDefault() {
-        return new RawTextSerializer();
-    }
+  public static RawTextSerializer createDefault() {
+    return new RawTextSerializer();
+  }
 
-    @Override
-    public byte[] serializeToBytes(Object value) {
-        return serializePayload(value).getBytes(StandardCharsets.UTF_8);
-    }
+  @Override
+  public byte[] serializeToBytes(Object value) {
+    return serializePayload(value).getBytes(StandardCharsets.UTF_8);
+  }
 
-    @Override
-    public <T> T deserializeFromBytes(byte[] bytes, Class<T> type) {
-        final String str = new String(bytes, StandardCharsets.UTF_8);
-        return deserializePayload(str, type);
-    }
+  @Override
+  public <T> T deserializeFromBytes(byte[] bytes, Class<T> type) {
+    final String str = new String(bytes, StandardCharsets.UTF_8);
+    return deserializePayload(str, type);
+  }
 
-    @Override
-    public SerializerFormat getFormat() {
-        return StandardSerializerFormat.RAW;
-    }
+  @Override
+  public SerializerFormat getFormat() {
+    return StandardSerializerFormat.RAW;
+  }
 
-    @Override
-    public String serializePayload(Object payload) {
-        if (payload == null) {
-            return "";
-        }
-        if (payload instanceof String str) {
-            return str;
-        }
-        throw new MessageSerializerException(
-                "RawStringSerializer can only handle String, but received: "
-                        + payload.getClass().getName());
+  @Override
+  public String serializePayload(Object payload) {
+    if (payload == null) {
+      return "";
     }
+    if (payload instanceof String str) {
+      return str;
+    }
+    throw new MessageSerializerException(
+        "RawStringSerializer can only handle String, but received: "
+            + payload.getClass().getName());
+  }
 
-    @Override
-    public <T> T deserializePayload(String payload, Class<T> type) {
-        if (type.isAssignableFrom(String.class)) {
-            return CastUtil.unsafeCast(payload);
-        }
-        throw new MessageSerializerException(
-                "RawStringSerializer can only deserialize to String.class, but requested: "
-                        + type.getName());
+  @Override
+  public <T> T deserializePayload(String payload, Class<T> type) {
+    if (type.isAssignableFrom(String.class)) {
+      return CastUtil.unsafeCast(payload);
     }
+    throw new MessageSerializerException(
+        "RawStringSerializer can only deserialize to String.class, but requested: "
+            + type.getName());
+  }
 
-    @Override
-    public void serializeAndAccept(Object payload, EncodedPayloadVisitor visitor) {
-        visitor.accept(serializePayload(payload));
-    }
+  @Override
+  public void serializeAndAccept(Object payload, EncodedPayloadVisitor visitor) {
+    visitor.accept(serializePayload(payload));
+  }
 
-    @Override
-    public DataType getCodecDataType() {
-        return DataType.TEXT;
-    }
+  @Override
+  public DataType getCodecDataType() {
+    return DataType.TEXT;
+  }
 }

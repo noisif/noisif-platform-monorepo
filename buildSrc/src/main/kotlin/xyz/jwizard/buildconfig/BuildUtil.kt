@@ -27,32 +27,29 @@ import java.io.File
 
 fun getPluginId(accessor: Provider<PluginDependency>): String = accessor.get().pluginId
 
-fun getEnv(
-    name: String,
-    defValue: String = "",
-): String = System.getenv("JW_$name") ?: defValue
+fun getEnv(name: String, defValue: String = ""): String = System.getenv("JW_$name") ?: defValue
 
 val Project.libs: VersionCatalog
-    get() = extensions.getByType(VersionCatalogsExtension::class.java).named("libs")
+  get() = extensions.getByType(VersionCatalogsExtension::class.java).named("libs")
 
 fun VersionCatalog.getPlugin(alias: String): Provider<PluginDependency> =
-    findPlugin(alias).orElseThrow {
-        IllegalArgumentException("Plugin '$alias' not found in TOML")
-    }
+  findPlugin(alias).orElseThrow {
+    IllegalArgumentException("Plugin '$alias' not found in TOML")
+  }
 
 fun VersionCatalog.getLibrary(alias: String): Provider<MinimalExternalModuleDependency> =
-    findLibrary(alias).orElseThrow {
-        IllegalArgumentException("Library '$alias' not found in TOML")
-    }
+  findLibrary(alias).orElseThrow {
+    IllegalArgumentException("Library '$alias' not found in TOML")
+  }
 
 fun buildLicense(
-    licenseFile: File,
-    startToken: String,
-    linePrefix: String,
-    endToken: String,
+  licenseFile: File,
+  startToken: String,
+  linePrefix: String,
+  endToken: String,
 ): String {
-    val rawText = licenseFile.readText().trim()
-    return "$startToken\n" +
-        rawText.lines().joinToString("\n") { "$linePrefix$it".trimEnd() } +
-        "\n$endToken"
+  val rawText = licenseFile.readText().trim()
+  return "$startToken\n" +
+    rawText.lines().joinToString("\n") { "$linePrefix$it".trimEnd() } +
+    "\n$endToken"
 }

@@ -26,57 +26,55 @@ import xyz.jwizard.jwl.codec.serialization.TypedMessageSerializer;
 import xyz.jwizard.jwl.common.util.CastUtil;
 
 public class RawByteSerializer implements MessageSerializer, TypedMessageSerializer<byte[]> {
-    private RawByteSerializer() {}
+  private RawByteSerializer() {}
 
-    public static RawByteSerializer createDefault() {
-        return new RawByteSerializer();
-    }
+  public static RawByteSerializer createDefault() {
+    return new RawByteSerializer();
+  }
 
-    @Override
-    public byte[] serializeToBytes(Object value) {
-        if (value == null) {
-            return new byte[0];
-        }
-        if (value instanceof byte[] array) {
-            return array;
-        }
-        throw new MessageSerializerException(
-                "RawByteSerializer can only handle byte[], but received: "
-                        + value.getClass().getName());
+  @Override
+  public byte[] serializeToBytes(Object value) {
+    if (value == null) {
+      return new byte[0];
     }
+    if (value instanceof byte[] array) {
+      return array;
+    }
+    throw new MessageSerializerException(
+        "RawByteSerializer can only handle byte[], but received: " + value.getClass().getName());
+  }
 
-    @Override
-    public <T> T deserializeFromBytes(byte[] bytes, Class<T> type) {
-        if (type.isAssignableFrom(byte[].class)) {
-            return CastUtil.unsafeCast(bytes);
-        }
-        throw new MessageSerializerException(
-                "RawByteSerializer can only deserialize to byte[].class, but requested: "
-                        + type.getName());
+  @Override
+  public <T> T deserializeFromBytes(byte[] bytes, Class<T> type) {
+    if (type.isAssignableFrom(byte[].class)) {
+      return CastUtil.unsafeCast(bytes);
     }
+    throw new MessageSerializerException(
+        "RawByteSerializer can only deserialize to byte[].class, but requested: " + type.getName());
+  }
 
-    @Override
-    public StandardSerializerFormat getFormat() {
-        return StandardSerializerFormat.RAW;
-    }
+  @Override
+  public StandardSerializerFormat getFormat() {
+    return StandardSerializerFormat.RAW;
+  }
 
-    @Override
-    public DataType getCodecDataType() {
-        return DataType.BINARY;
-    }
+  @Override
+  public DataType getCodecDataType() {
+    return DataType.BINARY;
+  }
 
-    @Override
-    public byte[] serializePayload(Object payload) {
-        return serializeToBytes(payload);
-    }
+  @Override
+  public byte[] serializePayload(Object payload) {
+    return serializeToBytes(payload);
+  }
 
-    @Override
-    public <T> T deserializePayload(byte[] payload, Class<T> type) {
-        return deserializeFromBytes(payload, type);
-    }
+  @Override
+  public <T> T deserializePayload(byte[] payload, Class<T> type) {
+    return deserializeFromBytes(payload, type);
+  }
 
-    @Override
-    public void serializeAndAccept(Object payload, EncodedPayloadVisitor visitor) {
-        visitor.accept(serializePayload(payload));
-    }
+  @Override
+  public void serializeAndAccept(Object payload, EncodedPayloadVisitor visitor) {
+    visitor.accept(serializePayload(payload));
+  }
 }

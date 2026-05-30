@@ -28,32 +28,32 @@ import jakarta.inject.Singleton;
 
 @Singleton
 class RedisTopicWsSubscriber extends AbstractKvSubscriber<byte[]> {
-    private final LocalSessionDispatcher localSessionDispatcher;
+  private final LocalSessionDispatcher localSessionDispatcher;
 
-    @Inject
-    RedisTopicWsSubscriber(LocalSessionDispatcher localSessionDispatcher) {
-        this.localSessionDispatcher = localSessionDispatcher;
-    }
+  @Inject
+  RedisTopicWsSubscriber(LocalSessionDispatcher localSessionDispatcher) {
+    this.localSessionDispatcher = localSessionDispatcher;
+  }
 
-    @Override
-    public KvChannel getChannel() {
-        return WsKvChannel.TOPIC_RECEIVE_EVENTS;
-    }
+  @Override
+  public KvChannel getChannel() {
+    return WsKvChannel.TOPIC_RECEIVE_EVENTS;
+  }
 
-    @Override
-    public Class<byte[]> getPayloadType() {
-        return byte[].class;
-    }
+  @Override
+  public Class<byte[]> getPayloadType() {
+    return byte[].class;
+  }
 
-    @Override
-    public SubscriptionMode getMode() {
-        return SubscriptionMode.PATTERN;
-    }
+  @Override
+  public SubscriptionMode getMode() {
+    return SubscriptionMode.PATTERN;
+  }
 
-    @Override
-    public void handle(String channel, String[] params, byte[] message) {
-        if (params != null && params.length > 0) {
-            localSessionDispatcher.dispatchRaw(params[0], message);
-        }
+  @Override
+  public void handle(String channel, String[] params, byte[] message) {
+    if (params != null && params.length > 0) {
+      localSessionDispatcher.dispatchRaw(params[0], message);
     }
+  }
 }

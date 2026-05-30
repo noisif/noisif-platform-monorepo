@@ -22,33 +22,33 @@ import xyz.jwizard.jwl.graph.GraphServer;
 import xyz.jwizard.jwl.graph.neo4j.client.factory.Neo4jConfig;
 
 public class Neo4jServer extends GraphServer<Neo4jConfig> {
-    protected Neo4jServer(Builder builder) {
-        super(builder);
+  protected Neo4jServer(Builder builder) {
+    super(builder);
+  }
+
+  public static Builder builder() {
+    return new Builder();
+  }
+
+  public static class Builder extends AbstractBuilder<Builder, Neo4jConfig> {
+    private Builder() {}
+
+    @Override
+    protected Builder self() {
+      return this;
     }
 
-    public static Builder builder() {
-        return new Builder();
+    @Override
+    protected void validate() {
+      super.validate();
+      Assert.notNull(config.getUsername(), "Username cannot be null");
+      Assert.notNull(config.getPassword(), "Password cannot be null");
     }
 
-    public static class Builder extends AbstractBuilder<Builder, Neo4jConfig> {
-        private Builder() {}
-
-        @Override
-        protected Builder self() {
-            return this;
-        }
-
-        @Override
-        protected void validate() {
-            super.validate();
-            Assert.notNull(config.getUsername(), "Username cannot be null");
-            Assert.notNull(config.getPassword(), "Password cannot be null");
-        }
-
-        @Override
-        public GraphServer<Neo4jConfig> build() {
-            validate();
-            return new Neo4jServer(this);
-        }
+    @Override
+    public GraphServer<Neo4jConfig> build() {
+      validate();
+      return new Neo4jServer(this);
     }
+  }
 }

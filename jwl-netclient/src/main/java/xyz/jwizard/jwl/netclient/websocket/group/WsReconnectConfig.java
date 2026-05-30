@@ -22,39 +22,39 @@ import xyz.jwizard.jwl.common.util.Assert;
 import java.time.Duration;
 
 public class WsReconnectConfig {
-    private final boolean enabled;
-    private final Duration delay;
-    private final int maxAttempts;
+  private final boolean enabled;
+  private final Duration delay;
+  private final int maxAttempts;
 
-    private WsReconnectConfig(boolean enabled, Duration delay, int maxAttempts) {
-        this.enabled = enabled;
-        this.delay = delay;
-        this.maxAttempts = maxAttempts;
-    }
+  private WsReconnectConfig(boolean enabled, Duration delay, int maxAttempts) {
+    this.enabled = enabled;
+    this.delay = delay;
+    this.maxAttempts = maxAttempts;
+  }
 
-    public static WsReconnectConfig disabled() {
-        return new WsReconnectConfig(false, Duration.ZERO, 0);
-    }
+  public static WsReconnectConfig disabled() {
+    return new WsReconnectConfig(false, Duration.ZERO, 0);
+  }
 
-    public static WsReconnectConfig enabled(Duration delay, int maxAttempts) {
-        Assert.notNull(delay, "Delay cannot be null");
-        return new WsReconnectConfig(true, delay, maxAttempts);
-    }
+  public static WsReconnectConfig enabled(Duration delay, int maxAttempts) {
+    Assert.notNull(delay, "Delay cannot be null");
+    return new WsReconnectConfig(true, delay, maxAttempts);
+  }
 
-    public static WsReconnectConfig enabledInfinite(Duration delay) {
-        Assert.notNull(delay, "Delay cannot be null");
-        return new WsReconnectConfig(true, delay, -1);
-    }
+  public static WsReconnectConfig enabledInfinite(Duration delay) {
+    Assert.notNull(delay, "Delay cannot be null");
+    return new WsReconnectConfig(true, delay, -1);
+  }
 
-    public boolean isEnabled() {
-        return enabled;
-    }
+  public boolean isEnabled() {
+    return enabled;
+  }
 
-    public Duration getDelay() {
-        return delay;
-    }
+  public Duration getDelay() {
+    return delay;
+  }
 
-    public int getMaxAttempts() {
-        return maxAttempts;
-    }
+  public int getMaxAttempts() {
+    return maxAttempts;
+  }
 }

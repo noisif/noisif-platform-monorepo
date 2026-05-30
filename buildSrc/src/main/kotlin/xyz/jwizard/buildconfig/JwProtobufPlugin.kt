@@ -25,46 +25,46 @@ import org.gradle.kotlin.dsl.getByType
 import org.gradle.plugins.ide.idea.model.IdeaModel
 
 class JwProtobufPlugin : Plugin<Project> {
-    override fun apply(target: Project) {
-        val protobufPlugin = target.libs.getPlugin("protobuf")
+  override fun apply(target: Project) {
+    val protobufPlugin = target.libs.getPlugin("protobuf")
 
-        target.pluginManager.apply(getPluginId(protobufPlugin))
-        target.pluginManager.apply("idea")
+    target.pluginManager.apply(getPluginId(protobufPlugin))
+    target.pluginManager.apply("idea")
 
-        val protocLib = target.libs.getLibrary("protoc").get()
-        val protocGroup = protocLib.module.group
-        val protocName = protocLib.module.name
-        val protocVersion = protocLib.versionConstraint.requiredVersion
+    val protocLib = target.libs.getLibrary("protoc").get()
+    val protocGroup = protocLib.module.group
+    val protocName = protocLib.module.name
+    val protocVersion = protocLib.versionConstraint.requiredVersion
 
-        val protobufExt = target.extensions.getByType(ProtobufExtension::class.java)
-        protobufExt.protoc {
-            artifact = "$protocGroup:$protocName:$protocVersion"
-        }
-        configureSourceSets(target)
+    val protobufExt = target.extensions.getByType(ProtobufExtension::class.java)
+    protobufExt.protoc {
+      artifact = "$protocGroup:$protocName:$protocVersion"
     }
+    configureSourceSets(target)
+  }
 
-    private fun configureSourceSets(project: Project) {
-        val sourceSets = project.extensions.getByType<SourceSetContainer>()
-        sourceSets.all {
-            val generatedDir = project.file("build/generated/source/proto/$name/java")
-            java.srcDir(generatedDir)
-        }
-        project.plugins.withId("idea") {
-            val idea = project.extensions.getByType<IdeaModel>()
-            with(idea.module) {
-                val mainProto = project.file("src/main/proto")
-                if (mainProto.exists()) {
-                    sourceDirs.add(mainProto)
-                }
-                val testProto = project.file("src/test/proto")
-                if (testProto.exists()) {
-                    testSources.from(testProto)
-                }
-                val fixturesProto = project.file("src/testFixtures/proto")
-                if (fixturesProto.exists()) {
-                    testSources.from(fixturesProto)
-                }
-            }
-        }
+  private fun configureSourceSets(project: Project) {
+    val sourceSets = project.extensions.getByType<SourceSetContainer>()
+    sourceSets.all {
+      val generatedDir = project.file("build/generated/source/proto/$name/java")
+      java.srcDir(generatedDir)
     }
+    project.plugins.withId("idea") {
+      val idea = project.extensions.getByType<IdeaModel>()
+      with(idea.module) {
+        val mainProto = project.file("src/main/proto")
+        if (mainProto.exists()) {
+          sourceDirs.add(mainProto)
+        }
+        val testProto = project.file("src/test/proto")
+        if (testProto.exists()) {
+          testSources.from(testProto)
+        }
+        val fixturesProto = project.file("src/testFixtures/proto")
+        if (fixturesProto.exists()) {
+          testSources.from(fixturesProto)
+        }
+      }
+    }
+  }
 }

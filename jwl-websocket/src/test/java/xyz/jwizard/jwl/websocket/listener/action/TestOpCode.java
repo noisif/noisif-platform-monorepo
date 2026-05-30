@@ -20,24 +20,24 @@ package xyz.jwizard.jwl.websocket.listener.action;
 import xyz.jwizard.jwl.codec.envelope.OpCode;
 
 public enum TestOpCode implements OpCode {
-    SUBSCRIBE(0x09, 0x01),
-    SUBSCRIBE_ACK(0x09, 0x02),
-    BROADCAST_MSG(0x09, 0x03),
-    ;
+  SUBSCRIBE(0x09, 0x01),
+  SUBSCRIBE_ACK(0x09, 0x02),
+  BROADCAST_MSG(0x09, 0x03),
+  ;
 
-    private final int code;
+  private final int code;
 
-    TestOpCode(int category, int action) {
-        this.code = OpCode.combine(category, action);
-    }
+  TestOpCode(int category, int action) {
+    this.code = OpCode.combine(category, action);
+  }
 
-    @Override
-    public int getCode() {
-        return code;
-    }
+  @Override
+  public int getCode() {
+    return code;
+  }
 
-    @Override
-    public String getName() {
-        return name();
-    }
+  @Override
+  public String getName() {
+    return name();
+  }
 }

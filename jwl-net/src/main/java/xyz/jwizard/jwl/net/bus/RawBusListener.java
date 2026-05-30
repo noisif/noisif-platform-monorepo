@@ -21,7 +21,7 @@ import xyz.jwizard.jwl.common.Ordered;
 import xyz.jwizard.jwl.net.NetworkSession;
 
 public interface RawBusListener<S extends NetworkSession> extends Ordered {
-    void dispatch(S session, byte[] message);
+  void dispatch(S session, byte[] message);
 
-    void dispatch(S session, String message);
+  void dispatch(S session, String message);
 }

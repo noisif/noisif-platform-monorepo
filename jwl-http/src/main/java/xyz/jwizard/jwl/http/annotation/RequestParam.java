@@ -25,9 +25,9 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.PARAMETER)
 public @interface RequestParam {
-    String value();
+  String value();
 
-    boolean required() default true;
+  boolean required() default true;
 
-    String defaultValue() default "";
+  String defaultValue() default "";
 }

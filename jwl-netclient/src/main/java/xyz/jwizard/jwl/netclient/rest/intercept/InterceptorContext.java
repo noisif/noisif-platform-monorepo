@@ -23,17 +23,17 @@ import xyz.jwizard.jwl.net.http.header.HttpHeaderValue;
 import xyz.jwizard.jwl.netclient.rest.RestResponse;
 
 public interface InterceptorContext {
-    RequestView getView();
+  RequestView getView();
 
-    default void addHeader(HttpHeaderName name, HttpHeaderValue value, Object... args) {
-        addUnsafeHeader(name, value.buildWithArgs(args));
-    }
+  default void addHeader(HttpHeaderName name, HttpHeaderValue value, Object... args) {
+    addUnsafeHeader(name, value.buildWithArgs(args));
+  }
 
-    void addUnsafeHeader(HttpHeaderName name, String value);
+  void addUnsafeHeader(HttpHeaderName name, String value);
 
-    void addQueryParam(String name, String value);
+  void addQueryParam(String name, String value);
 
-    void setAuth(AuthScheme scheme, String... credentials);
+  void setAuth(AuthScheme scheme, String... credentials);
 
-    void abortWith(RestResponse<?> response);
+  void abortWith(RestResponse<?> response);
 }

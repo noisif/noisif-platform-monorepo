@@ -25,45 +25,43 @@ import java.io.IOException;
 import java.io.InputStream;
 
 class LimitedInputStream extends InputStream {
-    private final InputStream delegate;
-    private final long limit;
-    private long bytesRead = 0;
+  private final InputStream delegate;
+  private final long limit;
+  private long bytesRead = 0;
 
-    LimitedInputStream(InputStream delegate, long limit) {
-        this.delegate = delegate;
-        this.limit = limit;
-    }
+  LimitedInputStream(InputStream delegate, long limit) {
+    this.delegate = delegate;
+    this.limit = limit;
+  }
 
-    @Override
-    public int read() throws IOException {
-        int b = delegate.read();
-        if (b != -1) {
-            checkLimit(1);
-        }
-        return b;
+  @Override
+  public int read() throws IOException {
+    int b = delegate.read();
+    if (b != -1) {
+      checkLimit(1);
     }
+    return b;
+  }
 
-    @Override
-    public int read(byte @NonNull [] b, int off, int len) throws IOException {
-        int count = delegate.read(b, off, len);
-        if (count > 0) {
-            checkLimit(count);
-        }
-        return count;
+  @Override
+  public int read(byte @NonNull [] b, int off, int len) throws IOException {
+    int count = delegate.read(b, off, len);
+    if (count > 0) {
+      checkLimit(count);
     }
+    return count;
+  }
 
-    private void checkLimit(int count) {
-        bytesRead += count;
-        if (bytesRead > limit) {
-            throw new RequestTooLargeException(
-                    String.format(
-                            "Actual bytes read so far: %d, max allowed: %d bytes",
-                            bytesRead, limit));
-        }
+  private void checkLimit(int count) {
+    bytesRead += count;
+    if (bytesRead > limit) {
+      throw new RequestTooLargeException(
+          String.format("Actual bytes read so far: %d, max allowed: %d bytes", bytesRead, limit));
     }
+  }
 
-    @Override
-    public void close() throws IOException {
-        delegate.close();
-    }
+  @Override
+  public void close() throws IOException {
+    delegate.close();
+  }
 }

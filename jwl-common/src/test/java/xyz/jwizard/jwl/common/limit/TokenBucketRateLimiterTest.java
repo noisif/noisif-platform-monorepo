@@ -27,92 +27,88 @@ import org.junit.jupiter.api.Test;
 import java.time.Duration;
 
 class TokenBucketRateLimiterTest {
-    private static final long CAPACITY = 5;
-    private static final long REFILL_TOKENS = 5;
-    private static final Duration REFILL_PERIOD = Duration.ofMillis(200);
+  private static final long CAPACITY = 5;
+  private static final long REFILL_TOKENS = 5;
+  private static final Duration REFILL_PERIOD = Duration.ofMillis(200);
 
-    private RateLimiter rateLimiter;
+  private RateLimiter rateLimiter;
 
-    @BeforeEach
-    void setUp() {
-        rateLimiter =
-                TokenBucketRateLimiter.builder()
-                        .capacity(CAPACITY)
-                        .refillTokens(REFILL_TOKENS)
-                        .refillPeriod(REFILL_PERIOD)
-                        .build();
+  @BeforeEach
+  void setUp() {
+    rateLimiter =
+        TokenBucketRateLimiter.builder()
+            .capacity(CAPACITY)
+            .refillTokens(REFILL_TOKENS)
+            .refillPeriod(REFILL_PERIOD)
+            .build();
+  }
+
+  @Test
+  @DisplayName("should allow requests up to configured capacity")
+  void shouldAllowRequestsUpToCapacity() {
+    // given
+    final String key = "user-1";
+    // when & then
+    for (int i = 0; i < CAPACITY; i++) {
+      assertTrue(rateLimiter.tryAcquire(key), "Should acquire token for request " + (i + 1));
     }
+  }
 
-    @Test
-    @DisplayName("should allow requests up to configured capacity")
-    void shouldAllowRequestsUpToCapacity() {
-        // given
-        final String key = "user-1";
-        // when & then
-        for (int i = 0; i < CAPACITY; i++) {
-            assertTrue(rateLimiter.tryAcquire(key), "Should acquire token for request " + (i + 1));
-        }
+  @Test
+  @DisplayName("should reject requests when capacity is exceeded")
+  void shouldRejectRequestsWhenCapacityExceeded() {
+    // given
+    final String key = "user-2";
+    // when
+    for (int i = 0; i < CAPACITY; i++) {
+      rateLimiter.tryAcquire(key);
     }
+    // then
+    assertFalse(rateLimiter.tryAcquire(key), "Should reject request after exceeding capacity");
+  }
 
-    @Test
-    @DisplayName("should reject requests when capacity is exceeded")
-    void shouldRejectRequestsWhenCapacityExceeded() {
-        // given
-        final String key = "user-2";
-        // when
-        for (int i = 0; i < CAPACITY; i++) {
-            rateLimiter.tryAcquire(key);
-        }
-        // then
-        assertFalse(rateLimiter.tryAcquire(key), "Should reject request after exceeding capacity");
+  @Test
+  @DisplayName("should isolate requests from different keys")
+  void shouldIsolateDifferentKeys() {
+    // given
+    final String userA = "user-A";
+    final String userB = "user-B";
+    // when
+    for (int i = 0; i < CAPACITY; i++) {
+      rateLimiter.tryAcquire(userA);
     }
+    // then
+    assertFalse(rateLimiter.tryAcquire(userA), "User A should be rate limited");
+    assertTrue(rateLimiter.tryAcquire(userB), "User B should not be affected by User A's limit");
+  }
 
-    @Test
-    @DisplayName("should isolate requests from different keys")
-    void shouldIsolateDifferentKeys() {
-        // given
-        final String userA = "user-A";
-        final String userB = "user-B";
-        // when
-        for (int i = 0; i < CAPACITY; i++) {
-            rateLimiter.tryAcquire(userA);
-        }
-        // then
-        assertFalse(rateLimiter.tryAcquire(userA), "User A should be rate limited");
-        assertTrue(
-                rateLimiter.tryAcquire(userB), "User B should not be affected by User A's limit");
+  @Test
+  @DisplayName("should reset bucket capacity for a given key")
+  void shouldResetBucketForKey() {
+    // given
+    final String key = "user-3";
+    for (int i = 0; i < CAPACITY; i++) {
+      rateLimiter.tryAcquire(key);
     }
+    assertFalse(rateLimiter.tryAcquire(key));
+    // when
+    rateLimiter.reset(key);
+    // then
+    assertTrue(rateLimiter.tryAcquire(key), "Should acquire token successfully after bucket reset");
+  }
 
-    @Test
-    @DisplayName("should reset bucket capacity for a given key")
-    void shouldResetBucketForKey() {
-        // given
-        final String key = "user-3";
-        for (int i = 0; i < CAPACITY; i++) {
-            rateLimiter.tryAcquire(key);
-        }
-        assertFalse(rateLimiter.tryAcquire(key));
-        // when
-        rateLimiter.reset(key);
-        // then
-        assertTrue(
-                rateLimiter.tryAcquire(key),
-                "Should acquire token successfully after bucket reset");
+  @Test
+  @DisplayName("should refill tokens over time")
+  void shouldRefillTokensOverTime() throws InterruptedException {
+    // given
+    final String key = "user-4";
+    for (int i = 0; i < CAPACITY; i++) {
+      rateLimiter.tryAcquire(key);
     }
-
-    @Test
-    @DisplayName("should refill tokens over time")
-    void shouldRefillTokensOverTime() throws InterruptedException {
-        // given
-        final String key = "user-4";
-        for (int i = 0; i < CAPACITY; i++) {
-            rateLimiter.tryAcquire(key);
-        }
-        assertFalse(rateLimiter.tryAcquire(key));
-        // when
-        Thread.sleep(REFILL_PERIOD.toMillis() + 50);
-        // then
-        assertTrue(
-                rateLimiter.tryAcquire(key), "Should acquire token after refill period has passed");
-    }
+    assertFalse(rateLimiter.tryAcquire(key));
+    // when
+    Thread.sleep(REFILL_PERIOD.toMillis() + 50);
+    // then
+    assertTrue(rateLimiter.tryAcquire(key), "Should acquire token after refill period has passed");
+  }
 }

@@ -29,53 +29,51 @@ import xyz.jwizard.jwl.codec.serialization.TypedMessageSerializer;
 import xyz.jwizard.jwl.common.util.CastUtil;
 
 public class WsTypedMessageSessionCodec implements WsSessionCodec {
-    private static final Logger LOG = LoggerFactory.getLogger(WsTypedMessageSessionCodec.class);
+  private static final Logger LOG = LoggerFactory.getLogger(WsTypedMessageSessionCodec.class);
 
-    private final TypedMessageSerializer<?> serializer;
+  private final TypedMessageSerializer<?> serializer;
 
-    public WsTypedMessageSessionCodec(TypedMessageSerializer<?> serializer) {
-        this.serializer = serializer;
+  public WsTypedMessageSessionCodec(TypedMessageSerializer<?> serializer) {
+    this.serializer = serializer;
+  }
+
+  @Override
+  public WsSessionCodecMode getCurrentMode() {
+    return WsSessionCodecMode.TYPED_MESSAGE;
+  }
+
+  @Override
+  public void sendObject(Object payload, EncodedPayloadVisitor visitor) {
+    try {
+      serializer.serializeAndAccept(payload, visitor);
+    } catch (UnsupportedDataTypeException | MessageSerializerException ex) {
+      LOG.error(
+          "Message error for RAW {}: {}", serializer.getFormat().getFormatName(), ex.getMessage());
+    } catch (Exception ex) {
+      LOG.error(
+          "Unexpected error during processing RAW payload of type: {}",
+          payload != null ? payload.getClass().getSimpleName() : "null",
+          ex);
     }
+  }
 
-    @Override
-    public WsSessionCodecMode getCurrentMode() {
-        return WsSessionCodecMode.TYPED_MESSAGE;
-    }
+  @Override
+  public <T> T parse(byte[] payload, Class<T> type) {
+    return serializer.deserializePayload(CastUtil.unsafeCast(payload), type);
+  }
 
-    @Override
-    public void sendObject(Object payload, EncodedPayloadVisitor visitor) {
-        try {
-            serializer.serializeAndAccept(payload, visitor);
-        } catch (UnsupportedDataTypeException | MessageSerializerException ex) {
-            LOG.error(
-                    "Message error for RAW {}: {}",
-                    serializer.getFormat().getFormatName(),
-                    ex.getMessage());
-        } catch (Exception ex) {
-            LOG.error(
-                    "Unexpected error during processing RAW payload of type: {}",
-                    payload != null ? payload.getClass().getSimpleName() : "null",
-                    ex);
-        }
-    }
+  @Override
+  public <T> T parse(String payload, Class<T> type) {
+    return serializer.deserializePayload(CastUtil.unsafeCast(payload), type);
+  }
 
-    @Override
-    public <T> T parse(byte[] payload, Class<T> type) {
-        return serializer.deserializePayload(CastUtil.unsafeCast(payload), type);
-    }
+  @Override
+  public SerializerFormat getBaseFormat() {
+    return serializer.getFormat();
+  }
 
-    @Override
-    public <T> T parse(String payload, Class<T> type) {
-        return serializer.deserializePayload(CastUtil.unsafeCast(payload), type);
-    }
-
-    @Override
-    public SerializerFormat getBaseFormat() {
-        return serializer.getFormat();
-    }
-
-    @Override
-    public DataType getCodecDataType() {
-        return serializer.getCodecDataType();
-    }
+  @Override
+  public DataType getCodecDataType() {
+    return serializer.getCodecDataType();
+  }
 }

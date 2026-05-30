@@ -28,26 +28,26 @@ import jakarta.inject.Singleton;
 
 @Singleton
 class SubscribeAction implements EnvelopeAction<WsSession, Void> {
-    private final WsSubscriptionRegistry registry;
+  private final WsSubscriptionRegistry registry;
 
-    @Inject
-    SubscribeAction(WsSubscriptionRegistry registry) {
-        this.registry = registry;
-    }
+  @Inject
+  SubscribeAction(WsSubscriptionRegistry registry) {
+    this.registry = registry;
+  }
 
-    @Override
-    public void handle(WsSession session, Void data) {
-        registry.subscribe(session, TestWsTopic.CHAT_ROOM);
-        session.sendEnvelope(TestOpCode.SUBSCRIBE_ACK, session.getPrincipalId());
-    }
+  @Override
+  public void handle(WsSession session, Void data) {
+    registry.subscribe(session, TestWsTopic.CHAT_ROOM);
+    session.sendEnvelope(TestOpCode.SUBSCRIBE_ACK, session.getPrincipalId());
+  }
 
-    @Override
-    public OpCode opCode() {
-        return TestOpCode.SUBSCRIBE;
-    }
+  @Override
+  public OpCode opCode() {
+    return TestOpCode.SUBSCRIBE;
+  }
 
-    @Override
-    public Class<Void> payloadClass() {
-        return Void.class;
-    }
+  @Override
+  public Class<Void> payloadClass() {
+    return Void.class;
+  }
 }

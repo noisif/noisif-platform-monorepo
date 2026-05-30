@@ -18,7 +18,7 @@
 package xyz.jwizard.jwl.common.limit;
 
 public interface RateLimiter {
-    boolean tryAcquire(String key);
+  boolean tryAcquire(String key);
 
-    void reset(String key);
+  void reset(String key);
 }

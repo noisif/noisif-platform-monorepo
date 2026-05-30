@@ -27,57 +27,57 @@ import xyz.jwizard.jwl.net.http.header.HttpHeaderName;
 import xyz.jwizard.jwl.net.http.header.HttpHeaderValue;
 
 public class JettyHttpResponseAdapter implements HttpResponse {
-    private final Response response;
-    private final Callback callback;
+  private final Response response;
+  private final Callback callback;
 
-    public JettyHttpResponseAdapter(Response response, Callback callback) {
-        this.response = response;
-        this.callback = callback;
-    }
+  public JettyHttpResponseAdapter(Response response, Callback callback) {
+    this.response = response;
+    this.callback = callback;
+  }
 
-    @Override
-    public String getHeaderUnsafe(String name) {
-        return response.getHeaders().get(name);
-    }
+  @Override
+  public String getHeaderUnsafe(String name) {
+    return response.getHeaders().get(name);
+  }
 
-    @Override
-    public String getHeader(HttpHeaderName name) {
-        return getHeaderUnsafe(name.getCode());
-    }
+  @Override
+  public String getHeader(HttpHeaderName name) {
+    return getHeaderUnsafe(name.getCode());
+  }
 
-    @Override
-    public void setStatus(HttpStatus statusCode) {
-        response.setStatus(statusCode.getCode());
-    }
+  @Override
+  public void setStatus(HttpStatus statusCode) {
+    response.setStatus(statusCode.getCode());
+  }
 
-    @Override
-    public void setHeader(HttpHeaderName name, HttpHeaderValue value, Object... args) {
-        setHeaderUnsafe(name.getCode(), value.buildWithArgs(args));
-    }
+  @Override
+  public void setHeader(HttpHeaderName name, HttpHeaderValue value, Object... args) {
+    setHeaderUnsafe(name.getCode(), value.buildWithArgs(args));
+  }
 
-    @Override
-    public void setHeader(HttpHeaderName name, String value) {
-        setHeaderUnsafe(name.getCode(), value);
-    }
+  @Override
+  public void setHeader(HttpHeaderName name, String value) {
+    setHeaderUnsafe(name.getCode(), value);
+  }
 
-    @Override
-    public void setHeaderUnsafe(String name, String value) {
-        // put means override, add create new header with same key
-        response.getHeaders().put(name, value);
-    }
+  @Override
+  public void setHeaderUnsafe(String name, String value) {
+    // put means override, add create new header with same key
+    response.getHeaders().put(name, value);
+  }
 
-    @Override
-    public void write(String body, boolean last) {
-        Content.Sink.write(response, last, body, callback);
-    }
+  @Override
+  public void write(String body, boolean last) {
+    Content.Sink.write(response, last, body, callback);
+  }
 
-    @Override
-    public void writeEmpty(boolean last) {
-        write("", last);
-    }
+  @Override
+  public void writeEmpty(boolean last) {
+    write("", last);
+  }
 
-    @Override
-    public void end() {
-        callback.succeeded();
-    }
+  @Override
+  public void end() {
+    callback.succeeded();
+  }
 }

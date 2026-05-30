@@ -20,13 +20,13 @@ package xyz.jwizard.jwl.queue;
 import xyz.jwizard.jwl.common.ModuleIdentityTest;
 
 class JwlQueueTest extends ModuleIdentityTest {
-    @Override
-    protected String getModuleName() {
-        return "queue";
-    }
+  @Override
+  protected String getModuleName() {
+    return "queue";
+  }
 
-    @Override
-    protected String getPackageSuffix() {
-        return "jwl";
-    }
+  @Override
+  protected String getPackageSuffix() {
+    return "jwl";
+  }
 }

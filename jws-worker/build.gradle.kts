@@ -21,14 +21,14 @@ import xyz.jwizard.buildconfig.jwService
 apply<JwServicePlugin>()
 
 jwService {
-    packageSuffix.set("worker")
-    mainClass.set("JwsWorkerMain")
+  packageSuffix.set("worker")
+  mainClass.set("JwsWorkerMain")
 }
 
 dependencies {
-    implementation(project(":jwl-common"))
-    implementation(project(":jwl-contracts"))
-    implementation(project(":jwl-http"))
+  implementation(project(":jwl-common"))
+  implementation(project(":jwl-contracts"))
+  implementation(project(":jwl-http"))
 
-    testImplementation(testFixtures(project(":jwl-common")))
+  testImplementation(testFixtures(project(":jwl-common")))
 }

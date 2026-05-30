@@ -38,114 +38,113 @@ import java.util.Map;
 import java.util.Set;
 
 public class WsClientGroupConfig extends GenericClientGroupConfig {
-    private final WsClientAuthenticator authenticator;
-    private final NetworkSessionLifecycleListener<WsClientSession> lifecycleListener;
-    private final Map<HttpHeaderName, String> customHeaders;
-    private final WsHeartbeatConfig heartbeatConfig;
-    private final WsReconnectConfig reconnectConfig;
+  private final WsClientAuthenticator authenticator;
+  private final NetworkSessionLifecycleListener<WsClientSession> lifecycleListener;
+  private final Map<HttpHeaderName, String> customHeaders;
+  private final WsHeartbeatConfig heartbeatConfig;
+  private final WsReconnectConfig reconnectConfig;
 
-    private WsBusConfig busConfig;
+  private WsBusConfig busConfig;
 
-    private WsClientGroupConfig(Builder builder) {
-        super(builder);
-        authenticator = CompositeWsClientAuthenticator.load(builder.authenticators);
-        lifecycleListener =
-                CompositeNetworkSessionLifecycleListener.load(builder.componentProvider);
-        customHeaders = builder.customHeaders;
-        heartbeatConfig = builder.heartbeatConfig;
-        reconnectConfig = builder.reconnectConfig;
+  private WsClientGroupConfig(Builder builder) {
+    super(builder);
+    authenticator = CompositeWsClientAuthenticator.load(builder.authenticators);
+    lifecycleListener = CompositeNetworkSessionLifecycleListener.load(builder.componentProvider);
+    customHeaders = builder.customHeaders;
+    heartbeatConfig = builder.heartbeatConfig;
+    reconnectConfig = builder.reconnectConfig;
+  }
+
+  public WsClientGroupConfig(Builder builder, WsBusConfig busConfig) {
+    this(builder);
+    this.busConfig = busConfig;
+  }
+
+  public static Builder builder() {
+    return new Builder();
+  }
+
+  public WsClientAuthenticator getAuthenticator() {
+    return authenticator;
+  }
+
+  public Map<HttpHeaderName, String> getCustomHeaders() {
+    return customHeaders;
+  }
+
+  public NetworkSessionLifecycleListener<WsClientSession> getLifecycleListener() {
+    return lifecycleListener;
+  }
+
+  public WsBusConfig getBusConfig() {
+    return busConfig;
+  }
+
+  public WsHeartbeatConfig getHeartbeatConfig() {
+    return heartbeatConfig;
+  }
+
+  public WsReconnectConfig getReconnectConfig() {
+    return reconnectConfig;
+  }
+
+  public static class Builder extends AbstractBuilder<Builder, WsClientGroupConfig> {
+    private final Set<WsClientAuthenticator> authenticators = new HashSet<>();
+    private final Map<HttpHeaderName, String> customHeaders = new HashMap<>();
+    private ComponentProvider componentProvider;
+    private WsHeartbeatConfig heartbeatConfig = null;
+    private WsReconnectConfig reconnectConfig = WsReconnectConfig.disabled();
+
+    private Builder() {}
+
+    @Override
+    protected Builder self() {
+      return this;
     }
 
-    public WsClientGroupConfig(Builder builder, WsBusConfig busConfig) {
-        this(builder);
-        this.busConfig = busConfig;
+    public Builder addAuthenticator(WsClientAuthenticator authenticator) {
+      authenticators.add(authenticator);
+      return this;
     }
 
-    public static Builder builder() {
-        return new Builder();
+    public WsEnvelopeBusConfig.Step setEnvelopeMode() {
+      return new WsEnvelopeBusConfig.Step(this);
     }
 
-    public WsClientAuthenticator getAuthenticator() {
-        return authenticator;
+    public WsTypedMessageBusConfig.Step setTypedMessageMode() {
+      return new WsTypedMessageBusConfig.Step(this);
     }
 
-    public Map<HttpHeaderName, String> getCustomHeaders() {
-        return customHeaders;
+    public Builder addCustomHeader(HttpHeaderName name, HttpHeaderValue value, Object... args) {
+      customHeaders.put(name, value.buildWithArgs(args));
+      return this;
     }
 
-    public NetworkSessionLifecycleListener<WsClientSession> getLifecycleListener() {
-        return lifecycleListener;
+    public Builder addCustomHeader(HttpHeaderName name, String value) {
+      customHeaders.put(name, value);
+      return this;
     }
 
-    public WsBusConfig getBusConfig() {
-        return busConfig;
+    public Builder componentProvider(ComponentProvider componentProvider) {
+      this.componentProvider = componentProvider;
+      return this;
     }
 
-    public WsHeartbeatConfig getHeartbeatConfig() {
-        return heartbeatConfig;
+    public Builder heartbeatConfig(WsHeartbeatConfig heartbeatConfig) {
+      this.heartbeatConfig = heartbeatConfig;
+      return this;
     }
 
-    public WsReconnectConfig getReconnectConfig() {
-        return reconnectConfig;
+    public Builder reconnectConfig(WsReconnectConfig reconnectConfig) {
+      this.reconnectConfig = reconnectConfig;
+      return this;
     }
 
-    public static class Builder extends AbstractBuilder<Builder, WsClientGroupConfig> {
-        private final Set<WsClientAuthenticator> authenticators = new HashSet<>();
-        private final Map<HttpHeaderName, String> customHeaders = new HashMap<>();
-        private ComponentProvider componentProvider;
-        private WsHeartbeatConfig heartbeatConfig = null;
-        private WsReconnectConfig reconnectConfig = WsReconnectConfig.disabled();
-
-        private Builder() {}
-
-        @Override
-        protected Builder self() {
-            return this;
-        }
-
-        public Builder addAuthenticator(WsClientAuthenticator authenticator) {
-            authenticators.add(authenticator);
-            return this;
-        }
-
-        public WsEnvelopeBusConfig.Step setEnvelopeMode() {
-            return new WsEnvelopeBusConfig.Step(this);
-        }
-
-        public WsTypedMessageBusConfig.Step setTypedMessageMode() {
-            return new WsTypedMessageBusConfig.Step(this);
-        }
-
-        public Builder addCustomHeader(HttpHeaderName name, HttpHeaderValue value, Object... args) {
-            customHeaders.put(name, value.buildWithArgs(args));
-            return this;
-        }
-
-        public Builder addCustomHeader(HttpHeaderName name, String value) {
-            customHeaders.put(name, value);
-            return this;
-        }
-
-        public Builder componentProvider(ComponentProvider componentProvider) {
-            this.componentProvider = componentProvider;
-            return this;
-        }
-
-        public Builder heartbeatConfig(WsHeartbeatConfig heartbeatConfig) {
-            this.heartbeatConfig = heartbeatConfig;
-            return this;
-        }
-
-        public Builder reconnectConfig(WsReconnectConfig reconnectConfig) {
-            this.reconnectConfig = reconnectConfig;
-            return this;
-        }
-
-        @Override
-        public WsClientGroupConfig build() {
-            super.validate();
-            Assert.notNull(componentProvider, "ComponentProvider cannot be null");
-            return new WsClientGroupConfig(this);
-        }
+    @Override
+    public WsClientGroupConfig build() {
+      super.validate();
+      Assert.notNull(componentProvider, "ComponentProvider cannot be null");
+      return new WsClientGroupConfig(this);
     }
+  }
 }

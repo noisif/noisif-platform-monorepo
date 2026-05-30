@@ -28,46 +28,46 @@ import java.util.List;
 import java.util.function.Function;
 
 public interface WsSessionCodec extends UnifiedMessageCodec {
-    WsSessionCodecMode getCurrentMode();
+  WsSessionCodecMode getCurrentMode();
 
-    default void sendObject(Object payload, EncodedPayloadVisitor visitor) {
-        throw throwNotSupported();
-    }
+  default void sendObject(Object payload, EncodedPayloadVisitor visitor) {
+    throw throwNotSupported();
+  }
 
-    default <T> T parse(byte[] payload, Class<T> type) {
-        throw throwNotSupported();
-    }
+  default <T> T parse(byte[] payload, Class<T> type) {
+    throw throwNotSupported();
+  }
 
-    default <T> T parse(String payload, Class<T> type) {
-        throw throwNotSupported();
-    }
+  default <T> T parse(String payload, Class<T> type) {
+    throw throwNotSupported();
+  }
 
-    @Override
-    default void serializeAndAcceptEnvelope(
-            OpCode opCode, Object data, EncodedPayloadVisitor visitor) {
-        throw throwNotSupported();
-    }
+  @Override
+  default void serializeAndAcceptEnvelope(
+      OpCode opCode, Object data, EncodedPayloadVisitor visitor) {
+    throw throwNotSupported();
+  }
 
-    @Override
-    default MessageEnvelope<?> unwrap(byte[] payload, Function<Integer, Class<?>> typeResolver) {
-        throw throwNotSupported();
-    }
+  @Override
+  default MessageEnvelope<?> unwrap(byte[] payload, Function<Integer, Class<?>> typeResolver) {
+    throw throwNotSupported();
+  }
 
-    @Override
-    default MessageEnvelope<?> unwrap(String payload, Function<Integer, Class<?>> typeResolver) {
-        throw throwNotSupported();
-    }
+  @Override
+  default MessageEnvelope<?> unwrap(String payload, Function<Integer, Class<?>> typeResolver) {
+    throw throwNotSupported();
+  }
 
-    default MessageSerializerException throwNotSupported() {
-        final List<String> notSupported =
-                Arrays.stream(WsSessionCodecMode.values())
-                        .filter(codec -> !codec.equals(getCurrentMode()))
-                        .map(Enum::name)
-                        .toList();
-        return new MessageSerializerException(
-                """
+  default MessageSerializerException throwNotSupported() {
+    final List<String> notSupported =
+        Arrays.stream(WsSessionCodecMode.values())
+            .filter(codec -> !codec.equals(getCurrentMode()))
+            .map(Enum::name)
+            .toList();
+    return new MessageSerializerException(
+        """
             This session operates in %s mode and does not support %s operation(s)
             """
-                        .formatted(getCurrentMode(), notSupported));
-    }
+            .formatted(getCurrentMode(), notSupported));
+  }
 }

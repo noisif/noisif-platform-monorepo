@@ -20,13 +20,13 @@ package xyz.jwizard.jwl.i18n;
 import xyz.jwizard.jwl.common.ModuleIdentityTest;
 
 class JwlI18nTest extends ModuleIdentityTest {
-    @Override
-    protected String getModuleName() {
-        return "i18n";
-    }
+  @Override
+  protected String getModuleName() {
+    return "i18n";
+  }
 
-    @Override
-    protected String getPackageSuffix() {
-        return "jwl";
-    }
+  @Override
+  protected String getPackageSuffix() {
+    return "jwl";
+  }
 }

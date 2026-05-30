@@ -18,6 +18,6 @@
 package xyz.jwizard.jwl.kv.pubsub.subscriber;
 
 public enum SubscriptionMode {
-    EXACT,
-    PATTERN,
+  EXACT,
+  PATTERN,
 }

@@ -26,18 +26,17 @@ import xyz.jwizard.jwl.http.exception.RequestTooLargeException;
 import xyz.jwizard.jwl.net.http.HttpStatus;
 
 public class RequestTooLargeExceptionHandler implements ExceptionHandler {
-    private static final Logger LOG =
-            LoggerFactory.getLogger(RequestTooLargeExceptionHandler.class);
+  private static final Logger LOG = LoggerFactory.getLogger(RequestTooLargeExceptionHandler.class);
 
-    @Override
-    public boolean supports(Throwable throwable) {
-        return throwable instanceof RequestTooLargeException;
-    }
+  @Override
+  public boolean supports(Throwable throwable) {
+    return throwable instanceof RequestTooLargeException;
+  }
 
-    @Override
-    public void handle(HttpRequest req, HttpResponse res, Throwable throwable) {
-        LOG.warn("Request too large [{}]: {}", req.getPath(), throwable.getMessage());
-        res.setStatus(HttpStatus.PAYLOAD_TOO_LARGE_413);
-        res.end();
-    }
+  @Override
+  public void handle(HttpRequest req, HttpResponse res, Throwable throwable) {
+    LOG.warn("Request too large [{}]: {}", req.getPath(), throwable.getMessage());
+    res.setStatus(HttpStatus.PAYLOAD_TOO_LARGE_413);
+    res.end();
+  }
 }

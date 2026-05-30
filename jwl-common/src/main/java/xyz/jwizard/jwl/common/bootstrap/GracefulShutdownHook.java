@@ -29,33 +29,33 @@ import java.util.List;
 import java.util.concurrent.CountDownLatch;
 
 public class GracefulShutdownHook extends Thread {
-    private static final Logger LOG = LoggerFactory.getLogger(GracefulShutdownHook.class);
+  private static final Logger LOG = LoggerFactory.getLogger(GracefulShutdownHook.class);
 
-    private final List<? extends LifecycleHook> hooks;
-    private final CountDownLatch shutdownLatch;
-    private final boolean wait;
+  private final List<? extends LifecycleHook> hooks;
+  private final CountDownLatch shutdownLatch;
+  private final boolean wait;
 
-    public GracefulShutdownHook(
-            List<? extends LifecycleHook> hooks, CountDownLatch shutdownLatch, boolean wait) {
-        super("shutdown-t");
-        this.hooks = hooks;
-        this.shutdownLatch = shutdownLatch;
-        this.wait = wait;
+  public GracefulShutdownHook(
+      List<? extends LifecycleHook> hooks, CountDownLatch shutdownLatch, boolean wait) {
+    super("shutdown-t");
+    this.hooks = hooks;
+    this.shutdownLatch = shutdownLatch;
+    this.wait = wait;
+  }
+
+  @Override
+  public void run() {
+    LOG.info("Initiating graceful shutdown sequence");
+    final List<LifecycleHook> stopOrder = new ArrayList<>(hooks);
+    Collections.reverse(stopOrder);
+    for (final LifecycleHook hook : stopOrder) {
+      final String hookName = hook.getClass().getSimpleName();
+      LOG.info("Stopping component: [{}]", hookName);
+      IoUtil.closeQuietly(hook, LifecycleHook::onStop);
     }
-
-    @Override
-    public void run() {
-        LOG.info("Initiating graceful shutdown sequence");
-        final List<LifecycleHook> stopOrder = new ArrayList<>(hooks);
-        Collections.reverse(stopOrder);
-        for (final LifecycleHook hook : stopOrder) {
-            final String hookName = hook.getClass().getSimpleName();
-            LOG.info("Stopping component: [{}]", hookName);
-            IoUtil.closeQuietly(hook, LifecycleHook::onStop);
-        }
-        LOG.info("Graceful shutdown sequence completed");
-        if (wait) {
-            shutdownLatch.countDown();
-        }
+    LOG.info("Graceful shutdown sequence completed");
+    if (wait) {
+      shutdownLatch.countDown();
     }
+  }
 }

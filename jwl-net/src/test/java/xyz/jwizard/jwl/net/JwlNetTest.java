@@ -20,13 +20,13 @@ package xyz.jwizard.jwl.net;
 import xyz.jwizard.jwl.common.ModuleIdentityTest;
 
 class JwlNetTest extends ModuleIdentityTest {
-    @Override
-    protected String getModuleName() {
-        return "net";
-    }
+  @Override
+  protected String getModuleName() {
+    return "net";
+  }
 
-    @Override
-    protected String getPackageSuffix() {
-        return "jwl";
-    }
+  @Override
+  protected String getPackageSuffix() {
+    return "jwl";
+  }
 }

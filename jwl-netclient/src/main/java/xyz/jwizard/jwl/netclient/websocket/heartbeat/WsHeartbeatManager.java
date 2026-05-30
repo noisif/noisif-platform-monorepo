@@ -27,41 +27,41 @@ import xyz.jwizard.jwl.netclient.websocket.group.heartbeat.WsHeartbeatConfig;
 import java.util.concurrent.TimeUnit;
 
 public class WsHeartbeatManager {
-    private static final Logger LOG = LoggerFactory.getLogger(WsHeartbeatManager.class);
+  private static final Logger LOG = LoggerFactory.getLogger(WsHeartbeatManager.class);
 
-    private final PeriodicTaskScheduler scheduler;
+  private final PeriodicTaskScheduler scheduler;
 
-    public WsHeartbeatManager(PeriodicTaskScheduler scheduler) {
-        this.scheduler = scheduler;
+  public WsHeartbeatManager(PeriodicTaskScheduler scheduler) {
+    this.scheduler = scheduler;
+  }
+
+  public void start(WsClientSession session, WsHeartbeatConfig config) {
+    if (config == null || session == null) {
+      return;
     }
+    final long intervalMs = config.getInterval().toMillis();
+    LOG.debug(
+        "Starting WS heartbeat for session {} (interval: {} ms)",
+        session.getSessionId(),
+        intervalMs);
+    scheduler.scheduleAtFixedRate(
+        session.getSessionId(),
+        new HeartbeatTask(session, config.getAction(), this),
+        intervalMs,
+        intervalMs,
+        TimeUnit.MILLISECONDS);
+  }
 
-    public void start(WsClientSession session, WsHeartbeatConfig config) {
-        if (config == null || session == null) {
-            return;
-        }
-        final long intervalMs = config.getInterval().toMillis();
-        LOG.debug(
-                "Starting WS heartbeat for session {} (interval: {} ms)",
-                session.getSessionId(),
-                intervalMs);
-        scheduler.scheduleAtFixedRate(
-                session.getSessionId(),
-                new HeartbeatTask(session, config.getAction(), this),
-                intervalMs,
-                intervalMs,
-                TimeUnit.MILLISECONDS);
+  public void stop(String sessionId) {
+    if (sessionId == null) {
+      return;
     }
+    LOG.debug("Stopping WS heartbeat for session {}", sessionId);
+    scheduler.cancel(sessionId);
+  }
 
-    public void stop(String sessionId) {
-        if (sessionId == null) {
-            return;
-        }
-        LOG.debug("Stopping WS heartbeat for session {}", sessionId);
-        scheduler.cancel(sessionId);
-    }
-
-    public void stopAll() {
-        LOG.debug("Terminating all active heartbeat tasks.");
-        scheduler.cancelAll();
-    }
+  public void stopAll() {
+    LOG.debug("Terminating all active heartbeat tasks.");
+    scheduler.cancelAll();
+  }
 }

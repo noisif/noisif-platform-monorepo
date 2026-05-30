@@ -20,13 +20,13 @@ package xyz.jwizard.jws.registry;
 import xyz.jwizard.jwl.common.ModuleIdentityTest;
 
 class JwsRegistryIdentityTest extends ModuleIdentityTest {
-    @Override
-    protected String getModuleName() {
-        return "registry";
-    }
+  @Override
+  protected String getModuleName() {
+    return "registry";
+  }
 
-    @Override
-    protected String getPackageSuffix() {
-        return "jws";
-    }
+  @Override
+  protected String getPackageSuffix() {
+    return "jws";
+  }
 }

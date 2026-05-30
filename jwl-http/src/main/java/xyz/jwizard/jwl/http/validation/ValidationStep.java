@@ -20,7 +20,7 @@ package xyz.jwizard.jwl.http.validation;
 import java.lang.reflect.Field;
 
 interface ValidationStep {
-    void execute(Object target) throws IllegalAccessException;
+  void execute(Object target) throws IllegalAccessException;
 
-    Field getField();
+  Field getField();
 }

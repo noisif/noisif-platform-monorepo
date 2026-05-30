@@ -23,12 +23,12 @@ import java.io.Serial;
 import java.lang.reflect.Method;
 
 public class RouteValidationException extends CriticalBootstrapException {
-    @Serial private static final long serialVersionUID = 1L;
+  @Serial private static final long serialVersionUID = 1L;
 
-    public RouteValidationException(Method method, String details) {
-        super(
-                String.format(
-                        "Invalid route configuration in %s.%s(): %s",
-                        method.getDeclaringClass().getSimpleName(), method.getName(), details));
-    }
+  public RouteValidationException(Method method, String details) {
+    super(
+        String.format(
+            "Invalid route configuration in %s.%s(): %s",
+            method.getDeclaringClass().getSimpleName(), method.getName(), details));
+  }
 }

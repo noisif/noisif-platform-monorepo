@@ -22,10 +22,10 @@ import xyz.jwizard.jwl.codec.serialization.json.JsonSerializer;
 import xyz.jwizard.jwl.common.bootstrap.ForbiddenInstantiationException;
 
 public class TestConstants {
-    public static final String TEST_PASSWORD = "SecretToken-123";
-    public static final JsonSerializer SERIALIZER = JacksonSerializer.createDefaultStrictMapper();
+  public static final String TEST_PASSWORD = "SecretToken-123";
+  public static final JsonSerializer SERIALIZER = JacksonSerializer.createDefaultStrictMapper();
 
-    private TestConstants() {
-        throw new ForbiddenInstantiationException(TestConstants.class);
-    }
+  private TestConstants() {
+    throw new ForbiddenInstantiationException(TestConstants.class);
+  }
 }

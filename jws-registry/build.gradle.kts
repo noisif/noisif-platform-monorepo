@@ -21,15 +21,15 @@ import xyz.jwizard.buildconfig.jwService
 apply<JwServicePlugin>()
 
 jwService {
-    packageSuffix.set("registry")
-    mainClass.set("JwsRegistryMain")
+  packageSuffix.set("registry")
+  mainClass.set("JwsRegistryMain")
 }
 
 dependencies {
-    implementation(project(":jwl-codec"))
-    implementation(project(":jwl-common"))
-    implementation(project(":jwl-contracts"))
-    implementation(project(":jwl-http"))
+  implementation(project(":jwl-codec"))
+  implementation(project(":jwl-common"))
+  implementation(project(":jwl-contracts"))
+  implementation(project(":jwl-http"))
 
-    testImplementation(testFixtures(project(":jwl-common")))
+  testImplementation(testFixtures(project(":jwl-common")))
 }

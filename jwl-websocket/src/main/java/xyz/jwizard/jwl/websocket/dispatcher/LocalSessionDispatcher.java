@@ -21,17 +21,17 @@ import xyz.jwizard.jwl.websocket.broadcast.WsMessageSink;
 import xyz.jwizard.jwl.websocket.broadcast.WsTopic;
 
 public interface LocalSessionDispatcher extends WsMessageSink {
-    void dispatchRaw(String topic, byte[] payload);
+  void dispatchRaw(String topic, byte[] payload);
 
-    void dispatchRawAll(byte[] payload);
+  void dispatchRawAll(byte[] payload);
 
-    @Override
-    default void payload(WsTopic topic, byte[] payload) {
-        dispatchRaw(topic.getTopic(), payload);
-    }
+  @Override
+  default void payload(WsTopic topic, byte[] payload) {
+    dispatchRaw(topic.getTopic(), payload);
+  }
 
-    @Override
-    default void payloadAll(byte[] payload) {
-        dispatchRawAll(payload);
-    }
+  @Override
+  default void payloadAll(byte[] payload) {
+    dispatchRawAll(payload);
+  }
 }

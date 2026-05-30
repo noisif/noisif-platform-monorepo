@@ -32,47 +32,47 @@ import xyz.jwizard.jwl.net.NetworkUtil;
 import java.net.URI;
 
 public class DefaultNeo4jClientFactory implements GraphClientFactory<Neo4jConfig> {
-    private static final Logger LOG = LoggerFactory.getLogger(DefaultNeo4jClientFactory.class);
+  private static final Logger LOG = LoggerFactory.getLogger(DefaultNeo4jClientFactory.class);
 
-    private DefaultNeo4jClientFactory() {}
+  private DefaultNeo4jClientFactory() {}
 
-    public static DefaultNeo4jClientFactory create() {
-        return new DefaultNeo4jClientFactory();
+  public static DefaultNeo4jClientFactory create() {
+    return new DefaultNeo4jClientFactory();
+  }
+
+  @Override
+  public GraphClient createAndInitClient(Neo4jConfig config) {
+    final URI uri = NetworkUtil.parseToUri(config.getProtocol(), config.getAddress());
+    LOG.debug("Initializing Neo4j driver for: {}", uri);
+
+    final Config.ConfigBuilder configBuilder = Config.builder();
+    if (config.getProtocol().isEncrypted()) {
+      LOG.trace(
+          "Neo4j encryption enabled (strict: {})",
+          config.getProtocol().requestStrictTlsValidation());
+      configBuilder.withEncryption();
+      if (config.getProtocol().requestStrictTlsValidation()) {
+        configBuilder.withTrustStrategy(Config.TrustStrategy.trustSystemCertificates());
+      } else {
+        configBuilder.withTrustStrategy(Config.TrustStrategy.trustAllCertificates());
+      }
+    } else {
+      LOG.trace("Neo4j encryption disabled");
+      configBuilder.withoutEncryption();
     }
-
-    @Override
-    public GraphClient createAndInitClient(Neo4jConfig config) {
-        final URI uri = NetworkUtil.parseToUri(config.getProtocol(), config.getAddress());
-        LOG.debug("Initializing Neo4j driver for: {}", uri);
-
-        final Config.ConfigBuilder configBuilder = Config.builder();
-        if (config.getProtocol().isEncrypted()) {
-            LOG.trace(
-                    "Neo4j encryption enabled (strict: {})",
-                    config.getProtocol().requestStrictTlsValidation());
-            configBuilder.withEncryption();
-            if (config.getProtocol().requestStrictTlsValidation()) {
-                configBuilder.withTrustStrategy(Config.TrustStrategy.trustSystemCertificates());
-            } else {
-                configBuilder.withTrustStrategy(Config.TrustStrategy.trustAllCertificates());
-            }
-        } else {
-            LOG.trace("Neo4j encryption disabled");
-            configBuilder.withoutEncryption();
-        }
-        final Driver driver =
-                GraphDatabase.driver(
-                        NetworkUtil.parseToUri(config.getProtocol(), config.getAddress()),
-                        AuthTokens.basic(config.getUsername(), config.getPassword()),
-                        configBuilder.build());
-        LOG.debug("Verifying connectivity to Neo4j");
-        try {
-            driver.verifyConnectivity();
-            LOG.info("Successfully connected to Neo4j at {}", uri);
-        } catch (Exception ex) {
-            driver.close();
-            throw ex;
-        }
-        return new Neo4jClient(driver);
+    final Driver driver =
+        GraphDatabase.driver(
+            NetworkUtil.parseToUri(config.getProtocol(), config.getAddress()),
+            AuthTokens.basic(config.getUsername(), config.getPassword()),
+            configBuilder.build());
+    LOG.debug("Verifying connectivity to Neo4j");
+    try {
+      driver.verifyConnectivity();
+      LOG.info("Successfully connected to Neo4j at {}", uri);
+    } catch (Exception ex) {
+      driver.close();
+      throw ex;
     }
+    return new Neo4jClient(driver);
+  }
 }

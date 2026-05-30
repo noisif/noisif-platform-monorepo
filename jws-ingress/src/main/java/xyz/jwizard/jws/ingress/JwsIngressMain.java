@@ -22,7 +22,7 @@ import xyz.jwizard.jwl.common.bootstrap.DefaultBootstrapper;
 
 @AppBootstrapper
 public class JwsIngressMain {
-    public static void main(String[] args) {
-        DefaultBootstrapper.run(JwsIngressMain.class);
-    }
+  public static void main(String[] args) {
+    DefaultBootstrapper.run(JwsIngressMain.class);
+  }
 }

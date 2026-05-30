@@ -17,74 +17,74 @@
  */
 
 plugins {
-    alias(libs.plugins.idea)
-    alias(libs.plugins.java.gradle.plugin)
-    alias(libs.plugins.kotlin.dsl)
-    alias(libs.plugins.protobuf) apply false
-    alias(libs.plugins.shadow) apply false
-    alias(libs.plugins.spotless)
+  alias(libs.plugins.idea)
+  alias(libs.plugins.java.gradle.plugin)
+  alias(libs.plugins.kotlin.dsl)
+  alias(libs.plugins.protobuf) apply false
+  alias(libs.plugins.shadow) apply false
+  alias(libs.plugins.spotless)
 }
 
 repositories {
-    gradlePluginPortal()
-    mavenCentral()
+  gradlePluginPortal()
+  mavenCentral()
 }
 
 dependencies {
-    implementation(libs.gradle.node.plugin)
-    implementation(libs.protobuf.gradle.plugin)
-    implementation(libs.shadow.marker)
-    implementation(libs.protoc)
-    implementation(gradleApi())
+  implementation(libs.gradle.node.plugin)
+  implementation(libs.protobuf.gradle.plugin)
+  implementation(libs.shadow.marker)
+  implementation(libs.protoc)
+  implementation(gradleApi())
 }
 
 gradlePlugin {
-    plugins {
-        create("jwServicePlugin") {
-            id = "xyz.jwizard.jw-service"
-            implementationClass = "xyz.jwizard.buildconfig.JwServicePlugin"
-        }
+  plugins {
+    create("jwServicePlugin") {
+      id = "xyz.jwizard.jw-service"
+      implementationClass = "xyz.jwizard.buildconfig.JwServicePlugin"
     }
-    plugins {
-        create("jwPolyglotJs") {
-            id = "xyz.jwizard.jw-polyglot-js"
-            implementationClass = "xyz.jwizard.buildconfig.JwPolyglotJsPlugin"
-        }
+  }
+  plugins {
+    create("jwPolyglotJs") {
+      id = "xyz.jwizard.jw-polyglot-js"
+      implementationClass = "xyz.jwizard.buildconfig.JwPolyglotJsPlugin"
     }
-    plugins {
-        create("jwProtobuf") {
-            id = "xyz.jwizard.jw-protobuf"
-            implementationClass = "xyz.jwizard.buildconfig.JwProtobufPlugin"
-        }
+  }
+  plugins {
+    create("jwProtobuf") {
+      id = "xyz.jwizard.jw-protobuf"
+      implementationClass = "xyz.jwizard.buildconfig.JwProtobufPlugin"
     }
+  }
 }
 
 spotless {
-    val baseDir = rootProject.projectDir.parentFile
-    var rawLicenseFile = File(baseDir, "spotless/license-header.txt")
-    kotlin {
-        target("src/**/*.kt")
-        licenseHeader(buildLicense(rawLicenseFile))
-        ktlint()
-        trimTrailingWhitespace()
-        endWithNewline()
-    }
-    kotlinGradle {
-        target("*.gradle.kts")
-        licenseHeader(buildLicense(rawLicenseFile), """(?m)^\s*[a-zA-Z@_]""")
-        ktlint()
-        trimTrailingWhitespace()
-        endWithNewline()
-    }
+  val baseDir = rootProject.projectDir.parentFile
+  var rawLicenseFile = File(baseDir, "spotless/license-header.txt")
+  kotlin {
+    target("src/**/*.kt")
+    licenseHeader(buildLicense(rawLicenseFile))
+    ktlint().editorConfigOverride(mapOf("indent_size" to "2"))
+    trimTrailingWhitespace()
+    endWithNewline()
+  }
+  kotlinGradle {
+    target("*.gradle.kts")
+    licenseHeader(buildLicense(rawLicenseFile), """(?m)^\s*[a-zA-Z@_]""")
+    ktlint().editorConfigOverride(mapOf("indent_size" to "2"))
+    trimTrailingWhitespace()
+    endWithNewline()
+  }
 }
 
 idea {
-    module {
-        excludeDirs.add(file(".kotlin"))
-    }
+  module {
+    excludeDirs.add(file(".kotlin"))
+  }
 }
 
 fun buildLicense(rawTextFile: File): String {
-    val rawText = rawTextFile.readText().trim()
-    return "/*\n" + rawText.lines().joinToString("\n") { " * $it".trimEnd() } + "\n */"
+  val rawText = rawTextFile.readText().trim()
+  return "/*\n" + rawText.lines().joinToString("\n") { " * $it".trimEnd() } + "\n */"
 }

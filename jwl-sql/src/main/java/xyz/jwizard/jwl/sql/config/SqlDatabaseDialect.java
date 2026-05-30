@@ -24,37 +24,36 @@ import xyz.jwizard.jwl.net.HostPort;
 import java.util.Map;
 
 public enum SqlDatabaseDialect {
-    POSTGRESQL(
-            "jdbc:postgresql://%s:%d/%s",
-            Map.of(
-                    "cachePrepStmts", "true",
-                    "prepStmtCacheSize", "250",
-                    "prepStmtCacheSqlLimit", "2048",
-                    "reWriteBatchedInserts", "true")),
-                    ;
+  POSTGRESQL(
+      "jdbc:postgresql://%s:%d/%s",
+      Map.of(
+          "cachePrepStmts", "true",
+          "prepStmtCacheSize", "250",
+          "prepStmtCacheSqlLimit", "2048",
+          "reWriteBatchedInserts", "true")),
+          ;
 
-    private final String urlTemplate;
-    private final Map<String, String> defaultDriverProperties;
+  private final String urlTemplate;
+  private final Map<String, String> defaultDriverProperties;
 
-    SqlDatabaseDialect(String urlTemplate, Map<String, String> defaultDriverProperties) {
-        this.urlTemplate = urlTemplate;
-        this.defaultDriverProperties = defaultDriverProperties;
+  SqlDatabaseDialect(String urlTemplate, Map<String, String> defaultDriverProperties) {
+    this.urlTemplate = urlTemplate;
+    this.defaultDriverProperties = defaultDriverProperties;
+  }
+
+  public static SqlDatabaseDialect fromString(String dialectName) {
+    try {
+      return SqlDatabaseDialect.valueOf(StringUtil.toUpperCase(dialectName));
+    } catch (IllegalArgumentException ex) {
+      throw new CriticalBootstrapException("Unsupported database dialect: " + dialectName, ex);
     }
+  }
 
-    public static SqlDatabaseDialect fromString(String dialectName) {
-        try {
-            return SqlDatabaseDialect.valueOf(StringUtil.toUpperCase(dialectName));
-        } catch (IllegalArgumentException ex) {
-            throw new CriticalBootstrapException(
-                    "Unsupported database dialect: " + dialectName, ex);
-        }
-    }
+  public String buildJdbcUrl(HostPort hostPort, String databaseName) {
+    return String.format(urlTemplate, hostPort.host(), hostPort.port(), databaseName);
+  }
 
-    public String buildJdbcUrl(HostPort hostPort, String databaseName) {
-        return String.format(urlTemplate, hostPort.host(), hostPort.port(), databaseName);
-    }
-
-    public Map<String, String> defaultDriverProperties() {
-        return defaultDriverProperties;
-    }
+  public Map<String, String> defaultDriverProperties() {
+    return defaultDriverProperties;
+  }
 }

@@ -18,18 +18,18 @@
 package xyz.jwizard.jwl.codec.envelope;
 
 public interface OpCode {
-    static int combine(int category, int action) {
-        return (category << 16) | (action & 0xFF);
-    }
+  static int combine(int category, int action) {
+    return (category << 16) | (action & 0xFF);
+  }
 
-    int getCode();
+  int getCode();
 
-    String getName();
+  String getName();
 
-    default String asString() {
-        final int currentCode = getCode();
-        final int category = (currentCode >> 16) & 0xFF;
-        final int action = currentCode & 0xFF;
-        return String.format("%s (0x%02X:%02X) [%d]", getName(), category, action, currentCode);
-    }
+  default String asString() {
+    final int currentCode = getCode();
+    final int category = (currentCode >> 16) & 0xFF;
+    final int action = currentCode & 0xFF;
+    return String.format("%s (0x%02X:%02X) [%d]", getName(), category, action, currentCode);
+  }
 }

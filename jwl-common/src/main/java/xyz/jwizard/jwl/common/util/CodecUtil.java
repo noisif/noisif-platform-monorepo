@@ -23,22 +23,22 @@ import java.nio.charset.StandardCharsets;
 import java.util.Base64;
 
 public class CodecUtil {
-    private CodecUtil() {
-        throw new ForbiddenInstantiationException(CodecUtil.class);
-    }
+  private CodecUtil() {
+    throw new ForbiddenInstantiationException(CodecUtil.class);
+  }
 
-    public static String encodeBase64(String text) {
-        if (text == null) {
-            return null;
-        }
-        return Base64.getEncoder().encodeToString(text.getBytes(StandardCharsets.UTF_8));
+  public static String encodeBase64(String text) {
+    if (text == null) {
+      return null;
     }
+    return Base64.getEncoder().encodeToString(text.getBytes(StandardCharsets.UTF_8));
+  }
 
-    public static String decodeBase64(String base64Text) {
-        if (base64Text == null) {
-            return null;
-        }
-        final byte[] decodedBytes = Base64.getDecoder().decode(base64Text);
-        return new String(decodedBytes, StandardCharsets.UTF_8);
+  public static String decodeBase64(String base64Text) {
+    if (base64Text == null) {
+      return null;
     }
+    final byte[] decodedBytes = Base64.getDecoder().decode(base64Text);
+    return new String(decodedBytes, StandardCharsets.UTF_8);
+  }
 }

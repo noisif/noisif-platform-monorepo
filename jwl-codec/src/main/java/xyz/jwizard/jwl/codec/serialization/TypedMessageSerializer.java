@@ -20,9 +20,9 @@ package xyz.jwizard.jwl.codec.serialization;
 import xyz.jwizard.jwl.codec.EncodedPayloadVisitor;
 
 public interface TypedMessageSerializer<P> extends TypedSerializer {
-    P serializePayload(Object payload);
+  P serializePayload(Object payload);
 
-    <T> T deserializePayload(P payload, Class<T> type);
+  <T> T deserializePayload(P payload, Class<T> type);
 
-    void serializeAndAccept(Object payload, EncodedPayloadVisitor visitor);
+  void serializeAndAccept(Object payload, EncodedPayloadVisitor visitor);
 }

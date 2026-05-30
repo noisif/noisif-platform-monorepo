@@ -26,18 +26,18 @@ import redis.clients.jedis.UnifiedJedis;
 import java.util.Set;
 
 public class ClusterJedisClientFactory implements JedisClientFactory {
-    @Override
-    public UnifiedJedis create(
-            Set<HostAndPort> nodes, JedisClientConfig config, ConnectionPoolConfig poolConfig) {
-        return RedisClusterClient.builder()
-                .nodes(nodes)
-                .clientConfig(config)
-                .poolConfig(poolConfig)
-                .build();
-    }
+  @Override
+  public UnifiedJedis create(
+      Set<HostAndPort> nodes, JedisClientConfig config, ConnectionPoolConfig poolConfig) {
+    return RedisClusterClient.builder()
+        .nodes(nodes)
+        .clientConfig(config)
+        .poolConfig(poolConfig)
+        .build();
+  }
 
-    @Override
-    public FactoryType type() {
-        return FactoryType.CLUSTER;
-    }
+  @Override
+  public FactoryType type() {
+    return FactoryType.CLUSTER;
+  }
 }

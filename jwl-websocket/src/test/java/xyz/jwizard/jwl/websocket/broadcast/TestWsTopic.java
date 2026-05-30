@@ -18,17 +18,17 @@
 package xyz.jwizard.jwl.websocket.broadcast;
 
 public enum TestWsTopic implements WsTopic {
-    CHAT_ROOM("room-51"),
-    ;
+  CHAT_ROOM("room-51"),
+  ;
 
-    private final String topic;
+  private final String topic;
 
-    TestWsTopic(String topic) {
-        this.topic = topic;
-    }
+  TestWsTopic(String topic) {
+    this.topic = topic;
+  }
 
-    @Override
-    public String getTopic() {
-        return topic;
-    }
+  @Override
+  public String getTopic() {
+    return topic;
+  }
 }

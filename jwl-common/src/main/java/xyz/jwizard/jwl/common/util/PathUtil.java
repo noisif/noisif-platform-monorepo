@@ -20,23 +20,23 @@ package xyz.jwizard.jwl.common.util;
 import xyz.jwizard.jwl.common.bootstrap.ForbiddenInstantiationException;
 
 public class PathUtil {
-    private PathUtil() {
-        throw new ForbiddenInstantiationException(PathUtil.class);
-    }
+  private PathUtil() {
+    throw new ForbiddenInstantiationException(PathUtil.class);
+  }
 
-    public static String combinePaths(String prefix, String path) {
-        if (prefix == null || prefix.isBlank() || prefix.equals("/")) {
-            return ensureLeadingSlash(path);
-        }
-        final String cleanPrefix = prefix.replaceAll("/+$", ""); // remove slash from the end
-        final String cleanPath = path.replaceAll("^/+", ""); // remove slash from the beginning
-        return ensureLeadingSlash(cleanPrefix + "/" + cleanPath);
+  public static String combinePaths(String prefix, String path) {
+    if (prefix == null || prefix.isBlank() || prefix.equals("/")) {
+      return ensureLeadingSlash(path);
     }
+    final String cleanPrefix = prefix.replaceAll("/+$", ""); // remove slash from the end
+    final String cleanPath = path.replaceAll("^/+", ""); // remove slash from the beginning
+    return ensureLeadingSlash(cleanPrefix + "/" + cleanPath);
+  }
 
-    public static String ensureLeadingSlash(String path) {
-        if (path == null || path.isEmpty() || path.equals("/")) {
-            return "/";
-        }
-        return path.startsWith("/") ? path : "/" + path;
+  public static String ensureLeadingSlash(String path) {
+    if (path == null || path.isEmpty() || path.equals("/")) {
+      return "/";
     }
+    return path.startsWith("/") ? path : "/" + path;
+  }
 }

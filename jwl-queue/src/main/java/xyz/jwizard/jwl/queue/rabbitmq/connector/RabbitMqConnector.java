@@ -27,7 +27,7 @@ import java.util.Set;
 
 @Immutable
 public interface RabbitMqConnector {
-    Connection connect(Set<HostPort> nodes, ConnectionFactory baseFactory) throws Exception;
+  Connection connect(Set<HostPort> nodes, ConnectionFactory baseFactory) throws Exception;
 
-    ConnectorType type();
+  ConnectorType type();
 }

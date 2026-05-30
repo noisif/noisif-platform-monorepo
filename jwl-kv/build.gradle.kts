@@ -17,14 +17,14 @@
  */
 
 dependencies {
-    implementation(libs.jedis)
+  implementation(libs.jedis)
 
-    implementation(project(":jwl-common"))
-    implementation(project(":jwl-net"))
+  implementation(project(":jwl-common"))
+  implementation(project(":jwl-net"))
 
-    testImplementation(libs.testcontainers)
-    testImplementation(libs.testcontainers.jupyter)
-    testImplementation(libs.testcontainers.redis)
+  testImplementation(libs.testcontainers)
+  testImplementation(libs.testcontainers.jupyter)
+  testImplementation(libs.testcontainers.redis)
 
-    testImplementation(testFixtures(project(":jwl-common")))
+  testImplementation(testFixtures(project(":jwl-common")))
 }

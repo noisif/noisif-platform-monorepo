@@ -22,11 +22,11 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 public interface CloseCode {
-    static Set<Integer> ofCodes(CloseCode... closeCodes) {
-        return Arrays.stream(closeCodes).map(CloseCode::getCode).collect(Collectors.toSet());
-    }
+  static Set<Integer> ofCodes(CloseCode... closeCodes) {
+    return Arrays.stream(closeCodes).map(CloseCode::getCode).collect(Collectors.toSet());
+  }
 
-    int getCode();
+  int getCode();
 
-    String getDefaultReason();
+  String getDefaultReason();
 }

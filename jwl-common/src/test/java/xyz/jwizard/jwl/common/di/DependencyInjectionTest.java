@@ -35,71 +35,69 @@ import java.util.Map;
 import java.util.Set;
 
 class DependencyInjectionTest {
-    private ComponentProvider componentProvider;
+  private ComponentProvider componentProvider;
 
-    @BeforeEach
-    void setUp() {
-        // given
-        final ClassScanner scanner = mock(ClassScanner.class);
-        when(scanner.getTypesAnnotatedWith(Singleton.class))
-                .thenReturn(
-                        Set.of(
-                                MarkedComponent.class,
-                                SimpleComponent.class,
-                                TestInterfaceComponent.class,
-                                SecondTestInterfaceComponent.class));
-        final ApplicationContext context =
-                ApplicationContext.createDefault(
-                        scanner, Map.of(ComponentProvider.class, GuiceComponentProvider.class));
-        componentProvider = context.getComponentProvider();
-    }
+  @BeforeEach
+  void setUp() {
+    // given
+    final ClassScanner scanner = mock(ClassScanner.class);
+    when(scanner.getTypesAnnotatedWith(Singleton.class))
+        .thenReturn(
+            Set.of(
+                MarkedComponent.class,
+                SimpleComponent.class,
+                TestInterfaceComponent.class,
+                SecondTestInterfaceComponent.class));
+    final ApplicationContext context =
+        ApplicationContext.createDefault(
+            scanner, Map.of(ComponentProvider.class, GuiceComponentProvider.class));
+    componentProvider = context.getComponentProvider();
+  }
 
-    @Test
-    @DisplayName("should provide singleton instances for all @Injectable classes")
-    void shouldProvideSingletonInjectables() {
-        // when
-        final MarkedComponent instance1 = componentProvider.getInstance(MarkedComponent.class);
-        final MarkedComponent instance2 = componentProvider.getInstance(MarkedComponent.class);
-        final SimpleComponent simple = componentProvider.getInstance(SimpleComponent.class);
-        // then
-        assertThat(instance1).isNotNull();
-        assertThat(simple).isNotNull();
-        assertThat(instance1).isSameAs(instance2); // singleton test
-    }
+  @Test
+  @DisplayName("should provide singleton instances for all @Injectable classes")
+  void shouldProvideSingletonInjectables() {
+    // when
+    final MarkedComponent instance1 = componentProvider.getInstance(MarkedComponent.class);
+    final MarkedComponent instance2 = componentProvider.getInstance(MarkedComponent.class);
+    final SimpleComponent simple = componentProvider.getInstance(SimpleComponent.class);
+    // then
+    assertThat(instance1).isNotNull();
+    assertThat(simple).isNotNull();
+    assertThat(instance1).isSameAs(instance2); // singleton test
+  }
 
-    @Test
-    @DisplayName("should find instances by custom annotation")
-    void shouldFindInstancesByAnnotation() {
-        // when
-        Collection<Object> found = componentProvider.getInstancesAnnotatedWith(TestMarker.class);
-        // then
-        assertThat(found).hasSize(1);
-        assertThat(found.iterator().next()).isInstanceOf(MarkedComponent.class);
-    }
+  @Test
+  @DisplayName("should find instances by custom annotation")
+  void shouldFindInstancesByAnnotation() {
+    // when
+    Collection<Object> found = componentProvider.getInstancesAnnotatedWith(TestMarker.class);
+    // then
+    assertThat(found).hasSize(1);
+    assertThat(found.iterator().next()).isInstanceOf(MarkedComponent.class);
+  }
 
-    @Test
-    @DisplayName("should return empty collection when no components have the annotation")
-    void shouldReturnEmptyForMissingAnnotation() {
-        // when
-        final Collection<Object> found =
-                componentProvider.getInstancesAnnotatedWith(Override.class);
-        // then
-        assertThat(found).isEmpty();
-    }
+  @Test
+  @DisplayName("should return empty collection when no components have the annotation")
+  void shouldReturnEmptyForMissingAnnotation() {
+    // when
+    final Collection<Object> found = componentProvider.getInstancesAnnotatedWith(Override.class);
+    // then
+    assertThat(found).isEmpty();
+  }
 
-    @Test
-    @DisplayName("should find all instances by TypeReference")
-    void shouldFindInstancesByTypeReference() {
-        // given
-        final TypeReference<TestInterface> pluginType = new TypeReference<>() {};
-        // when
-        final Collection<TestInterface> plugins = componentProvider.getInstancesOf(pluginType);
-        // then
-        assertThat(plugins)
-                .hasSize(2)
-                .hasOnlyElementsOfTypes(
-                        TestInterfaceComponent.class, SecondTestInterfaceComponent.class);
-    }
+  @Test
+  @DisplayName("should find all instances by TypeReference")
+  void shouldFindInstancesByTypeReference() {
+    // given
+    final TypeReference<TestInterface> pluginType = new TypeReference<>() {};
+    // when
+    final Collection<TestInterface> plugins = componentProvider.getInstancesOf(pluginType);
+    // then
+    assertThat(plugins)
+        .hasSize(2)
+        .hasOnlyElementsOfTypes(TestInterfaceComponent.class, SecondTestInterfaceComponent.class);
+  }
 }
 
 @Singleton

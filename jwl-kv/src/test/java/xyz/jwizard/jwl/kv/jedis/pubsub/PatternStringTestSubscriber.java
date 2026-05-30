@@ -29,44 +29,44 @@ import java.util.concurrent.atomic.AtomicReference;
 
 @Singleton
 public class PatternStringTestSubscriber extends AbstractKvSubscriber<String> {
-    private CountDownLatch latch;
-    private AtomicReference<String> receivedRef;
-    private AtomicReference<String[]> paramsRef;
+  private CountDownLatch latch;
+  private AtomicReference<String> receivedRef;
+  private AtomicReference<String[]> paramsRef;
 
-    public void prepareForTest(
-            CountDownLatch latch,
-            AtomicReference<String> receivedRef,
-            AtomicReference<String[]> paramsRef) {
-        this.latch = latch;
-        this.receivedRef = receivedRef;
-        this.paramsRef = paramsRef;
-    }
+  public void prepareForTest(
+      CountDownLatch latch,
+      AtomicReference<String> receivedRef,
+      AtomicReference<String[]> paramsRef) {
+    this.latch = latch;
+    this.receivedRef = receivedRef;
+    this.paramsRef = paramsRef;
+  }
 
-    @Override
-    public KvChannel getChannel() {
-        return TestKvChannel.USER_EVENTS_WILDCARD;
-    }
+  @Override
+  public KvChannel getChannel() {
+    return TestKvChannel.USER_EVENTS_WILDCARD;
+  }
 
-    @Override
-    public Class<String> getPayloadType() {
-        return String.class;
-    }
+  @Override
+  public Class<String> getPayloadType() {
+    return String.class;
+  }
 
-    @Override
-    public SubscriptionMode getMode() {
-        return SubscriptionMode.PATTERN;
-    }
+  @Override
+  public SubscriptionMode getMode() {
+    return SubscriptionMode.PATTERN;
+  }
 
-    @Override
-    public void handle(String channel, String[] params, String message) {
-        if (paramsRef != null) {
-            paramsRef.set(params);
-        }
-        if (receivedRef != null) {
-            receivedRef.set(message);
-        }
-        if (latch != null) {
-            latch.countDown();
-        }
+  @Override
+  public void handle(String channel, String[] params, String message) {
+    if (paramsRef != null) {
+      paramsRef.set(params);
     }
+    if (receivedRef != null) {
+      receivedRef.set(message);
+    }
+    if (latch != null) {
+      latch.countDown();
+    }
+  }
 }

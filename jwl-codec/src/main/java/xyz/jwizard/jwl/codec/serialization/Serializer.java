@@ -18,5 +18,5 @@
 package xyz.jwizard.jwl.codec.serialization;
 
 public interface Serializer {
-    SerializerFormat getFormat();
+  SerializerFormat getFormat();
 }

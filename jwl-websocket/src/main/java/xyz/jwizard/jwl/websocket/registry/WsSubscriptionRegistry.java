@@ -23,11 +23,11 @@ import xyz.jwizard.jwl.websocket.broadcast.WsTopic;
 import java.util.Collection;
 
 public interface WsSubscriptionRegistry {
-    void subscribe(WsSession session, WsTopic topic);
+  void subscribe(WsSession session, WsTopic topic);
 
-    void unsubscribe(WsSession session, WsTopic topic);
+  void unsubscribe(WsSession session, WsTopic topic);
 
-    Collection<WsSession> getSubscribers(WsTopic topic);
+  Collection<WsSession> getSubscribers(WsTopic topic);
 
-    Collection<WsSession> getAllSessions();
+  Collection<WsSession> getAllSessions();
 }

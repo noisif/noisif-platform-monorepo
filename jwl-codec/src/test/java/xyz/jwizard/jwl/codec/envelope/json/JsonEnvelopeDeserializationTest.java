@@ -40,55 +40,55 @@ import java.util.function.Function;
 
 @ExtendWith(MockitoExtension.class)
 class JsonEnvelopeDeserializationTest {
-    @Mock private JsonSerializer jsonSerializerMock;
-    private JsonTextEnvelopeSerializer serializer;
-    private Function<Integer, Class<?>> typeResolver;
+  @Mock private JsonSerializer jsonSerializerMock;
+  private JsonTextEnvelopeSerializer serializer;
+  private Function<Integer, Class<?>> typeResolver;
 
-    @BeforeEach
-    void setUp() {
-        serializer = JsonTextEnvelopeSerializer.createDefault(jsonSerializerMock);
-        typeResolver = op -> op == TestOpCode.USER_DATA.getCode() ? String.class : null;
-    }
+  @BeforeEach
+  void setUp() {
+    serializer = JsonTextEnvelopeSerializer.createDefault(jsonSerializerMock);
+    typeResolver = op -> op == TestOpCode.USER_DATA.getCode() ? String.class : null;
+  }
 
-    @Test
-    @DisplayName("should properly parse map into MessageEnvelope")
-    void shouldParseValidEnvelope() {
-        // given
-        final Map<String, Object> mockTree =
-                Map.of("op", TestOpCode.USER_DATA.getCode(), "data", "test_payload");
-        when(jsonSerializerMock.deserialize(any(String.class), eq(Map.class))).thenReturn(mockTree);
-        when(jsonSerializerMock.convert("test_payload", String.class)).thenReturn("test_payload");
-        // when
-        final MessageEnvelope<?> envelope = serializer.unwrap("{}", typeResolver);
-        // then
-        assertThat(envelope.op()).isEqualTo(TestOpCode.USER_DATA.getCode());
-        assertThat(envelope.data()).isEqualTo("test_payload");
-    }
+  @Test
+  @DisplayName("should properly parse map into MessageEnvelope")
+  void shouldParseValidEnvelope() {
+    // given
+    final Map<String, Object> mockTree =
+        Map.of("op", TestOpCode.USER_DATA.getCode(), "data", "test_payload");
+    when(jsonSerializerMock.deserialize(any(String.class), eq(Map.class))).thenReturn(mockTree);
+    when(jsonSerializerMock.convert("test_payload", String.class)).thenReturn("test_payload");
+    // when
+    final MessageEnvelope<?> envelope = serializer.unwrap("{}", typeResolver);
+    // then
+    assertThat(envelope.op()).isEqualTo(TestOpCode.USER_DATA.getCode());
+    assertThat(envelope.data()).isEqualTo("test_payload");
+  }
 
-    @Test
-    @DisplayName("should throw exception when 'op' field is missing")
-    void shouldThrowWhenOpIsMissing() {
-        // given
-        final Map<String, Object> mockTree = Map.of("data", "no_op_here");
-        when(jsonSerializerMock.deserialize(any(String.class), eq(Map.class))).thenReturn(mockTree);
-        // then
-        assertThatThrownBy(() -> serializer.unwrap("{}", typeResolver))
-                .isInstanceOf(JsonSerializerException.class)
-                .hasMessageContaining("Missing or invalid 'op' field");
-    }
+  @Test
+  @DisplayName("should throw exception when 'op' field is missing")
+  void shouldThrowWhenOpIsMissing() {
+    // given
+    final Map<String, Object> mockTree = Map.of("data", "no_op_here");
+    when(jsonSerializerMock.deserialize(any(String.class), eq(Map.class))).thenReturn(mockTree);
+    // then
+    assertThatThrownBy(() -> serializer.unwrap("{}", typeResolver))
+        .isInstanceOf(JsonSerializerException.class)
+        .hasMessageContaining("Missing or invalid 'op' field");
+  }
 
-    @Test
-    @DisplayName("should throw exception when OP code is unknown to resolver")
-    void shouldThrowOnUnknownOpCode() {
-        // given
-        final int nonExistingOpCode = 999999;
-        final Map<String, Object> mockTree = Map.of("op", nonExistingOpCode);
-        when(jsonSerializerMock.deserialize(any(String.class), eq(Map.class))).thenReturn(mockTree);
-        // when
-        final MessageEnvelope<?> envelope = serializer.unwrap("{}", typeResolver);
-        // then
-        assertThat(envelope).isNotNull();
-        assertThat(envelope.op()).isEqualTo(nonExistingOpCode);
-        assertThat(envelope.data()).isNull();
-    }
+  @Test
+  @DisplayName("should throw exception when OP code is unknown to resolver")
+  void shouldThrowOnUnknownOpCode() {
+    // given
+    final int nonExistingOpCode = 999999;
+    final Map<String, Object> mockTree = Map.of("op", nonExistingOpCode);
+    when(jsonSerializerMock.deserialize(any(String.class), eq(Map.class))).thenReturn(mockTree);
+    // when
+    final MessageEnvelope<?> envelope = serializer.unwrap("{}", typeResolver);
+    // then
+    assertThat(envelope).isNotNull();
+    assertThat(envelope.op()).isEqualTo(nonExistingOpCode);
+    assertThat(envelope.data()).isNull();
+  }
 }

@@ -24,32 +24,32 @@ import xyz.jwizard.jwl.net.http.auth.AuthScheme;
 import xyz.jwizard.jwl.net.http.header.CommonHttpHeaderName;
 
 public class AuthInterceptor implements RequestInterceptor {
-    private static final Logger LOG = LoggerFactory.getLogger(AuthInterceptor.class);
+  private static final Logger LOG = LoggerFactory.getLogger(AuthInterceptor.class);
 
-    private final int order;
-    private final AuthScheme scheme;
-    private final String[] credentials;
+  private final int order;
+  private final AuthScheme scheme;
+  private final String[] credentials;
 
-    public AuthInterceptor(int order, AuthScheme scheme, String[] credentials) {
-        this.order = order;
-        this.scheme = scheme;
-        this.credentials = credentials;
+  public AuthInterceptor(int order, AuthScheme scheme, String[] credentials) {
+    this.order = order;
+    this.scheme = scheme;
+    this.credentials = credentials;
+  }
+
+  @Override
+  public void intercept(InterceptorContext context) {
+    final String authHeaderName = CommonHttpHeaderName.AUTHORIZATION.getCode();
+    final boolean hasCustomAuth = context.getView().getHeaders().containsKey(authHeaderName);
+    if (!hasCustomAuth) {
+      LOG.trace("Applying group auth scheme: {}", scheme);
+      context.setAuth(scheme, credentials);
+    } else {
+      LOG.trace("Skipping group auth, request already has custom authorization.");
     }
+  }
 
-    @Override
-    public void intercept(InterceptorContext context) {
-        final String authHeaderName = CommonHttpHeaderName.AUTHORIZATION.getCode();
-        final boolean hasCustomAuth = context.getView().getHeaders().containsKey(authHeaderName);
-        if (!hasCustomAuth) {
-            LOG.trace("Applying group auth scheme: {}", scheme);
-            context.setAuth(scheme, credentials);
-        } else {
-            LOG.trace("Skipping group auth, request already has custom authorization.");
-        }
-    }
-
-    @Override
-    public int order() {
-        return order;
-    }
+  @Override
+  public int order() {
+    return order;
+  }
 }

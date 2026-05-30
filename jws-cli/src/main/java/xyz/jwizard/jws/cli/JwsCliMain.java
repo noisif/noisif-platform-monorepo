@@ -22,7 +22,7 @@ import xyz.jwizard.jwl.common.bootstrap.DefaultBootstrapper;
 
 @AppBootstrapper
 public class JwsCliMain {
-    public static void main(String[] args) {
-        DefaultBootstrapper.runNonBlocking(JwsCliMain.class);
-    }
+  public static void main(String[] args) {
+    DefaultBootstrapper.runNonBlocking(JwsCliMain.class);
+  }
 }

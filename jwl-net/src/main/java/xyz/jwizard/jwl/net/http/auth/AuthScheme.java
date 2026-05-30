@@ -18,5 +18,5 @@
 package xyz.jwizard.jwl.net.http.auth;
 
 public interface AuthScheme {
-    String buildHeaderValue(String... credentials);
+  String buildHeaderValue(String... credentials);
 }

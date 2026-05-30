@@ -41,138 +41,131 @@ import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
 public abstract class KvServer extends IdempotentService
-        implements KeyValueStore, PubSubBroadcaster {
-    protected final Set<HostPort> nodes;
-    protected final String password;
-    protected final ComponentProvider componentProvider;
+    implements KeyValueStore, PubSubBroadcaster {
+  protected final Set<HostPort> nodes;
+  protected final String password;
+  protected final ComponentProvider componentProvider;
 
-    private final Collection<KvSubscriber<?>> registeredSubscribers = new CopyOnWriteArrayList<>();
+  private final Collection<KvSubscriber<?>> registeredSubscribers = new CopyOnWriteArrayList<>();
 
-    protected KvServer(AbstractBuilder<?> builder) {
-        nodes = builder.nodes;
-        password = builder.password;
-        componentProvider = builder.componentProvider;
+  protected KvServer(AbstractBuilder<?> builder) {
+    nodes = builder.nodes;
+    password = builder.password;
+    componentProvider = builder.componentProvider;
+  }
+
+  public void awaitSubscribers(long timeoutMs) {
+    final long limit = System.currentTimeMillis() + timeoutMs;
+    for (final KvSubscriber<?> sub : registeredSubscribers) {
+      while (!sub.isSubscribed()) {
+        if (System.currentTimeMillis() > limit) {
+          throw new RuntimeException(
+              "Timeout waiting for subscriber readiness: " + sub.getClass().getSimpleName());
+        }
+        Thread.onSpinWait();
+      }
+    }
+    log.info("All {} subscribers confirmed readiness", registeredSubscribers.size());
+  }
+
+  @Override
+  protected final void onStart() {
+    if (nodes.isEmpty()) {
+      log.warn("Not providing any nodes, skipping configuration");
+      return;
+    }
+    log.info("KV server start initializing with {} node(s)", nodes.size());
+    onKvServerStart();
+    final PubSubRegistrar registrar = createRegistrar();
+    final int stringCount =
+        registerSet(
+            String.class, new TypeReference<>() {}, registrar::subscribe, registrar::pSubscribe);
+    final int binaryCount =
+        registerSet(
+            byte[].class,
+            new TypeReference<>() {},
+            registrar::subscribeBinary,
+            registrar::pSubscribeBinary);
+    log.info(
+        "KV subscribers auto-discovery completed, total registered: {}", stringCount + binaryCount);
+  }
+
+  protected abstract void onKvServerStart();
+
+  protected abstract PubSubRegistrar createRegistrar();
+
+  private <T> int registerSet(
+      Class<T> payloadClass,
+      TypeReference<KvSubscriber<T>> typeRef,
+      Consumer<KvSubscriber<T>> exactRegistrar,
+      Consumer<KvSubscriber<T>> patternRegistrar) {
+    final Collection<KvSubscriber<T>> subscribers = componentProvider.getInstancesOf(typeRef);
+    final Map<SubscriptionMode, Consumer<KvSubscriber<T>>> strategies =
+        Map.of(
+            SubscriptionMode.EXACT, exactRegistrar,
+            SubscriptionMode.PATTERN, patternRegistrar);
+    final List<KvSubscriber<T>> validSubscribers =
+        subscribers.stream().filter(sub -> sub.getPayloadType().equals(payloadClass)).toList();
+    for (final KvSubscriber<T> sub : validSubscribers) {
+      final String channelStr = sub.getChannel().buildChannel(sub.getChannelParams());
+      final SubscriptionMode mode = sub.getMode();
+
+      registeredSubscribers.add(sub);
+      strategies.get(mode).accept(sub);
+
+      log.debug(
+          "Auto-registered {} subscriber: [{}] on '{}'",
+          StringUtil.toLowerCase(mode.name()),
+          sub.getClass().getSimpleName(),
+          channelStr);
+    }
+    if (!validSubscribers.isEmpty()) {
+      log.info(
+          "Successfully registered {} {} subscribers",
+          validSubscribers.size(),
+          payloadClass.getSimpleName());
+    }
+    return validSubscribers.size();
+  }
+
+  protected abstract static class AbstractBuilder<B extends AbstractBuilder<B>> {
+    private Set<HostPort> nodes = new HashSet<>();
+    private String password;
+    private ComponentProvider componentProvider;
+
+    protected AbstractBuilder() {}
+
+    protected abstract B self();
+
+    public B nodes(Set<HostPort> nodes) {
+      this.nodes = nodes;
+      return self();
     }
 
-    public void awaitSubscribers(long timeoutMs) {
-        final long limit = System.currentTimeMillis() + timeoutMs;
-        for (final KvSubscriber<?> sub : registeredSubscribers) {
-            while (!sub.isSubscribed()) {
-                if (System.currentTimeMillis() > limit) {
-                    throw new RuntimeException(
-                            "Timeout waiting for subscriber readiness: "
-                                    + sub.getClass().getSimpleName());
-                }
-                Thread.onSpinWait();
-            }
-        }
-        log.info("All {} subscribers confirmed readiness", registeredSubscribers.size());
+    // as host:port
+    public B rawNodes(Set<String> rawNodes) {
+      return nodes(
+          rawNodes.stream()
+              .map(NetworkUtil::parseHostPort)
+              .map(hp -> HostPort.from(hp.host(), hp.port()))
+              .collect(Collectors.toSet()));
     }
 
-    @Override
-    protected final void onStart() {
-        if (nodes.isEmpty()) {
-            log.warn("Not providing any nodes, skipping configuration");
-            return;
-        }
-        log.info("KV server start initializing with {} node(s)", nodes.size());
-        onKvServerStart();
-        final PubSubRegistrar registrar = createRegistrar();
-        final int stringCount =
-                registerSet(
-                        String.class,
-                        new TypeReference<>() {},
-                        registrar::subscribe,
-                        registrar::pSubscribe);
-        final int binaryCount =
-                registerSet(
-                        byte[].class,
-                        new TypeReference<>() {},
-                        registrar::subscribeBinary,
-                        registrar::pSubscribeBinary);
-        log.info(
-                "KV subscribers auto-discovery completed, total registered: {}",
-                stringCount + binaryCount);
+    public B password(@Nullable String password) {
+      this.password = password;
+      return self();
     }
 
-    protected abstract void onKvServerStart();
-
-    protected abstract PubSubRegistrar createRegistrar();
-
-    private <T> int registerSet(
-            Class<T> payloadClass,
-            TypeReference<KvSubscriber<T>> typeRef,
-            Consumer<KvSubscriber<T>> exactRegistrar,
-            Consumer<KvSubscriber<T>> patternRegistrar) {
-        final Collection<KvSubscriber<T>> subscribers = componentProvider.getInstancesOf(typeRef);
-        final Map<SubscriptionMode, Consumer<KvSubscriber<T>>> strategies =
-                Map.of(
-                        SubscriptionMode.EXACT, exactRegistrar,
-                        SubscriptionMode.PATTERN, patternRegistrar);
-        final List<KvSubscriber<T>> validSubscribers =
-                subscribers.stream()
-                        .filter(sub -> sub.getPayloadType().equals(payloadClass))
-                        .toList();
-        for (final KvSubscriber<T> sub : validSubscribers) {
-            final String channelStr = sub.getChannel().buildChannel(sub.getChannelParams());
-            final SubscriptionMode mode = sub.getMode();
-
-            registeredSubscribers.add(sub);
-            strategies.get(mode).accept(sub);
-
-            log.debug(
-                    "Auto-registered {} subscriber: [{}] on '{}'",
-                    StringUtil.toLowerCase(mode.name()),
-                    sub.getClass().getSimpleName(),
-                    channelStr);
-        }
-        if (!validSubscribers.isEmpty()) {
-            log.info(
-                    "Successfully registered {} {} subscribers",
-                    validSubscribers.size(),
-                    payloadClass.getSimpleName());
-        }
-        return validSubscribers.size();
+    public B componentProvider(ComponentProvider componentProvider) {
+      this.componentProvider = componentProvider;
+      return self();
     }
 
-    protected abstract static class AbstractBuilder<B extends AbstractBuilder<B>> {
-        private Set<HostPort> nodes = new HashSet<>();
-        private String password;
-        private ComponentProvider componentProvider;
-
-        protected AbstractBuilder() {}
-
-        protected abstract B self();
-
-        public B nodes(Set<HostPort> nodes) {
-            this.nodes = nodes;
-            return self();
-        }
-
-        // as host:port
-        public B rawNodes(Set<String> rawNodes) {
-            return nodes(
-                    rawNodes.stream()
-                            .map(NetworkUtil::parseHostPort)
-                            .map(hp -> HostPort.from(hp.host(), hp.port()))
-                            .collect(Collectors.toSet()));
-        }
-
-        public B password(@Nullable String password) {
-            this.password = password;
-            return self();
-        }
-
-        public B componentProvider(ComponentProvider componentProvider) {
-            this.componentProvider = componentProvider;
-            return self();
-        }
-
-        protected void validate() {
-            Assert.notNull(nodes, "Nodes cannot be null");
-            Assert.notNull(componentProvider, "ComponentProvider cannot be null");
-        }
-
-        public abstract KvServer build();
+    protected void validate() {
+      Assert.notNull(nodes, "Nodes cannot be null");
+      Assert.notNull(componentProvider, "ComponentProvider cannot be null");
     }
+
+    public abstract KvServer build();
+  }
 }

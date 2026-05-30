@@ -47,82 +47,78 @@ import java.util.List;
 
 @Singleton
 class WsServerLifecycle implements LifecycleHook {
-    private final WsServer wsServer;
+  private final WsServer wsServer;
 
-    @Inject
-    WsServerLifecycle(
-            ComponentProvider componentProvider,
-            PubSubBroadcaster pubSubBroadcaster,
-            ClassScanner scanner) {
-        wsServer =
-                JettyWsServer.builder()
-                        .port(9016) /* TODO: incoming from config server */
-                        .path("/v1") /* TODO: incoming from config server */
-                        .idleTimeout(Duration.ofMinutes(10))
-                        .sessionRegistry(InMemoryWsSessionRegistry.createDefault())
-                        .addAuthenticator(
-                                WsTokenAuthenticator.builder()
-                                        .expectedToken(
-                                                "TEST_TOKEN") /* TODO: incoming from config server */
-                                        .principalId("jws-gateway")
-                                        .withQueryParameterCheck("token")
-                                        .build())
-                        .componentProvider(componentProvider)
-                        .rateLimiter(TokenBucketRateLimiter.createDefault())
-                        .serializerRegistry(
-                                EnvelopeSerializerRegistry.createEnvelopeRegistry()
-                                        .registerJsonDefaults(
-                                                JacksonSerializer.createLenientForMessaging())
-                                        .registerProtobufDefaults(
-                                                ProtobufSerializer.createDefault(scanner)))
-                        .serializerResolverFactory(
-                                registry ->
-                                        QueryParamSerializerResolver.builder()
-                                                .registry(registry)
-                                                .encodingParamName("encoding")
-                                                .frameParamName("frame")
-                                                .build())
-                        .addBusListener(
-                                ActionRouterWsMessageListener.builder()
-                                        .actionGroup(ActionGroup.GLOBAL)
-                                        .componentProvider(componentProvider)
-                                        .build())
-                        .localSessionDispatcherFactory(
-                                ConcurrentLocalSessionDispatcher::createVirtual)
-                        .messageSink(RedisWsMessageSink.createDefault(pubSubBroadcaster))
-                        .build();
-    }
+  @Inject
+  WsServerLifecycle(
+      ComponentProvider componentProvider,
+      PubSubBroadcaster pubSubBroadcaster,
+      ClassScanner scanner) {
+    wsServer =
+        JettyWsServer.builder()
+            .port(9016) /* TODO: incoming from config server */
+            .path("/v1") /* TODO: incoming from config server */
+            .idleTimeout(Duration.ofMinutes(10))
+            .sessionRegistry(InMemoryWsSessionRegistry.createDefault())
+            .addAuthenticator(
+                WsTokenAuthenticator.builder()
+                    .expectedToken("TEST_TOKEN") /* TODO: incoming from config server */
+                    .principalId("jws-gateway")
+                    .withQueryParameterCheck("token")
+                    .build())
+            .componentProvider(componentProvider)
+            .rateLimiter(TokenBucketRateLimiter.createDefault())
+            .serializerRegistry(
+                EnvelopeSerializerRegistry.createEnvelopeRegistry()
+                    .registerJsonDefaults(JacksonSerializer.createLenientForMessaging())
+                    .registerProtobufDefaults(ProtobufSerializer.createDefault(scanner)))
+            .serializerResolverFactory(
+                registry ->
+                    QueryParamSerializerResolver.builder()
+                        .registry(registry)
+                        .encodingParamName("encoding")
+                        .frameParamName("frame")
+                        .build())
+            .addBusListener(
+                ActionRouterWsMessageListener.builder()
+                    .actionGroup(ActionGroup.GLOBAL)
+                    .componentProvider(componentProvider)
+                    .build())
+            .localSessionDispatcherFactory(ConcurrentLocalSessionDispatcher::createVirtual)
+            .messageSink(RedisWsMessageSink.createDefault(pubSubBroadcaster))
+            .build();
+  }
 
-    @Override
-    public void onStart(ComponentProvider componentProvider, ClassScanner scanner) {
-        wsServer.start();
-    }
+  @Override
+  public void onStart(ComponentProvider componentProvider, ClassScanner scanner) {
+    wsServer.start();
+  }
 
-    @Override
-    public void onStop() {
-        wsServer.close();
-    }
+  @Override
+  public void onStop() {
+    wsServer.close();
+  }
 
-    @Override
-    public List<Class<? extends LifecycleHook>> dependsOn() {
-        return List.of(KvServerLifecycle.class, QueueServerLifecycle.class);
-    }
+  @Override
+  public List<Class<? extends LifecycleHook>> dependsOn() {
+    return List.of(KvServerLifecycle.class, QueueServerLifecycle.class);
+  }
 
-    @Produces
-    @Singleton
-    WsSubscriptionRegistry wsSubscriptionRegistry() {
-        return wsServer.getWsSubscriptionRegistry();
-    }
+  @Produces
+  @Singleton
+  WsSubscriptionRegistry wsSubscriptionRegistry() {
+    return wsServer.getWsSubscriptionRegistry();
+  }
 
-    @Produces
-    @Singleton
-    WsBroadcaster wsBroadcaster() {
-        return wsServer.getBroadcaster();
-    }
+  @Produces
+  @Singleton
+  WsBroadcaster wsBroadcaster() {
+    return wsServer.getBroadcaster();
+  }
 
-    @Produces
-    @Singleton
-    LocalSessionDispatcher localSessionDispatcher() {
-        return wsServer.getLocalSessionDispatcher();
-    }
+  @Produces
+  @Singleton
+  LocalSessionDispatcher localSessionDispatcher() {
+    return wsServer.getLocalSessionDispatcher();
+  }
 }

@@ -26,22 +26,22 @@ import xyz.jwizard.jwl.http.annotation.ResponseStatus;
 import xyz.jwizard.jwl.net.http.HttpStatus;
 
 public class AnnotatedExceptionHandler implements ExceptionHandler {
-    private static final Logger LOG = LoggerFactory.getLogger(AnnotatedExceptionHandler.class);
+  private static final Logger LOG = LoggerFactory.getLogger(AnnotatedExceptionHandler.class);
 
-    @Override
-    public boolean supports(Throwable throwable) {
-        return throwable.getClass().isAnnotationPresent(ResponseStatus.class);
-    }
+  @Override
+  public boolean supports(Throwable throwable) {
+    return throwable.getClass().isAnnotationPresent(ResponseStatus.class);
+  }
 
-    @Override
-    public void handle(HttpRequest req, HttpResponse res, Throwable throwable) {
-        final HttpStatus status = throwable.getClass().getAnnotation(ResponseStatus.class).value();
-        LOG.warn(
-                "Annotated exception [{}]: {} -> Status {}",
-                req.getPath(),
-                throwable.getClass().getSimpleName(),
-                status);
-        res.setStatus(status);
-        res.end();
-    }
+  @Override
+  public void handle(HttpRequest req, HttpResponse res, Throwable throwable) {
+    final HttpStatus status = throwable.getClass().getAnnotation(ResponseStatus.class).value();
+    LOG.warn(
+        "Annotated exception [{}]: {} -> Status {}",
+        req.getPath(),
+        throwable.getClass().getSimpleName(),
+        status);
+    res.setStatus(status);
+    res.end();
+  }
 }

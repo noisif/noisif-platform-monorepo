@@ -20,11 +20,11 @@ import xyz.jwizard.buildconfig.JwProtobufPlugin
 apply<JwProtobufPlugin>()
 
 dependencies {
-    implementation(libs.jetty.ws.server)
+  implementation(libs.jetty.ws.server)
 
-    implementation(project(":jwl-codec"))
-    implementation(project(":jwl-common"))
-    implementation(project(":jwl-net"))
+  implementation(project(":jwl-codec"))
+  implementation(project(":jwl-common"))
+  implementation(project(":jwl-net"))
 
-    testImplementation(testFixtures(project(":jwl-common")))
+  testImplementation(testFixtures(project(":jwl-common")))
 }

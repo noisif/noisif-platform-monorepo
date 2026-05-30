@@ -36,38 +36,38 @@ import java.util.Set;
 
 @Singleton
 class QueueServerLifecycle implements LifecycleHook {
-    private final QueueServer queueServer;
+  private final QueueServer queueServer;
 
-    @Inject
-    QueueServerLifecycle(ComponentProvider componentProvider) {
-        queueServer =
-                RabbitMqServer.builder()
-                        .rawNodes(Set.of("localhost:9111") /* TODO: incoming from config server */)
-                        .withConnector(ConnectorType.SINGLE_NODE)
-                        .username("guest" /* TODO: incoming from config server */)
-                        .password("guest" /* TODO: incoming from config server */)
-                        .virtualHost("jwizard-main" /* TODO: incoming from config server */)
-                        .serializerRegistry(
-                                SerializerRegistry.createDefault()
-                                        .register(JacksonSerializer.createLenientForMessaging())
-                                        .register(RawByteSerializer.createDefault()))
-                        .componentProvider(componentProvider)
-                        .build();
-    }
+  @Inject
+  QueueServerLifecycle(ComponentProvider componentProvider) {
+    queueServer =
+        RabbitMqServer.builder()
+            .rawNodes(Set.of("localhost:9111") /* TODO: incoming from config server */)
+            .withConnector(ConnectorType.SINGLE_NODE)
+            .username("guest" /* TODO: incoming from config server */)
+            .password("guest" /* TODO: incoming from config server */)
+            .virtualHost("jwizard-main" /* TODO: incoming from config server */)
+            .serializerRegistry(
+                SerializerRegistry.createDefault()
+                    .register(JacksonSerializer.createLenientForMessaging())
+                    .register(RawByteSerializer.createDefault()))
+            .componentProvider(componentProvider)
+            .build();
+  }
 
-    @Override
-    public void onStart(ComponentProvider componentProvider, ClassScanner scanner) {
-        queueServer.start();
-    }
+  @Override
+  public void onStart(ComponentProvider componentProvider, ClassScanner scanner) {
+    queueServer.start();
+  }
 
-    @Override
-    public void onStop() {
-        queueServer.close();
-    }
+  @Override
+  public void onStop() {
+    queueServer.close();
+  }
 
-    @Produces
-    @Singleton
-    MessagePublisher messagePublisher() {
-        return queueServer.getQueuePublisher();
-    }
+  @Produces
+  @Singleton
+  MessagePublisher messagePublisher() {
+    return queueServer.getQueuePublisher();
+  }
 }

@@ -28,42 +28,39 @@ import java.util.List;
 
 // 1:1 socket <-> group relation
 public class InMemoryWsClientSessionRegistry
-        extends GenericConcurrentRegistry<String, WsClientSession>
-        implements WsClientSessionRegistry {
-    private InMemoryWsClientSessionRegistry() {
-        super();
-    }
+    extends GenericConcurrentRegistry<String, WsClientSession> implements WsClientSessionRegistry {
+  private InMemoryWsClientSessionRegistry() {
+    super();
+  }
 
-    public static InMemoryWsClientSessionRegistry createDefault() {
-        return new InMemoryWsClientSessionRegistry();
-    }
+  public static InMemoryWsClientSessionRegistry createDefault() {
+    return new InMemoryWsClientSessionRegistry();
+  }
 
-    @Override
-    public void register(WsClientSession session) {
-        final ClientGroup group = session.getGroup();
-        final WsClientSession oldSession = super.putDirect(group.getClientGroupName(), session);
-        if (oldSession != null && !oldSession.isClosed()) {
-            log.warn(
-                    "Overwriting active session for group {}, closing the old one.",
-                    group.getClientGroupName());
-            oldSession.close(WsCloseCode.REPLACED_SESSION);
-        }
-        log.debug(
-                "Registered session {} for group {}",
-                session.getSessionId(),
-                group.getClientGroupName());
+  @Override
+  public void register(WsClientSession session) {
+    final ClientGroup group = session.getGroup();
+    final WsClientSession oldSession = super.putDirect(group.getClientGroupName(), session);
+    if (oldSession != null && !oldSession.isClosed()) {
+      log.warn(
+          "Overwriting active session for group {}, closing the old one.",
+          group.getClientGroupName());
+      oldSession.close(WsCloseCode.REPLACED_SESSION);
     }
+    log.debug(
+        "Registered session {} for group {}", session.getSessionId(), group.getClientGroupName());
+  }
 
-    @Override
-    public void unregister(WsClientSession session) {
-        if (super.removeDirect(session.getGroup().getClientGroupName(), session)) {
-            log.debug("Unregistered session {}", session.getSessionId());
-        }
+  @Override
+  public void unregister(WsClientSession session) {
+    if (super.removeDirect(session.getGroup().getClientGroupName(), session)) {
+      log.debug("Unregistered session {}", session.getSessionId());
     }
+  }
 
-    @Override
-    public Collection<WsClientSession> getSessions(ClientGroup clientGroup) {
-        final WsClientSession session = super.getOrNull(clientGroup.getClientGroupName());
-        return session != null ? Collections.singletonList(session) : List.of();
-    }
+  @Override
+  public Collection<WsClientSession> getSessions(ClientGroup clientGroup) {
+    final WsClientSession session = super.getOrNull(clientGroup.getClientGroupName());
+    return session != null ? Collections.singletonList(session) : List.of();
+  }
 }

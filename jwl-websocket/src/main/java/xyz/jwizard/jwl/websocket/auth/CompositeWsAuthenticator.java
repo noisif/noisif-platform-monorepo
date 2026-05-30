@@ -25,37 +25,36 @@ import xyz.jwizard.jwl.websocket.WsHandshakeRequest;
 import java.util.List;
 
 public class CompositeWsAuthenticator implements WsAuthenticator {
-    private static final Logger LOG = LoggerFactory.getLogger(CompositeWsAuthenticator.class);
+  private static final Logger LOG = LoggerFactory.getLogger(CompositeWsAuthenticator.class);
 
-    private final List<WsAuthenticator> authenticators;
+  private final List<WsAuthenticator> authenticators;
 
-    public CompositeWsAuthenticator(List<WsAuthenticator> authenticators) {
-        this.authenticators = authenticators;
+  public CompositeWsAuthenticator(List<WsAuthenticator> authenticators) {
+    this.authenticators = authenticators;
+  }
+
+  @Override
+  public String authenticate(WsHandshakeRequest req) {
+    if (LOG.isTraceEnabled()) {
+      LOG.trace(
+          "Starting composite authentication, evaluating {} authenticators", authenticators.size());
     }
-
-    @Override
-    public String authenticate(WsHandshakeRequest req) {
-        if (LOG.isTraceEnabled()) {
-            LOG.trace(
-                    "Starting composite authentication, evaluating {} authenticators",
-                    authenticators.size());
-        }
-        for (final WsAuthenticator authenticator : authenticators) {
-            if (LOG.isTraceEnabled()) {
-                LOG.trace("Evaluating request using: {}", authenticator.getClass().getSimpleName());
-            }
-            final String principalId = authenticator.authenticate(req);
-            if (principalId != null) {
-                LOG.debug(
-                        "Authentication successful via {}, principalId: {}",
-                        authenticator.getClass().getSimpleName(),
-                        principalId);
-                return principalId;
-            }
-        }
+    for (final WsAuthenticator authenticator : authenticators) {
+      if (LOG.isTraceEnabled()) {
+        LOG.trace("Evaluating request using: {}", authenticator.getClass().getSimpleName());
+      }
+      final String principalId = authenticator.authenticate(req);
+      if (principalId != null) {
         LOG.debug(
-                "Composite authentication failed, "
-                        + "no authenticator was able to identify the principal");
-        return null;
+            "Authentication successful via {}, principalId: {}",
+            authenticator.getClass().getSimpleName(),
+            principalId);
+        return principalId;
+      }
     }
+    LOG.debug(
+        "Composite authentication failed, "
+            + "no authenticator was able to identify the principal");
+    return null;
+  }
 }

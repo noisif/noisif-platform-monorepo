@@ -24,44 +24,40 @@ import org.gradle.api.services.BuildServiceParameters
 import java.util.concurrent.atomic.AtomicLong
 
 abstract class TestSummaryService :
-    BuildService<BuildServiceParameters.None>,
-    AutoCloseable {
-    private val totalPassed = AtomicLong(0)
-    private val totalFailed = AtomicLong(0)
-    private val totalSkipped = AtomicLong(0)
+  BuildService<BuildServiceParameters.None>,
+  AutoCloseable {
+  private val totalPassed = AtomicLong(0)
+  private val totalFailed = AtomicLong(0)
+  private val totalSkipped = AtomicLong(0)
 
-    fun addResults(
-        passed: Long,
-        failed: Long,
-        skipped: Long,
-    ) {
-        totalPassed.addAndGet(passed)
-        totalFailed.addAndGet(failed)
-        totalSkipped.addAndGet(skipped)
+  fun addResults(passed: Long, failed: Long, skipped: Long) {
+    totalPassed.addAndGet(passed)
+    totalFailed.addAndGet(failed)
+    totalSkipped.addAndGet(skipped)
+  }
+
+  override fun close() {
+    val passed = totalPassed.get()
+    val failed = totalFailed.get()
+    val skipped = totalSkipped.get()
+    val total = passed + failed + skipped
+
+    if (total == 0L) {
+      return
     }
+    val header = "GLOBAL TEST SUMMARY (ALL MODULES)"
+    val separator = "=".repeat(header.length)
 
-    override fun close() {
-        val passed = totalPassed.get()
-        val failed = totalFailed.get()
-        val skipped = totalSkipped.get()
-        val total = passed + failed + skipped
-
-        if (total == 0L) {
-            return
-        }
-        val header = "GLOBAL TEST SUMMARY (ALL MODULES)"
-        val separator = "=".repeat(header.length)
-
-        println("\n$separator")
-        println(header)
-        println("Total passed  : $GREEN$passed$RESET")
-        println("Total failed  : $RED$failed$RESET")
-        println("Total skipped : $YELLOW$skipped$RESET")
-        println("Grand total   : $total")
-        println("$separator\n")
-    }
+    println("\n$separator")
+    println(header)
+    println("Total passed  : $GREEN$passed$RESET")
+    println("Total failed  : $RED$failed$RESET")
+    println("Total skipped : $YELLOW$skipped$RESET")
+    println("Grand total   : $total")
+    println("$separator\n")
+  }
 }
 
 fun Project.registerTestSummaryService(): Provider<TestSummaryService> =
-    gradle.sharedServices.registerIfAbsent("testSummary", TestSummaryService::class.java) {
-    }
+  gradle.sharedServices.registerIfAbsent("testSummary", TestSummaryService::class.java) {
+  }

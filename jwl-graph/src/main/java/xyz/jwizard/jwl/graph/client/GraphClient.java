@@ -23,12 +23,12 @@ import java.util.Map;
 
 // transaction read/write
 public interface GraphClient extends Closeable {
-    List<Map<String, Object>> read(String query, Map<String, Object> parameters);
+  List<Map<String, Object>> read(String query, Map<String, Object> parameters);
 
-    List<Map<String, Object>> write(String query, Map<String, Object> parameters);
+  List<Map<String, Object>> write(String query, Map<String, Object> parameters);
 
-    void execute(String query, Map<String, Object> parameters);
+  void execute(String query, Map<String, Object> parameters);
 
-    @Override
-    void close();
+  @Override
+  void close();
 }

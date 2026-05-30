@@ -22,21 +22,21 @@ import xyz.jwizard.jwl.net.http.header.HttpHeaderName;
 import xyz.jwizard.jwl.net.http.header.HttpHeaderValue;
 
 public interface HttpResponse {
-    String getHeaderUnsafe(String name);
+  String getHeaderUnsafe(String name);
 
-    String getHeader(HttpHeaderName name);
+  String getHeader(HttpHeaderName name);
 
-    void setStatus(HttpStatus statusCode);
+  void setStatus(HttpStatus statusCode);
 
-    void setHeader(HttpHeaderName name, HttpHeaderValue value, Object... args);
+  void setHeader(HttpHeaderName name, HttpHeaderValue value, Object... args);
 
-    void setHeader(HttpHeaderName name, String value);
+  void setHeader(HttpHeaderName name, String value);
 
-    void setHeaderUnsafe(String name, String value);
+  void setHeaderUnsafe(String name, String value);
 
-    void write(String body, boolean last);
+  void write(String body, boolean last);
 
-    void writeEmpty(boolean last);
+  void writeEmpty(boolean last);
 
-    void end();
+  void end();
 }

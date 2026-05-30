@@ -21,22 +21,19 @@ import xyz.jwizard.jwl.netclient.rest.TestHttpHeaderName;
 import xyz.jwizard.jwl.netclient.rest.TestHttpHeaderValue;
 
 public class SignatureInterceptor implements RequestInterceptor {
-    @Override
-    public void intercept(InterceptorContext context) {
-        final RequestView view = context.getView();
-        final String actionType = view.getHeaders().get(TestHttpHeaderName.X_ACTION_TYPE.getCode());
-        final String targetId = view.getQueryParams().get("target_id");
-        if (actionType != null && targetId != null) {
-            context.addHeader(
-                    TestHttpHeaderName.X_REQUEST_SIGNATURE,
-                    TestHttpHeaderValue.SIG,
-                    actionType,
-                    targetId);
-        }
+  @Override
+  public void intercept(InterceptorContext context) {
+    final RequestView view = context.getView();
+    final String actionType = view.getHeaders().get(TestHttpHeaderName.X_ACTION_TYPE.getCode());
+    final String targetId = view.getQueryParams().get("target_id");
+    if (actionType != null && targetId != null) {
+      context.addHeader(
+          TestHttpHeaderName.X_REQUEST_SIGNATURE, TestHttpHeaderValue.SIG, actionType, targetId);
     }
+  }
 
-    @Override
-    public int order() {
-        return 100;
-    }
+  @Override
+  public int order() {
+    return 100;
+  }
 }

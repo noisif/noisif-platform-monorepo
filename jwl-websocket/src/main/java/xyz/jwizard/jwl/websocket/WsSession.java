@@ -21,5 +21,5 @@ import xyz.jwizard.jwl.net.NetworkSender;
 import xyz.jwizard.jwl.net.envelope.EnvelopeSession;
 
 public interface WsSession extends NetworkSender, EnvelopeSession {
-    void sendAdapted(byte[] payload);
+  void sendAdapted(byte[] payload);
 }

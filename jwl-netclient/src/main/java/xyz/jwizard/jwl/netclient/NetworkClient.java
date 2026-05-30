@@ -27,48 +27,47 @@ import xyz.jwizard.jwl.netclient.group.InMemoryClientRegistry;
 import java.time.Duration;
 
 public abstract class NetworkClient<T extends ClientGroupConfig> extends IdempotentService {
-    protected final Duration connectTimeout;
-    protected final ClientRegistry<T> clientsRegistry;
+  protected final Duration connectTimeout;
+  protected final ClientRegistry<T> clientsRegistry;
 
-    protected NetworkClient(AbstractBaseBuilder<T, ?> builder) {
-        connectTimeout = builder.connectTimeout;
-        clientsRegistry = builder.clientsRegistry;
+  protected NetworkClient(AbstractBaseBuilder<T, ?> builder) {
+    connectTimeout = builder.connectTimeout;
+    clientsRegistry = builder.clientsRegistry;
+  }
+
+  protected abstract static class AbstractBaseBuilder<
+      T extends ClientGroupConfig, B extends AbstractBaseBuilder<T, B>> {
+    private Duration connectTimeout = Duration.ofMinutes(1);
+    private ClientRegistry<T> clientsRegistry = InMemoryClientRegistry.createDefault();
+
+    protected AbstractBaseBuilder() {}
+
+    protected abstract B self();
+
+    public B connectTimeout(Duration connectTimeout) {
+      this.connectTimeout = connectTimeout;
+      return self();
     }
 
-    protected abstract static class AbstractBaseBuilder<
-            T extends ClientGroupConfig, B extends AbstractBaseBuilder<T, B>> {
-        private Duration connectTimeout = Duration.ofMinutes(1);
-        private ClientRegistry<T> clientsRegistry = InMemoryClientRegistry.createDefault();
-
-        protected AbstractBaseBuilder() {}
-
-        protected abstract B self();
-
-        public B connectTimeout(Duration connectTimeout) {
-            this.connectTimeout = connectTimeout;
-            return self();
-        }
-
-        public B clientsRegistry(ClientRegistry<T> clientsRegistry) {
-            this.clientsRegistry = clientsRegistry;
-            return self();
-        }
-
-        public B defaultClientGroup(T clientPool) {
-            clientsRegistry.register(clientPool);
-            return self();
-        }
-
-        public B clientGroup(ClientGroup clientGroup, T clientPool) {
-            clientsRegistry.register(clientGroup, clientPool);
-            return self();
-        }
-
-        protected void validate() {
-            Assert.notNull(connectTimeout, "ConnectTimeout cannot be null");
-            Assert.notNull(clientsRegistry, "ClientsRegistry cannot be null");
-            Assert.notNullAll(
-                    clientsRegistry.getEntries(), "All ClientGroupConfigs must be initialized");
-        }
+    public B clientsRegistry(ClientRegistry<T> clientsRegistry) {
+      this.clientsRegistry = clientsRegistry;
+      return self();
     }
+
+    public B defaultClientGroup(T clientPool) {
+      clientsRegistry.register(clientPool);
+      return self();
+    }
+
+    public B clientGroup(ClientGroup clientGroup, T clientPool) {
+      clientsRegistry.register(clientGroup, clientPool);
+      return self();
+    }
+
+    protected void validate() {
+      Assert.notNull(connectTimeout, "ConnectTimeout cannot be null");
+      Assert.notNull(clientsRegistry, "ClientsRegistry cannot be null");
+      Assert.notNullAll(clientsRegistry.getEntries(), "All ClientGroupConfigs must be initialized");
+    }
+  }
 }

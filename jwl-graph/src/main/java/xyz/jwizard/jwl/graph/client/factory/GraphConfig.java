@@ -22,44 +22,44 @@ import xyz.jwizard.jwl.graph.GraphProtocol;
 import xyz.jwizard.jwl.net.HostPort;
 
 public abstract class GraphConfig {
-    protected final GraphProtocol protocol;
-    protected final HostPort address;
+  protected final GraphProtocol protocol;
+  protected final HostPort address;
 
-    protected GraphConfig(AbstractBuilder<?, ?> builder) {
-        this.protocol = builder.protocol;
-        this.address = builder.address;
+  protected GraphConfig(AbstractBuilder<?, ?> builder) {
+    this.protocol = builder.protocol;
+    this.address = builder.address;
+  }
+
+  public GraphProtocol getProtocol() {
+    return protocol;
+  }
+
+  public HostPort getAddress() {
+    return address;
+  }
+
+  protected abstract static class AbstractBuilder<
+      B extends AbstractBuilder<B, C>, C extends GraphConfig> {
+    protected GraphProtocol protocol;
+    protected HostPort address;
+
+    protected abstract B self();
+
+    public B protocol(GraphProtocol protocol) {
+      this.protocol = protocol;
+      return self();
     }
 
-    public GraphProtocol getProtocol() {
-        return protocol;
+    public B address(HostPort address) {
+      this.address = address;
+      return self();
     }
 
-    public HostPort getAddress() {
-        return address;
+    protected void validate() {
+      Assert.notNull(protocol, "Protocol cannot be null");
+      Assert.notNull(address, "Address cannot be null");
     }
 
-    protected abstract static class AbstractBuilder<
-            B extends AbstractBuilder<B, C>, C extends GraphConfig> {
-        protected GraphProtocol protocol;
-        protected HostPort address;
-
-        protected abstract B self();
-
-        public B protocol(GraphProtocol protocol) {
-            this.protocol = protocol;
-            return self();
-        }
-
-        public B address(HostPort address) {
-            this.address = address;
-            return self();
-        }
-
-        protected void validate() {
-            Assert.notNull(protocol, "Protocol cannot be null");
-            Assert.notNull(address, "Address cannot be null");
-        }
-
-        public abstract C build();
-    }
+    public abstract C build();
+  }
 }

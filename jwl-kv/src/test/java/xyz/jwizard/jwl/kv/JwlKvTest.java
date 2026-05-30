@@ -20,13 +20,13 @@ package xyz.jwizard.jwl.kv;
 import xyz.jwizard.jwl.common.ModuleIdentityTest;
 
 class JwlKvTest extends ModuleIdentityTest {
-    @Override
-    protected String getModuleName() {
-        return "kv";
-    }
+  @Override
+  protected String getModuleName() {
+    return "kv";
+  }
 
-    @Override
-    protected String getPackageSuffix() {
-        return "jwl";
-    }
+  @Override
+  protected String getPackageSuffix() {
+    return "jwl";
+  }
 }

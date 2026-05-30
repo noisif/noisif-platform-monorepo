@@ -22,5 +22,5 @@ import xyz.jwizard.jwl.sql.pool.ConnectionPoolFactory;
 
 @FunctionalInterface
 public interface SqlClientFactory {
-    GenericSqlClient create(SqlDatabaseConfig config, ConnectionPoolFactory poolFactory);
+  GenericSqlClient create(SqlDatabaseConfig config, ConnectionPoolFactory poolFactory);
 }

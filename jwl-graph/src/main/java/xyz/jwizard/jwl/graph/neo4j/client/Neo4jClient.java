@@ -31,65 +31,59 @@ import java.util.List;
 import java.util.Map;
 
 public class Neo4jClient implements GraphClient {
-    private static final Logger LOG = LoggerFactory.getLogger(Neo4jClient.class);
+  private static final Logger LOG = LoggerFactory.getLogger(Neo4jClient.class);
 
-    private final Driver driver;
+  private final Driver driver;
 
-    public Neo4jClient(Driver driver) {
-        this.driver = driver;
+  public Neo4jClient(Driver driver) {
+    this.driver = driver;
+  }
+
+  @Override
+  public List<Map<String, Object>> read(String query, Map<String, Object> parameters) {
+    if (LOG.isTraceEnabled()) {
+      LOG.trace("Executing read query: {} with params: {}", query.replace("\n", " "), parameters);
     }
-
-    @Override
-    public List<Map<String, Object>> read(String query, Map<String, Object> parameters) {
-        if (LOG.isTraceEnabled()) {
-            LOG.trace(
-                    "Executing read query: {} with params: {}",
-                    query.replace("\n", " "),
-                    parameters);
-        }
-        try (final Session session = driver.session()) {
-            return session.executeRead(tx -> tx.run(query, parameters).list(MapAccessor::asMap));
-        } catch (Exception ex) {
-            throw new GraphDatabaseException("Neo4j read transaction failed", ex);
-        }
+    try (final Session session = driver.session()) {
+      return session.executeRead(tx -> tx.run(query, parameters).list(MapAccessor::asMap));
+    } catch (Exception ex) {
+      throw new GraphDatabaseException("Neo4j read transaction failed", ex);
     }
+  }
 
-    @Override
-    public List<Map<String, Object>> write(String query, Map<String, Object> parameters) {
-        if (LOG.isTraceEnabled()) {
-            LOG.trace(
-                    "Executing write query with return: {} with params: {}",
-                    query.replace("\n", " "),
-                    parameters);
-        }
-        try (final Session session = driver.session()) {
-            return session.executeWrite(tx -> tx.run(query, parameters).list(MapAccessor::asMap));
-        } catch (Exception ex) {
-            throw new GraphDatabaseException("Neo4j write transaction failed", ex);
-        }
+  @Override
+  public List<Map<String, Object>> write(String query, Map<String, Object> parameters) {
+    if (LOG.isTraceEnabled()) {
+      LOG.trace(
+          "Executing write query with return: {} with params: {}",
+          query.replace("\n", " "),
+          parameters);
     }
+    try (final Session session = driver.session()) {
+      return session.executeWrite(tx -> tx.run(query, parameters).list(MapAccessor::asMap));
+    } catch (Exception ex) {
+      throw new GraphDatabaseException("Neo4j write transaction failed", ex);
+    }
+  }
 
-    @Override
-    public void execute(String query, Map<String, Object> parameters) {
-        if (LOG.isTraceEnabled()) {
-            LOG.trace(
-                    "Executing write query: {} with params: {}",
-                    query.replace("\n", " "),
-                    parameters);
-        }
-        try (final Session session = driver.session()) {
-            session.executeWrite(
-                    tx -> {
-                        tx.run(query, parameters).consume();
-                        return null;
-                    });
-        } catch (Exception ex) {
-            throw new GraphDatabaseException("Neo4j execution failed", ex);
-        }
+  @Override
+  public void execute(String query, Map<String, Object> parameters) {
+    if (LOG.isTraceEnabled()) {
+      LOG.trace("Executing write query: {} with params: {}", query.replace("\n", " "), parameters);
     }
+    try (final Session session = driver.session()) {
+      session.executeWrite(
+          tx -> {
+            tx.run(query, parameters).consume();
+            return null;
+          });
+    } catch (Exception ex) {
+      throw new GraphDatabaseException("Neo4j execution failed", ex);
+    }
+  }
 
-    @Override
-    public void close() {
-        IoUtil.closeQuietly(driver, Driver::close);
-    }
+  @Override
+  public void close() {
+    IoUtil.closeQuietly(driver, Driver::close);
+  }
 }

@@ -20,30 +20,30 @@ package xyz.jwizard.jwl.netclient.websocket;
 import xyz.jwizard.jwl.codec.envelope.OpCode;
 
 public enum TestWsOpCode implements OpCode {
-    SEND_DATA(0x05, 0x01),
-    RECEIVE_DATA(0x05, 0x02),
-    SEND_DATA_PROTO(0x06, 0x01),
-    RECEIVE_DATA_PROTO(0x06, 0x02),
-    ;
+  SEND_DATA(0x05, 0x01),
+  RECEIVE_DATA(0x05, 0x02),
+  SEND_DATA_PROTO(0x06, 0x01),
+  RECEIVE_DATA_PROTO(0x06, 0x02),
+  ;
 
-    private final int code;
+  private final int code;
 
-    TestWsOpCode(int category, int action) {
-        this.code = OpCode.combine(category, action);
-    }
+  TestWsOpCode(int category, int action) {
+    this.code = OpCode.combine(category, action);
+  }
 
-    @Override
-    public int getCode() {
-        return code;
-    }
+  @Override
+  public int getCode() {
+    return code;
+  }
 
-    @Override
-    public String getName() {
-        return name();
-    }
+  @Override
+  public String getName() {
+    return name();
+  }
 
-    @Override
-    public String toString() {
-        return asString();
-    }
+  @Override
+  public String toString() {
+    return asString();
+  }
 }

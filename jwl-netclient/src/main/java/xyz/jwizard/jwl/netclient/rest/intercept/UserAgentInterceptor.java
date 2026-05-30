@@ -23,22 +23,22 @@ import org.slf4j.LoggerFactory;
 import xyz.jwizard.jwl.net.http.header.CommonHttpHeaderName;
 
 public class UserAgentInterceptor implements RequestInterceptor {
-    private static final Logger LOG = LoggerFactory.getLogger(UserAgentInterceptor.class);
+  private static final Logger LOG = LoggerFactory.getLogger(UserAgentInterceptor.class);
 
-    private final String userAgent;
+  private final String userAgent;
 
-    public UserAgentInterceptor(String userAgent) {
-        this.userAgent = userAgent;
-    }
+  public UserAgentInterceptor(String userAgent) {
+    this.userAgent = userAgent;
+  }
 
-    @Override
-    public void intercept(InterceptorContext context) {
-        LOG.trace("Applying user-agent: {}", userAgent);
-        context.addUnsafeHeader(CommonHttpHeaderName.USER_AGENT, userAgent);
-    }
+  @Override
+  public void intercept(InterceptorContext context) {
+    LOG.trace("Applying user-agent: {}", userAgent);
+    context.addUnsafeHeader(CommonHttpHeaderName.USER_AGENT, userAgent);
+  }
 
-    @Override
-    public int order() {
-        return Integer.MAX_VALUE - 10;
-    }
+  @Override
+  public int order() {
+    return Integer.MAX_VALUE - 10;
+  }
 }

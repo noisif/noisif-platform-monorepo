@@ -18,7 +18,7 @@
 package xyz.jwizard.jwl.kv.pubsub;
 
 public interface PubSubBroadcaster {
-    void publish(KvChannel channel, String message, Object... channelParams);
+  void publish(KvChannel channel, String message, Object... channelParams);
 
-    void publishBinary(KvChannel channel, byte[] message, Object... channelParams);
+  void publishBinary(KvChannel channel, byte[] message, Object... channelParams);
 }

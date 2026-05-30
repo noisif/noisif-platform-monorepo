@@ -22,22 +22,22 @@ import xyz.jwizard.jwl.net.http.header.HttpHeaderName;
 import java.io.InputStream;
 
 public interface HttpRequest {
-    String getMethod();
+  String getMethod();
 
-    String getPath();
+  String getPath();
 
-    long getLength();
+  long getLength();
 
-    InputStream getInputStream();
+  InputStream getInputStream();
 
-    String getQuery();
+  String getQuery();
 
-    String getQueryParam(String name);
+  String getQueryParam(String name);
 
-    String getHeader(HttpHeaderName name);
+  String getHeader(HttpHeaderName name);
 
-    String getHeaderUnsafe(String name);
+  String getHeaderUnsafe(String name);
 
-    // get clear content type without encoding
-    String getContentType();
+  // get clear content type without encoding
+  String getContentType();
 }

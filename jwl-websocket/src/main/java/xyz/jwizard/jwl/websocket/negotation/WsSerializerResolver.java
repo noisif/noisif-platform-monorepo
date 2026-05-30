@@ -21,5 +21,5 @@ import xyz.jwizard.jwl.codec.envelope.EnvelopeSerializer;
 import xyz.jwizard.jwl.websocket.WsHandshakeRequest;
 
 public interface WsSerializerResolver {
-    EnvelopeSerializer<?> resolve(WsHandshakeRequest req);
+  EnvelopeSerializer<?> resolve(WsHandshakeRequest req);
 }

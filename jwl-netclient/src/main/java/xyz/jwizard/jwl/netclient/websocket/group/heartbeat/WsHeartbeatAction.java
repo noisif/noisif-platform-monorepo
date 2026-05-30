@@ -20,5 +20,5 @@ package xyz.jwizard.jwl.netclient.websocket.group.heartbeat;
 import xyz.jwizard.jwl.netclient.websocket.WsClientSession;
 
 public interface WsHeartbeatAction {
-    void execute(WsClientSession session);
+  void execute(WsClientSession session);
 }

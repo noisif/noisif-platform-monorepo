@@ -20,19 +20,19 @@ package xyz.jwizard.jwl.http.header;
 import xyz.jwizard.jwl.net.http.header.HttpHeaderValue;
 
 public enum TestHttpHeaderValue implements HttpHeaderValue {
-    ANNOTATION_FILTER("AnnotationFilter"),
-    EXECUTED("Executed"),
-    DIRECT_INJECT("DirectInject"),
-    ;
+  ANNOTATION_FILTER("AnnotationFilter"),
+  EXECUTED("Executed"),
+  DIRECT_INJECT("DirectInject"),
+  ;
 
-    private final String code;
+  private final String code;
 
-    TestHttpHeaderValue(String code) {
-        this.code = code;
-    }
+  TestHttpHeaderValue(String code) {
+    this.code = code;
+  }
 
-    @Override
-    public String buildWithArgs(Object... args) {
-        return String.format(code, args);
-    }
+  @Override
+  public String buildWithArgs(Object... args) {
+    return String.format(code, args);
+  }
 }

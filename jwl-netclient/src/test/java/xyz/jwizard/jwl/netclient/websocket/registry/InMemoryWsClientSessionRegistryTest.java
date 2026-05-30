@@ -30,24 +30,24 @@ import xyz.jwizard.jwl.netclient.group.ClientGroup;
 import xyz.jwizard.jwl.netclient.websocket.WsClientSession;
 
 class InMemoryWsClientSessionRegistryTest {
-    @Test
-    @DisplayName("should close old session when new one registers for same group")
-    void shouldCloseOldSessionWhenNewOneRegistersForSameGroup() {
-        // given
-        final InMemoryWsClientSessionRegistry registry =
-                InMemoryWsClientSessionRegistry.createDefault();
-        ClientGroup group = mock(ClientGroup.class);
-        when(group.getClientGroupName()).thenReturn("group-1");
-        final WsClientSession oldSession = mock(WsClientSession.class);
-        when(oldSession.getGroup()).thenReturn(group);
-        when(oldSession.isClosed()).thenReturn(false);
-        final WsClientSession newSession = mock(WsClientSession.class);
-        when(newSession.getGroup()).thenReturn(group);
-        registry.register(oldSession);
-        // when
-        registry.register(newSession);
-        // then
-        verify(oldSession).close(WsCloseCode.REPLACED_SESSION);
-        assertThat(registry.getSessions(group)).containsExactly(newSession);
-    }
+  @Test
+  @DisplayName("should close old session when new one registers for same group")
+  void shouldCloseOldSessionWhenNewOneRegistersForSameGroup() {
+    // given
+    final InMemoryWsClientSessionRegistry registry =
+        InMemoryWsClientSessionRegistry.createDefault();
+    ClientGroup group = mock(ClientGroup.class);
+    when(group.getClientGroupName()).thenReturn("group-1");
+    final WsClientSession oldSession = mock(WsClientSession.class);
+    when(oldSession.getGroup()).thenReturn(group);
+    when(oldSession.isClosed()).thenReturn(false);
+    final WsClientSession newSession = mock(WsClientSession.class);
+    when(newSession.getGroup()).thenReturn(group);
+    registry.register(oldSession);
+    // when
+    registry.register(newSession);
+    // then
+    verify(oldSession).close(WsCloseCode.REPLACED_SESSION);
+    assertThat(registry.getSessions(group)).containsExactly(newSession);
+  }
 }

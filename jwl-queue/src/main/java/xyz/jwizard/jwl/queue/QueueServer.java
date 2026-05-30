@@ -34,136 +34,132 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 public abstract class QueueServer extends IdempotentService {
-    protected final String username;
-    protected final String password;
-    protected final Set<HostPort> nodes;
-    protected final SerializerRegistry<MessageSerializer> serializerRegistry;
-    protected final ComponentProvider componentProvider;
+  protected final String username;
+  protected final String password;
+  protected final Set<HostPort> nodes;
+  protected final SerializerRegistry<MessageSerializer> serializerRegistry;
+  protected final ComponentProvider componentProvider;
 
-    private final QueuePublisher queuePublisher = new QueuePublisher(this);
+  private final QueuePublisher queuePublisher = new QueuePublisher(this);
 
-    protected QueueServer(AbstractBuilder<?> builder) {
-        username = builder.username;
-        password = builder.password;
-        nodes = builder.nodes;
-        serializerRegistry = builder.serializerRegistry;
-        componentProvider = builder.componentProvider;
+  protected QueueServer(AbstractBuilder<?> builder) {
+    username = builder.username;
+    password = builder.password;
+    nodes = builder.nodes;
+    serializerRegistry = builder.serializerRegistry;
+    componentProvider = builder.componentProvider;
+  }
+
+  @Override
+  protected final void onStart() throws Exception {
+    if (nodes.isEmpty()) {
+      log.warn("Not providing any nodes, skipping configuration");
+      return;
+    }
+    final Set<QueueListener<?>> listeners =
+        new HashSet<>(componentProvider.getInstancesOf(new TypeReference<>() {}));
+    log.info("Found {} queue listener(s)", listeners.size());
+    log.info("Queue server start initializing with {} node(s)", nodes.size());
+    onQueueServerStart();
+    registerListeners(listeners);
+  }
+
+  SerializerRegistry<MessageSerializer> getSerializerRegistry() {
+    return serializerRegistry;
+  }
+
+  public QueuePublisher getQueuePublisher() {
+    return queuePublisher;
+  }
+
+  protected <T> void processDelivery(QueueListener<T> listener, byte[] body) {
+    if (log.isTraceEnabled()) {
+      final String rawPayload = new String(body, StandardCharsets.UTF_8);
+      log.trace("Raw bytes received from queue '{}': {}", listener.getQueueName(), rawPayload);
+    }
+    final Class<T> targetType = listener.getMessageType();
+    final T payload =
+        serializerRegistry.get(listener.getFormat()).deserializeFromBytes(body, targetType);
+    log.debug("Processing message from queue '{}': {}", listener.getQueueName(), payload);
+    listener.onMessage(payload);
+  }
+
+  protected abstract void onQueueServerStart() throws Exception;
+
+  protected abstract void onPublish(String exchange, String routingKey, byte[] body)
+      throws Exception;
+
+  protected abstract void onRegisterListener(QueueListener<?> listener) throws IOException;
+
+  private void registerListeners(Set<QueueListener<?>> listeners) {
+    int registeredListeners = 0;
+    for (final QueueListener<?> listener : listeners) {
+      final String queueName = listener.getQueueName();
+      try {
+        onRegisterListener(listener);
+        log.info("Registered listener for queue: {} (format: {})", queueName, listener.getFormat());
+        registeredListeners++;
+      } catch (Exception ex) {
+        throw new CriticalBootstrapException(
+            "Failed to register listener for queue: " + listener.getQueueName(), ex);
+      }
+    }
+    log.info("Registered {} queue listener(s)", registeredListeners);
+  }
+
+  protected abstract static class AbstractBuilder<B extends AbstractBuilder<B>> {
+    private String username;
+    private String password;
+    private Set<HostPort> nodes = new HashSet<>();
+    private SerializerRegistry<MessageSerializer> serializerRegistry;
+    private ComponentProvider componentProvider;
+
+    protected AbstractBuilder() {}
+
+    protected abstract B self();
+
+    public B nodes(Set<HostPort> nodes) {
+      this.nodes = nodes;
+      return self();
     }
 
-    @Override
-    protected final void onStart() throws Exception {
-        if (nodes.isEmpty()) {
-            log.warn("Not providing any nodes, skipping configuration");
-            return;
-        }
-        final Set<QueueListener<?>> listeners =
-                new HashSet<>(componentProvider.getInstancesOf(new TypeReference<>() {}));
-        log.info("Found {} queue listener(s)", listeners.size());
-        log.info("Queue server start initializing with {} node(s)", nodes.size());
-        onQueueServerStart();
-        registerListeners(listeners);
+    // as host:port
+    public B rawNodes(Set<String> rawNodes) {
+      return nodes(
+          rawNodes.stream()
+              .map(NetworkUtil::parseHostPort)
+              .map(hp -> HostPort.from(hp.host(), hp.port()))
+              .collect(Collectors.toSet()));
     }
 
-    SerializerRegistry<MessageSerializer> getSerializerRegistry() {
-        return serializerRegistry;
+    public B username(String username) {
+      this.username = username;
+      return self();
     }
 
-    public QueuePublisher getQueuePublisher() {
-        return queuePublisher;
+    public B password(String password) {
+      this.password = password;
+      return self();
     }
 
-    protected <T> void processDelivery(QueueListener<T> listener, byte[] body) {
-        if (log.isTraceEnabled()) {
-            final String rawPayload = new String(body, StandardCharsets.UTF_8);
-            log.trace(
-                    "Raw bytes received from queue '{}': {}", listener.getQueueName(), rawPayload);
-        }
-        final Class<T> targetType = listener.getMessageType();
-        final T payload =
-                serializerRegistry.get(listener.getFormat()).deserializeFromBytes(body, targetType);
-        log.debug("Processing message from queue '{}': {}", listener.getQueueName(), payload);
-        listener.onMessage(payload);
+    public B serializerRegistry(SerializerRegistry<MessageSerializer> serializerRegistry) {
+      this.serializerRegistry = serializerRegistry;
+      return self();
     }
 
-    protected abstract void onQueueServerStart() throws Exception;
-
-    protected abstract void onPublish(String exchange, String routingKey, byte[] body)
-            throws Exception;
-
-    protected abstract void onRegisterListener(QueueListener<?> listener) throws IOException;
-
-    private void registerListeners(Set<QueueListener<?>> listeners) {
-        int registeredListeners = 0;
-        for (final QueueListener<?> listener : listeners) {
-            final String queueName = listener.getQueueName();
-            try {
-                onRegisterListener(listener);
-                log.info(
-                        "Registered listener for queue: {} (format: {})",
-                        queueName,
-                        listener.getFormat());
-                registeredListeners++;
-            } catch (Exception ex) {
-                throw new CriticalBootstrapException(
-                        "Failed to register listener for queue: " + listener.getQueueName(), ex);
-            }
-        }
-        log.info("Registered {} queue listener(s)", registeredListeners);
+    public B componentProvider(ComponentProvider componentProvider) {
+      this.componentProvider = componentProvider;
+      return self();
     }
 
-    protected abstract static class AbstractBuilder<B extends AbstractBuilder<B>> {
-        private String username;
-        private String password;
-        private Set<HostPort> nodes = new HashSet<>();
-        private SerializerRegistry<MessageSerializer> serializerRegistry;
-        private ComponentProvider componentProvider;
-
-        protected AbstractBuilder() {}
-
-        protected abstract B self();
-
-        public B nodes(Set<HostPort> nodes) {
-            this.nodes = nodes;
-            return self();
-        }
-
-        // as host:port
-        public B rawNodes(Set<String> rawNodes) {
-            return nodes(
-                    rawNodes.stream()
-                            .map(NetworkUtil::parseHostPort)
-                            .map(hp -> HostPort.from(hp.host(), hp.port()))
-                            .collect(Collectors.toSet()));
-        }
-
-        public B username(String username) {
-            this.username = username;
-            return self();
-        }
-
-        public B password(String password) {
-            this.password = password;
-            return self();
-        }
-
-        public B serializerRegistry(SerializerRegistry<MessageSerializer> serializerRegistry) {
-            this.serializerRegistry = serializerRegistry;
-            return self();
-        }
-
-        public B componentProvider(ComponentProvider componentProvider) {
-            this.componentProvider = componentProvider;
-            return self();
-        }
-
-        protected void validate() {
-            Assert.notNull(nodes, "Nodes cannot be null");
-            Assert.notNull(username, "Username cannot be null");
-            Assert.notNull(password, "Password cannot be null");
-            Assert.notNull(serializerRegistry, "SerializerRegistry cannot be null");
-            Assert.notNull(componentProvider, "ComponentProvider cannot be null");
-        }
-
-        public abstract QueueServer build();
+    protected void validate() {
+      Assert.notNull(nodes, "Nodes cannot be null");
+      Assert.notNull(username, "Username cannot be null");
+      Assert.notNull(password, "Password cannot be null");
+      Assert.notNull(serializerRegistry, "SerializerRegistry cannot be null");
+      Assert.notNull(componentProvider, "ComponentProvider cannot be null");
     }
+
+    public abstract QueueServer build();
+  }
 }

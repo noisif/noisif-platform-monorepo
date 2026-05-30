@@ -24,58 +24,58 @@ import xyz.jwizard.jwl.net.bus.RawBusListener;
 import xyz.jwizard.jwl.net.message.RawMessageSession;
 
 public abstract class TypedMessageBusListener<T, S extends RawMessageSession>
-        implements RawBusListener<S> {
-    protected final Logger log = LoggerFactory.getLogger(getClass());
+    implements RawBusListener<S> {
+  protected final Logger log = LoggerFactory.getLogger(getClass());
 
-    @Override
-    public void dispatch(S session, byte[] message) {
-        try {
-            if (log.isTraceEnabled()) {
-                log.trace(
-                        "Received raw binary message ({} bytes) in session {}",
-                        message.length,
-                        session.getSessionId());
-            }
-            final T parsedMessage = session.parse(message, getTargetType());
-            if (log.isDebugEnabled()) {
-                log.debug(
-                        "Successfully parsed binary message to {} in session {}",
-                        getTargetType().getSimpleName(),
-                        session.getSessionId());
-            }
-            handle(session, parsedMessage);
-        } catch (Exception ex) {
-            handleError(session, ex);
-        }
+  @Override
+  public void dispatch(S session, byte[] message) {
+    try {
+      if (log.isTraceEnabled()) {
+        log.trace(
+            "Received raw binary message ({} bytes) in session {}",
+            message.length,
+            session.getSessionId());
+      }
+      final T parsedMessage = session.parse(message, getTargetType());
+      if (log.isDebugEnabled()) {
+        log.debug(
+            "Successfully parsed binary message to {} in session {}",
+            getTargetType().getSimpleName(),
+            session.getSessionId());
+      }
+      handle(session, parsedMessage);
+    } catch (Exception ex) {
+      handleError(session, ex);
     }
+  }
 
-    @Override
-    public void dispatch(S session, String message) {
-        try {
-            if (log.isTraceEnabled()) {
-                log.trace(
-                        "Received raw text message ({} chars) in session {}",
-                        message.length(),
-                        session.getSessionId());
-            }
-            final T parsedMessage = session.parse(message, getTargetType());
-            if (log.isDebugEnabled()) {
-                log.debug(
-                        "Successfully parsed text message to {} in session {}",
-                        getTargetType().getSimpleName(),
-                        session.getSessionId());
-            }
-            handle(session, parsedMessage);
-        } catch (Exception ex) {
-            handleError(session, ex);
-        }
+  @Override
+  public void dispatch(S session, String message) {
+    try {
+      if (log.isTraceEnabled()) {
+        log.trace(
+            "Received raw text message ({} chars) in session {}",
+            message.length(),
+            session.getSessionId());
+      }
+      final T parsedMessage = session.parse(message, getTargetType());
+      if (log.isDebugEnabled()) {
+        log.debug(
+            "Successfully parsed text message to {} in session {}",
+            getTargetType().getSimpleName(),
+            session.getSessionId());
+      }
+      handle(session, parsedMessage);
+    } catch (Exception ex) {
+      handleError(session, ex);
     }
+  }
 
-    protected abstract Class<T> getTargetType();
+  protected abstract Class<T> getTargetType();
 
-    protected abstract void handle(S session, T message);
+  protected abstract void handle(S session, T message);
 
-    protected void handleError(S session, Exception ex) {
-        log.error("Failed to parse RAW message in session {}", session.getSessionId(), ex);
-    }
+  protected void handleError(S session, Exception ex) {
+    log.error("Failed to parse RAW message in session {}", session.getSessionId(), ex);
+  }
 }

@@ -28,31 +28,31 @@ import java.util.concurrent.atomic.AtomicReference;
 
 @Singleton
 public class SimpleBinaryTestSubscriber extends AbstractKvSubscriber<byte[]> {
-    private CountDownLatch latch;
-    private AtomicReference<byte[]> receivedRef;
+  private CountDownLatch latch;
+  private AtomicReference<byte[]> receivedRef;
 
-    public void prepareForTest(CountDownLatch latch, AtomicReference<byte[]> receivedRef) {
-        this.latch = latch;
-        this.receivedRef = receivedRef;
-    }
+  public void prepareForTest(CountDownLatch latch, AtomicReference<byte[]> receivedRef) {
+    this.latch = latch;
+    this.receivedRef = receivedRef;
+  }
 
-    @Override
-    public KvChannel getChannel() {
-        return TestKvChannel.TEST_EVENTS;
-    }
+  @Override
+  public KvChannel getChannel() {
+    return TestKvChannel.TEST_EVENTS;
+  }
 
-    @Override
-    public Class<byte[]> getPayloadType() {
-        return byte[].class;
-    }
+  @Override
+  public Class<byte[]> getPayloadType() {
+    return byte[].class;
+  }
 
-    @Override
-    public void handle(String channel, String[] params, byte[] message) {
-        if (receivedRef != null) {
-            receivedRef.set(message);
-        }
-        if (latch != null) {
-            latch.countDown();
-        }
+  @Override
+  public void handle(String channel, String[] params, byte[] message) {
+    if (receivedRef != null) {
+      receivedRef.set(message);
     }
+    if (latch != null) {
+      latch.countDown();
+    }
+  }
 }

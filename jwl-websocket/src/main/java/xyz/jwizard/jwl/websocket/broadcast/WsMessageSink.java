@@ -18,7 +18,7 @@
 package xyz.jwizard.jwl.websocket.broadcast;
 
 public interface WsMessageSink {
-    void payload(WsTopic topic, byte[] payload);
+  void payload(WsTopic topic, byte[] payload);
 
-    void payloadAll(byte[] payload);
+  void payloadAll(byte[] payload);
 }

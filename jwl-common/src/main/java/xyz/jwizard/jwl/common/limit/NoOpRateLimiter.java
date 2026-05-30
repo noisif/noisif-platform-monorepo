@@ -18,11 +18,11 @@
 package xyz.jwizard.jwl.common.limit;
 
 public class NoOpRateLimiter implements RateLimiter {
-    @Override
-    public boolean tryAcquire(String key) {
-        return true;
-    }
+  @Override
+  public boolean tryAcquire(String key) {
+    return true;
+  }
 
-    @Override
-    public void reset(String key) {}
+  @Override
+  public void reset(String key) {}
 }

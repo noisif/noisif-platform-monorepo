@@ -22,5 +22,5 @@ import xyz.jwizard.jwl.websocket.registry.WsSessionRegistry;
 
 @FunctionalInterface
 public interface LocalSessionDispatcherFactory {
-    LocalSessionDispatcher create(WsSessionRegistry registry);
+  LocalSessionDispatcher create(WsSessionRegistry registry);
 }

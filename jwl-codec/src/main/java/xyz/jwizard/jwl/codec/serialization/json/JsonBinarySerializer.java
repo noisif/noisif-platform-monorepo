@@ -21,33 +21,33 @@ import xyz.jwizard.jwl.codec.DataType;
 import xyz.jwizard.jwl.codec.EncodedPayloadVisitor;
 
 public class JsonBinarySerializer extends TypedJsonSerializer<byte[]> {
-    private final JsonSerializer jsonSerializer;
+  private final JsonSerializer jsonSerializer;
 
-    private JsonBinarySerializer(JsonSerializer jsonSerializer) {
-        this.jsonSerializer = jsonSerializer;
-    }
+  private JsonBinarySerializer(JsonSerializer jsonSerializer) {
+    this.jsonSerializer = jsonSerializer;
+  }
 
-    public static JsonBinarySerializer create(JsonSerializer jsonSerializer) {
-        return new JsonBinarySerializer(jsonSerializer);
-    }
+  public static JsonBinarySerializer create(JsonSerializer jsonSerializer) {
+    return new JsonBinarySerializer(jsonSerializer);
+  }
 
-    @Override
-    public byte[] serializePayload(Object payload) {
-        return jsonSerializer.serializeToBytes(payload);
-    }
+  @Override
+  public byte[] serializePayload(Object payload) {
+    return jsonSerializer.serializeToBytes(payload);
+  }
 
-    @Override
-    public <T> T deserializePayload(byte[] payload, Class<T> type) {
-        return jsonSerializer.deserializeFromBytes(payload, type);
-    }
+  @Override
+  public <T> T deserializePayload(byte[] payload, Class<T> type) {
+    return jsonSerializer.deserializeFromBytes(payload, type);
+  }
 
-    @Override
-    public void serializeAndAccept(Object payload, EncodedPayloadVisitor visitor) {
-        visitor.accept(serializePayload(payload));
-    }
+  @Override
+  public void serializeAndAccept(Object payload, EncodedPayloadVisitor visitor) {
+    visitor.accept(serializePayload(payload));
+  }
 
-    @Override
-    public DataType getCodecDataType() {
-        return DataType.BINARY;
-    }
+  @Override
+  public DataType getCodecDataType() {
+    return DataType.BINARY;
+  }
 }

@@ -33,69 +33,67 @@ import xyz.jwizard.jwl.codec.serialization.TypedSerializerFormat;
 import java.util.function.Function;
 
 class TypedSerializerFormatTest {
-    @Test
-    @DisplayName("should properly combine base format and data type into full format string")
-    void shouldCombineFormatAndDataType() {
-        // given
-        final SerializerFormat base = StandardSerializerFormat.JSON;
-        final DataType type = DataType.TEXT;
-        // when
-        final TypedSerializerFormat format = TypedSerializerFormat.from(base, type);
-        // then
-        assertThat(format.getFormatName()).isEqualTo("json+text");
-        assertThat(format.toString()).isEqualTo("json+text");
-        assertThat(format.baseFormat()).isEqualTo(base);
-        assertThat(format.dataType()).isEqualTo(type);
-    }
+  @Test
+  @DisplayName("should properly combine base format and data type into full format string")
+  void shouldCombineFormatAndDataType() {
+    // given
+    final SerializerFormat base = StandardSerializerFormat.JSON;
+    final DataType type = DataType.TEXT;
+    // when
+    final TypedSerializerFormat format = TypedSerializerFormat.from(base, type);
+    // then
+    assertThat(format.getFormatName()).isEqualTo("json+text");
+    assertThat(format.toString()).isEqualTo("json+text");
+    assertThat(format.baseFormat()).isEqualTo(base);
+    assertThat(format.dataType()).isEqualTo(type);
+  }
 
-    @Test
-    @DisplayName("should throw exception on unsupported default text methods")
-    void shouldThrowOnDefaultInterfaceMethods() {
-        // given
-        EnvelopeSerializer<byte[]> defaultSerializer =
-                new EnvelopeSerializer<>() {
-                    @Override
-                    public SerializerFormat getBaseFormat() {
-                        return StandardSerializerFormat.PROTOBUF;
-                    }
+  @Test
+  @DisplayName("should throw exception on unsupported default text methods")
+  void shouldThrowOnDefaultInterfaceMethods() {
+    // given
+    EnvelopeSerializer<byte[]> defaultSerializer =
+        new EnvelopeSerializer<>() {
+          @Override
+          public SerializerFormat getBaseFormat() {
+            return StandardSerializerFormat.PROTOBUF;
+          }
 
-                    @Override
-                    public DataType getCodecDataType() {
-                        return DataType.BINARY;
-                    }
+          @Override
+          public DataType getCodecDataType() {
+            return DataType.BINARY;
+          }
 
-                    @Override
-                    public byte[] serializeForSession(OpCode opCode, Object payload) {
-                        return new byte[0];
-                    }
+          @Override
+          public byte[] serializeForSession(OpCode opCode, Object payload) {
+            return new byte[0];
+          }
 
-                    @Override
-                    public byte[] serializeEnvelopeAsBytes(OpCode opCode, Object payload) {
-                        return new byte[0];
-                    }
+          @Override
+          public byte[] serializeEnvelopeAsBytes(OpCode opCode, Object payload) {
+            return new byte[0];
+          }
 
-                    @Override
-                    public void serializeAndAcceptEnvelope(
-                            OpCode opCode, Object payload, EncodedPayloadVisitor visitor) {}
+          @Override
+          public void serializeAndAcceptEnvelope(
+              OpCode opCode, Object payload, EncodedPayloadVisitor visitor) {}
 
-                    @Override
-                    public void acceptRaw(byte[] rawPayload, EncodedPayloadVisitor visitor) {}
+          @Override
+          public void acceptRaw(byte[] rawPayload, EncodedPayloadVisitor visitor) {}
 
-                    @Override
-                    public MessageEnvelope<?> unwrap(
-                            byte[] payload, Function<Integer, Class<?>> typeResolver) {
-                        return null;
-                    }
-                };
-        // then
-        assertThatThrownBy(
-                        () ->
-                                defaultSerializer.serializeEnvelopeAsString(
-                                        TestOpCode.USER_DATA, "test"))
-                .isInstanceOf(UnsupportedDataTypeException.class)
-                .hasMessageContaining("Text frames are not supported by protobuf+binary");
-        assertThatThrownBy(() -> defaultSerializer.unwrap("{}", id -> String.class))
-                .isInstanceOf(UnsupportedDataTypeException.class)
-                .hasMessageContaining("Text frames are not supported by protobuf+binary");
-    }
+          @Override
+          public MessageEnvelope<?> unwrap(
+              byte[] payload, Function<Integer, Class<?>> typeResolver) {
+            return null;
+          }
+        };
+    // then
+    assertThatThrownBy(
+            () -> defaultSerializer.serializeEnvelopeAsString(TestOpCode.USER_DATA, "test"))
+        .isInstanceOf(UnsupportedDataTypeException.class)
+        .hasMessageContaining("Text frames are not supported by protobuf+binary");
+    assertThatThrownBy(() -> defaultSerializer.unwrap("{}", id -> String.class))
+        .isInstanceOf(UnsupportedDataTypeException.class)
+        .hasMessageContaining("Text frames are not supported by protobuf+binary");
+  }
 }

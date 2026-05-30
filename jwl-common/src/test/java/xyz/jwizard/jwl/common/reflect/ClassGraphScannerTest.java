@@ -29,66 +29,65 @@ interface BaseTestInterface {}
 interface SubInterface extends BaseTestInterface {}
 
 class ClassGraphScannerTest {
-    @Test
-    @DisplayName("should find only classes annotated with @TestComponent")
-    void shouldFindAnnotatedClasses() {
-        // given
-        final String currentPackage = this.getClass().getPackageName();
-        // when
-        try (final ClassGraphScanner scanner = new ClassGraphScanner(currentPackage)) {
-            final Set<Class<?>> foundClasses = scanner.getTypesAnnotatedWith(TestComponent.class);
-            // then
-            assertThat(foundClasses)
-                    .hasSizeGreaterThanOrEqualTo(2)
-                    .contains(ValidComponentOne.class, ValidComponentTwo.class)
-                    .doesNotContain(IgnoredComponent.class);
-        }
+  @Test
+  @DisplayName("should find only classes annotated with @TestComponent")
+  void shouldFindAnnotatedClasses() {
+    // given
+    final String currentPackage = this.getClass().getPackageName();
+    // when
+    try (final ClassGraphScanner scanner = new ClassGraphScanner(currentPackage)) {
+      final Set<Class<?>> foundClasses = scanner.getTypesAnnotatedWith(TestComponent.class);
+      // then
+      assertThat(foundClasses)
+          .hasSizeGreaterThanOrEqualTo(2)
+          .contains(ValidComponentOne.class, ValidComponentTwo.class)
+          .doesNotContain(IgnoredComponent.class);
     }
+  }
 
-    @Test
-    @DisplayName("should return an empty set when the package does not exist")
-    void shouldReturnEmptySetForNonExistentPackage() {
-        // given
-        final String nonExistentPackage = "xyz.jwizard.jwl.this.package.does.not.exist";
-        // when
-        try (final ClassGraphScanner scanner = new ClassGraphScanner(nonExistentPackage)) {
-            final Set<Class<?>> foundClasses = scanner.getTypesAnnotatedWith(TestComponent.class);
-            // then
-            assertThat(foundClasses).isEmpty();
-        }
+  @Test
+  @DisplayName("should return an empty set when the package does not exist")
+  void shouldReturnEmptySetForNonExistentPackage() {
+    // given
+    final String nonExistentPackage = "xyz.jwizard.jwl.this.package.does.not.exist";
+    // when
+    try (final ClassGraphScanner scanner = new ClassGraphScanner(nonExistentPackage)) {
+      final Set<Class<?>> foundClasses = scanner.getTypesAnnotatedWith(TestComponent.class);
+      // then
+      assertThat(foundClasses).isEmpty();
     }
+  }
 
-    @Test
-    @DisplayName("should find all subtypes (including abstract and interfaces)")
-    void shouldFindAllSubtypes() {
-        // given
-        final String currentPackage = this.getClass().getPackageName();
-        // when
-        try (final ClassGraphScanner scanner = new ClassGraphScanner(currentPackage)) {
-            final Set<Class<? extends BaseTestInterface>> foundClasses =
-                    scanner.getSubtypesOf(BaseTestInterface.class);
-            // then
-            assertThat(foundClasses)
-                    .contains(AbstractTestImpl.class, ConcreteTestImpl.class, SubInterface.class);
-        }
+  @Test
+  @DisplayName("should find all subtypes (including abstract and interfaces)")
+  void shouldFindAllSubtypes() {
+    // given
+    final String currentPackage = this.getClass().getPackageName();
+    // when
+    try (final ClassGraphScanner scanner = new ClassGraphScanner(currentPackage)) {
+      final Set<Class<? extends BaseTestInterface>> foundClasses =
+          scanner.getSubtypesOf(BaseTestInterface.class);
+      // then
+      assertThat(foundClasses)
+          .contains(AbstractTestImpl.class, ConcreteTestImpl.class, SubInterface.class);
     }
+  }
 
-    @Test
-    @DisplayName("should find only instantiable (concrete) subtypes")
-    void shouldFindOnlyInstantiableSubtypes() {
-        // given
-        final String currentPackage = this.getClass().getPackageName();
-        // when
-        try (final ClassGraphScanner scanner = new ClassGraphScanner(currentPackage)) {
-            final Set<Class<? extends BaseTestInterface>> foundClasses =
-                    scanner.getInstantiableSubtypesOf(BaseTestInterface.class);
-            // then
-            assertThat(foundClasses)
-                    .containsExactly(ConcreteTestImpl.class)
-                    .doesNotContain(
-                            AbstractTestImpl.class, SubInterface.class, BaseTestInterface.class);
-        }
+  @Test
+  @DisplayName("should find only instantiable (concrete) subtypes")
+  void shouldFindOnlyInstantiableSubtypes() {
+    // given
+    final String currentPackage = this.getClass().getPackageName();
+    // when
+    try (final ClassGraphScanner scanner = new ClassGraphScanner(currentPackage)) {
+      final Set<Class<? extends BaseTestInterface>> foundClasses =
+          scanner.getInstantiableSubtypesOf(BaseTestInterface.class);
+      // then
+      assertThat(foundClasses)
+          .containsExactly(ConcreteTestImpl.class)
+          .doesNotContain(AbstractTestImpl.class, SubInterface.class, BaseTestInterface.class);
     }
+  }
 }
 
 @TestComponent

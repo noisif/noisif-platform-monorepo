@@ -20,12 +20,12 @@ package xyz.jwizard.jwl.netclient.rest.group;
 import xyz.jwizard.jwl.netclient.group.ClientGroup;
 
 public enum TestGroup implements ClientGroup {
-    LIMITED_GROUP,
-    OVERRIDE_GROUP,
-    ;
+  LIMITED_GROUP,
+  OVERRIDE_GROUP,
+  ;
 
-    @Override
-    public String getClientGroupName() {
-        return name();
-    }
+  @Override
+  public String getClientGroupName() {
+    return name();
+  }
 }

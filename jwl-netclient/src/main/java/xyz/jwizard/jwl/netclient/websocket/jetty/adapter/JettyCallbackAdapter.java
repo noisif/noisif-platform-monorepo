@@ -22,19 +22,19 @@ import org.eclipse.jetty.websocket.api.Callback;
 import xyz.jwizard.jwl.common.util.concurrent.IoCallback;
 
 class JettyCallbackAdapter implements Callback {
-    private final IoCallback domainCallback;
+  private final IoCallback domainCallback;
 
-    JettyCallbackAdapter(IoCallback domainCallback) {
-        this.domainCallback = domainCallback;
-    }
+  JettyCallbackAdapter(IoCallback domainCallback) {
+    this.domainCallback = domainCallback;
+  }
 
-    @Override
-    public void succeed() {
-        domainCallback.onSuccess();
-    }
+  @Override
+  public void succeed() {
+    domainCallback.onSuccess();
+  }
 
-    @Override
-    public void fail(Throwable cause) {
-        domainCallback.onFailure(cause);
-    }
+  @Override
+  public void fail(Throwable cause) {
+    domainCallback.onFailure(cause);
+  }
 }

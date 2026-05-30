@@ -29,30 +29,30 @@ import xyz.jwizard.jwl.netclient.rest.spec.GenericRequestSpec;
 import java.util.Map;
 
 class JettyBodyStrategyTest {
-    private final JettyBodyStrategy rawStrategy = new JettyRawBodyStrategy();
-    private final JettyBodyStrategy formStrategy = new JettyFormBodyStrategy();
+  private final JettyBodyStrategy rawStrategy = new JettyRawBodyStrategy();
+  private final JettyBodyStrategy formStrategy = new JettyFormBodyStrategy();
 
-    @Test
-    @DisplayName("raw strategy should support requests with raw body and no form params")
-    void rawStrategyShouldSupportRawBody() {
-        // given
-        final GenericRequestSpec spec = mock(GenericRequestSpec.class);
-        when(spec.getBody()).thenReturn("Some Raw JSON");
-        when(spec.getFormParams()).thenReturn(null);
-        // when & then
-        assertThat(rawStrategy.supports(spec)).isTrue();
-        assertThat(formStrategy.supports(spec)).isFalse();
-    }
+  @Test
+  @DisplayName("raw strategy should support requests with raw body and no form params")
+  void rawStrategyShouldSupportRawBody() {
+    // given
+    final GenericRequestSpec spec = mock(GenericRequestSpec.class);
+    when(spec.getBody()).thenReturn("Some Raw JSON");
+    when(spec.getFormParams()).thenReturn(null);
+    // when & then
+    assertThat(rawStrategy.supports(spec)).isTrue();
+    assertThat(formStrategy.supports(spec)).isFalse();
+  }
 
-    @Test
-    @DisplayName("form strategy should support requests with form params")
-    void formStrategyShouldSupportFormParams() {
-        // given
-        final GenericRequestSpec spec = mock(GenericRequestSpec.class);
-        when(spec.getBody()).thenReturn(null);
-        when(spec.getFormParams()).thenReturn(Map.of("grant_type", "client_credentials"));
-        // when & then
-        assertThat(formStrategy.supports(spec)).isTrue();
-        assertThat(rawStrategy.supports(spec)).isFalse();
-    }
+  @Test
+  @DisplayName("form strategy should support requests with form params")
+  void formStrategyShouldSupportFormParams() {
+    // given
+    final GenericRequestSpec spec = mock(GenericRequestSpec.class);
+    when(spec.getBody()).thenReturn(null);
+    when(spec.getFormParams()).thenReturn(Map.of("grant_type", "client_credentials"));
+    // when & then
+    assertThat(formStrategy.supports(spec)).isTrue();
+    assertThat(rawStrategy.supports(spec)).isFalse();
+  }
 }

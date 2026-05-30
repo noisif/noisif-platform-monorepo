@@ -26,56 +26,52 @@ import xyz.jwizard.jwl.netclient.websocket.group.WsClientGroupConfig;
 import xyz.jwizard.jwl.netclient.websocket.heartbeat.WsHeartbeatManager;
 
 class ManagedSessionLifecycleListener implements NetworkSessionLifecycleListener<WsClientSession> {
-    private static final Logger LOG =
-            LoggerFactory.getLogger(ManagedSessionLifecycleListener.class);
+  private static final Logger LOG = LoggerFactory.getLogger(ManagedSessionLifecycleListener.class);
 
-    private final ClientGroup clientGroup;
-    private final WsClientGroupConfig config;
-    private final WsHeartbeatManager heartbeatManager;
-    private final WsReconnectManager reconnectManager;
-    private final Runnable reconnectTrigger;
+  private final ClientGroup clientGroup;
+  private final WsClientGroupConfig config;
+  private final WsHeartbeatManager heartbeatManager;
+  private final WsReconnectManager reconnectManager;
+  private final Runnable reconnectTrigger;
 
-    ManagedSessionLifecycleListener(
-            ClientGroup clientGroup,
-            WsClientGroupConfig config,
-            WsHeartbeatManager heartbeatManager,
-            WsReconnectManager reconnectManager,
-            Runnable reconnectTrigger) {
-        this.clientGroup = clientGroup;
-        this.config = config;
-        this.heartbeatManager = heartbeatManager;
-        this.reconnectManager = reconnectManager;
-        this.reconnectTrigger = reconnectTrigger;
-    }
+  ManagedSessionLifecycleListener(
+      ClientGroup clientGroup,
+      WsClientGroupConfig config,
+      WsHeartbeatManager heartbeatManager,
+      WsReconnectManager reconnectManager,
+      Runnable reconnectTrigger) {
+    this.clientGroup = clientGroup;
+    this.config = config;
+    this.heartbeatManager = heartbeatManager;
+    this.reconnectManager = reconnectManager;
+    this.reconnectTrigger = reconnectTrigger;
+  }
 
-    @Override
-    public void onConnect(WsClientSession session) {
-        LOG.info(
-                "WS connected for group '{}'. session id: {}",
-                clientGroup.getClientGroupName(),
-                session.getSessionId());
-        heartbeatManager.start(session, config.getHeartbeatConfig());
-        config.getLifecycleListener().onConnect(session);
-    }
+  @Override
+  public void onConnect(WsClientSession session) {
+    LOG.info(
+        "WS connected for group '{}'. session id: {}",
+        clientGroup.getClientGroupName(),
+        session.getSessionId());
+    heartbeatManager.start(session, config.getHeartbeatConfig());
+    config.getLifecycleListener().onConnect(session);
+  }
 
-    @Override
-    public void onClose(WsClientSession session, int statusCode, String reason) {
-        LOG.info(
-                "WS closed for group '{}' [code: {}], session id: {}",
-                clientGroup.getClientGroupName(),
-                statusCode,
-                session.getSessionId());
-        heartbeatManager.stop(session.getSessionId());
-        config.getLifecycleListener().onClose(session, statusCode, reason);
-        reconnectManager.handleDisconnect(clientGroup, config, statusCode, reconnectTrigger);
-    }
+  @Override
+  public void onClose(WsClientSession session, int statusCode, String reason) {
+    LOG.info(
+        "WS closed for group '{}' [code: {}], session id: {}",
+        clientGroup.getClientGroupName(),
+        statusCode,
+        session.getSessionId());
+    heartbeatManager.stop(session.getSessionId());
+    config.getLifecycleListener().onClose(session, statusCode, reason);
+    reconnectManager.handleDisconnect(clientGroup, config, statusCode, reconnectTrigger);
+  }
 
-    @Override
-    public void onError(WsClientSession session, Throwable cause) {
-        LOG.warn(
-                "WS error for group '{}': {}",
-                clientGroup.getClientGroupName(),
-                cause.getMessage());
-        config.getLifecycleListener().onError(session, cause);
-    }
+  @Override
+  public void onError(WsClientSession session, Throwable cause) {
+    LOG.warn("WS error for group '{}': {}", clientGroup.getClientGroupName(), cause.getMessage());
+    config.getLifecycleListener().onError(session, cause);
+  }
 }

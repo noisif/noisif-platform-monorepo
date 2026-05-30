@@ -18,12 +18,12 @@
 package xyz.jwizard.jwl.net.http;
 
 public enum HttpMethod {
-    GET,
-    POST,
-    PUT,
-    DELETE,
-    PATCH,
-    OPTIONS,
-    TRACE,
-    HEAD,
+  GET,
+  POST,
+  PUT,
+  DELETE,
+  PATCH,
+  OPTIONS,
+  TRACE,
+  HEAD,
 }

@@ -26,29 +26,29 @@ import java.util.List;
 import java.util.Set;
 
 public class CompositeWsClientAuthenticator implements WsClientAuthenticator {
-    private static final Logger LOG = LoggerFactory.getLogger(CompositeWsClientAuthenticator.class);
+  private static final Logger LOG = LoggerFactory.getLogger(CompositeWsClientAuthenticator.class);
 
-    private final List<WsClientAuthenticator> authenticators;
+  private final List<WsClientAuthenticator> authenticators;
 
-    private CompositeWsClientAuthenticator(List<WsClientAuthenticator> authenticators) {
-        this.authenticators = authenticators;
+  private CompositeWsClientAuthenticator(List<WsClientAuthenticator> authenticators) {
+    this.authenticators = authenticators;
+  }
+
+  public static WsClientAuthenticator load(Set<WsClientAuthenticator> authenticators) {
+    return new CompositeWsClientAuthenticator(
+        authenticators.stream().sorted(WsClientAuthenticator.COMPARATOR).toList());
+  }
+
+  @Override
+  public void applyAuthentication(WsClientUpgradeRequest req) {
+    if (LOG.isTraceEnabled()) {
+      LOG.trace(
+          "Starting composite WS client authentication, evaluating {} authenticators",
+          authenticators.size());
     }
-
-    public static WsClientAuthenticator load(Set<WsClientAuthenticator> authenticators) {
-        return new CompositeWsClientAuthenticator(
-                authenticators.stream().sorted(WsClientAuthenticator.COMPARATOR).toList());
+    for (final WsClientAuthenticator authenticator : authenticators) {
+      authenticator.applyAuthentication(req);
+      LOG.debug("Authentication apply via: {}", authenticator.getClass().getSimpleName());
     }
-
-    @Override
-    public void applyAuthentication(WsClientUpgradeRequest req) {
-        if (LOG.isTraceEnabled()) {
-            LOG.trace(
-                    "Starting composite WS client authentication, evaluating {} authenticators",
-                    authenticators.size());
-        }
-        for (final WsClientAuthenticator authenticator : authenticators) {
-            authenticator.applyAuthentication(req);
-            LOG.debug("Authentication apply via: {}", authenticator.getClass().getSimpleName());
-        }
-    }
+  }
 }

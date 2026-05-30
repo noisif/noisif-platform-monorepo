@@ -27,40 +27,40 @@ import xyz.jwizard.jwl.codec.serialization.SerializerFormat;
 import java.util.function.Function;
 
 public class WsEnvelopeSessionCodec implements WsSessionCodec {
-    private final EnvelopeSerializer<?> serializer;
+  private final EnvelopeSerializer<?> serializer;
 
-    public WsEnvelopeSessionCodec(EnvelopeSerializer<?> serializer) {
-        this.serializer = serializer;
-    }
+  public WsEnvelopeSessionCodec(EnvelopeSerializer<?> serializer) {
+    this.serializer = serializer;
+  }
 
-    @Override
-    public WsSessionCodecMode getCurrentMode() {
-        return WsSessionCodecMode.ENVELOPE_MESSAGE;
-    }
+  @Override
+  public WsSessionCodecMode getCurrentMode() {
+    return WsSessionCodecMode.ENVELOPE_MESSAGE;
+  }
 
-    @Override
-    public void serializeAndAcceptEnvelope(
-            OpCode opCode, Object data, EncodedPayloadVisitor visitor) {
-        serializer.serializeAndAcceptEnvelope(opCode, data, visitor);
-    }
+  @Override
+  public void serializeAndAcceptEnvelope(
+      OpCode opCode, Object data, EncodedPayloadVisitor visitor) {
+    serializer.serializeAndAcceptEnvelope(opCode, data, visitor);
+  }
 
-    @Override
-    public SerializerFormat getBaseFormat() {
-        return serializer.getBaseFormat();
-    }
+  @Override
+  public SerializerFormat getBaseFormat() {
+    return serializer.getBaseFormat();
+  }
 
-    @Override
-    public MessageEnvelope<?> unwrap(byte[] payload, Function<Integer, Class<?>> typeResolver) {
-        return serializer.unwrap(payload, typeResolver);
-    }
+  @Override
+  public MessageEnvelope<?> unwrap(byte[] payload, Function<Integer, Class<?>> typeResolver) {
+    return serializer.unwrap(payload, typeResolver);
+  }
 
-    @Override
-    public MessageEnvelope<?> unwrap(String payload, Function<Integer, Class<?>> typeResolver) {
-        return serializer.unwrap(payload, typeResolver);
-    }
+  @Override
+  public MessageEnvelope<?> unwrap(String payload, Function<Integer, Class<?>> typeResolver) {
+    return serializer.unwrap(payload, typeResolver);
+  }
 
-    @Override
-    public DataType getCodecDataType() {
-        return serializer.getCodecDataType();
-    }
+  @Override
+  public DataType getCodecDataType() {
+    return serializer.getCodecDataType();
+  }
 }

@@ -18,5 +18,5 @@
 package xyz.jwizard.jwl.common;
 
 public interface Identifiable<T> {
-    T getCode();
+  T getCode();
 }

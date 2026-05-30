@@ -32,25 +32,25 @@ import java.util.Map;
 
 @LoadedViaReflection
 public class JettyFormBodyStrategy implements JettyBodyStrategy {
-    private static final Logger LOG = LoggerFactory.getLogger(JettyFormBodyStrategy.class);
+  private static final Logger LOG = LoggerFactory.getLogger(JettyFormBodyStrategy.class);
 
-    @Override
-    public boolean supports(GenericRequestSpec spec) {
-        return spec.getFormParams() != null && !spec.getFormParams().isEmpty();
-    }
+  @Override
+  public boolean supports(GenericRequestSpec spec) {
+    return spec.getFormParams() != null && !spec.getFormParams().isEmpty();
+  }
 
-    @Override
-    public Request.Content buildContent(
-            GenericRequestSpec spec, MessageSerializer serializer, HeaderConsumer headerConsumer) {
-        LOG.trace("Building form-urlencoded body for request: {}", spec.getUrl());
-        if (spec.getBody() != null) {
-            throw new IllegalStateException(
-                    "Cannot use both form parameters and raw body in " + "the same request");
-        }
-        final Fields fields = new Fields();
-        for (final Map.Entry<String, String> entry : spec.getFormParams().entrySet()) {
-            fields.put(entry.getKey(), entry.getValue());
-        }
-        return new FormRequestContent(fields);
+  @Override
+  public Request.Content buildContent(
+      GenericRequestSpec spec, MessageSerializer serializer, HeaderConsumer headerConsumer) {
+    LOG.trace("Building form-urlencoded body for request: {}", spec.getUrl());
+    if (spec.getBody() != null) {
+      throw new IllegalStateException(
+          "Cannot use both form parameters and raw body in " + "the same request");
     }
+    final Fields fields = new Fields();
+    for (final Map.Entry<String, String> entry : spec.getFormParams().entrySet()) {
+      fields.put(entry.getKey(), entry.getValue());
+    }
+    return new FormRequestContent(fields);
+  }
 }

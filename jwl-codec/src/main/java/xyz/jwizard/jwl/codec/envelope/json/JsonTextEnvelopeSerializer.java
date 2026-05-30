@@ -25,32 +25,32 @@ import xyz.jwizard.jwl.codec.serialization.json.JsonSerializer;
 import java.nio.charset.StandardCharsets;
 
 public class JsonTextEnvelopeSerializer extends JsonEnvelopeSerializer<String> {
-    private JsonTextEnvelopeSerializer(JsonSerializer serializer) {
-        super(serializer);
-    }
+  private JsonTextEnvelopeSerializer(JsonSerializer serializer) {
+    super(serializer);
+  }
 
-    public static JsonTextEnvelopeSerializer createDefault(JsonSerializer serializer) {
-        return new JsonTextEnvelopeSerializer(serializer);
-    }
+  public static JsonTextEnvelopeSerializer createDefault(JsonSerializer serializer) {
+    return new JsonTextEnvelopeSerializer(serializer);
+  }
 
-    @Override
-    public DataType getCodecDataType() {
-        return DataType.TEXT;
-    }
+  @Override
+  public DataType getCodecDataType() {
+    return DataType.TEXT;
+  }
 
-    @Override
-    public String serializeForSession(OpCode opCode, Object payload) {
-        return serializeEnvelopeAsString(opCode, payload);
-    }
+  @Override
+  public String serializeForSession(OpCode opCode, Object payload) {
+    return serializeEnvelopeAsString(opCode, payload);
+  }
 
-    @Override
-    public void serializeAndAcceptEnvelope(
-            OpCode opCode, Object payload, EncodedPayloadVisitor visitor) {
-        visitor.accept(serializeForSession(opCode, payload));
-    }
+  @Override
+  public void serializeAndAcceptEnvelope(
+      OpCode opCode, Object payload, EncodedPayloadVisitor visitor) {
+    visitor.accept(serializeForSession(opCode, payload));
+  }
 
-    @Override
-    public void acceptRaw(byte[] rawPayload, EncodedPayloadVisitor visitor) {
-        visitor.accept(new String(rawPayload, StandardCharsets.UTF_8));
-    }
+  @Override
+  public void acceptRaw(byte[] rawPayload, EncodedPayloadVisitor visitor) {
+    visitor.accept(new String(rawPayload, StandardCharsets.UTF_8));
+  }
 }

@@ -23,7 +23,7 @@ import xyz.jwizard.jwl.netclient.websocket.WsClientUpgradeRequest;
 import xyz.jwizard.jwl.netclient.websocket.group.codec.WsSessionCodec;
 
 public interface WsBusConfig {
-    RawBusListener<WsClientSession> getBusListener();
+  RawBusListener<WsClientSession> getBusListener();
 
-    WsSessionCodec configureProtocol(WsClientUpgradeRequest req);
+  WsSessionCodec configureProtocol(WsClientUpgradeRequest req);
 }

@@ -20,13 +20,13 @@ package xyz.jwizard.jws.ingestor;
 import xyz.jwizard.jwl.common.ModuleIdentityTest;
 
 class JwsIngestorIdentityTest extends ModuleIdentityTest {
-    @Override
-    protected String getModuleName() {
-        return "ingestor";
-    }
+  @Override
+  protected String getModuleName() {
+    return "ingestor";
+  }
 
-    @Override
-    protected String getPackageSuffix() {
-        return "jws";
-    }
+  @Override
+  protected String getPackageSuffix() {
+    return "jws";
+  }
 }

@@ -29,49 +29,49 @@ import xyz.jwizard.jwl.websocket.WsSession;
 import java.nio.ByteBuffer;
 
 public class JettyWsSessionAdapter extends GenericWsSessionAdapter implements WsSession {
-    private final Session session;
-    private final EnvelopeSerializer<?> envelopeSerializer;
+  private final Session session;
+  private final EnvelopeSerializer<?> envelopeSerializer;
 
-    public JettyWsSessionAdapter(
-            Session session, String principalId, EnvelopeSerializer<?> envelopeSerializer) {
-        super(principalId, envelopeSerializer);
-        this.session = session;
-        this.envelopeSerializer = envelopeSerializer;
-    }
+  public JettyWsSessionAdapter(
+      Session session, String principalId, EnvelopeSerializer<?> envelopeSerializer) {
+    super(principalId, envelopeSerializer);
+    this.session = session;
+    this.envelopeSerializer = envelopeSerializer;
+  }
 
-    @Override
-    protected void onSend(String message) {
-        ConcurrentUtil.await(cb -> session.sendText(message, new JettyCallbackAdapter(cb)));
-    }
+  @Override
+  protected void onSend(String message) {
+    ConcurrentUtil.await(cb -> session.sendText(message, new JettyCallbackAdapter(cb)));
+  }
 
-    @Override
-    protected void onSend(byte[] message) {
-        ConcurrentUtil.await(
-                cb -> session.sendBinary(ByteBuffer.wrap(message), new JettyCallbackAdapter(cb)));
-    }
+  @Override
+  protected void onSend(byte[] message) {
+    ConcurrentUtil.await(
+        cb -> session.sendBinary(ByteBuffer.wrap(message), new JettyCallbackAdapter(cb)));
+  }
 
-    @Override
-    public void sendAdapted(byte[] payload) {
-        if (isClosed()) {
-            log.debug("Skipping sendAdapted - session is closed, sessionId: {}", sessionId);
-            return;
-        }
-        try {
-            envelopeSerializer.acceptRaw(payload, this);
-        } catch (UnsupportedDataTypeException | MessageSerializerException ex) {
-            log.error("Message error for RAW adaptation: {}", ex.getMessage());
-        } catch (Exception ex) {
-            log.error("Unexpected error during RAW adaptation, sessionId: {}", sessionId, ex);
-        }
+  @Override
+  public void sendAdapted(byte[] payload) {
+    if (isClosed()) {
+      log.debug("Skipping sendAdapted - session is closed, sessionId: {}", sessionId);
+      return;
     }
+    try {
+      envelopeSerializer.acceptRaw(payload, this);
+    } catch (UnsupportedDataTypeException | MessageSerializerException ex) {
+      log.error("Message error for RAW adaptation: {}", ex.getMessage());
+    } catch (Exception ex) {
+      log.error("Unexpected error during RAW adaptation, sessionId: {}", sessionId, ex);
+    }
+  }
 
-    @Override
-    protected void onClose(int code, String reason) {
-        ConcurrentUtil.await(cb -> session.close(code, reason, new JettyCallbackAdapter(cb)));
-    }
+  @Override
+  protected void onClose(int code, String reason) {
+    ConcurrentUtil.await(cb -> session.close(code, reason, new JettyCallbackAdapter(cb)));
+  }
 
-    @Override
-    public boolean isClosed() {
-        return !session.isOpen();
-    }
+  @Override
+  public boolean isClosed() {
+    return !session.isOpen();
+  }
 }

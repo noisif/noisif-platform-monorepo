@@ -20,12 +20,12 @@ package xyz.jwizard.jwl.common.util;
 import xyz.jwizard.jwl.common.bootstrap.ForbiddenInstantiationException;
 
 public class CastUtil {
-    private CastUtil() {
-        throw new ForbiddenInstantiationException(CastUtil.class);
-    }
+  private CastUtil() {
+    throw new ForbiddenInstantiationException(CastUtil.class);
+  }
 
-    @SuppressWarnings({"TypeParameterUnusedInFormals", "unchecked"})
-    public static <T> T unsafeCast(Object obj) {
-        return (T) obj;
-    }
+  @SuppressWarnings({"TypeParameterUnusedInFormals", "unchecked"})
+  public static <T> T unsafeCast(Object obj) {
+    return (T) obj;
+  }
 }

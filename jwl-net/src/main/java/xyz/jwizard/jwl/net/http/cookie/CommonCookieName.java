@@ -18,17 +18,17 @@
 package xyz.jwizard.jwl.net.http.cookie;
 
 public enum CommonCookieName implements CookieName {
-    SID("SESSION_ID"),
-    ;
+  SID("SESSION_ID"),
+  ;
 
-    private final String code;
+  private final String code;
 
-    CommonCookieName(String code) {
-        this.code = code;
-    }
+  CommonCookieName(String code) {
+    this.code = code;
+  }
 
-    @Override
-    public String getCode() {
-        return code;
-    }
+  @Override
+  public String getCode() {
+    return code;
+  }
 }

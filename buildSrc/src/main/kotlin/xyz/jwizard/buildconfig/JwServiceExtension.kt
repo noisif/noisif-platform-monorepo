@@ -22,10 +22,10 @@ import org.gradle.api.provider.Property
 import org.gradle.kotlin.dsl.configure
 
 interface JwServiceExtension {
-    val packageSuffix: Property<String>
-    val mainClass: Property<String>
+  val packageSuffix: Property<String>
+  val mainClass: Property<String>
 }
 
 fun Project.jwService(action: JwServiceExtension.() -> Unit) {
-    configure<JwServiceExtension>(action)
+  configure<JwServiceExtension>(action)
 }

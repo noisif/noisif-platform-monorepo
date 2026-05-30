@@ -20,13 +20,13 @@ package xyz.jwizard.jwl.net.envelope;
 import xyz.jwizard.jwl.codec.envelope.OpCode;
 
 public interface EnvelopeAction<C extends EnvelopeSession, P> {
-    void handle(C channel, P data);
+  void handle(C channel, P data);
 
-    OpCode opCode();
+  OpCode opCode();
 
-    Class<P> payloadClass();
+  Class<P> payloadClass();
 
-    default ActionGroup group() {
-        return ActionGroup.GLOBAL;
-    }
+  default ActionGroup group() {
+    return ActionGroup.GLOBAL;
+  }
 }

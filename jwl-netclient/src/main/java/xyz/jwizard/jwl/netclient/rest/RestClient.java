@@ -21,15 +21,15 @@ import xyz.jwizard.jwl.net.http.HttpMethod;
 import xyz.jwizard.jwl.netclient.rest.spec.RequestSpec;
 
 public interface RestClient {
-    RequestSpec get(String uri);
+  RequestSpec get(String uri);
 
-    RequestSpec post(String uri);
+  RequestSpec post(String uri);
 
-    RequestSpec put(String uri);
+  RequestSpec put(String uri);
 
-    RequestSpec patch(String uri);
+  RequestSpec patch(String uri);
 
-    RequestSpec delete(String uri);
+  RequestSpec delete(String uri);
 
-    RequestSpec request(HttpMethod method, String uri);
+  RequestSpec request(HttpMethod method, String uri);
 }

@@ -26,19 +26,19 @@ import jakarta.inject.Singleton;
 
 @Singleton
 public class FirstPriorityFilter implements HttpFilter {
-    @Override
-    public boolean supports(Route route) {
-        return route.path().equals("/api/public");
-    }
+  @Override
+  public boolean supports(Route route) {
+    return route.path().equals("/api/public");
+  }
 
-    @Override
-    public boolean preHandle(HttpRequest req, HttpResponse res) {
-        res.setHeader(TestHttpHeaderName.X_FILTER_ORDER, "First");
-        return true;
-    }
+  @Override
+  public boolean preHandle(HttpRequest req, HttpResponse res) {
+    res.setHeader(TestHttpHeaderName.X_FILTER_ORDER, "First");
+    return true;
+  }
 
-    @Override
-    public int order() {
-        return 100;
-    }
+  @Override
+  public int order() {
+    return 100;
+  }
 }

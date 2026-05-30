@@ -23,15 +23,15 @@ import java.lang.reflect.Array;
 import java.util.Collection;
 
 public class ArrayUtil {
-    private ArrayUtil() {
-        throw new ForbiddenInstantiationException(ArrayUtil.class);
-    }
+  private ArrayUtil() {
+    throw new ForbiddenInstantiationException(ArrayUtil.class);
+  }
 
-    public static <T> T[] toArray(Collection<T> collection, Class<T> clazz) {
-        if (collection == null) {
-            return CastUtil.unsafeCast(Array.newInstance(clazz, 0));
-        }
-        final T[] array = CastUtil.unsafeCast(Array.newInstance(clazz, collection.size()));
-        return collection.toArray(array);
+  public static <T> T[] toArray(Collection<T> collection, Class<T> clazz) {
+    if (collection == null) {
+      return CastUtil.unsafeCast(Array.newInstance(clazz, 0));
     }
+    final T[] array = CastUtil.unsafeCast(Array.newInstance(clazz, collection.size()));
+    return collection.toArray(array);
+  }
 }

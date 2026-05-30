@@ -23,5 +23,5 @@ import xyz.jwizard.jwl.websocket.WsSession;
 import java.util.Collection;
 
 public interface WsSessionRegistry extends RegistryTracker<WsSession>, WsSubscriptionRegistry {
-    Collection<WsSession> getUnsafeSubscribers(String topic);
+  Collection<WsSession> getUnsafeSubscribers(String topic);
 }

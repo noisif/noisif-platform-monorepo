@@ -22,8 +22,8 @@ import xyz.jwizard.jwl.codec.serialization.StandardSerializerFormat;
 import xyz.jwizard.jwl.codec.serialization.TypedMessageSerializer;
 
 public abstract class TypedJsonSerializer<T> implements TypedMessageSerializer<T> {
-    @Override
-    public SerializerFormat getFormat() {
-        return StandardSerializerFormat.JSON;
-    }
+  @Override
+  public SerializerFormat getFormat() {
+    return StandardSerializerFormat.JSON;
+  }
 }

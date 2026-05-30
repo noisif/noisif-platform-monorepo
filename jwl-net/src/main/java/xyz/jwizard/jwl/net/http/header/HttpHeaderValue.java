@@ -18,5 +18,5 @@
 package xyz.jwizard.jwl.net.http.header;
 
 public interface HttpHeaderValue {
-    String buildWithArgs(Object... args);
+  String buildWithArgs(Object... args);
 }

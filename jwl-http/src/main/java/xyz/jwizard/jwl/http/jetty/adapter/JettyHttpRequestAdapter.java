@@ -30,70 +30,70 @@ import xyz.jwizard.jwl.net.http.header.HttpHeaderName;
 import java.io.InputStream;
 
 public class JettyHttpRequestAdapter implements HttpRequest {
-    private final Request request;
-    private MultiMap<String> queryParams;
+  private final Request request;
+  private MultiMap<String> queryParams;
 
-    public JettyHttpRequestAdapter(Request request) {
-        this.request = request;
-    }
+  public JettyHttpRequestAdapter(Request request) {
+    this.request = request;
+  }
 
-    @Override
-    public String getMethod() {
-        return request.getMethod();
-    }
+  @Override
+  public String getMethod() {
+    return request.getMethod();
+  }
 
-    @Override
-    public String getPath() {
-        return request.getHttpURI().getPath();
-    }
+  @Override
+  public String getPath() {
+    return request.getHttpURI().getPath();
+  }
 
-    @Override
-    public long getLength() {
-        return request.getLength();
-    }
+  @Override
+  public long getLength() {
+    return request.getLength();
+  }
 
-    @Override
-    public InputStream getInputStream() {
-        return Content.Source.asInputStream(request);
-    }
+  @Override
+  public InputStream getInputStream() {
+    return Content.Source.asInputStream(request);
+  }
 
-    @Override
-    public String getQuery() {
-        return request.getHttpURI().getQuery();
-    }
+  @Override
+  public String getQuery() {
+    return request.getHttpURI().getQuery();
+  }
 
-    @Override
-    public String getQueryParam(String name) {
-        if (queryParams == null) {
-            final String query = getQuery();
-            if (query != null && !query.isEmpty()) {
-                queryParams = UrlEncoded.decodeQuery(query);
-            } else {
-                queryParams = new MultiMap<>();
-            }
-        }
-        return queryParams.getValue(name);
+  @Override
+  public String getQueryParam(String name) {
+    if (queryParams == null) {
+      final String query = getQuery();
+      if (query != null && !query.isEmpty()) {
+        queryParams = UrlEncoded.decodeQuery(query);
+      } else {
+        queryParams = new MultiMap<>();
+      }
     }
+    return queryParams.getValue(name);
+  }
 
-    @Override
-    public String getHeader(HttpHeaderName name) {
-        return getHeaderUnsafe(name.getCode());
-    }
+  @Override
+  public String getHeader(HttpHeaderName name) {
+    return getHeaderUnsafe(name.getCode());
+  }
 
-    @Override
-    public String getHeaderUnsafe(String name) {
-        return request.getHeaders().get(name);
-    }
+  @Override
+  public String getHeaderUnsafe(String name) {
+    return request.getHeaders().get(name);
+  }
 
-    @Override
-    public String getContentType() {
-        final String contentType = getHeader(CommonHttpHeaderName.CONTENT_TYPE);
-        if (contentType == null) {
-            return null;
-        }
-        final int semicolonIndex = contentType.indexOf(';');
-        final String rawType =
-                (semicolonIndex != -1) ? contentType.substring(0, semicolonIndex) : contentType;
-        return StringUtil.toLowerCase(rawType.trim());
+  @Override
+  public String getContentType() {
+    final String contentType = getHeader(CommonHttpHeaderName.CONTENT_TYPE);
+    if (contentType == null) {
+      return null;
     }
+    final int semicolonIndex = contentType.indexOf(';');
+    final String rawType =
+        (semicolonIndex != -1) ? contentType.substring(0, semicolonIndex) : contentType;
+    return StringUtil.toLowerCase(rawType.trim());
+  }
 }

@@ -24,18 +24,18 @@ import xyz.jwizard.jwl.codec.UnsupportedDataTypeException;
 import java.util.function.Function;
 
 public interface EnvelopeSerializer<T> extends UnifiedMessageCodec {
-    T serializeForSession(OpCode opCode, Object payload);
+  T serializeForSession(OpCode opCode, Object payload);
 
-    byte[] serializeEnvelopeAsBytes(OpCode opCode, Object payload);
+  byte[] serializeEnvelopeAsBytes(OpCode opCode, Object payload);
 
-    default String serializeEnvelopeAsString(OpCode opCode, Object payload) {
-        throw new UnsupportedDataTypeException("Text frames are not supported by " + getFormat());
-    }
+  default String serializeEnvelopeAsString(OpCode opCode, Object payload) {
+    throw new UnsupportedDataTypeException("Text frames are not supported by " + getFormat());
+  }
 
-    void acceptRaw(byte[] rawPayload, EncodedPayloadVisitor visitor);
+  void acceptRaw(byte[] rawPayload, EncodedPayloadVisitor visitor);
 
-    @Override
-    default MessageEnvelope<?> unwrap(String payload, Function<Integer, Class<?>> typeResolver) {
-        throw new UnsupportedDataTypeException("Text frames are not supported by " + getFormat());
-    }
+  @Override
+  default MessageEnvelope<?> unwrap(String payload, Function<Integer, Class<?>> typeResolver) {
+    throw new UnsupportedDataTypeException("Text frames are not supported by " + getFormat());
+  }
 }

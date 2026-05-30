@@ -20,11 +20,11 @@ package xyz.jwizard.jwl.common;
 import java.util.Comparator;
 
 public interface Ordered {
-    int HIGHEST_PRIORITY = Integer.MAX_VALUE;
-    Comparator<Ordered> COMPARATOR = Comparator.comparingInt(Ordered::order).reversed();
+  int HIGHEST_PRIORITY = Integer.MAX_VALUE;
+  Comparator<Ordered> COMPARATOR = Comparator.comparingInt(Ordered::order).reversed();
 
-    // lower = started after
-    default int order() {
-        return HIGHEST_PRIORITY;
-    }
+  // lower = started after
+  default int order() {
+    return HIGHEST_PRIORITY;
+  }
 }

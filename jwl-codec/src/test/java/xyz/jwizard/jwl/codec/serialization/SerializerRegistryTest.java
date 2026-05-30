@@ -33,75 +33,75 @@ import java.util.Collection;
 
 @ExtendWith(MockitoExtension.class)
 class SerializerRegistryTest {
-    private SerializerRegistry<Serializer> registry;
+  private SerializerRegistry<Serializer> registry;
 
-    @Mock private Serializer jsonSerializer;
-    @Mock private Serializer protobufSerializer;
+  @Mock private Serializer jsonSerializer;
+  @Mock private Serializer protobufSerializer;
 
-    @BeforeEach
-    void setUp() {
-        registry = SerializerRegistry.create();
-    }
+  @BeforeEach
+  void setUp() {
+    registry = SerializerRegistry.create();
+  }
 
-    @Test
-    @DisplayName("should register and retrieve serializer by format")
-    void shouldRegisterAndGetSerializer() {
-        // given
-        when(jsonSerializer.getFormat()).thenReturn(StandardSerializerFormat.JSON);
-        when(protobufSerializer.getFormat()).thenReturn(StandardSerializerFormat.PROTOBUF);
-        // when
-        registry.register(jsonSerializer);
-        registry.register(protobufSerializer);
-        // then
-        assertThat(registry.get(StandardSerializerFormat.JSON)).isEqualTo(jsonSerializer);
-        assertThat(registry.get(StandardSerializerFormat.PROTOBUF)).isEqualTo(protobufSerializer);
-    }
+  @Test
+  @DisplayName("should register and retrieve serializer by format")
+  void shouldRegisterAndGetSerializer() {
+    // given
+    when(jsonSerializer.getFormat()).thenReturn(StandardSerializerFormat.JSON);
+    when(protobufSerializer.getFormat()).thenReturn(StandardSerializerFormat.PROTOBUF);
+    // when
+    registry.register(jsonSerializer);
+    registry.register(protobufSerializer);
+    // then
+    assertThat(registry.get(StandardSerializerFormat.JSON)).isEqualTo(jsonSerializer);
+    assertThat(registry.get(StandardSerializerFormat.PROTOBUF)).isEqualTo(protobufSerializer);
+  }
 
-    @Test
-    @DisplayName("should throw exception when serializer is not found")
-    void shouldThrowExceptionWhenNotFound() {
-        // then
-        assertThatThrownBy(() -> registry.get(StandardSerializerFormat.RAW))
-                .isInstanceOf(IllegalArgumentException.class)
-                .hasMessageContaining("No registered element found for key:");
-    }
+  @Test
+  @DisplayName("should throw exception when serializer is not found")
+  void shouldThrowExceptionWhenNotFound() {
+    // then
+    assertThatThrownBy(() -> registry.get(StandardSerializerFormat.RAW))
+        .isInstanceOf(IllegalArgumentException.class)
+        .hasMessageContaining("No registered element found for key:");
+  }
 
-    @Test
-    @DisplayName("should overwrite serializer when registering with same format")
-    void shouldOverwriteOnDuplicateRegistration() {
-        // given
-        when(jsonSerializer.getFormat()).thenReturn(StandardSerializerFormat.JSON);
-        registry.register(jsonSerializer);
-        final Serializer newJsonSerializer = mock(Serializer.class);
-        when(newJsonSerializer.getFormat()).thenReturn(StandardSerializerFormat.JSON);
-        // when & then
-        assertThatThrownBy(() -> registry.register(newJsonSerializer))
-                .isInstanceOf(IllegalStateException.class)
-                .hasMessageContaining("is already registered");
-    }
+  @Test
+  @DisplayName("should overwrite serializer when registering with same format")
+  void shouldOverwriteOnDuplicateRegistration() {
+    // given
+    when(jsonSerializer.getFormat()).thenReturn(StandardSerializerFormat.JSON);
+    registry.register(jsonSerializer);
+    final Serializer newJsonSerializer = mock(Serializer.class);
+    when(newJsonSerializer.getFormat()).thenReturn(StandardSerializerFormat.JSON);
+    // when & then
+    assertThatThrownBy(() -> registry.register(newJsonSerializer))
+        .isInstanceOf(IllegalStateException.class)
+        .hasMessageContaining("is already registered");
+  }
 
-    @Test
-    @DisplayName("should return all registered serializers")
-    void shouldReturnAllSerializers() {
-        // given
-        when(jsonSerializer.getFormat()).thenReturn(StandardSerializerFormat.JSON);
-        when(protobufSerializer.getFormat()).thenReturn(StandardSerializerFormat.PROTOBUF);
-        registry.register(jsonSerializer);
-        registry.register(protobufSerializer);
-        // when
-        final Collection<Serializer> all = registry.getAll();
-        // then
-        assertThat(all).hasSize(2).containsExactlyInAnyOrder(jsonSerializer, protobufSerializer);
-    }
+  @Test
+  @DisplayName("should return all registered serializers")
+  void shouldReturnAllSerializers() {
+    // given
+    when(jsonSerializer.getFormat()).thenReturn(StandardSerializerFormat.JSON);
+    when(protobufSerializer.getFormat()).thenReturn(StandardSerializerFormat.PROTOBUF);
+    registry.register(jsonSerializer);
+    registry.register(protobufSerializer);
+    // when
+    final Collection<Serializer> all = registry.getAll();
+    // then
+    assertThat(all).hasSize(2).containsExactlyInAnyOrder(jsonSerializer, protobufSerializer);
+  }
 
-    @Test
-    @DisplayName("should support fluent api for registration")
-    void shouldSupportFluentApi() {
-        // given
-        when(jsonSerializer.getFormat()).thenReturn(StandardSerializerFormat.JSON);
-        // when
-        final SerializerRegistry<Serializer> returnedRegistry = registry.register(jsonSerializer);
-        // then
-        assertThat(returnedRegistry).isSameAs(registry);
-    }
+  @Test
+  @DisplayName("should support fluent api for registration")
+  void shouldSupportFluentApi() {
+    // given
+    when(jsonSerializer.getFormat()).thenReturn(StandardSerializerFormat.JSON);
+    // when
+    final SerializerRegistry<Serializer> returnedRegistry = registry.register(jsonSerializer);
+    // then
+    assertThat(returnedRegistry).isSameAs(registry);
+  }
 }

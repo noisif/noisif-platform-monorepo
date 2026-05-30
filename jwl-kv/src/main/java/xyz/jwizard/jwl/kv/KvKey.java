@@ -18,8 +18,8 @@
 package xyz.jwizard.jwl.kv;
 
 public interface KvKey {
-    String build(Object... params);
+  String build(Object... params);
 
-    // 0 = key life forever
-    long getDefaultTtlSeconds();
+  // 0 = key life forever
+  long getDefaultTtlSeconds();
 }

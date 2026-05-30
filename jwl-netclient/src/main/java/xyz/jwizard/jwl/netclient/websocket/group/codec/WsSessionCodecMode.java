@@ -18,6 +18,6 @@
 package xyz.jwizard.jwl.netclient.websocket.group.codec;
 
 public enum WsSessionCodecMode {
-    TYPED_MESSAGE,
-    ENVELOPE_MESSAGE
+  TYPED_MESSAGE,
+  ENVELOPE_MESSAGE
 }

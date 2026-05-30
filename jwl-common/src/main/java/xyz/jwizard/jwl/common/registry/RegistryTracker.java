@@ -18,7 +18,7 @@
 package xyz.jwizard.jwl.common.registry;
 
 public interface RegistryTracker<V> {
-    void register(V value);
+  void register(V value);
 
-    void unregister(V value);
+  void unregister(V value);
 }

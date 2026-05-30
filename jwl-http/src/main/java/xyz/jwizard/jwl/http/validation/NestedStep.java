@@ -20,24 +20,24 @@ package xyz.jwizard.jwl.http.validation;
 import java.lang.reflect.Field;
 
 class NestedStep implements ValidationStep {
-    private final Field field;
-    private final ValidationHandler validationHandler;
+  private final Field field;
+  private final ValidationHandler validationHandler;
 
-    NestedStep(Field field, ValidationHandler validationHandler) {
-        this.field = field;
-        this.validationHandler = validationHandler;
-    }
+  NestedStep(Field field, ValidationHandler validationHandler) {
+    this.field = field;
+    this.validationHandler = validationHandler;
+  }
 
-    @Override
-    public void execute(Object target) throws IllegalAccessException {
-        final Object nestedObject = field.get(target);
-        if (nestedObject != null) {
-            validationHandler.validate(nestedObject);
-        }
+  @Override
+  public void execute(Object target) throws IllegalAccessException {
+    final Object nestedObject = field.get(target);
+    if (nestedObject != null) {
+      validationHandler.validate(nestedObject);
     }
+  }
 
-    @Override
-    public Field getField() {
-        return field;
-    }
+  @Override
+  public Field getField() {
+    return field;
+  }
 }

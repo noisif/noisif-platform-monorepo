@@ -44,98 +44,94 @@ import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
 public class JettyRequestSpec extends GenericRequestSpec {
-    private static final Logger LOG = LoggerFactory.getLogger(JettyRequestSpec.class);
+  private static final Logger LOG = LoggerFactory.getLogger(JettyRequestSpec.class);
 
-    private final HttpClient client;
-    private final List<JettyBodyStrategy> bodyStrategies;
+  private final HttpClient client;
+  private final List<JettyBodyStrategy> bodyStrategies;
 
-    public JettyRequestSpec(
-            HttpClient client,
-            ClientRegistry<RestClientGroupConfig> clientRegistry,
-            String url,
-            HttpMethod method,
-            SerializerRegistry<MessageSerializer> serializerRegistry,
-            ClassScanner scanner) {
-        super(clientRegistry, url, method, serializerRegistry);
-        this.client = client;
-        bodyStrategies = loadRequestBodyStrategies(scanner);
-    }
+  public JettyRequestSpec(
+      HttpClient client,
+      ClientRegistry<RestClientGroupConfig> clientRegistry,
+      String url,
+      HttpMethod method,
+      SerializerRegistry<MessageSerializer> serializerRegistry,
+      ClassScanner scanner) {
+    super(clientRegistry, url, method, serializerRegistry);
+    this.client = client;
+    bodyStrategies = loadRequestBodyStrategies(scanner);
+  }
 
-    @Override
-    public <T> RestResponse<T> onSend(Class<T> responseType) {
-        Request request = null;
-        final String fullUri = resolveFullUrl();
-        try {
-            LOG.debug("Sending {} request to: {}", method.name(), fullUri);
-            request = client.newRequest(fullUri).method(method.name());
-            for (final Map.Entry<String, String> entry : headers.entrySet()) {
-                request.headers(h -> h.add(entry.getKey(), entry.getValue()));
-            }
-            for (final Map.Entry<String, String> entry : queryParams.entrySet()) {
-                request.param(entry.getKey(), entry.getValue());
-            }
-            if (requestTimeout != null) {
-                request.timeout(requestTimeout.toMillis(), TimeUnit.MILLISECONDS);
-            }
-            boolean strategyApplied = false;
-            for (final JettyBodyStrategy strategy : bodyStrategies) {
-                if (strategy.supports(this)) {
-                    LOG.trace("Using body strategy: {}", strategy.getClass().getSimpleName());
-                    request.body(
-                            strategy.buildContent(
-                                    this, messageSerializer, new JettyHeaderConsumer(request)));
-                    strategyApplied = true;
-                    break;
-                }
-            }
-            if (!strategyApplied && body != null) {
-                LOG.warn(
-                        "Body is present but no suitable JettyBodyStrategy was found for "
-                                + "request to: {}",
-                        fullUri);
-            }
-            final ContentResponse response = request.send();
-            LOG.debug("Received response from {}: status={}", fullUri, response.getStatus());
-            return new RestResponse<>(
-                    response.getStatus(),
-                    extractHeaders(response),
-                    parseResponseBody(response.getContent(), responseType));
-        } catch (Exception ex) {
-            LOG.error(
-                    "HTTP request failed, method: {}, uri: {}, error: {}",
-                    method.name(),
-                    fullUri,
-                    ex.getMessage());
-            final String failUri = request != null ? request.getURI().toASCIIString() : url;
-            throw new RestRequestException(
-                    String.format("HTTP request failed: %s %s", method.name(), failUri), ex);
+  @Override
+  public <T> RestResponse<T> onSend(Class<T> responseType) {
+    Request request = null;
+    final String fullUri = resolveFullUrl();
+    try {
+      LOG.debug("Sending {} request to: {}", method.name(), fullUri);
+      request = client.newRequest(fullUri).method(method.name());
+      for (final Map.Entry<String, String> entry : headers.entrySet()) {
+        request.headers(h -> h.add(entry.getKey(), entry.getValue()));
+      }
+      for (final Map.Entry<String, String> entry : queryParams.entrySet()) {
+        request.param(entry.getKey(), entry.getValue());
+      }
+      if (requestTimeout != null) {
+        request.timeout(requestTimeout.toMillis(), TimeUnit.MILLISECONDS);
+      }
+      boolean strategyApplied = false;
+      for (final JettyBodyStrategy strategy : bodyStrategies) {
+        if (strategy.supports(this)) {
+          LOG.trace("Using body strategy: {}", strategy.getClass().getSimpleName());
+          request.body(
+              strategy.buildContent(this, messageSerializer, new JettyHeaderConsumer(request)));
+          strategyApplied = true;
+          break;
         }
+      }
+      if (!strategyApplied && body != null) {
+        LOG.warn(
+            "Body is present but no suitable JettyBodyStrategy was found for " + "request to: {}",
+            fullUri);
+      }
+      final ContentResponse response = request.send();
+      LOG.debug("Received response from {}: status={}", fullUri, response.getStatus());
+      return new RestResponse<>(
+          response.getStatus(),
+          extractHeaders(response),
+          parseResponseBody(response.getContent(), responseType));
+    } catch (Exception ex) {
+      LOG.error(
+          "HTTP request failed, method: {}, uri: {}, error: {}",
+          method.name(),
+          fullUri,
+          ex.getMessage());
+      final String failUri = request != null ? request.getURI().toASCIIString() : url;
+      throw new RestRequestException(
+          String.format("HTTP request failed: %s %s", method.name(), failUri), ex);
     }
+  }
 
-    private List<JettyBodyStrategy> loadRequestBodyStrategies(ClassScanner scanner) {
-        LOG.info(
-                "Loading JettyBodyStrategies using scanner: {}",
-                scanner.getClass().getSimpleName());
-        final List<JettyBodyStrategy> strategies = new ArrayList<>();
-        final Set<Class<? extends JettyBodyStrategy>> strategyClasses =
-                scanner.getInstantiableSubtypesOf(JettyBodyStrategy.class);
-        try {
-            for (final Class<? extends JettyBodyStrategy> clazz : strategyClasses) {
-                strategies.add(clazz.getDeclaredConstructor().newInstance());
-                LOG.debug("Discovered and initialized strategy: {}", clazz.getName());
-            }
-        } catch (Exception ex) {
-            throw new CriticalBootstrapException("Failed to auto-discover JettyBodyStrategy", ex);
-        }
-        LOG.info("Loaded {} request body strategy(ies)", strategies.size());
-        return strategies;
+  private List<JettyBodyStrategy> loadRequestBodyStrategies(ClassScanner scanner) {
+    LOG.info("Loading JettyBodyStrategies using scanner: {}", scanner.getClass().getSimpleName());
+    final List<JettyBodyStrategy> strategies = new ArrayList<>();
+    final Set<Class<? extends JettyBodyStrategy>> strategyClasses =
+        scanner.getInstantiableSubtypesOf(JettyBodyStrategy.class);
+    try {
+      for (final Class<? extends JettyBodyStrategy> clazz : strategyClasses) {
+        strategies.add(clazz.getDeclaredConstructor().newInstance());
+        LOG.debug("Discovered and initialized strategy: {}", clazz.getName());
+      }
+    } catch (Exception ex) {
+      throw new CriticalBootstrapException("Failed to auto-discover JettyBodyStrategy", ex);
     }
+    LOG.info("Loaded {} request body strategy(ies)", strategies.size());
+    return strategies;
+  }
 
-    private Map<String, List<String>> extractHeaders(Response jettyResponse) {
-        final Map<String, List<String>> map = new HashMap<>();
-        for (final HttpField field : jettyResponse.getHeaders()) {
-            map.computeIfAbsent(field.getName(), k -> new ArrayList<>()).add(field.getValue());
-        }
-        return map;
+  private Map<String, List<String>> extractHeaders(Response jettyResponse) {
+    final Map<String, List<String>> map = new HashMap<>();
+    for (final HttpField field : jettyResponse.getHeaders()) {
+      map.computeIfAbsent(field.getName(), k -> new ArrayList<>()).add(field.getValue());
     }
+    return map;
+  }
 }

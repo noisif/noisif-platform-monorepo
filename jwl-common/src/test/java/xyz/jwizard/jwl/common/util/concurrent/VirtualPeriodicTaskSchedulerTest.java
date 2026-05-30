@@ -33,61 +33,60 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 
 class VirtualPeriodicTaskSchedulerTest {
-    private ScheduledExecutorService ticker;
-    private TaskExecutor taskExecutor;
-    private PeriodicTaskScheduler scheduler;
+  private ScheduledExecutorService ticker;
+  private TaskExecutor taskExecutor;
+  private PeriodicTaskScheduler scheduler;
 
-    @BeforeEach
-    void setUp() {
-        ticker = ConcurrentUtil.singleThread("test-ticker");
-        taskExecutor = TaskExecutor.createDefault("test-worker");
-        scheduler = VirtualPeriodicTaskScheduler.create(ticker, taskExecutor.getDelegate());
-    }
+  @BeforeEach
+  void setUp() {
+    ticker = ConcurrentUtil.singleThread("test-ticker");
+    taskExecutor = TaskExecutor.createDefault("test-worker");
+    scheduler = VirtualPeriodicTaskScheduler.create(ticker, taskExecutor.getDelegate());
+  }
 
-    @AfterEach
-    void tearDown() {
-        scheduler.cancelAll();
-        IoUtil.closeQuietly(taskExecutor);
-        ticker.shutdownNow();
-    }
+  @AfterEach
+  void tearDown() {
+    scheduler.cancelAll();
+    IoUtil.closeQuietly(taskExecutor);
+    ticker.shutdownNow();
+  }
 
-    @Test
-    @DisplayName("should execute task multiple times using virtual threads")
-    void shouldExecuteTaskMultipleTimes() throws InterruptedException {
-        // given
-        final int expectedExecutions = 3;
-        final CountDownLatch latch = new CountDownLatch(expectedExecutions);
-        final AtomicInteger counter = new AtomicInteger(0);
-        // when
-        scheduler.scheduleAtFixedRate(
-                "test-task",
-                () -> {
-                    counter.incrementAndGet();
-                    latch.countDown();
-                },
-                10,
-                50,
-                TimeUnit.MILLISECONDS);
-        // then
-        final boolean completed = latch.await(1, TimeUnit.SECONDS);
-        assertThat(completed).isTrue();
-        assertThat(counter.get()).isGreaterThanOrEqualTo(expectedExecutions);
-    }
+  @Test
+  @DisplayName("should execute task multiple times using virtual threads")
+  void shouldExecuteTaskMultipleTimes() throws InterruptedException {
+    // given
+    final int expectedExecutions = 3;
+    final CountDownLatch latch = new CountDownLatch(expectedExecutions);
+    final AtomicInteger counter = new AtomicInteger(0);
+    // when
+    scheduler.scheduleAtFixedRate(
+        "test-task",
+        () -> {
+          counter.incrementAndGet();
+          latch.countDown();
+        },
+        10,
+        50,
+        TimeUnit.MILLISECONDS);
+    // then
+    final boolean completed = latch.await(1, TimeUnit.SECONDS);
+    assertThat(completed).isTrue();
+    assertThat(counter.get()).isGreaterThanOrEqualTo(expectedExecutions);
+  }
 
-    @Test
-    @DisplayName("should stop executing task after cancellation")
-    void shouldStopExecutionAfterCancel() throws InterruptedException {
-        // given
-        final AtomicInteger counter = new AtomicInteger(0);
-        final String taskId = "cancellable-task";
-        // when
-        scheduler.scheduleAtFixedRate(
-                taskId, counter::incrementAndGet, 10, 50, TimeUnit.MILLISECONDS);
-        Thread.sleep(150);
-        scheduler.cancel(taskId);
-        final int countAfterCancel = counter.get();
-        Thread.sleep(150);
-        // then
-        assertThat(counter.get()).isEqualTo(countAfterCancel);
-    }
+  @Test
+  @DisplayName("should stop executing task after cancellation")
+  void shouldStopExecutionAfterCancel() throws InterruptedException {
+    // given
+    final AtomicInteger counter = new AtomicInteger(0);
+    final String taskId = "cancellable-task";
+    // when
+    scheduler.scheduleAtFixedRate(taskId, counter::incrementAndGet, 10, 50, TimeUnit.MILLISECONDS);
+    Thread.sleep(150);
+    scheduler.cancel(taskId);
+    final int countAfterCancel = counter.get();
+    Thread.sleep(150);
+    // then
+    assertThat(counter.get()).isEqualTo(countAfterCancel);
+  }
 }

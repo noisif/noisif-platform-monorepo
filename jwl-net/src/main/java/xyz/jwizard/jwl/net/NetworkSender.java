@@ -18,7 +18,7 @@
 package xyz.jwizard.jwl.net;
 
 public interface NetworkSender {
-    void send(byte[] message);
+  void send(byte[] message);
 
-    void send(String message);
+  void send(String message);
 }

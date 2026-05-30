@@ -20,5 +20,5 @@ package xyz.jwizard.jwl.netclient.rest.spec;
 import xyz.jwizard.jwl.net.http.header.HttpHeaderName;
 
 public interface HeaderConsumer {
-    void addHeader(HttpHeaderName name, String value);
+  void addHeader(HttpHeaderName name, String value);
 }

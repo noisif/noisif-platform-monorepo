@@ -20,13 +20,13 @@ package xyz.jwizard.jwl.codec.serialization;
 import java.io.Serial;
 
 public class MessageSerializerException extends RuntimeException {
-    @Serial private static final long serialVersionUID = 1L;
+  @Serial private static final long serialVersionUID = 1L;
 
-    public MessageSerializerException(String message, Throwable cause) {
-        super(message, cause);
-    }
+  public MessageSerializerException(String message, Throwable cause) {
+    super(message, cause);
+  }
 
-    public MessageSerializerException(String message) {
-        super(message);
-    }
+  public MessageSerializerException(String message) {
+    super(message);
+  }
 }

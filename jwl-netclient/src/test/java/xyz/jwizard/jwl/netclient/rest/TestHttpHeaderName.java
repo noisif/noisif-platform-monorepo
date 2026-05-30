@@ -20,19 +20,19 @@ package xyz.jwizard.jwl.netclient.rest;
 import xyz.jwizard.jwl.net.http.header.HttpHeaderName;
 
 public enum TestHttpHeaderName implements HttpHeaderName {
-    X_CORRELATION_ID("X-Correlation-Id"),
-    X_ACTION_TYPE("X-Action-Type"),
-    X_REQUEST_SIGNATURE("X-Request-Signature"),
-    ;
+  X_CORRELATION_ID("X-Correlation-Id"),
+  X_ACTION_TYPE("X-Action-Type"),
+  X_REQUEST_SIGNATURE("X-Request-Signature"),
+  ;
 
-    private final String code;
+  private final String code;
 
-    TestHttpHeaderName(String code) {
-        this.code = code;
-    }
+  TestHttpHeaderName(String code) {
+    this.code = code;
+  }
 
-    @Override
-    public String getCode() {
-        return code;
-    }
+  @Override
+  public String getCode() {
+    return code;
+  }
 }

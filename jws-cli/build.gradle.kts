@@ -21,12 +21,12 @@ import xyz.jwizard.buildconfig.jwService
 apply<JwServicePlugin>()
 
 jwService {
-    packageSuffix.set("cli")
-    mainClass.set("JwsCliMain")
+  packageSuffix.set("cli")
+  mainClass.set("JwsCliMain")
 }
 
 dependencies {
-    implementation(project(":jwl-common"))
+  implementation(project(":jwl-common"))
 
-    testImplementation(testFixtures(project(":jwl-common")))
+  testImplementation(testFixtures(project(":jwl-common")))
 }

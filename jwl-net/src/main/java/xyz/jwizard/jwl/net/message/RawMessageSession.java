@@ -20,9 +20,9 @@ package xyz.jwizard.jwl.net.message;
 import xyz.jwizard.jwl.net.NetworkSession;
 
 public interface RawMessageSession extends NetworkSession {
-    void sendObject(Object data);
+  void sendObject(Object data);
 
-    <T> T parse(byte[] payload, Class<T> type);
+  <T> T parse(byte[] payload, Class<T> type);
 
-    <T> T parse(String payload, Class<T> type);
+  <T> T parse(String payload, Class<T> type);
 }

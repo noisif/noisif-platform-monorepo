@@ -29,26 +29,26 @@ import jakarta.inject.Singleton;
 
 @Singleton
 public class ReceiveDataProtobufAction
-        implements EnvelopeAction<WsClientSession, TestPayloadProto.MyMessage> {
-    private final TestQueueProvider testQueueProvider;
+    implements EnvelopeAction<WsClientSession, TestPayloadProto.MyMessage> {
+  private final TestQueueProvider testQueueProvider;
 
-    @Inject
-    public ReceiveDataProtobufAction(TestQueueProvider testQueueProvider) {
-        this.testQueueProvider = testQueueProvider;
-    }
+  @Inject
+  public ReceiveDataProtobufAction(TestQueueProvider testQueueProvider) {
+    this.testQueueProvider = testQueueProvider;
+  }
 
-    @Override
-    public void handle(WsClientSession channel, TestPayloadProto.MyMessage data) {
-        testQueueProvider.get().add(data);
-    }
+  @Override
+  public void handle(WsClientSession channel, TestPayloadProto.MyMessage data) {
+    testQueueProvider.get().add(data);
+  }
 
-    @Override
-    public OpCode opCode() {
-        return TestWsOpCode.RECEIVE_DATA_PROTO;
-    }
+  @Override
+  public OpCode opCode() {
+    return TestWsOpCode.RECEIVE_DATA_PROTO;
+  }
 
-    @Override
-    public Class<TestPayloadProto.MyMessage> payloadClass() {
-        return TestPayloadProto.MyMessage.class;
-    }
+  @Override
+  public Class<TestPayloadProto.MyMessage> payloadClass() {
+    return TestPayloadProto.MyMessage.class;
+  }
 }

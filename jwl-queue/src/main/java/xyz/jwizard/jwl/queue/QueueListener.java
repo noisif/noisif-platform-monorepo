@@ -21,17 +21,17 @@ import xyz.jwizard.jwl.codec.serialization.SerializerFormat;
 import xyz.jwizard.jwl.codec.serialization.StandardSerializerFormat;
 
 public interface QueueListener<T> {
-    String getQueueName();
+  String getQueueName();
 
-    Class<T> getMessageType();
+  Class<T> getMessageType();
 
-    void onMessage(T message);
+  void onMessage(T message);
 
-    default SerializerFormat getFormat() {
-        return StandardSerializerFormat.JSON;
-    }
+  default SerializerFormat getFormat() {
+    return StandardSerializerFormat.JSON;
+  }
 
-    default QueueTopology getTopology() {
-        return QueueTopology.builder().build();
-    }
+  default QueueTopology getTopology() {
+    return QueueTopology.builder().build();
+  }
 }

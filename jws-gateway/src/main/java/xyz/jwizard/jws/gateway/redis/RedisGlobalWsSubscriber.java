@@ -27,25 +27,25 @@ import jakarta.inject.Singleton;
 
 @Singleton
 class RedisGlobalWsSubscriber extends AbstractKvSubscriber<byte[]> {
-    private final LocalSessionDispatcher localSessionDispatcher;
+  private final LocalSessionDispatcher localSessionDispatcher;
 
-    @Inject
-    RedisGlobalWsSubscriber(LocalSessionDispatcher localSessionDispatcher) {
-        this.localSessionDispatcher = localSessionDispatcher;
-    }
+  @Inject
+  RedisGlobalWsSubscriber(LocalSessionDispatcher localSessionDispatcher) {
+    this.localSessionDispatcher = localSessionDispatcher;
+  }
 
-    @Override
-    public KvChannel getChannel() {
-        return WsKvChannel.GLOBAL_BROADCAST;
-    }
+  @Override
+  public KvChannel getChannel() {
+    return WsKvChannel.GLOBAL_BROADCAST;
+  }
 
-    @Override
-    public Class<byte[]> getPayloadType() {
-        return byte[].class;
-    }
+  @Override
+  public Class<byte[]> getPayloadType() {
+    return byte[].class;
+  }
 
-    @Override
-    public void handle(String channel, String[] params, byte[] message) {
-        localSessionDispatcher.dispatchRawAll(message);
-    }
+  @Override
+  public void handle(String channel, String[] params, byte[] message) {
+    localSessionDispatcher.dispatchRawAll(message);
+  }
 }

@@ -23,24 +23,24 @@ import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
 
 class ConstraintStep implements ValidationStep {
-    private final Field field;
-    private final Annotation annotation;
-    private final AnnotationValidator<Annotation> validator;
+  private final Field field;
+  private final Annotation annotation;
+  private final AnnotationValidator<Annotation> validator;
 
-    ConstraintStep(Field field, Annotation annotation, AnnotationValidator<?> validator) {
-        this.field = field;
-        this.annotation = annotation;
-        this.validator = CastUtil.unsafeCast(validator);
-    }
+  ConstraintStep(Field field, Annotation annotation, AnnotationValidator<?> validator) {
+    this.field = field;
+    this.annotation = annotation;
+    this.validator = CastUtil.unsafeCast(validator);
+  }
 
-    @Override
-    public void execute(Object target) throws IllegalAccessException {
-        final Object value = field.get(target);
-        validator.validate(annotation, field, value);
-    }
+  @Override
+  public void execute(Object target) throws IllegalAccessException {
+    final Object value = field.get(target);
+    validator.validate(annotation, field, value);
+  }
 
-    @Override
-    public Field getField() {
-        return field;
-    }
+  @Override
+  public Field getField() {
+    return field;
+  }
 }

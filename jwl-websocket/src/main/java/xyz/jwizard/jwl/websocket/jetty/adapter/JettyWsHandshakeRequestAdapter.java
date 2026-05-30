@@ -29,35 +29,35 @@ import xyz.jwizard.jwl.websocket.WsHandshakeRequest;
 import java.util.List;
 
 public class JettyWsHandshakeRequestAdapter implements WsHandshakeRequest {
-    private final ServerUpgradeRequest req;
+  private final ServerUpgradeRequest req;
 
-    public JettyWsHandshakeRequestAdapter(ServerUpgradeRequest req) {
-        this.req = req;
-    }
+  public JettyWsHandshakeRequestAdapter(ServerUpgradeRequest req) {
+    this.req = req;
+  }
 
-    @Override
-    public String getHeader(HttpHeaderName header) {
-        return req.getHeaders().get(header.getCode());
-    }
+  @Override
+  public String getHeader(HttpHeaderName header) {
+    return req.getHeaders().get(header.getCode());
+  }
 
-    @Override
-    public String getCookie(CookieName name) {
-        final List<HttpCookie> cookies = Request.getCookies(req);
-        if (cookies == null) {
-            return null;
-        }
-        for (final HttpCookie cookie : cookies) {
-            if (cookie.getName().equals(name.getCode())) {
-                return cookie.getValue();
-            }
-        }
-        return null;
+  @Override
+  public String getCookie(CookieName name) {
+    final List<HttpCookie> cookies = Request.getCookies(req);
+    if (cookies == null) {
+      return null;
     }
+    for (final HttpCookie cookie : cookies) {
+      if (cookie.getName().equals(name.getCode())) {
+        return cookie.getValue();
+      }
+    }
+    return null;
+  }
 
-    @Override
-    public List<String> getQueryParameter(String key) {
-        final Fields queryParams = Request.extractQueryParameters(req);
-        final List<String> values = queryParams.getValues(key);
-        return values != null ? values : List.of();
-    }
+  @Override
+  public List<String> getQueryParameter(String key) {
+    final Fields queryParams = Request.extractQueryParameters(req);
+    final List<String> values = queryParams.getValues(key);
+    return values != null ? values : List.of();
+  }
 }

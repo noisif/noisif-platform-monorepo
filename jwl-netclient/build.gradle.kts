@@ -20,18 +20,18 @@ import xyz.jwizard.buildconfig.JwProtobufPlugin
 apply<JwProtobufPlugin>()
 
 dependencies {
-    implementation(libs.jetty.client)
-    implementation(libs.jetty.ws.client)
+  implementation(libs.jetty.client)
+  implementation(libs.jetty.ws.client)
 
-    implementation(project(":jwl-codec"))
-    implementation(project(":jwl-common"))
-    implementation(project(":jwl-net"))
+  implementation(project(":jwl-codec"))
+  implementation(project(":jwl-common"))
+  implementation(project(":jwl-net"))
 
-    testImplementation(libs.awaitility)
-    testImplementation(libs.protobuf.java)
-    testImplementation(libs.wiremock)
-    testImplementation(libs.ws.mock.server)
+  testImplementation(libs.awaitility)
+  testImplementation(libs.protobuf.java)
+  testImplementation(libs.wiremock)
+  testImplementation(libs.ws.mock.server)
 
-    testImplementation(project(":jwl-websocket"))
-    testImplementation(testFixtures(project(":jwl-common")))
+  testImplementation(project(":jwl-websocket"))
+  testImplementation(testFixtures(project(":jwl-common")))
 }

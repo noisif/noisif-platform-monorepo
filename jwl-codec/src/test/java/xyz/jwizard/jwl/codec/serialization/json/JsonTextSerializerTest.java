@@ -32,25 +32,25 @@ import xyz.jwizard.jwl.codec.EncodedPayloadVisitor;
 
 @ExtendWith(MockitoExtension.class)
 class JsonTextSerializerTest {
-    @Mock private JsonSerializer engineMock;
-    @Mock private EncodedPayloadVisitor visitorMock;
+  @Mock private JsonSerializer engineMock;
+  @Mock private EncodedPayloadVisitor visitorMock;
 
-    @Test
-    @DisplayName("should delegate text serialization and call visitor")
-    void shouldDelegateTextOperations() {
-        // given
-        final JsonTextSerializer serializer = JsonTextSerializer.create(engineMock);
-        final Object dummyPayload = new Object();
-        final String expectedString = "{\"key\":\"value\"}";
-        given(engineMock.serialize(dummyPayload)).willReturn(expectedString);
-        given(engineMock.deserialize(expectedString, String.class)).willReturn("parsed");
-        // when
-        final String parsed = serializer.deserializePayload(expectedString, String.class);
-        // when
-        serializer.serializeAndAccept(dummyPayload, visitorMock);
-        // then
-        assertThat(parsed).isEqualTo("parsed");
-        assertThat(serializer.getCodecDataType()).isEqualTo(DataType.TEXT);
-        verify(visitorMock).accept(expectedString);
-    }
+  @Test
+  @DisplayName("should delegate text serialization and call visitor")
+  void shouldDelegateTextOperations() {
+    // given
+    final JsonTextSerializer serializer = JsonTextSerializer.create(engineMock);
+    final Object dummyPayload = new Object();
+    final String expectedString = "{\"key\":\"value\"}";
+    given(engineMock.serialize(dummyPayload)).willReturn(expectedString);
+    given(engineMock.deserialize(expectedString, String.class)).willReturn("parsed");
+    // when
+    final String parsed = serializer.deserializePayload(expectedString, String.class);
+    // when
+    serializer.serializeAndAccept(dummyPayload, visitorMock);
+    // then
+    assertThat(parsed).isEqualTo("parsed");
+    assertThat(serializer.getCodecDataType()).isEqualTo(DataType.TEXT);
+    verify(visitorMock).accept(expectedString);
+  }
 }

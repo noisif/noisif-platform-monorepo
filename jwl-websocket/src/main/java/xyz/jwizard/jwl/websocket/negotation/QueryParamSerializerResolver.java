@@ -26,62 +26,61 @@ import xyz.jwizard.jwl.common.util.CollectionUtil;
 import xyz.jwizard.jwl.websocket.WsHandshakeRequest;
 
 public class QueryParamSerializerResolver implements WsSerializerResolver {
-    private final EnvelopeSerializerCache cache;
-    private final String encodingParamName;
-    private final String frameParamName;
+  private final EnvelopeSerializerCache cache;
+  private final String encodingParamName;
+  private final String frameParamName;
 
-    private QueryParamSerializerResolver(Builder builder) {
-        cache = builder.cache.init(builder.registry);
-        encodingParamName = builder.encodingParamName;
-        frameParamName = builder.frameParamName;
+  private QueryParamSerializerResolver(Builder builder) {
+    cache = builder.cache.init(builder.registry);
+    encodingParamName = builder.encodingParamName;
+    frameParamName = builder.frameParamName;
+  }
+
+  public static Builder builder() {
+    return new Builder();
+  }
+
+  @Override
+  public EnvelopeSerializer<?> resolve(WsHandshakeRequest req) {
+    final String encoding = CollectionUtil.getFirstSafety(req.getQueryParameter(encodingParamName));
+    final String frame = CollectionUtil.getFirstSafety(req.getQueryParameter(frameParamName));
+    return cache.find(encoding, frame);
+  }
+
+  public static class Builder {
+    private EnvelopeSerializerRegistry registry;
+    private EnvelopeSerializerCache cache = DefaultEnvelopeSerializerCache.createDefault();
+    private String encodingParamName = "encoding";
+    private String frameParamName = "frame";
+
+    private Builder() {}
+
+    public Builder registry(EnvelopeSerializerRegistry registry) {
+      this.registry = registry;
+      return this;
     }
 
-    public static Builder builder() {
-        return new Builder();
+    public Builder cache(EnvelopeSerializerCache cache) {
+      this.cache = cache;
+      return this;
     }
 
-    @Override
-    public EnvelopeSerializer<?> resolve(WsHandshakeRequest req) {
-        final String encoding =
-                CollectionUtil.getFirstSafety(req.getQueryParameter(encodingParamName));
-        final String frame = CollectionUtil.getFirstSafety(req.getQueryParameter(frameParamName));
-        return cache.find(encoding, frame);
+    public Builder encodingParamName(String encodingParamName) {
+      this.encodingParamName = encodingParamName;
+      return this;
     }
 
-    public static class Builder {
-        private EnvelopeSerializerRegistry registry;
-        private EnvelopeSerializerCache cache = DefaultEnvelopeSerializerCache.createDefault();
-        private String encodingParamName = "encoding";
-        private String frameParamName = "frame";
-
-        private Builder() {}
-
-        public Builder registry(EnvelopeSerializerRegistry registry) {
-            this.registry = registry;
-            return this;
-        }
-
-        public Builder cache(EnvelopeSerializerCache cache) {
-            this.cache = cache;
-            return this;
-        }
-
-        public Builder encodingParamName(String encodingParamName) {
-            this.encodingParamName = encodingParamName;
-            return this;
-        }
-
-        public Builder frameParamName(String frameParamName) {
-            this.frameParamName = frameParamName;
-            return this;
-        }
-
-        public WsSerializerResolver build() {
-            Assert.notNull(registry, "EnvelopeSerializerRegistry cannot be null");
-            Assert.notNull(cache, "EnvelopeSerializerCache cannot be null");
-            Assert.notNull(encodingParamName, "EncodingParamName cannot be null");
-            Assert.notNull(frameParamName, "FrameParamName cannot be null");
-            return new QueryParamSerializerResolver(this);
-        }
+    public Builder frameParamName(String frameParamName) {
+      this.frameParamName = frameParamName;
+      return this;
     }
+
+    public WsSerializerResolver build() {
+      Assert.notNull(registry, "EnvelopeSerializerRegistry cannot be null");
+      Assert.notNull(cache, "EnvelopeSerializerCache cannot be null");
+      Assert.notNull(encodingParamName, "EncodingParamName cannot be null");
+      Assert.notNull(frameParamName, "FrameParamName cannot be null");
+      return new QueryParamSerializerResolver(this);
+    }
+  }
 }

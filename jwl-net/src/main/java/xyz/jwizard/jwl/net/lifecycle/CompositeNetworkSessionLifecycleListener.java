@@ -29,69 +29,67 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 public class CompositeNetworkSessionLifecycleListener<S extends NetworkSession>
-        implements NetworkSessionLifecycleListener<S> {
-    private static final Logger LOG =
-            LoggerFactory.getLogger(CompositeNetworkSessionLifecycleListener.class);
+    implements NetworkSessionLifecycleListener<S> {
+  private static final Logger LOG =
+      LoggerFactory.getLogger(CompositeNetworkSessionLifecycleListener.class);
 
-    private final List<NetworkSessionLifecycleListener<S>> lifecycleListeners;
+  private final List<NetworkSessionLifecycleListener<S>> lifecycleListeners;
 
-    private CompositeNetworkSessionLifecycleListener(
-            List<NetworkSessionLifecycleListener<S>> lifecycleListeners) {
-        this.lifecycleListeners = lifecycleListeners;
+  private CompositeNetworkSessionLifecycleListener(
+      List<NetworkSessionLifecycleListener<S>> lifecycleListeners) {
+    this.lifecycleListeners = lifecycleListeners;
+  }
+
+  public static <S extends NetworkSession> NetworkSessionLifecycleListener<S> load(
+      ComponentProvider componentProvider) {
+    final List<NetworkSessionLifecycleListener<S>> lifecycleListeners =
+        componentProvider
+            .getInstancesOf(new TypeReference<NetworkSessionLifecycleListener<S>>() {})
+            .stream()
+            .sorted(Ordered.COMPARATOR)
+            .toList();
+    if (LOG.isDebugEnabled()) {
+      final String pipeline =
+          lifecycleListeners.stream()
+              .map(listener -> listener.getClass().getSimpleName())
+              .collect(Collectors.joining(" -> "));
+      LOG.debug(
+          "CompositeLifecycleListener initialized with pipeline: {}",
+          pipeline.isEmpty() ? "none" : pipeline);
     }
+    LOG.info("Loaded {} lifecycle listener(s)", lifecycleListeners.size());
+    return new CompositeNetworkSessionLifecycleListener<>(lifecycleListeners);
+  }
 
-    public static <S extends NetworkSession> NetworkSessionLifecycleListener<S> load(
-            ComponentProvider componentProvider) {
-        final List<NetworkSessionLifecycleListener<S>> lifecycleListeners =
-                componentProvider
-                        .getInstancesOf(new TypeReference<NetworkSessionLifecycleListener<S>>() {})
-                        .stream()
-                        .sorted(Ordered.COMPARATOR)
-                        .toList();
-        if (LOG.isDebugEnabled()) {
-            final String pipeline =
-                    lifecycleListeners.stream()
-                            .map(listener -> listener.getClass().getSimpleName())
-                            .collect(Collectors.joining(" -> "));
-            LOG.debug(
-                    "CompositeLifecycleListener initialized with pipeline: {}",
-                    pipeline.isEmpty() ? "none" : pipeline);
-        }
-        LOG.info("Loaded {} lifecycle listener(s)", lifecycleListeners.size());
-        return new CompositeNetworkSessionLifecycleListener<>(lifecycleListeners);
+  @Override
+  public void onConnect(S session) {
+    LOG.debug(
+        "Session {} connecting to pipeline ({} listeners)",
+        session.getSessionId(),
+        lifecycleListeners.size());
+    for (final NetworkSessionLifecycleListener<S> listener : lifecycleListeners) {
+      listener.onConnect(session);
     }
+  }
 
-    @Override
-    public void onConnect(S session) {
-        LOG.debug(
-                "Session {} connecting to pipeline ({} listeners)",
-                session.getSessionId(),
-                lifecycleListeners.size());
-        for (final NetworkSessionLifecycleListener<S> listener : lifecycleListeners) {
-            listener.onConnect(session);
-        }
+  @Override
+  public void onClose(S session, int statusCode, String reason) {
+    LOG.debug(
+        "Session {} closing (code: {}, reason: {}), notifying pipeline",
+        session.getSessionId(),
+        statusCode,
+        reason);
+    for (final NetworkSessionLifecycleListener<S> listener : lifecycleListeners) {
+      listener.onClose(session, statusCode, reason);
     }
+  }
 
-    @Override
-    public void onClose(S session, int statusCode, String reason) {
-        LOG.debug(
-                "Session {} closing (code: {}, reason: {}), notifying pipeline",
-                session.getSessionId(),
-                statusCode,
-                reason);
-        for (final NetworkSessionLifecycleListener<S> listener : lifecycleListeners) {
-            listener.onClose(session, statusCode, reason);
-        }
+  @Override
+  public void onError(S session, Throwable cause) {
+    LOG.debug(
+        "Error in session {}: {}, notifying pipeline", session.getSessionId(), cause.getMessage());
+    for (final NetworkSessionLifecycleListener<S> listener : lifecycleListeners) {
+      listener.onError(session, cause);
     }
-
-    @Override
-    public void onError(S session, Throwable cause) {
-        LOG.debug(
-                "Error in session {}: {}, notifying pipeline",
-                session.getSessionId(),
-                cause.getMessage());
-        for (final NetworkSessionLifecycleListener<S> listener : lifecycleListeners) {
-            listener.onError(session, cause);
-        }
-    }
+  }
 }

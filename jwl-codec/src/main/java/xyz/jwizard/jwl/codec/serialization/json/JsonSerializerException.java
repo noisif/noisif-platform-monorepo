@@ -22,13 +22,13 @@ import xyz.jwizard.jwl.codec.serialization.MessageSerializerException;
 import java.io.Serial;
 
 public class JsonSerializerException extends MessageSerializerException {
-    @Serial private static final long serialVersionUID = 1L;
+  @Serial private static final long serialVersionUID = 1L;
 
-    public JsonSerializerException(String message, Throwable cause) {
-        super(message, cause);
-    }
+  public JsonSerializerException(String message, Throwable cause) {
+    super(message, cause);
+  }
 
-    public JsonSerializerException(String message) {
-        super(message);
-    }
+  public JsonSerializerException(String message) {
+    super(message);
+  }
 }

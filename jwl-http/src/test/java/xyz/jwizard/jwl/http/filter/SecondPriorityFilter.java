@@ -26,21 +26,21 @@ import jakarta.inject.Singleton;
 
 @Singleton
 public class SecondPriorityFilter implements HttpFilter {
-    @Override
-    public boolean supports(Route route) {
-        return "/api/public".equals(route.path());
-    }
+  @Override
+  public boolean supports(Route route) {
+    return "/api/public".equals(route.path());
+  }
 
-    @Override
-    public boolean preHandle(HttpRequest req, HttpResponse res) {
-        final String current = res.getHeader(TestHttpHeaderName.X_FILTER_ORDER);
-        res.setHeader(
-                TestHttpHeaderName.X_FILTER_ORDER, (current == null ? "" : current) + " -> Second");
-        return true;
-    }
+  @Override
+  public boolean preHandle(HttpRequest req, HttpResponse res) {
+    final String current = res.getHeader(TestHttpHeaderName.X_FILTER_ORDER);
+    res.setHeader(
+        TestHttpHeaderName.X_FILTER_ORDER, (current == null ? "" : current) + " -> Second");
+    return true;
+  }
 
-    @Override
-    public int order() {
-        return 50;
-    }
+  @Override
+  public int order() {
+    return 50;
+  }
 }

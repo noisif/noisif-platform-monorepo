@@ -34,62 +34,62 @@ import java.util.Collection;
 import java.util.Set;
 
 class RouteScanner {
-    private static final Logger LOG = LoggerFactory.getLogger(RouteScanner.class);
+  private static final Logger LOG = LoggerFactory.getLogger(RouteScanner.class);
 
-    private final ComponentProvider componentProvider;
-    private final Router router;
-    private final Set<ArgumentResolver> resolvers;
+  private final ComponentProvider componentProvider;
+  private final Router router;
+  private final Set<ArgumentResolver> resolvers;
 
-    private int registeredRoutesCount = 0;
+  private int registeredRoutesCount = 0;
 
-    RouteScanner(
-            ComponentProvider componentProvider, Router router, Set<ArgumentResolver> resolvers) {
-        this.componentProvider = componentProvider;
-        this.router = router;
-        this.resolvers = resolvers;
+  RouteScanner(
+      ComponentProvider componentProvider, Router router, Set<ArgumentResolver> resolvers) {
+    this.componentProvider = componentProvider;
+    this.router = router;
+    this.resolvers = resolvers;
+  }
+
+  void scan() {
+    final Collection<Object> instances =
+        componentProvider.getInstancesAnnotatedWith(HttpController.class);
+    for (final Object instance : instances) {
+      registerRoutesForInstance(instance);
     }
+    LOG.info("Initialized {} HTTP controller(s)", instances.size());
+    LOG.info("Total routes registered: {}", registeredRoutesCount);
+  }
 
-    void scan() {
-        final Collection<Object> instances =
-                componentProvider.getInstancesAnnotatedWith(HttpController.class);
-        for (final Object instance : instances) {
-            registerRoutesForInstance(instance);
-        }
-        LOG.info("Initialized {} HTTP controller(s)", instances.size());
-        LOG.info("Total routes registered: {}", registeredRoutesCount);
+  private void registerRoutesForInstance(Object instance) {
+    final Class<?> clazz = instance.getClass();
+    final String basePath = clazz.getAnnotation(HttpController.class).value();
+    for (final Method method : clazz.getDeclaredMethods()) {
+      if (method.isAnnotationPresent(RequestMapping.class)) {
+        registerMethodRoutes(instance, basePath, method);
+        validateMethod(method);
+      }
     }
+  }
 
-    private void registerRoutesForInstance(Object instance) {
-        final Class<?> clazz = instance.getClass();
-        final String basePath = clazz.getAnnotation(HttpController.class).value();
-        for (final Method method : clazz.getDeclaredMethods()) {
-            if (method.isAnnotationPresent(RequestMapping.class)) {
-                registerMethodRoutes(instance, basePath, method);
-                validateMethod(method);
-            }
-        }
+  private void validateMethod(Method method) {
+    for (final ArgumentResolver resolver : resolvers) {
+      resolver.validate(method);
     }
+  }
 
-    private void validateMethod(Method method) {
-        for (final ArgumentResolver resolver : resolvers) {
-            resolver.validate(method);
-        }
+  private void registerMethodRoutes(Object instance, String basePath, Method method) {
+    final RequestMapping mapping = method.getAnnotation(RequestMapping.class);
+    final String[] paths = mapping.value();
+    final HttpMethod httpMethod = mapping.method();
+    for (final String path : paths) {
+      final String fullPath = PathUtil.combinePaths(basePath, path);
+      router.addRoute(httpMethod.name(), fullPath, new Route(instance, method, path));
+      registeredRoutesCount++;
+      LOG.debug(
+          "Registered route: [{} {}] -> {}.{}()",
+          httpMethod,
+          fullPath,
+          instance.getClass().getSimpleName(),
+          method.getName());
     }
-
-    private void registerMethodRoutes(Object instance, String basePath, Method method) {
-        final RequestMapping mapping = method.getAnnotation(RequestMapping.class);
-        final String[] paths = mapping.value();
-        final HttpMethod httpMethod = mapping.method();
-        for (final String path : paths) {
-            final String fullPath = PathUtil.combinePaths(basePath, path);
-            router.addRoute(httpMethod.name(), fullPath, new Route(instance, method, path));
-            registeredRoutesCount++;
-            LOG.debug(
-                    "Registered route: [{} {}] -> {}.{}()",
-                    httpMethod,
-                    fullPath,
-                    instance.getClass().getSimpleName(),
-                    method.getName());
-        }
-    }
+  }
 }

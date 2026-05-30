@@ -21,5 +21,5 @@ import xyz.jwizard.jwl.codec.envelope.EnvelopeSerializerRegistry;
 
 @FunctionalInterface
 public interface WsSerializerResolverFactory {
-    WsSerializerResolver create(EnvelopeSerializerRegistry registry);
+  WsSerializerResolver create(EnvelopeSerializerRegistry registry);
 }

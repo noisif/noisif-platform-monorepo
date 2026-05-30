@@ -20,8 +20,8 @@ package xyz.jwizard.jwl.netclient.rest.spec;
 import xyz.jwizard.jwl.codec.serialization.MessageSerializer;
 
 public interface BodyBuilderStrategy<T> {
-    boolean supports(GenericRequestSpec spec);
+  boolean supports(GenericRequestSpec spec);
 
-    T buildContent(
-            GenericRequestSpec spec, MessageSerializer serializer, HeaderConsumer headerConsumer);
+  T buildContent(
+      GenericRequestSpec spec, MessageSerializer serializer, HeaderConsumer headerConsumer);
 }

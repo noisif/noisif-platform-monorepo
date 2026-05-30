@@ -24,16 +24,16 @@ import org.gradle.api.provider.Property
 import org.gradle.kotlin.dsl.configure
 
 abstract class JwPolyglotJsExtension {
-    abstract val nodeVersion: Property<String>
-    abstract val entryPoints: MapProperty<String, String> // output name <-> entrypoint location
-    abstract val npmDependencies: ListProperty<String> // additional node packages to install
+  abstract val nodeVersion: Property<String>
+  abstract val entryPoints: MapProperty<String, String> // output name <-> entrypoint location
+  abstract val npmDependencies: ListProperty<String> // additional node packages to install
 
-    init {
-        nodeVersion.convention("24.14.1")
-        npmDependencies.convention(listOf("esbuild"))
-    }
+  init {
+    nodeVersion.convention("24.14.1")
+    npmDependencies.convention(listOf("esbuild"))
+  }
 }
 
 fun Project.jwPolyglotJs(action: JwPolyglotJsExtension.() -> Unit) {
-    configure<JwPolyglotJsExtension>(action)
+  configure<JwPolyglotJsExtension>(action)
 }

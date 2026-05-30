@@ -23,78 +23,77 @@ import xyz.jwizard.jwl.queue.exchange.ExchangeType;
 import java.util.Map;
 
 public record QueueTopology(
-        boolean durable, // whether the queue should survive a broker restart (saved to disk)
-        boolean exclusive, // whether the queue is exclusive to this connection
-        boolean autoDelete, // whether to delete the queue when the last consumer unsubscribes
-        Map<String, Object> arguments, // additional configuration arguments
-        String exchangeName, // name of the exchange to bind the queue to (null/empty if none)
-        ExchangeType
-                exchangeType, // type of the exchange (most common: "direct", "topic", "fanout")
-        String routingKey, // routing key used by the exchange to route messages to this queue
-        boolean useDeadLetter // use DLX (dead letter exchange)
-        ) {
-    public static Builder builder() {
-        return new Builder();
+    boolean durable, // whether the queue should survive a broker restart (saved to disk)
+    boolean exclusive, // whether the queue is exclusive to this connection
+    boolean autoDelete, // whether to delete the queue when the last consumer unsubscribes
+    Map<String, Object> arguments, // additional configuration arguments
+    String exchangeName, // name of the exchange to bind the queue to (null/empty if none)
+    ExchangeType exchangeType, // type of the exchange (most common: "direct", "topic", "fanout")
+    String routingKey, // routing key used by the exchange to route messages to this queue
+    boolean useDeadLetter // use DLX (dead letter exchange)
+    ) {
+  public static Builder builder() {
+    return new Builder();
+  }
+
+  public boolean hasExchange() {
+    return exchangeName != null && !exchangeName.isBlank() && exchangeType != null;
+  }
+
+  public static class Builder {
+    private boolean durable = true;
+    private boolean exclusive = false;
+    private boolean autoDelete = false;
+    private Map<String, Object> arguments = Map.of();
+
+    private String exchangeName;
+    private ExchangeType exchangeType = DefaultExchangeType.DIRECT;
+    private String routingKey = "";
+    private boolean useDeadLetter = false;
+
+    public Builder durable(boolean durable) {
+      this.durable = durable;
+      return this;
     }
 
-    public boolean hasExchange() {
-        return exchangeName != null && !exchangeName.isBlank() && exchangeType != null;
+    public Builder exclusive(boolean exclusive) {
+      this.exclusive = exclusive;
+      return this;
     }
 
-    public static class Builder {
-        private boolean durable = true;
-        private boolean exclusive = false;
-        private boolean autoDelete = false;
-        private Map<String, Object> arguments = Map.of();
-
-        private String exchangeName;
-        private ExchangeType exchangeType = DefaultExchangeType.DIRECT;
-        private String routingKey = "";
-        private boolean useDeadLetter = false;
-
-        public Builder durable(boolean durable) {
-            this.durable = durable;
-            return this;
-        }
-
-        public Builder exclusive(boolean exclusive) {
-            this.exclusive = exclusive;
-            return this;
-        }
-
-        public Builder autoDelete(boolean autoDelete) {
-            this.autoDelete = autoDelete;
-            return this;
-        }
-
-        public Builder arguments(Map<String, Object> arguments) {
-            this.arguments = arguments;
-            return this;
-        }
-
-        public Builder bindToExchange(
-                String exchangeName, ExchangeType exchangeType, String routingKey) {
-            this.exchangeName = exchangeName;
-            this.exchangeType = exchangeType;
-            this.routingKey = routingKey;
-            return this;
-        }
-
-        public Builder withDeadLetter() {
-            this.useDeadLetter = true;
-            return this;
-        }
-
-        public QueueTopology build() {
-            return new QueueTopology(
-                    durable,
-                    exclusive,
-                    autoDelete,
-                    arguments,
-                    exchangeName,
-                    exchangeType,
-                    routingKey,
-                    useDeadLetter);
-        }
+    public Builder autoDelete(boolean autoDelete) {
+      this.autoDelete = autoDelete;
+      return this;
     }
+
+    public Builder arguments(Map<String, Object> arguments) {
+      this.arguments = arguments;
+      return this;
+    }
+
+    public Builder bindToExchange(
+        String exchangeName, ExchangeType exchangeType, String routingKey) {
+      this.exchangeName = exchangeName;
+      this.exchangeType = exchangeType;
+      this.routingKey = routingKey;
+      return this;
+    }
+
+    public Builder withDeadLetter() {
+      this.useDeadLetter = true;
+      return this;
+    }
+
+    public QueueTopology build() {
+      return new QueueTopology(
+          durable,
+          exclusive,
+          autoDelete,
+          arguments,
+          exchangeName,
+          exchangeType,
+          routingKey,
+          useDeadLetter);
+    }
+  }
 }

@@ -18,11 +18,11 @@
 package xyz.jwizard.jwl.common.registry;
 
 public interface RegistryWriter<K, V> {
-    void register(K key, V value);
+  void register(K key, V value);
 
-    boolean remove(K key);
+  boolean remove(K key);
 
-    boolean removeDirect(K key, V value);
+  boolean removeDirect(K key, V value);
 
-    void clear();
+  void clear();
 }

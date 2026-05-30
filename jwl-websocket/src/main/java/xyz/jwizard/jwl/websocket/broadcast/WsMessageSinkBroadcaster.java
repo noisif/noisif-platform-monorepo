@@ -24,48 +24,45 @@ import xyz.jwizard.jwl.codec.envelope.EnvelopeSerializer;
 import xyz.jwizard.jwl.codec.envelope.OpCode;
 
 public class WsMessageSinkBroadcaster implements WsBroadcaster {
-    private static final Logger LOG = LoggerFactory.getLogger(WsMessageSinkBroadcaster.class);
+  private static final Logger LOG = LoggerFactory.getLogger(WsMessageSinkBroadcaster.class);
 
-    private final WsMessageSink sink;
-    private final EnvelopeSerializer<?> serializer;
+  private final WsMessageSink sink;
+  private final EnvelopeSerializer<?> serializer;
 
-    public WsMessageSinkBroadcaster(WsMessageSink sink, EnvelopeSerializer<?> serializer) {
-        this.sink = sink;
-        this.serializer = serializer;
+  public WsMessageSinkBroadcaster(WsMessageSink sink, EnvelopeSerializer<?> serializer) {
+    this.sink = sink;
+    this.serializer = serializer;
+  }
+
+  @Override
+  public void broadcast(OpCode op, Object payload) {
+    if (LOG.isDebugEnabled()) {
+      LOG.debug("Broadcasting byte message globally, OP: {}", op);
     }
+    sink.payloadAll(serializer.serializeEnvelopeAsBytes(op, payload));
+  }
 
-    @Override
-    public void broadcast(OpCode op, Object payload) {
-        if (LOG.isDebugEnabled()) {
-            LOG.debug("Broadcasting byte message globally, OP: {}", op);
-        }
-        sink.payloadAll(serializer.serializeEnvelopeAsBytes(op, payload));
+  @Override
+  public void broadcast(WsTopic topic, OpCode op, Object payload) {
+    if (LOG.isDebugEnabled()) {
+      LOG.debug("Broadcasting byte message to topic: [{}], OP: {}", topic, op);
     }
+    sink.payload(topic, serializer.serializeEnvelopeAsBytes(op, payload));
+  }
 
-    @Override
-    public void broadcast(WsTopic topic, OpCode op, Object payload) {
-        if (LOG.isDebugEnabled()) {
-            LOG.debug("Broadcasting byte message to topic: [{}], OP: {}", topic, op);
-        }
-        sink.payload(topic, serializer.serializeEnvelopeAsBytes(op, payload));
+  @Override
+  public void broadcastRaw(byte[] payload) {
+    if (LOG.isDebugEnabled()) {
+      LOG.debug("Broadcasting RAW bytes globally (size: {} bytes)", payload.length);
     }
+    sink.payloadAll(payload);
+  }
 
-    @Override
-    public void broadcastRaw(byte[] payload) {
-        if (LOG.isDebugEnabled()) {
-            LOG.debug("Broadcasting RAW bytes globally (size: {} bytes)", payload.length);
-        }
-        sink.payloadAll(payload);
+  @Override
+  public void broadcastRaw(WsTopic topic, byte[] payload) {
+    if (LOG.isDebugEnabled()) {
+      LOG.debug("Broadcasting RAW bytes to topic: [{}] (size: {} bytes)", topic, payload.length);
     }
-
-    @Override
-    public void broadcastRaw(WsTopic topic, byte[] payload) {
-        if (LOG.isDebugEnabled()) {
-            LOG.debug(
-                    "Broadcasting RAW bytes to topic: [{}] (size: {} bytes)",
-                    topic,
-                    payload.length);
-        }
-        sink.payload(topic, payload);
-    }
+    sink.payload(topic, payload);
+  }
 }

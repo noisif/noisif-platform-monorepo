@@ -18,5 +18,5 @@
 package xyz.jwizard.jwl.kv.pubsub;
 
 public interface KvChannel {
-    String buildChannel(Object... params);
+  String buildChannel(Object... params);
 }

@@ -32,61 +32,56 @@ import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 
 class WsReconnectManager {
-    private static final Logger LOG = LoggerFactory.getLogger(WsReconnectManager.class);
-    private static final Set<Integer> normalClosure = CloseCode.ofCodes(WsCloseCode.NORMAL);
+  private static final Logger LOG = LoggerFactory.getLogger(WsReconnectManager.class);
+  private static final Set<Integer> normalClosure = CloseCode.ofCodes(WsCloseCode.NORMAL);
 
-    private final ScheduledExecutorService scheduler;
+  private final ScheduledExecutorService scheduler;
 
-    WsReconnectManager(ScheduledExecutorService scheduler) {
-        this.scheduler = scheduler;
+  WsReconnectManager(ScheduledExecutorService scheduler) {
+    this.scheduler = scheduler;
+  }
+
+  void handleDisconnect(
+      ClientGroup group, WsClientGroupConfig config, int closeCode, Runnable connectAction) {
+    if (normalClosure.contains(closeCode)) {
+      LOG.debug(
+          "Normal WS closure detected for group '{}', suppressing reconnect.",
+          group.getClientGroupName());
+      return;
     }
+    scheduleReconnect(group, config, 1, connectAction);
+  }
 
-    void handleDisconnect(
-            ClientGroup group, WsClientGroupConfig config, int closeCode, Runnable connectAction) {
-        if (normalClosure.contains(closeCode)) {
-            LOG.debug(
-                    "Normal WS closure detected for group '{}', suppressing reconnect.",
-                    group.getClientGroupName());
-            return;
-        }
-        scheduleReconnect(group, config, 1, connectAction);
-    }
+  void handleFailure(
+      ClientGroup group, WsClientGroupConfig config, int currentAttempt, Runnable connectAction) {
+    scheduleReconnect(group, config, currentAttempt, connectAction);
+  }
 
-    void handleFailure(
-            ClientGroup group,
-            WsClientGroupConfig config,
-            int currentAttempt,
-            Runnable connectAction) {
-        scheduleReconnect(group, config, currentAttempt, connectAction);
+  private void scheduleReconnect(
+      ClientGroup group, WsClientGroupConfig config, int attempt, Runnable connectAction) {
+    final WsReconnectConfig reconnectConfig = config.getReconnectConfig();
+    if (reconnectConfig == null || !reconnectConfig.isEnabled()) {
+      LOG.trace("Reconnect policy disabled for group '{}', aborting", group.getClientGroupName());
+      return;
     }
-
-    private void scheduleReconnect(
-            ClientGroup group, WsClientGroupConfig config, int attempt, Runnable connectAction) {
-        final WsReconnectConfig reconnectConfig = config.getReconnectConfig();
-        if (reconnectConfig == null || !reconnectConfig.isEnabled()) {
-            LOG.trace(
-                    "Reconnect policy disabled for group '{}', aborting",
-                    group.getClientGroupName());
-            return;
-        }
-        if (reconnectConfig.getMaxAttempts() != -1 && attempt > reconnectConfig.getMaxAttempts()) {
-            LOG.error(
-                    "Max reconnect attempts ({}) reached for WS group '{}', giving up",
-                    reconnectConfig.getMaxAttempts(),
-                    group.getClientGroupName());
-            return;
-        }
-        final long delayMs = reconnectConfig.getDelay().toMillis();
-        LOG.info(
-                "Scheduling WS connection retry for group '{}' in {} ms (attempt: {})",
-                group.getClientGroupName(),
-                delayMs,
-                attempt + 1);
-        final ScheduledFuture<?> future =
-                scheduler.schedule(connectAction, delayMs, TimeUnit.MILLISECONDS);
-        LOG.debug(
-                "Task successfully scheduled for group '{}', is done: {}",
-                group.getClientGroupName(),
-                future.isDone());
+    if (reconnectConfig.getMaxAttempts() != -1 && attempt > reconnectConfig.getMaxAttempts()) {
+      LOG.error(
+          "Max reconnect attempts ({}) reached for WS group '{}', giving up",
+          reconnectConfig.getMaxAttempts(),
+          group.getClientGroupName());
+      return;
     }
+    final long delayMs = reconnectConfig.getDelay().toMillis();
+    LOG.info(
+        "Scheduling WS connection retry for group '{}' in {} ms (attempt: {})",
+        group.getClientGroupName(),
+        delayMs,
+        attempt + 1);
+    final ScheduledFuture<?> future =
+        scheduler.schedule(connectAction, delayMs, TimeUnit.MILLISECONDS);
+    LOG.debug(
+        "Task successfully scheduled for group '{}', is done: {}",
+        group.getClientGroupName(),
+        future.isDone());
+  }
 }

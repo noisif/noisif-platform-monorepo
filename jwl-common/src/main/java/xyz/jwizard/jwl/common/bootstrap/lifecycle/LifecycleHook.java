@@ -23,12 +23,12 @@ import xyz.jwizard.jwl.common.reflect.ClassScanner;
 import java.util.List;
 
 public interface LifecycleHook {
-    // defines hook classes witch must be started before this hook
-    default List<Class<? extends LifecycleHook>> dependsOn() {
-        return List.of();
-    }
+  // defines hook classes witch must be started before this hook
+  default List<Class<? extends LifecycleHook>> dependsOn() {
+    return List.of();
+  }
 
-    void onStart(ComponentProvider componentProvider, ClassScanner scanner);
+  void onStart(ComponentProvider componentProvider, ClassScanner scanner);
 
-    default void onStop() {}
+  default void onStop() {}
 }

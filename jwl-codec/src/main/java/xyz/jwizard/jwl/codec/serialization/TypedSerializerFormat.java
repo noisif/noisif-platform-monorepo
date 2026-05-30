@@ -22,25 +22,25 @@ import org.jspecify.annotations.NonNull;
 import xyz.jwizard.jwl.codec.DataType;
 
 public record TypedSerializerFormat(SerializerFormat baseFormat, DataType dataType)
-        implements SerializerFormat {
-    public static TypedSerializerFormat from(SerializerFormat format, DataType dataType) {
-        return new TypedSerializerFormat(format, dataType);
-    }
+    implements SerializerFormat {
+  public static TypedSerializerFormat from(SerializerFormat format, DataType dataType) {
+    return new TypedSerializerFormat(format, dataType);
+  }
 
-    @Override
-    public String getFormatName() {
-        return baseFormat.getFormatName() + "+" + dataType.getCode();
-    }
+  @Override
+  public String getFormatName() {
+    return baseFormat.getFormatName() + "+" + dataType.getCode();
+  }
 
-    @Override
-    public String getMimeType() {
-        // application/x-jwl-[dataType]+[baseFormat]
-        return "application/x-jwl-" + dataType.getCode() + "+" + baseFormat.getFormatName();
-    }
+  @Override
+  public String getMimeType() {
+    // application/x-jwl-[dataType]+[baseFormat]
+    return "application/x-jwl-" + dataType.getCode() + "+" + baseFormat.getFormatName();
+  }
 
-    @Override
-    @NonNull
-    public String toString() {
-        return getFormatName();
-    }
+  @Override
+  @NonNull
+  public String toString() {
+    return getFormatName();
+  }
 }

@@ -21,9 +21,9 @@ import java.lang.annotation.Annotation;
 import java.util.Set;
 
 public interface ClassScanner extends AutoCloseable {
-    Set<Class<?>> getTypesAnnotatedWith(Class<? extends Annotation> annotation);
+  Set<Class<?>> getTypesAnnotatedWith(Class<? extends Annotation> annotation);
 
-    <T> Set<Class<? extends T>> getSubtypesOf(Class<T> type);
+  <T> Set<Class<? extends T>> getSubtypesOf(Class<T> type);
 
-    <T> Set<Class<? extends T>> getInstantiableSubtypesOf(Class<T> type);
+  <T> Set<Class<? extends T>> getInstantiableSubtypesOf(Class<T> type);
 }

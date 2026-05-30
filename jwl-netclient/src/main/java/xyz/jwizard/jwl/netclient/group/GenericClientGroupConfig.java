@@ -21,48 +21,48 @@ import xyz.jwizard.jwl.common.util.Assert;
 import xyz.jwizard.jwl.common.util.io.IoUtil;
 
 public class GenericClientGroupConfig implements ClientGroupConfig {
-    protected final String url;
-    protected final String principalId;
+  protected final String url;
+  protected final String principalId;
 
-    protected GenericClientGroupConfig(AbstractBuilder<?, ?> builder) {
-        url = builder.url;
-        principalId = builder.principalId;
+  protected GenericClientGroupConfig(AbstractBuilder<?, ?> builder) {
+    url = builder.url;
+    principalId = builder.principalId;
+  }
+
+  @Override
+  public String getUrl() {
+    return url;
+  }
+
+  @Override
+  public String getPrincipalId() {
+    return principalId;
+  }
+
+  public abstract static class AbstractBuilder<
+      B extends AbstractBuilder<B, C>, C extends GenericClientGroupConfig> {
+    private String url;
+    private String principalId;
+
+    protected AbstractBuilder() {}
+
+    protected abstract B self();
+
+    public B url(String url) {
+      this.url = IoUtil.removeTrailingSlash(url);
+      return self();
     }
 
-    @Override
-    public String getUrl() {
-        return url;
+    public B principalId(String principalId) {
+      this.principalId = principalId;
+      return self();
     }
 
-    @Override
-    public String getPrincipalId() {
-        return principalId;
+    protected void validate() {
+      Assert.notNull(url, "Url cannot be null");
+      Assert.notNull(principalId, "PrincipalId cannot be null");
     }
 
-    public abstract static class AbstractBuilder<
-            B extends AbstractBuilder<B, C>, C extends GenericClientGroupConfig> {
-        private String url;
-        private String principalId;
-
-        protected AbstractBuilder() {}
-
-        protected abstract B self();
-
-        public B url(String url) {
-            this.url = IoUtil.removeTrailingSlash(url);
-            return self();
-        }
-
-        public B principalId(String principalId) {
-            this.principalId = principalId;
-            return self();
-        }
-
-        protected void validate() {
-            Assert.notNull(url, "Url cannot be null");
-            Assert.notNull(principalId, "PrincipalId cannot be null");
-        }
-
-        public abstract C build();
-    }
+    public abstract C build();
+  }
 }

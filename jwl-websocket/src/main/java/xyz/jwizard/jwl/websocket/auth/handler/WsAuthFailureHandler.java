@@ -21,5 +21,5 @@ import xyz.jwizard.jwl.websocket.WsHandshakeRequest;
 
 @FunctionalInterface
 public interface WsAuthFailureHandler {
-    void onAuthFailure(WsHandshakeRequest req);
+  void onAuthFailure(WsHandshakeRequest req);
 }

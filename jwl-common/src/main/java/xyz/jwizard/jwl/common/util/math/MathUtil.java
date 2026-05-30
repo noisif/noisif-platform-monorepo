@@ -20,17 +20,17 @@ package xyz.jwizard.jwl.common.util.math;
 import xyz.jwizard.jwl.common.bootstrap.ForbiddenInstantiationException;
 
 public class MathUtil {
-    private MathUtil() {
-        throw new ForbiddenInstantiationException(MathUtil.class);
-    }
+  private MathUtil() {
+    throw new ForbiddenInstantiationException(MathUtil.class);
+  }
 
-    public static long calcExpBackoff(int attempt, long baseDelayMs, long maxDelayMs) {
-        if (baseDelayMs <= 0) {
-            return 0;
-        }
-        final long expDelay = baseDelayMs * (long) Math.pow(2, Math.max(0, attempt - 1));
-        final double jitterFactor = 1.0 + (Math.random() * 0.2 - 0.1);
-        final long finalDelay = (long) (expDelay * jitterFactor);
-        return Math.min(finalDelay, maxDelayMs);
+  public static long calcExpBackoff(int attempt, long baseDelayMs, long maxDelayMs) {
+    if (baseDelayMs <= 0) {
+      return 0;
     }
+    final long expDelay = baseDelayMs * (long) Math.pow(2, Math.max(0, attempt - 1));
+    final double jitterFactor = 1.0 + (Math.random() * 0.2 - 0.1);
+    final long finalDelay = (long) (expDelay * jitterFactor);
+    return Math.min(finalDelay, maxDelayMs);
+  }
 }

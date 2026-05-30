@@ -21,26 +21,26 @@ import xyz.jwizard.jwl.netclient.rest.TestHttpHeaderName;
 import xyz.jwizard.jwl.netclient.rest.TestHttpHeaderValue;
 
 public class CorrelationInterceptor implements RequestInterceptor {
-    private final String correlationId;
-    private final String correlationCode;
+  private final String correlationId;
+  private final String correlationCode;
 
-    public CorrelationInterceptor(String correlationId, String correlationCode) {
-        this.correlationId = correlationId;
-        this.correlationCode = correlationCode;
-    }
+  public CorrelationInterceptor(String correlationId, String correlationCode) {
+    this.correlationId = correlationId;
+    this.correlationCode = correlationCode;
+  }
 
-    @Override
-    public void intercept(InterceptorContext context) {
-        context.addHeader(
-                TestHttpHeaderName.X_CORRELATION_ID,
-                TestHttpHeaderValue.REQ,
-                correlationId,
-                correlationCode);
-        context.addQueryParam("tracking_enabled", "true");
-    }
+  @Override
+  public void intercept(InterceptorContext context) {
+    context.addHeader(
+        TestHttpHeaderName.X_CORRELATION_ID,
+        TestHttpHeaderValue.REQ,
+        correlationId,
+        correlationCode);
+    context.addQueryParam("tracking_enabled", "true");
+  }
 
-    @Override
-    public int order() {
-        return 10;
-    }
+  @Override
+  public int order() {
+    return 10;
+  }
 }

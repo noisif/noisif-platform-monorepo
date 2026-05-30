@@ -20,13 +20,13 @@ package xyz.jwizard.jwl.contracts;
 import xyz.jwizard.jwl.common.ModuleIdentityTest;
 
 class JwlContractsIdentityTest extends ModuleIdentityTest {
-    @Override
-    protected String getModuleName() {
-        return "contracts";
-    }
+  @Override
+  protected String getModuleName() {
+    return "contracts";
+  }
 
-    @Override
-    protected String getPackageSuffix() {
-        return "jwl";
-    }
+  @Override
+  protected String getPackageSuffix() {
+    return "jwl";
+  }
 }

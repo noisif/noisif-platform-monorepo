@@ -32,55 +32,43 @@ import java.util.List;
 
 @Singleton
 class SqlClientLifecycle implements LifecycleHook {
-    private final SqlDatabaseRegistry sqlDatabaseRegistry;
+  private final SqlDatabaseRegistry sqlDatabaseRegistry;
 
-    SqlClientLifecycle() {
-        sqlDatabaseRegistry =
-                SqlDatabaseRegistry.builder()
-                        .poolFactory(HikariConnectionPoolFactory.create())
-                        .register(
-                                SqlDatabaseConfig.builder()
-                                        .dialect(
-                                                SqlDatabaseDialect
-                                                        .POSTGRESQL /* TODO: incoming from config server */)
-                                        .address(
-                                                "localhost:9115" /* TODO: incoming from config server */)
-                                        .credentials(
-                                                "postgres",
-                                                "root" /* TODO: incoming from config server */)
-                                        .databaseName(
-                                                "jw_main" /* TODO: incoming from config server */)
-                                        .build(),
-                                JdbcSqlClient::new)
-                        .register(
-                                SqlDatabaseConfig.builder()
-                                        .dialect(
-                                                SqlDatabaseDialect
-                                                        .POSTGRESQL /* TODO: incoming from config server */)
-                                        .address(
-                                                "localhost:9115" /* TODO: incoming from config server */)
-                                        .credentials(
-                                                "postgres",
-                                                "root" /* TODO: incoming from config server */)
-                                        .databaseName(
-                                                "jw_telemetry" /* TODO: incoming from config server */)
-                                        .build(),
-                                JdbcSqlClient::new)
-                        .build();
-    }
+  SqlClientLifecycle() {
+    sqlDatabaseRegistry =
+        SqlDatabaseRegistry.builder()
+            .poolFactory(HikariConnectionPoolFactory.create())
+            .register(
+                SqlDatabaseConfig.builder()
+                    .dialect(SqlDatabaseDialect.POSTGRESQL /* TODO: incoming from config server */)
+                    .address("localhost:9115" /* TODO: incoming from config server */)
+                    .credentials("postgres", "root" /* TODO: incoming from config server */)
+                    .databaseName("jw_main" /* TODO: incoming from config server */)
+                    .build(),
+                JdbcSqlClient::new)
+            .register(
+                SqlDatabaseConfig.builder()
+                    .dialect(SqlDatabaseDialect.POSTGRESQL /* TODO: incoming from config server */)
+                    .address("localhost:9115" /* TODO: incoming from config server */)
+                    .credentials("postgres", "root" /* TODO: incoming from config server */)
+                    .databaseName("jw_telemetry" /* TODO: incoming from config server */)
+                    .build(),
+                JdbcSqlClient::new)
+            .build();
+  }
 
-    @Override
-    public List<Class<? extends LifecycleHook>> dependsOn() {
-        return List.of(KvServerLifecycle.class);
-    }
+  @Override
+  public List<Class<? extends LifecycleHook>> dependsOn() {
+    return List.of(KvServerLifecycle.class);
+  }
 
-    @Override
-    public void onStart(ComponentProvider componentProvider, ClassScanner scanner) {
-        sqlDatabaseRegistry.startAll();
-    }
+  @Override
+  public void onStart(ComponentProvider componentProvider, ClassScanner scanner) {
+    sqlDatabaseRegistry.startAll();
+  }
 
-    @Override
-    public void onStop() {
-        sqlDatabaseRegistry.closeAll();
-    }
+  @Override
+  public void onStop() {
+    sqlDatabaseRegistry.closeAll();
+  }
 }

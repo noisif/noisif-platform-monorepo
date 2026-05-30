@@ -18,5 +18,5 @@
 package xyz.jwizard.jwl.kv.pubsub.pattern;
 
 public interface ChannelParamExtractor {
-    String[] extract(String channel);
+  String[] extract(String channel);
 }

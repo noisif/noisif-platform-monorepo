@@ -18,7 +18,7 @@
 package xyz.jwizard.jwl.netclient.group;
 
 public interface ClientGroup {
-    ClientGroup GLOBAL = () -> "GLOBAL";
+  ClientGroup GLOBAL = () -> "GLOBAL";
 
-    String getClientGroupName();
+  String getClientGroupName();
 }

@@ -25,10 +25,10 @@ import java.util.Collection;
 import java.util.Optional;
 
 public interface WsClientSessionRegistry extends RegistryTracker<WsClientSession> {
-    // for 1:N
-    Collection<WsClientSession> getSessions(ClientGroup clientGroup);
+  // for 1:N
+  Collection<WsClientSession> getSessions(ClientGroup clientGroup);
 
-    default Optional<WsClientSession> getAnySession(ClientGroup clientGroup) {
-        return getSessions(clientGroup).stream().findFirst();
-    }
+  default Optional<WsClientSession> getAnySession(ClientGroup clientGroup) {
+    return getSessions(clientGroup).stream().findFirst();
+  }
 }

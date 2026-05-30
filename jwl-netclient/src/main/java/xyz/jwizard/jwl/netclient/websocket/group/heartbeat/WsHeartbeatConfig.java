@@ -22,27 +22,27 @@ import xyz.jwizard.jwl.common.util.Assert;
 import java.time.Duration;
 
 public class WsHeartbeatConfig {
-    private final Duration interval;
-    private final WsHeartbeatAction action;
+  private final Duration interval;
+  private final WsHeartbeatAction action;
 
-    private WsHeartbeatConfig(Duration interval, WsHeartbeatAction action) {
-        this.interval = Assert.notNullAndGet(interval, "Interval cannot be null");
-        this.action = Assert.notNullAndGet(action, "Action cannot be null");
-    }
+  private WsHeartbeatConfig(Duration interval, WsHeartbeatAction action) {
+    this.interval = Assert.notNullAndGet(interval, "Interval cannot be null");
+    this.action = Assert.notNullAndGet(action, "Action cannot be null");
+  }
 
-    public static WsHeartbeatConfig create(Duration interval, WsHeartbeatAction action) {
-        return new WsHeartbeatConfig(interval, action);
-    }
+  public static WsHeartbeatConfig create(Duration interval, WsHeartbeatAction action) {
+    return new WsHeartbeatConfig(interval, action);
+  }
 
-    public static WsHeartbeatConfig createEnvelope(Duration interval) {
-        return new WsHeartbeatConfig(interval, new EnvelopeHeartbeatAction());
-    }
+  public static WsHeartbeatConfig createEnvelope(Duration interval) {
+    return new WsHeartbeatConfig(interval, new EnvelopeHeartbeatAction());
+  }
 
-    public Duration getInterval() {
-        return interval;
-    }
+  public Duration getInterval() {
+    return interval;
+  }
 
-    public WsHeartbeatAction getAction() {
-        return action;
-    }
+  public WsHeartbeatAction getAction() {
+    return action;
+  }
 }

@@ -27,57 +27,55 @@ import xyz.jwizard.jwl.net.http.header.HttpHeaderName;
 import xyz.jwizard.jwl.netclient.websocket.WsClientUpgradeRequest;
 
 public class WsClientHeaderAuthenticator implements WsClientAuthenticator {
-    private static final Logger LOG = LoggerFactory.getLogger(WsClientHeaderAuthenticator.class);
+  private static final Logger LOG = LoggerFactory.getLogger(WsClientHeaderAuthenticator.class);
 
-    private final HttpHeaderName headerName;
-    private final AuthScheme authScheme;
-    private final String[] credentials;
+  private final HttpHeaderName headerName;
+  private final AuthScheme authScheme;
+  private final String[] credentials;
 
-    private WsClientHeaderAuthenticator(Builder builder) {
-        headerName = builder.headerName;
-        authScheme = builder.authScheme;
-        credentials = builder.credentials;
+  private WsClientHeaderAuthenticator(Builder builder) {
+    headerName = builder.headerName;
+    authScheme = builder.authScheme;
+    credentials = builder.credentials;
+  }
+
+  public static Builder builder() {
+    return new Builder();
+  }
+
+  @Override
+  public void applyAuthentication(WsClientUpgradeRequest req) {
+    final String headerValue = authScheme.buildHeaderValue(credentials);
+    LOG.trace("Applying authentication via HTTP Authorization header with scheme: {}", authScheme);
+    req.setHeader(headerName, headerValue);
+  }
+
+  public static class Builder {
+    private HttpHeaderName headerName = CommonHttpHeaderName.AUTHORIZATION;
+    private AuthScheme authScheme;
+    private String[] credentials;
+
+    private Builder() {}
+
+    public Builder headerName(HttpHeaderName headerName) {
+      this.headerName = headerName;
+      return this;
     }
 
-    public static Builder builder() {
-        return new Builder();
+    public Builder authScheme(AuthScheme authScheme) {
+      this.authScheme = authScheme;
+      return this;
     }
 
-    @Override
-    public void applyAuthentication(WsClientUpgradeRequest req) {
-        final String headerValue = authScheme.buildHeaderValue(credentials);
-        LOG.trace(
-                "Applying authentication via HTTP Authorization header with scheme: {}",
-                authScheme);
-        req.setHeader(headerName, headerValue);
+    public Builder credentials(String... credentials) {
+      this.credentials = credentials;
+      return this;
     }
 
-    public static class Builder {
-        private HttpHeaderName headerName = CommonHttpHeaderName.AUTHORIZATION;
-        private AuthScheme authScheme;
-        private String[] credentials;
-
-        private Builder() {}
-
-        public Builder headerName(HttpHeaderName headerName) {
-            this.headerName = headerName;
-            return this;
-        }
-
-        public Builder authScheme(AuthScheme authScheme) {
-            this.authScheme = authScheme;
-            return this;
-        }
-
-        public Builder credentials(String... credentials) {
-            this.credentials = credentials;
-            return this;
-        }
-
-        public WsClientHeaderAuthenticator build() {
-            Assert.notNull(headerName, "HeaderName cannot be null");
-            Assert.notNull(authScheme, "AuthScheme cannot be null");
-            return new WsClientHeaderAuthenticator(this);
-        }
+    public WsClientHeaderAuthenticator build() {
+      Assert.notNull(headerName, "HeaderName cannot be null");
+      Assert.notNull(authScheme, "AuthScheme cannot be null");
+      return new WsClientHeaderAuthenticator(this);
     }
+  }
 }

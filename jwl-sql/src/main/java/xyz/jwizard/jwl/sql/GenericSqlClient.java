@@ -26,39 +26,39 @@ import xyz.jwizard.jwl.sql.pool.ManagedDataSource;
 import javax.sql.DataSource;
 
 public abstract class GenericSqlClient extends IdempotentService
-        implements SqlClient, SqlClientLifecycle {
-    private final SqlDatabaseConfig config;
-    private final ConnectionPoolFactory poolFactory;
+    implements SqlClient, SqlClientLifecycle {
+  private final SqlDatabaseConfig config;
+  private final ConnectionPoolFactory poolFactory;
 
-    private DataSource dataSource;
-    private Runnable closeAction;
+  private DataSource dataSource;
+  private Runnable closeAction;
 
-    protected GenericSqlClient(SqlDatabaseConfig config, ConnectionPoolFactory poolFactory) {
-        this.config = config;
-        this.poolFactory = poolFactory;
+  protected GenericSqlClient(SqlDatabaseConfig config, ConnectionPoolFactory poolFactory) {
+    this.config = config;
+    this.poolFactory = poolFactory;
+  }
+
+  @Override
+  protected final void onStart() {
+    if (dataSource != null) {
+      log.warn("Database client for '{}' is already started", config.databaseName());
+      return;
     }
+    log.info("Starting database connection pool for: {}", config.databaseName());
+    final ManagedDataSource pool = poolFactory.createPool(config);
+    dataSource = pool.dataSource();
+    closeAction = pool.closeAction();
+  }
 
-    @Override
-    protected final void onStart() {
-        if (dataSource != null) {
-            log.warn("Database client for '{}' is already started", config.databaseName());
-            return;
-        }
-        log.info("Starting database connection pool for: {}", config.databaseName());
-        final ManagedDataSource pool = poolFactory.createPool(config);
-        dataSource = pool.dataSource();
-        closeAction = pool.closeAction();
-    }
+  @Override
+  protected final void onStop() {
+    IoUtil.closeQuietly(closeAction);
+  }
 
-    @Override
-    protected final void onStop() {
-        IoUtil.closeQuietly(closeAction);
+  protected DataSource getActiveDataSource() {
+    if (dataSource == null) {
+      throw new IllegalStateException("Database client is not started");
     }
-
-    protected DataSource getActiveDataSource() {
-        if (dataSource == null) {
-            throw new IllegalStateException("Database client is not started");
-        }
-        return dataSource;
-    }
+    return dataSource;
+  }
 }

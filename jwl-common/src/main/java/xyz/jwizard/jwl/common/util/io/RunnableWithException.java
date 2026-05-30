@@ -19,5 +19,5 @@ package xyz.jwizard.jwl.common.util.io;
 
 @FunctionalInterface
 public interface RunnableWithException {
-    void run() throws Exception;
+  void run() throws Exception;
 }

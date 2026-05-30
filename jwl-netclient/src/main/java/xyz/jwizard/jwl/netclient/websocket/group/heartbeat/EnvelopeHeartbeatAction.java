@@ -21,8 +21,8 @@ import xyz.jwizard.jwl.codec.envelope.StandardOpCode;
 import xyz.jwizard.jwl.netclient.websocket.WsClientSession;
 
 public class EnvelopeHeartbeatAction implements WsHeartbeatAction {
-    @Override
-    public void execute(WsClientSession session) {
-        session.sendEnvelope(StandardOpCode.HEARTBEAT);
-    }
+  @Override
+  public void execute(WsClientSession session) {
+    session.sendEnvelope(StandardOpCode.HEARTBEAT);
+  }
 }

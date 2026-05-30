@@ -28,60 +28,57 @@ import xyz.jwizard.jwl.netclient.websocket.group.codec.WsSessionCodec;
 import java.nio.ByteBuffer;
 
 public class JettyWsClientSessionAdapter extends GenericWsSessionAdapter
-        implements WsClientSession {
-    private final ClientGroup clientGroup;
-    private final Session session;
-    private final WsSessionCodec sessionCodec;
+    implements WsClientSession {
+  private final ClientGroup clientGroup;
+  private final Session session;
+  private final WsSessionCodec sessionCodec;
 
-    public JettyWsClientSessionAdapter(
-            ClientGroup clientGroup,
-            Session session,
-            String principalId,
-            WsSessionCodec sessionCodec) {
-        super(principalId, sessionCodec);
-        this.clientGroup = clientGroup;
-        this.session = session;
-        this.sessionCodec = sessionCodec;
-    }
+  public JettyWsClientSessionAdapter(
+      ClientGroup clientGroup, Session session, String principalId, WsSessionCodec sessionCodec) {
+    super(principalId, sessionCodec);
+    this.clientGroup = clientGroup;
+    this.session = session;
+    this.sessionCodec = sessionCodec;
+  }
 
-    @Override
-    public ClientGroup getGroup() {
-        return clientGroup;
-    }
+  @Override
+  public ClientGroup getGroup() {
+    return clientGroup;
+  }
 
-    @Override
-    public void sendObject(Object payload) {
-        sessionCodec.sendObject(payload, this);
-    }
+  @Override
+  public void sendObject(Object payload) {
+    sessionCodec.sendObject(payload, this);
+  }
 
-    @Override
-    public <T> T parse(byte[] payload, Class<T> type) {
-        return sessionCodec.parse(payload, type);
-    }
+  @Override
+  public <T> T parse(byte[] payload, Class<T> type) {
+    return sessionCodec.parse(payload, type);
+  }
 
-    @Override
-    public <T> T parse(String payload, Class<T> type) {
-        return sessionCodec.parse(payload, type);
-    }
+  @Override
+  public <T> T parse(String payload, Class<T> type) {
+    return sessionCodec.parse(payload, type);
+  }
 
-    @Override
-    protected void onSend(String message) {
-        ConcurrentUtil.await(cb -> session.sendText(message, new JettyCallbackAdapter(cb)));
-    }
+  @Override
+  protected void onSend(String message) {
+    ConcurrentUtil.await(cb -> session.sendText(message, new JettyCallbackAdapter(cb)));
+  }
 
-    @Override
-    protected void onSend(byte[] message) {
-        ConcurrentUtil.await(
-                cb -> session.sendBinary(ByteBuffer.wrap(message), new JettyCallbackAdapter(cb)));
-    }
+  @Override
+  protected void onSend(byte[] message) {
+    ConcurrentUtil.await(
+        cb -> session.sendBinary(ByteBuffer.wrap(message), new JettyCallbackAdapter(cb)));
+  }
 
-    @Override
-    protected void onClose(int code, String reason) {
-        ConcurrentUtil.await(cb -> session.close(code, reason, new JettyCallbackAdapter(cb)));
-    }
+  @Override
+  protected void onClose(int code, String reason) {
+    ConcurrentUtil.await(cb -> session.close(code, reason, new JettyCallbackAdapter(cb)));
+  }
 
-    @Override
-    public boolean isClosed() {
-        return !session.isOpen();
-    }
+  @Override
+  public boolean isClosed() {
+    return !session.isOpen();
+  }
 }

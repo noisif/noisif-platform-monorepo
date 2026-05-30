@@ -22,17 +22,17 @@ import java.lang.reflect.Type;
 
 @SuppressWarnings("unused")
 public abstract class TypeReference<T> {
-    private final Type type;
+  private final Type type;
 
-    protected TypeReference() {
-        final Type superclass = getClass().getGenericSuperclass();
-        if (superclass instanceof Class) {
-            throw new IllegalArgumentException("TypeReference requires a type parameter");
-        }
-        this.type = ((ParameterizedType) superclass).getActualTypeArguments()[0];
+  protected TypeReference() {
+    final Type superclass = getClass().getGenericSuperclass();
+    if (superclass instanceof Class) {
+      throw new IllegalArgumentException("TypeReference requires a type parameter");
     }
+    this.type = ((ParameterizedType) superclass).getActualTypeArguments()[0];
+  }
 
-    public Type getType() {
-        return type;
-    }
+  public Type getType() {
+    return type;
+  }
 }

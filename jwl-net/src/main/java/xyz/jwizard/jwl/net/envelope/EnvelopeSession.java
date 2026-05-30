@@ -24,13 +24,13 @@ import xyz.jwizard.jwl.net.NetworkSession;
 import java.util.function.Function;
 
 public interface EnvelopeSession extends NetworkSession {
-    void sendEnvelope(OpCode opCode, Object data);
+  void sendEnvelope(OpCode opCode, Object data);
 
-    default void sendEnvelope(OpCode opCode) {
-        sendEnvelope(opCode, null);
-    }
+  default void sendEnvelope(OpCode opCode) {
+    sendEnvelope(opCode, null);
+  }
 
-    MessageEnvelope<?> unwrap(byte[] payload, Function<Integer, Class<?>> typeResolver);
+  MessageEnvelope<?> unwrap(byte[] payload, Function<Integer, Class<?>> typeResolver);
 
-    MessageEnvelope<?> unwrap(String payload, Function<Integer, Class<?>> typeResolver);
+  MessageEnvelope<?> unwrap(String payload, Function<Integer, Class<?>> typeResolver);
 }

@@ -22,13 +22,13 @@ import xyz.jwizard.jwl.codec.serialization.MessageSerializerException;
 import java.io.Serial;
 
 public class ProtobufSerializerException extends MessageSerializerException {
-    @Serial private static final long serialVersionUID = 1L;
+  @Serial private static final long serialVersionUID = 1L;
 
-    public ProtobufSerializerException(String message, Throwable cause) {
-        super(message, cause);
-    }
+  public ProtobufSerializerException(String message, Throwable cause) {
+    super(message, cause);
+  }
 
-    public ProtobufSerializerException(String message) {
-        super(message);
-    }
+  public ProtobufSerializerException(String message) {
+    super(message);
+  }
 }
