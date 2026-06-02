@@ -33,8 +33,9 @@ repositories {
 dependencies {
   implementation(libs.gradle.node.plugin)
   implementation(libs.protobuf.gradle.plugin)
-  implementation(libs.shadow.marker)
   implementation(libs.protoc)
+  implementation(libs.shadow.marker)
+  implementation(libs.spotless.gradle.plugin)
   implementation(gradleApi())
 }
 
@@ -44,17 +45,21 @@ gradlePlugin {
       id = "xyz.jwizard.jw-service"
       implementationClass = "xyz.jwizard.buildconfig.JwServicePlugin"
     }
-  }
-  plugins {
     create("jwPolyglotJs") {
       id = "xyz.jwizard.jw-polyglot-js"
       implementationClass = "xyz.jwizard.buildconfig.JwPolyglotJsPlugin"
     }
-  }
-  plugins {
     create("jwProtobuf") {
       id = "xyz.jwizard.jw-protobuf"
       implementationClass = "xyz.jwizard.buildconfig.JwProtobufPlugin"
+    }
+    create("jwSpotless") {
+      id = "xyz.jwizard.jw-spotless"
+      implementationClass = "xyz.jwizard.buildconfig.JwSpotlessPlugin"
+    }
+    create("jwSpotlessProtobuf") {
+      id = "xyz.jwizard.jw-spotless-protobuf"
+      implementationClass = "xyz.jwizard.buildconfig.JwSpotlessProtobufPlugin"
     }
   }
 }

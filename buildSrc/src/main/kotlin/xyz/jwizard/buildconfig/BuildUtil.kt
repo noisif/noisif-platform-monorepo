@@ -23,7 +23,6 @@ import org.gradle.api.artifacts.VersionCatalog
 import org.gradle.api.artifacts.VersionCatalogsExtension
 import org.gradle.api.provider.Provider
 import org.gradle.plugin.use.PluginDependency
-import java.io.File
 
 fun getPluginId(accessor: Provider<PluginDependency>): String = accessor.get().pluginId
 
@@ -42,14 +41,13 @@ fun VersionCatalog.getLibrary(alias: String): Provider<MinimalExternalModuleDepe
     IllegalArgumentException("Library '$alias' not found in TOML")
   }
 
-fun buildLicense(
-  licenseFile: File,
-  startToken: String,
-  linePrefix: String,
-  endToken: String,
-): String {
-  val rawText = licenseFile.readText().trim()
-  return "$startToken\n" +
-    rawText.lines().joinToString("\n") { "$linePrefix$it".trimEnd() } +
-    "\n$endToken"
+fun getExecutableOsDependentFileName(): String {
+  val osName = System.getProperty("os.name").lowercase()
+  val arch = System.getProperty("os.arch").lowercase()
+  return when {
+    "win" in osName -> "win-amd64.exe"
+    "mac" in osName && ("aarch" in arch || "arm" in arch) -> "macos-arm64"
+    "mac" in osName -> "macos-amd64"
+    else -> "linux-amd64"
+  }
 }

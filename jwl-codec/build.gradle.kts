@@ -16,8 +16,10 @@
  * Please refer to the LICENSE file in the root directory for full restrictions.
  */
 import xyz.jwizard.buildconfig.JwProtobufPlugin
+import xyz.jwizard.buildconfig.JwSpotlessProtobufPlugin
 
 apply<JwProtobufPlugin>()
+apply<JwSpotlessProtobufPlugin>()
 
 dependencies {
   implementation(libs.jackson.databind)

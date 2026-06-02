@@ -17,10 +17,12 @@
  */
 import xyz.jwizard.buildconfig.JwProtobufPlugin
 import xyz.jwizard.buildconfig.JwServicePlugin
+import xyz.jwizard.buildconfig.JwSpotlessProtobufPlugin
 import xyz.jwizard.buildconfig.jwService
 
 apply<JwServicePlugin>()
 apply<JwProtobufPlugin>()
+apply<JwSpotlessProtobufPlugin>()
 
 jwService {
   packageSuffix.set("ingress")

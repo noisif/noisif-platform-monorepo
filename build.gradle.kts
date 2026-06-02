@@ -15,7 +15,6 @@
  *
  * Please refer to the LICENSE file in the root directory for full restrictions.
  */
-import com.diffplug.spotless.extra.wtp.EclipseWtpFormatterStep
 import net.ltgt.gradle.errorprone.errorprone
 import org.gradle.kotlin.dsl.apply
 import org.gradle.kotlin.dsl.compileOnly
@@ -26,13 +25,12 @@ import org.gradle.kotlin.dsl.implementation
 import org.gradle.kotlin.dsl.java
 import org.gradle.kotlin.dsl.libs
 import org.gradle.kotlin.dsl.repositories
-import org.gradle.kotlin.dsl.spotless
 import org.gradle.kotlin.dsl.testImplementation
 import org.gradle.kotlin.dsl.testRuntimeOnly
 import org.gradle.kotlin.dsl.withType
 import org.gradle.plugins.ide.idea.model.IdeaModel
 import xyz.jwizard.buildconfig.CompactTestOutputListener
-import xyz.jwizard.buildconfig.buildLicense
+import xyz.jwizard.buildconfig.JwSpotlessPlugin
 import xyz.jwizard.buildconfig.getEnv
 import xyz.jwizard.buildconfig.getPluginId
 import xyz.jwizard.buildconfig.registerTestSummaryService
@@ -41,12 +39,10 @@ plugins {
   alias(libs.plugins.error.prone)
   alias(libs.plugins.java)
   alias(libs.plugins.idea)
-  alias(libs.plugins.spotless)
 }
 
 allprojects {
   apply(plugin = getPluginId(rootProject.libs.plugins.idea))
-  apply(plugin = getPluginId(rootProject.libs.plugins.spotless))
 
   group = "xyz.jwizard"
   version = getEnv("VERSION", "0.0.0")
@@ -66,53 +62,7 @@ allprojects {
     }
   }
 
-  spotless {
-    val rawLicenseFile = rootProject.file("spotless/license-header.txt")
-    java {
-      target("src/**/*.java")
-      targetExclude("build/generated/**/*.java")
-      googleJavaFormat() // with 2 space indentation
-      // force enums to be as:
-      // VALUE1,
-      // VALUE2,
-      // ;
-      replaceRegex(
-        "Force enum semicolon to new line with indent",
-        "(?m)^([ \\t]*)(.*?)(,\\s*;)",
-        "$1$2,\n$1;",
-      )
-      // related to eclipse style in .editorconfig, Google makes one gigantic ugly block :(
-      importOrder("\\#", "com", "org", "xyz.jwizard", "", "jakarta", "java", "javax")
-      licenseHeader(buildLicense(rawLicenseFile, "/*", " * ", " */"))
-      trimTrailingWhitespace()
-      endWithNewline()
-    }
-    kotlinGradle {
-      target("**/*.gradle.kts")
-      licenseHeader(
-        buildLicense(rawLicenseFile, "/*", " * ", " */"),
-        """(?m)^\s*[a-zA-Z@_]""",
-      )
-      ktlint().editorConfigOverride(mapOf("indent_size" to "2"))
-      trimTrailingWhitespace()
-      endWithNewline()
-    }
-    format("xml") {
-      target("src/**/*.xml")
-      eclipseWtp(EclipseWtpFormatterStep.XML)
-        .configFile(rootProject.file("spotless/wtp-xml.prefs"))
-      licenseHeader(buildLicense(rawLicenseFile, "<!--", "  ~ ", "  -->"), "^(<[^!?])")
-      trimTrailingWhitespace()
-      endWithNewline()
-    }
-    format("properties") {
-      target("*.properties", "src/**/*.properties")
-      targetExclude("build/**/*.properties")
-      licenseHeader(buildLicense(rawLicenseFile, "#", "# ", "#"), """[a-zA-Z]""")
-      trimTrailingWhitespace()
-      endWithNewline()
-    }
-  }
+  apply<JwSpotlessPlugin>()
 }
 
 subprojects {
