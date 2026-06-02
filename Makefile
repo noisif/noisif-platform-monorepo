@@ -20,11 +20,11 @@ build-cache:
 
 .PHONY: format-check
 format-check:
-	./gradlew spotlessCheck
+	./gradlew :buildSrc:spotlessCheck spotlessCheck
 
 .PHONY: format-apply
 format-apply:
-	./gradlew spotlessApply
+	./gradlew :buildSrc:spotlessApply spotlessApply
 
 include Makefile.docker
 include Makefile.jw
