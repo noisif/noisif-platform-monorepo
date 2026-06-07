@@ -15,7 +15,7 @@
  *
  * Please refer to the LICENSE file in the root directory for full restrictions.
  */
-package xyz.jwizard.buildconfig
+package xyz.jwizard.buildconfig.polyglot
 
 import org.gradle.api.Project
 import org.gradle.api.provider.ListProperty

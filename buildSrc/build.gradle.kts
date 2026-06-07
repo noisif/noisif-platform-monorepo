@@ -43,11 +43,11 @@ gradlePlugin {
   plugins {
     create("jwServicePlugin") {
       id = "xyz.jwizard.jw-service"
-      implementationClass = "xyz.jwizard.buildconfig.JwServicePlugin"
+      implementationClass = "xyz.jwizard.buildconfig.service.JwServicePlugin"
     }
     create("jwPolyglotJs") {
       id = "xyz.jwizard.jw-polyglot-js"
-      implementationClass = "xyz.jwizard.buildconfig.JwPolyglotJsPlugin"
+      implementationClass = "xyz.jwizard.buildconfig.polyglot.JwPolyglotJsPlugin"
     }
     create("jwProtobuf") {
       id = "xyz.jwizard.jw-protobuf"
@@ -55,11 +55,11 @@ gradlePlugin {
     }
     create("jwSpotless") {
       id = "xyz.jwizard.jw-spotless"
-      implementationClass = "xyz.jwizard.buildconfig.JwSpotlessPlugin"
+      implementationClass = "xyz.jwizard.buildconfig.spotless.JwSpotlessPlugin"
     }
     create("jwSpotlessProtobuf") {
       id = "xyz.jwizard.jw-spotless-protobuf"
-      implementationClass = "xyz.jwizard.buildconfig.JwSpotlessProtobufPlugin"
+      implementationClass = "xyz.jwizard.buildconfig.spotless.JwSpotlessProtobufPlugin"
     }
   }
 }

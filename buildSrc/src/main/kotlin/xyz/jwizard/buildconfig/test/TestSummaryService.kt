@@ -15,12 +15,16 @@
  *
  * Please refer to the LICENSE file in the root directory for full restrictions.
  */
-package xyz.jwizard.buildconfig
+package xyz.jwizard.buildconfig.test
 
 import org.gradle.api.Project
 import org.gradle.api.provider.Provider
 import org.gradle.api.services.BuildService
 import org.gradle.api.services.BuildServiceParameters
+import xyz.jwizard.buildconfig.GREEN
+import xyz.jwizard.buildconfig.RED
+import xyz.jwizard.buildconfig.RESET
+import xyz.jwizard.buildconfig.YELLOW
 import java.util.concurrent.atomic.AtomicLong
 
 abstract class TestSummaryService :
@@ -50,9 +54,9 @@ abstract class TestSummaryService :
 
     println("\n$separator")
     println(header)
-    println("Total passed  : $GREEN$passed$RESET")
-    println("Total failed  : $RED$failed$RESET")
-    println("Total skipped : $YELLOW$skipped$RESET")
+    println("Total passed  : ${GREEN}$passed${RESET}")
+    println("Total failed  : ${RED}$failed${RESET}")
+    println("Total skipped : ${YELLOW}$skipped${RESET}")
     println("Grand total   : $total")
     println("$separator\n")
   }

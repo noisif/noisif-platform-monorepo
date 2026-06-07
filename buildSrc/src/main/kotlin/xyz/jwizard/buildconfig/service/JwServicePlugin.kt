@@ -15,7 +15,7 @@
  *
  * Please refer to the LICENSE file in the root directory for full restrictions.
  */
-package xyz.jwizard.buildconfig
+package xyz.jwizard.buildconfig.service
 
 import com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar
 import org.gradle.api.GradleException
@@ -27,6 +27,9 @@ import org.gradle.kotlin.dsl.attributes
 import org.gradle.kotlin.dsl.configure
 import org.gradle.kotlin.dsl.dependencies
 import org.gradle.kotlin.dsl.withType
+import xyz.jwizard.buildconfig.getLibrary
+import xyz.jwizard.buildconfig.getPlugin
+import xyz.jwizard.buildconfig.libs
 import kotlin.reflect.KProperty1
 
 class JwServicePlugin : Plugin<Project> {

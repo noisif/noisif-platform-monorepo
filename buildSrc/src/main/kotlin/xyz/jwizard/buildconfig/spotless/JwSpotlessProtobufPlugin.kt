@@ -15,10 +15,11 @@
  *
  * Please refer to the LICENSE file in the root directory for full restrictions.
  */
-package xyz.jwizard.buildconfig
+package xyz.jwizard.buildconfig.spotless
 
 import com.diffplug.gradle.spotless.SpotlessExtension
 import org.gradle.api.Project
+import xyz.jwizard.buildconfig.getExecutableOsDependentFileName
 import java.io.File
 
 class JwSpotlessProtobufPlugin : JwSpotlessBasePlugin() {

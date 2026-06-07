@@ -15,7 +15,7 @@
  *
  * Please refer to the LICENSE file in the root directory for full restrictions.
  */
-package xyz.jwizard.buildconfig
+package xyz.jwizard.buildconfig.spotless
 
 import com.diffplug.gradle.spotless.SpotlessExtension
 import com.diffplug.spotless.extra.wtp.EclipseWtpFormatterStep

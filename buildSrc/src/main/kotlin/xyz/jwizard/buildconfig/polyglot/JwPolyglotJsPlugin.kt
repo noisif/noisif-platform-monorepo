@@ -15,7 +15,7 @@
  *
  * Please refer to the LICENSE file in the root directory for full restrictions.
  */
-package xyz.jwizard.buildconfig
+package xyz.jwizard.buildconfig.polyglot
 
 import com.github.gradle.node.NodeExtension
 import com.github.gradle.node.NodePlugin

@@ -16,24 +16,12 @@
  * Please refer to the LICENSE file in the root directory for full restrictions.
  */
 import net.ltgt.gradle.errorprone.errorprone
-import org.gradle.kotlin.dsl.apply
-import org.gradle.kotlin.dsl.compileOnly
-import org.gradle.kotlin.dsl.configure
-import org.gradle.kotlin.dsl.dependencies
-import org.gradle.kotlin.dsl.errorprone
-import org.gradle.kotlin.dsl.implementation
-import org.gradle.kotlin.dsl.java
-import org.gradle.kotlin.dsl.libs
-import org.gradle.kotlin.dsl.repositories
-import org.gradle.kotlin.dsl.testImplementation
-import org.gradle.kotlin.dsl.testRuntimeOnly
-import org.gradle.kotlin.dsl.withType
 import org.gradle.plugins.ide.idea.model.IdeaModel
-import xyz.jwizard.buildconfig.CompactTestOutputListener
-import xyz.jwizard.buildconfig.JwSpotlessPlugin
 import xyz.jwizard.buildconfig.getEnv
 import xyz.jwizard.buildconfig.getPluginId
-import xyz.jwizard.buildconfig.registerTestSummaryService
+import xyz.jwizard.buildconfig.spotless.JwSpotlessPlugin
+import xyz.jwizard.buildconfig.test.CompactTestOutputListener
+import xyz.jwizard.buildconfig.test.registerTestSummaryService
 
 plugins {
   alias(libs.plugins.error.prone)

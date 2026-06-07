@@ -15,8 +15,8 @@
  *
  * Please refer to the LICENSE file in the root directory for full restrictions.
  */
-import xyz.jwizard.buildconfig.JwServicePlugin
-import xyz.jwizard.buildconfig.jwService
+import xyz.jwizard.buildconfig.service.JwServicePlugin
+import xyz.jwizard.buildconfig.service.jwService
 
 apply<JwServicePlugin>()
 

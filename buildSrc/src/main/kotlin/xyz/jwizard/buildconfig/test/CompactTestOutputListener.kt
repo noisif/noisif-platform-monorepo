@@ -15,11 +15,15 @@
  *
  * Please refer to the LICENSE file in the root directory for full restrictions.
  */
-package xyz.jwizard.buildconfig
+package xyz.jwizard.buildconfig.test
 
 import org.gradle.api.tasks.testing.TestDescriptor
 import org.gradle.api.tasks.testing.TestListener
 import org.gradle.api.tasks.testing.TestResult
+import xyz.jwizard.buildconfig.GREEN
+import xyz.jwizard.buildconfig.RED
+import xyz.jwizard.buildconfig.RESET
+import xyz.jwizard.buildconfig.YELLOW
 
 class CompactTestOutputListener(private val summaryService: TestSummaryService) : TestListener {
   override fun beforeSuite(suite: TestDescriptor) {
@@ -46,9 +50,9 @@ class CompactTestOutputListener(private val summaryService: TestSummaryService) 
     val maxLength = maxOf(summaryLine.length, totalLine.length)
     val separator = "=".repeat(maxLength)
 
-    val passedStr = "$GREEN$plainPassedStr$RESET"
-    val failedStr = "$RED$plainFailedStr$RESET"
-    val skippedStr = "$YELLOW$plainSkippedStr$RESET"
+    val passedStr = "${GREEN}$plainPassedStr${RESET}"
+    val failedStr = "${RED}$plainFailedStr${RESET}"
+    val skippedStr = "${YELLOW}$plainSkippedStr${RESET}"
 
     println("\n$separator")
     println("Test summary: $passedStr, $failedStr, $skippedStr")
@@ -64,15 +68,15 @@ class CompactTestOutputListener(private val summaryService: TestSummaryService) 
     val simpleClassName = testDescriptor.className?.substringAfterLast('.') ?: "UnknownClass"
     when (result.resultType) {
       TestResult.ResultType.SUCCESS -> {
-        println("$simpleClassName > $name ${GREEN}PASSED$RESET")
+        println("$simpleClassName > $name ${GREEN}PASSED${RESET}")
       }
 
       TestResult.ResultType.FAILURE -> {
-        println("$simpleClassName > $name ${RED}FAILED$RESET")
+        println("$simpleClassName > $name ${RED}FAILED${RESET}")
       }
 
       TestResult.ResultType.SKIPPED -> {
-        println("$simpleClassName > $name ${YELLOW}SKIPPED$RESET")
+        println("$simpleClassName > $name ${YELLOW}SKIPPED${RESET}")
       }
 
       else -> {}
