@@ -27,5 +27,5 @@ format-apply:
 	./gradlew :buildSrc:spotlessApply spotlessApply
 
 include Makefile.docker
-include Makefile.jw
+include Makefile.ns
 include Makefile.tools

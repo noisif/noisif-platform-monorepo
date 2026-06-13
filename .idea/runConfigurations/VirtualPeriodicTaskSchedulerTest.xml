@@ -1,14 +1,14 @@
 <component name="ProjectRunConfigurationManager">
   <configuration default="false" name="VirtualPeriodicTaskSchedulerTest" type="JUnit" factoryName="JUnit" folderName="jwl-common" nameIsGenerated="true">
-    <module name="jwizard-platform-monorepo.jwl-common.test" />
+    <module name="noisif-platform-monorepo.nsl-common.test" />
     <extension name="coverage">
       <pattern>
         <option name="PATTERN" value="xyz.jwizard.jwl.common.util.concurrent.*" />
         <option name="ENABLED" value="true" />
       </pattern>
     </extension>
-    <option name="PACKAGE_NAME" value="xyz.jwizard.jwl.common.util.concurrent" />
-    <option name="MAIN_CLASS_NAME" value="xyz.jwizard.jwl.common.util.concurrent.VirtualPeriodicTaskSchedulerTest" />
+    <option name="PACKAGE_NAME" value="xyz.noisif.nsl.common.util.concurrent" />
+    <option name="MAIN_CLASS_NAME" value="xyz.noisif.nsl.common.util.concurrent.VirtualPeriodicTaskSchedulerTest" />
     <option name="METHOD_NAME" value="" />
     <option name="TEST_OBJECT" value="class" />
     <method v="2">

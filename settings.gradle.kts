@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2022-2026 JWizard. All Rights Reserved.
+ * Copyright (c) 2022-2026 NOISIF. All Rights Reserved.
  *
  * NOTICE: This source code is publicly available for reference
  * and educational purposes only. It is NOT open-source software.
@@ -16,27 +16,27 @@
  * Please refer to the LICENSE file in the root directory for full restrictions.
  */
 
-rootProject.name = "jwizard-platform-monorepo"
+rootProject.name = "noisif-platform-monorepo"
 
-include("jwl-ci")
-include("jwl-codec")
-include("jwl-common")
-include("jwl-contracts")
-include("jwl-graph")
-include("jwl-http")
-include("jwl-i18n")
-include("jwl-kv")
-include("jwl-net")
-include("jwl-netclient")
-include("jwl-queue")
-include("jwl-sql")
-include("jwl-websocket")
+include("nsl-ci")
+include("nsl-codec")
+include("nsl-common")
+include("nsl-contracts")
+include("nsl-graph")
+include("nsl-http")
+include("nsl-i18n")
+include("nsl-kv")
+include("nsl-net")
+include("nsl-netclient")
+include("nsl-queue")
+include("nsl-sql")
+include("nsl-websocket")
 
-include("jws-api")
-include("jws-cli")
-include("jws-gateway")
-include("jws-ingestor")
-include("jws-ingress")
-include("jws-registry")
-include("jws-translator")
-include("jws-worker")
+include("nss-api")
+include("nss-cli")
+include("nss-gateway")
+include("nss-ingestor")
+include("nss-ingress")
+include("nss-registry")
+include("nss-translator")
+include("nss-worker")

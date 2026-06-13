@@ -1,14 +1,14 @@
 <component name="ProjectRunConfigurationManager">
   <configuration default="false" name="JettyRestClientIntegrationTest" type="JUnit" factoryName="JUnit" folderName="jwl-netclient" nameIsGenerated="true">
-    <module name="jwizard-platform-monorepo.jwl-netclient.test" />
+    <module name="noisif-platform-monorepo.nsl-netclient.test" />
     <extension name="coverage">
       <pattern>
         <option name="PATTERN" value="xyz.jwizard.jwl.netclient.rest.jetty.*" />
         <option name="ENABLED" value="true" />
       </pattern>
     </extension>
-    <option name="PACKAGE_NAME" value="xyz.jwizard.jwl.netclient.rest.jetty" />
-    <option name="MAIN_CLASS_NAME" value="xyz.jwizard.jwl.netclient.rest.jetty.JettyRestClientIntegrationTest" />
+    <option name="PACKAGE_NAME" value="xyz.noisif.nsl.netclient.rest.jetty" />
+    <option name="MAIN_CLASS_NAME" value="xyz.noisif.nsl.netclient.rest.jetty.JettyRestClientIntegrationTest" />
     <option name="METHOD_NAME" value="" />
     <option name="TEST_OBJECT" value="class" />
     <method v="2">

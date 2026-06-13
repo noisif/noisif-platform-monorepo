@@ -1,9 +1,0 @@
-{
-    "name": "jws-ingestor-js-assets",
-    "version": "0.0.0",
-    "private": true,
-    "dependencies": {
-        "@yarnpkg/parsers": "^3.0.3",
-        "esbuild": "^0.28.0"
-    }
-}

@@ -1,0 +1,69 @@
+/*
+ * Copyright (c) 2022-2026 NOISIF. All Rights Reserved.
+ *
+ * NOTICE: This source code is publicly available for reference
+ * and educational purposes only. It is NOT open-source software.
+ *
+ * You are granted permission to view this code. However, you are strictly
+ * PROHIBITED from copying, modifying, or merging this code into other software,
+ * distributing, publishing, or sublicensing this code, using this code for
+ * commercial purposes or in production environments.
+ *
+ * THIS SOFTWARE IS PROVIDED "AS IS" WITHOUT WARRANTY OF ANY KIND, EITHER
+ * EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO WARRANTIES OF
+ * MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE.
+ *
+ * Please refer to the LICENSE file in the root directory for full restrictions.
+ */
+package xyz.noisif.nsl.http.writer;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import xyz.noisif.nsl.http.HttpResponse;
+import xyz.noisif.nsl.http.ResponseEntity;
+
+import java.util.Map;
+import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
+
+// implements cache, O(1) complexity
+public class ResponseEntityResponseWriter implements ResponseWriter {
+  private static final Logger LOG = LoggerFactory.getLogger(ResponseEntityResponseWriter.class);
+
+  private final Set<ResponseWriter> delegates;
+  private final Map<Class<?>, ResponseWriter> writerCache = new ConcurrentHashMap<>();
+
+  public ResponseEntityResponseWriter(Set<ResponseWriter> delegates) {
+    this.delegates = delegates;
+  }
+
+  @Override
+  public boolean supports(Object result) {
+    return result instanceof ResponseEntity;
+  }
+
+  @Override
+  public void write(HttpResponse res, Object result) throws Exception {
+    final ResponseEntity<?> entity = (ResponseEntity<?>) result;
+    res.setStatus(entity.status());
+
+    final Object body = entity.body();
+    final Class<?> bodyClass = (body == null) ? void.class : body.getClass();
+
+    final ResponseWriter writer =
+        writerCache.computeIfAbsent(
+            bodyClass,
+            clazz ->
+                delegates.stream()
+                    .filter(w -> w != this && w.supports(body))
+                    .findFirst()
+                    .orElse(null));
+    if (writer != null) {
+      writer.write(res, body);
+      return;
+    }
+    LOG.error("No suitable ResponseWriter found for body type: {}", bodyClass);
+    res.end();
+  }
+}

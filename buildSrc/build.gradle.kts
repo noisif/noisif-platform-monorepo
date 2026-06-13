@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2022-2026 JWizard. All Rights Reserved.
+ * Copyright (c) 2022-2026 NOISIF. All Rights Reserved.
  *
  * NOTICE: This source code is publicly available for reference
  * and educational purposes only. It is NOT open-source software.
@@ -41,25 +41,25 @@ dependencies {
 
 gradlePlugin {
   plugins {
-    create("jwServicePlugin") {
-      id = "xyz.jwizard.jw-service"
-      implementationClass = "xyz.jwizard.buildconfig.service.JwServicePlugin"
+    create("nsServicePlugin") {
+      id = "xyz.noisif.ns-service"
+      implementationClass = "xyz.noisif.buildconfig.service.NsServicePlugin"
     }
-    create("jwPolyglotJs") {
-      id = "xyz.jwizard.jw-polyglot-js"
-      implementationClass = "xyz.jwizard.buildconfig.polyglot.JwPolyglotJsPlugin"
+    create("nsPolyglotJs") {
+      id = "xyz.noisif.ns-polyglot-js"
+      implementationClass = "xyz.noisif.buildconfig.polyglot.NsPolyglotJsPlugin"
     }
-    create("jwProtobuf") {
-      id = "xyz.jwizard.jw-protobuf"
-      implementationClass = "xyz.jwizard.buildconfig.JwProtobufPlugin"
+    create("nsProtobuf") {
+      id = "xyz.noisif.ns-protobuf"
+      implementationClass = "xyz.noisif.buildconfig.NsProtobufPlugin"
     }
-    create("jwSpotless") {
-      id = "xyz.jwizard.jw-spotless"
-      implementationClass = "xyz.jwizard.buildconfig.spotless.JwSpotlessPlugin"
+    create("nsSpotless") {
+      id = "xyz.noisif.ns-spotless"
+      implementationClass = "xyz.noisif.buildconfig.spotless.NsSpotlessPlugin"
     }
-    create("jwSpotlessProtobuf") {
-      id = "xyz.jwizard.jw-spotless-protobuf"
-      implementationClass = "xyz.jwizard.buildconfig.spotless.JwSpotlessProtobufPlugin"
+    create("nsSpotlessProtobuf") {
+      id = "xyz.noisif.ns-spotless-protobuf"
+      implementationClass = "xyz.noisif.buildconfig.spotless.NsSpotlessProtobufPlugin"
     }
   }
 }

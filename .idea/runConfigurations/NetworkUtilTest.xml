@@ -1,14 +1,14 @@
 <component name="ProjectRunConfigurationManager">
   <configuration default="false" name="NetworkUtilTest" type="JUnit" factoryName="JUnit" folderName="jwl-net" nameIsGenerated="true">
-    <module name="jwizard-platform-monorepo.jwl-net.test" />
+    <module name="noisif-platform-monorepo.nsl-net.test" />
     <extension name="coverage">
       <pattern>
         <option name="PATTERN" value="xyz.jwizard.jwl.net.*" />
         <option name="ENABLED" value="true" />
       </pattern>
     </extension>
-    <option name="PACKAGE_NAME" value="xyz.jwizard.jwl.net" />
-    <option name="MAIN_CLASS_NAME" value="xyz.jwizard.jwl.net.NetworkUtilTest" />
+    <option name="PACKAGE_NAME" value="xyz.noisif.nsl.net" />
+    <option name="MAIN_CLASS_NAME" value="xyz.noisif.nsl.net.NetworkUtilTest" />
     <option name="METHOD_NAME" value="" />
     <option name="TEST_OBJECT" value="class" />
     <method v="2">

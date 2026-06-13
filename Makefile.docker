@@ -1,12 +1,12 @@
 CORE_SERVICES = \
-	jwizard-rabbitmq \
-	jwizard-redis \
-	jwizard-postgres \
-	jwizard-neo4j
+	noisif-rabbitmq \
+	noisif-redis \
+	noisif-postgres \
+	noisif-neo4j
 
 UI_SERVICES = \
-	jwizard-redis-ui \
-	jwizard-postgres-ui
+	noisif-redis-ui \
+	noisif-postgres-ui
 
 # up all core services (without ui panels)
 .PHONY: up-core

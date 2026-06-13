@@ -1,0 +1,42 @@
+/*
+ * Copyright (c) 2022-2026 NOISIF. All Rights Reserved.
+ *
+ * NOTICE: This source code is publicly available for reference
+ * and educational purposes only. It is NOT open-source software.
+ *
+ * You are granted permission to view this code. However, you are strictly
+ * PROHIBITED from copying, modifying, or merging this code into other software,
+ * distributing, publishing, or sublicensing this code, using this code for
+ * commercial purposes or in production environments.
+ *
+ * THIS SOFTWARE IS PROVIDED "AS IS" WITHOUT WARRANTY OF ANY KIND, EITHER
+ * EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO WARRANTIES OF
+ * MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE.
+ *
+ * Please refer to the LICENSE file in the root directory for full restrictions.
+ */
+package xyz.noisif.nsl.http.validation.validator;
+
+import xyz.noisif.nsl.http.annotation.Validator;
+import xyz.noisif.nsl.http.annotation.validation.NotNull;
+import xyz.noisif.nsl.http.validation.AnnotationValidator;
+import xyz.noisif.nsl.http.validation.ValidationException;
+
+import java.lang.annotation.Annotation;
+import java.lang.reflect.Field;
+
+@Validator
+public class NotNullValidator implements AnnotationValidator<NotNull> {
+  @Override
+  public boolean supports(Class<? extends Annotation> annotationType) {
+    return NotNull.class.equals(annotationType);
+  }
+
+  @Override
+  public void validate(NotNull annotation, Field field, Object value) {
+    if (value != null) {
+      return;
+    }
+    throw new ValidationException("Field '" + field.getName() + "' " + annotation.message());
+  }
+}

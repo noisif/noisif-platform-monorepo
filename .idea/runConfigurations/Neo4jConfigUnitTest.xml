@@ -1,14 +1,14 @@
 <component name="ProjectRunConfigurationManager">
   <configuration default="false" name="Neo4jConfigUnitTest" type="JUnit" factoryName="JUnit" folderName="jwl-graph" nameIsGenerated="true">
-    <module name="jwizard-platform-monorepo.jwl-graph.test" />
+    <module name="noisif-platform-monorepo.nsl-graph.test" />
     <extension name="coverage">
       <pattern>
         <option name="PATTERN" value="xyz.jwizard.jwl.graph.neo4j.*" />
         <option name="ENABLED" value="true" />
       </pattern>
     </extension>
-    <option name="PACKAGE_NAME" value="xyz.jwizard.jwl.graph.neo4j" />
-    <option name="MAIN_CLASS_NAME" value="xyz.jwizard.jwl.graph.neo4j.Neo4jConfigUnitTest" />
+    <option name="PACKAGE_NAME" value="xyz.noisif.nsl.graph.neo4j" />
+    <option name="MAIN_CLASS_NAME" value="xyz.noisif.nsl.graph.neo4j.Neo4jConfigUnitTest" />
     <option name="METHOD_NAME" value="" />
     <option name="TEST_OBJECT" value="class" />
     <method v="2">

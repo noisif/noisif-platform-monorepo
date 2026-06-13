@@ -1,48 +1,48 @@
-name: jwizard
+name: noisif
 
 services:
-  jwizard-rabbitmq:
-    container_name: jwizard-rabbitmq
+  noisif-rabbitmq:
+    container_name: noisif-rabbitmq
     image: rabbitmq:3-management
     ports:
-      - '${JW_RABBITMQ_AMQP_PORT:-5672}:5672'
-      - '${JW_RABBITMQ_PANEL_PORT:-15672}:15672'
+      - '${NS_RABBITMQ_AMQP_PORT:-5672}:5672'
+      - '${NS_RABBITMQ_PANEL_PORT:-15672}:15672'
     environment:
       RABBITMQ_DEFAULT_USER: "guest"
       RABBITMQ_DEFAULT_PASS: "guest"
-      RABBITMQ_DEFAULT_VHOST: "jwizard-main"
+      RABBITMQ_DEFAULT_VHOST: "noisif-main"
     volumes:
       - ./.volumes/rabbitmq/rabbitmq-volume:/var/lib/rabbitmq
     networks:
-      - jwizard-network
+      - noisif-network
 
-  jwizard-redis:
-    container_name: jwizard-redis
+  noisif-redis:
+    container_name: noisif-redis
     image: redis:7.2-alpine
     ports:
-      - "${JW_REDIS_SINGLE_NODE_PORT:-6379}:6379"
+      - "${NS_REDIS_SINGLE_NODE_PORT:-6379}:6379"
     volumes:
       - ./.volumes/redis/redis-volume:/data
     networks:
-      - jwizard-network
+      - noisif-network
 
-  jwizard-redis-ui:
-    container_name: jwizard-redis-ui
+  noisif-redis-ui:
+    container_name: noisif-redis-ui
     image: rediscommander/redis-commander:latest
     ports:
-      - "${JW_REDIS_PANEL_PORT:-8081}:8081"
+      - "${NS_REDIS_PANEL_PORT:-8081}:8081"
     environment:
-      REDIS_HOSTS: local:jwizard-redis:6379
+      REDIS_HOSTS: local:noisif-redis:6379
     depends_on:
-      - jwizard-redis
+      - noisif-redis
     networks:
-      - jwizard-network
+      - noisif-network
 
-  jwizard-postgres:
-    container_name: jwizard-postgres
+  noisif-postgres:
+    container_name: noisif-postgres
     image: postgres:16-alpine
     ports:
-      - "${JW_POSTGRES_DB_PORT:-5432}:5432"
+      - "${NS_POSTGRES_DB_PORT:-5432}:5432"
     environment:
       POSTGRES_USER: "postgres"
       POSTGRES_PASSWORD: "root"
@@ -51,17 +51,17 @@ services:
       - ./.volumes/postgres/postgres_init.sql:/docker-entrypoint-initdb.d/init.sql
       - ./.volumes/postgres/postgres-volume:/var/lib/postgresql/data
     networks:
-      - jwizard-network
+      - noisif-network
 
-  jwizard-postgres-ui:
-    container_name: jwizard-postgres-ui
+  noisif-postgres-ui:
+    container_name: noisif-postgres-ui
     build:
       context: ./.volumes/pgadmin
     pull_policy: build
     ports:
-      - "${JW_POSTGRES_PANEL_PORT:-8082}:80"
+      - "${NS_POSTGRES_PANEL_PORT:-8082}:80"
     environment:
-      PGADMIN_DEFAULT_EMAIL: "dev@jwizard.xyz"
+      PGADMIN_DEFAULT_EMAIL: "dev@noisif.xyz"
       PGADMIN_DEFAULT_PASSWORD: "root"
       PGADMIN_CONFIG_ENHANCED_COOKIE_PROTECTION: "False"
     entrypoint: /usr/local/bin/entrypoint-wrapper
@@ -69,29 +69,29 @@ services:
       - ./.volumes/pgadmin/servers.json:/pgadmin4/servers.json:ro
       - ./.volumes/pgadmin/pgpassfile:/tmp/mountpoint.pgpass
     depends_on:
-      - jwizard-postgres
+      - noisif-postgres
     networks:
-      - jwizard-network
+      - noisif-network
 
-  jwizard-neo4j:
-    container_name: jwizard-neo4j
+  noisif-neo4j:
+    container_name: noisif-neo4j
     image: neo4j:5.12.0
     ports:
-      - "${JW_NEO4J_PANEL_PORT:-7474}:7474"
-      - "${JW_NEO4J_DB_PORT:-7687}:7687"
+      - "${NS_NEO4J_PANEL_PORT:-7474}:7474"
+      - "${NS_NEO4J_DB_PORT:-7687}:7687"
     volumes:
       - ./.volumes/neo4j/neo4j-volume/data:/data
       - ./.volumes/neo4j/neo4j-volume/plugins:/plugins
     environment:
       NEO4J_AUTH: neo4j/root
-      NEO4J_initial_dbms_default__database: jw-oss
+      NEO4J_initial_dbms_default__database: ns-oss
       NEO4J_dbms_security_auth__minimum__password__length: 3
       NEO4J_server_memory_heap_initial__size: 512m
       NEO4J_server_memory_heap_max__size: 1G
       NEO4J_server_memory_pagecache_size: 512m
     networks:
-      - jwizard-network
+      - noisif-network
 
 networks:
-  jwizard-network:
+  noisif-network:
     driver: bridge

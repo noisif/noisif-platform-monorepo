@@ -1,14 +1,14 @@
 <component name="ProjectRunConfigurationManager">
   <configuration default="false" name="DependencyInjectionTest" type="JUnit" factoryName="JUnit" folderName="jwl-common" nameIsGenerated="true">
-    <module name="jwizard-platform-monorepo.jwl-common.test" />
+    <module name="noisif-platform-monorepo.nsl-common.test" />
     <extension name="coverage">
       <pattern>
         <option name="PATTERN" value="xyz.jwizard.jwl.common.di.annotation.*" />
         <option name="ENABLED" value="true" />
       </pattern>
     </extension>
-    <option name="PACKAGE_NAME" value="xyz.jwizard.jwl.common.di" />
-    <option name="MAIN_CLASS_NAME" value="xyz.jwizard.jwl.common.di.DependencyInjectionTest" />
+    <option name="PACKAGE_NAME" value="xyz.noisif.nsl.common.di" />
+    <option name="MAIN_CLASS_NAME" value="xyz.noisif.nsl.common.di.DependencyInjectionTest" />
     <option name="METHOD_NAME" value="" />
     <option name="TEST_OBJECT" value="class" />
     <option name="VM_PARAMETERS" value="-ea -XX:+EnableDynamicAgentLoading -Xshare:off" />

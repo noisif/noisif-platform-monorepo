@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2022-2026 JWizard. All Rights Reserved.
+ * Copyright (c) 2022-2026 NOISIF. All Rights Reserved.
  *
  * NOTICE: This source code is publicly available for reference
  * and educational purposes only. It is NOT open-source software.
@@ -17,11 +17,11 @@
  */
 import net.ltgt.gradle.errorprone.errorprone
 import org.gradle.plugins.ide.idea.model.IdeaModel
-import xyz.jwizard.buildconfig.getEnv
-import xyz.jwizard.buildconfig.getPluginId
-import xyz.jwizard.buildconfig.spotless.JwSpotlessPlugin
-import xyz.jwizard.buildconfig.test.CompactTestOutputListener
-import xyz.jwizard.buildconfig.test.registerTestSummaryService
+import xyz.noisif.buildconfig.getEnv
+import xyz.noisif.buildconfig.getPluginId
+import xyz.noisif.buildconfig.spotless.NsSpotlessPlugin
+import xyz.noisif.buildconfig.test.CompactTestOutputListener
+import xyz.noisif.buildconfig.test.registerTestSummaryService
 
 plugins {
   alias(libs.plugins.error.prone)
@@ -32,7 +32,7 @@ plugins {
 allprojects {
   apply(plugin = getPluginId(rootProject.libs.plugins.idea))
 
-  group = "xyz.jwizard"
+  group = "xyz.noisif"
   version = getEnv("VERSION", "0.0.0")
 
   repositories {
@@ -50,7 +50,7 @@ allprojects {
     }
   }
 
-  apply<JwSpotlessPlugin>()
+  apply<NsSpotlessPlugin>()
 }
 
 subprojects {

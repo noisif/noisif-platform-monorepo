@@ -1,14 +1,14 @@
 <component name="ProjectRunConfigurationManager">
   <configuration default="false" name="RetryExecutorTest" type="JUnit" factoryName="JUnit" folderName="jwl-common" nameIsGenerated="true">
-    <module name="jwizard-platform-monorepo.jwl-common.test" />
+    <module name="noisif-platform-monorepo.nsl-common.test" />
     <extension name="coverage">
       <pattern>
         <option name="PATTERN" value="xyz.jwizard.jwl.common.retry.*" />
         <option name="ENABLED" value="true" />
       </pattern>
     </extension>
-    <option name="PACKAGE_NAME" value="xyz.jwizard.jwl.common.retry" />
-    <option name="MAIN_CLASS_NAME" value="xyz.jwizard.jwl.common.retry.RetryExecutorTest" />
+    <option name="PACKAGE_NAME" value="xyz.noisif.nsl.common.retry" />
+    <option name="MAIN_CLASS_NAME" value="xyz.noisif.nsl.common.retry.RetryExecutorTest" />
     <option name="METHOD_NAME" value="" />
     <option name="TEST_OBJECT" value="class" />
     <option name="VM_PARAMETERS" value="-ea -XX:+EnableDynamicAgentLoading -Xshare:off" />

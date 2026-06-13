@@ -1,14 +1,14 @@
 <component name="ProjectRunConfigurationManager">
   <configuration default="false" name="RabbitMqServerIntegrationTest" type="JUnit" factoryName="JUnit" folderName="jwl-queue" nameIsGenerated="true">
-    <module name="jwizard-platform-monorepo.jwl-queue.test" />
+    <module name="noisif-platform-monorepo.nsl-queue.test" />
     <extension name="coverage">
       <pattern>
         <option name="PATTERN" value="xyz.jwizard.jwl.queue.rabbitmq.*" />
         <option name="ENABLED" value="true" />
       </pattern>
     </extension>
-    <option name="PACKAGE_NAME" value="xyz.jwizard.jwl.queue.rabbitmq" />
-    <option name="MAIN_CLASS_NAME" value="xyz.jwizard.jwl.queue.rabbitmq.RabbitMqServerIntegrationTest" />
+    <option name="PACKAGE_NAME" value="xyz.noisif.nsl.queue.rabbitmq" />
+    <option name="MAIN_CLASS_NAME" value="xyz.noisif.nsl.queue.rabbitmq.RabbitMqServerIntegrationTest" />
     <option name="METHOD_NAME" value="" />
     <option name="TEST_OBJECT" value="class" />
     <option name="VM_PARAMETERS" value="-ea -XX:+EnableDynamicAgentLoading -Xshare:off" />

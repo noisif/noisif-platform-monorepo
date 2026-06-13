@@ -1,2 +1,2 @@
-CREATE DATABASE jw_main;
-CREATE DATABASE jw_telemetry;
+CREATE DATABASE ns_main;
+CREATE DATABASE ns_telemetry;

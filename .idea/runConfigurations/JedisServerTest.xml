@@ -1,14 +1,14 @@
 <component name="ProjectRunConfigurationManager">
   <configuration default="false" name="JedisServerTest" type="JUnit" factoryName="JUnit" folderName="jwl-kv" nameIsGenerated="true">
-    <module name="jwizard-platform-monorepo.jwl-kv.test" />
+    <module name="noisif-platform-monorepo.nsl-kv.test" />
     <extension name="coverage">
       <pattern>
         <option name="PATTERN" value="xyz.jwizard.jwl.kv.jedis.pubsub.*" />
         <option name="ENABLED" value="true" />
       </pattern>
     </extension>
-    <option name="PACKAGE_NAME" value="xyz.jwizard.jwl.kv.jedis" />
-    <option name="MAIN_CLASS_NAME" value="xyz.jwizard.jwl.kv.jedis.JedisServerTest" />
+    <option name="PACKAGE_NAME" value="xyz.noisif.nsl.kv.jedis" />
+    <option name="MAIN_CLASS_NAME" value="xyz.noisif.nsl.kv.jedis.JedisServerTest" />
     <option name="METHOD_NAME" value="" />
     <option name="TEST_OBJECT" value="class" />
     <option name="VM_PARAMETERS" value="-ea -XX:+EnableDynamicAgentLoading -Xshare:off" />

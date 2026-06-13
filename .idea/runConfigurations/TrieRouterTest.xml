@@ -1,14 +1,14 @@
 <component name="ProjectRunConfigurationManager">
   <configuration default="false" name="TrieRouterTest" type="JUnit" factoryName="JUnit" folderName="jwl-http" nameIsGenerated="true">
-    <module name="jwizard-platform-monorepo.jwl-http.test" />
+    <module name="noisif-platform-monorepo.nsl-http.test" />
     <extension name="coverage">
       <pattern>
         <option name="PATTERN" value="xyz.jwizard.jwl.transport.http.route.*" />
         <option name="ENABLED" value="true" />
       </pattern>
     </extension>
-    <option name="PACKAGE_NAME" value="xyz.jwizard.jwl.http.route" />
-    <option name="MAIN_CLASS_NAME" value="xyz.jwizard.jwl.http.route.TrieRouterTest" />
+    <option name="PACKAGE_NAME" value="xyz.noisif.nsl.http.route" />
+    <option name="MAIN_CLASS_NAME" value="xyz.noisif.nsl.http.route.TrieRouterTest" />
     <option name="METHOD_NAME" value="" />
     <option name="TEST_OBJECT" value="class" />
     <option name="VM_PARAMETERS" value="-ea -XX:+EnableDynamicAgentLoading -Xshare:off" />

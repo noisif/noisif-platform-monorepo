@@ -1,14 +1,14 @@
 <component name="ProjectRunConfigurationManager">
   <configuration default="false" name="JettyHttpServerIntegrationTest" type="JUnit" factoryName="JUnit" folderName="jwl-http" nameIsGenerated="true">
-    <module name="jwizard-platform-monorepo.jwl-http.test" />
+    <module name="noisif-platform-monorepo.nsl-http.test" />
     <extension name="coverage">
       <pattern>
         <option name="PATTERN" value="xyz.jwizard.jwl.transport.http.*" />
         <option name="ENABLED" value="true" />
       </pattern>
     </extension>
-    <option name="PACKAGE_NAME" value="xyz.jwizard.jwl.http.jetty" />
-    <option name="MAIN_CLASS_NAME" value="xyz.jwizard.jwl.http.jetty.JettyHttpServerIntegrationTest" />
+    <option name="PACKAGE_NAME" value="xyz.noisif.nsl.http.jetty" />
+    <option name="MAIN_CLASS_NAME" value="xyz.noisif.nsl.http.jetty.JettyHttpServerIntegrationTest" />
     <option name="METHOD_NAME" value="" />
     <option name="TEST_OBJECT" value="class" />
     <method v="2">

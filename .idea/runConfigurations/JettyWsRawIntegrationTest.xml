@@ -1,14 +1,14 @@
 <component name="ProjectRunConfigurationManager">
   <configuration default="false" name="JettyWsRawIntegrationTest" type="JUnit" factoryName="JUnit" folderName="jwl-netclient" nameIsGenerated="true">
-    <module name="jwizard-platform-monorepo.jwl-netclient.test" />
+    <module name="noisif-platform-monorepo.nsl-netclient.test" />
     <extension name="coverage">
       <pattern>
         <option name="PATTERN" value="xyz.jwizard.jwl.netclient.websocket.jetty.*" />
         <option name="ENABLED" value="true" />
       </pattern>
     </extension>
-    <option name="PACKAGE_NAME" value="xyz.jwizard.jwl.netclient.websocket.jetty" />
-    <option name="MAIN_CLASS_NAME" value="xyz.jwizard.jwl.netclient.websocket.jetty.JettyWsRawIntegrationTest" />
+    <option name="PACKAGE_NAME" value="xyz.noisif.nsl.netclient.websocket.jetty" />
+    <option name="MAIN_CLASS_NAME" value="xyz.noisif.nsl.netclient.websocket.jetty.JettyWsRawIntegrationTest" />
     <option name="METHOD_NAME" value="" />
     <option name="TEST_OBJECT" value="class" />
     <option name="VM_PARAMETERS" value="-ea -XX:+EnableDynamicAgentLoading -Xshare:off" />

@@ -1,4 +1,4 @@
-Copyright (c) 2022-$YEAR JWizard. All Rights Reserved.
+Copyright (c) 2022-$YEAR NOISIF. All Rights Reserved.
 
 NOTICE: This source code is publicly available for reference
 and educational purposes only. It is NOT open-source software.

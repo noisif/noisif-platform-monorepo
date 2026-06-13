@@ -8,7 +8,7 @@
 ## License
 
 ```
-Copyright (c) 2022-2026 JWizard. All Rights Reserved.
+Copyright (c) 2022-2026 NOISIF. All Rights Reserved.
 
 This source code is provided solely for educational and reference purposes, and to ensure the
 transparency of the software's operation.

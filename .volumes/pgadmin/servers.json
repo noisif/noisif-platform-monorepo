@@ -1,16 +1,16 @@
 {
-    "Servers": {
-        "1": {
-            "Name": "JWizard database cluster",
-            "Group": "Servers",
-            "Host": "jwizard-postgres",
-            "Port": 5432,
-            "MaintenanceDB": "postgres",
-            "Username": "postgres",
-            "SSLMode": "prefer",
-            "ConnectionParameters": {
-                "passfile": "/.pgpass"
-            }
-        }
+  "Servers": {
+    "1": {
+      "Name": "NOISIF database cluster",
+      "Group": "Servers",
+      "Host": "noisif-postgres",
+      "Port": 5432,
+      "MaintenanceDB": "postgres",
+      "Username": "postgres",
+      "SSLMode": "prefer",
+      "ConnectionParameters": {
+        "passfile": "/.pgpass"
+      }
     }
+  }
 }

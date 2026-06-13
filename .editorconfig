@@ -12,7 +12,7 @@ max_line_length = 100
 [*.java]
 ij_java_class_count_to_use_import_on_demand = 999
 ij_java_names_count_to_use_import_on_demand = 999
-ij_java_imports_layout = $*, |, com.**, |, org.**, |, xyz.jwizard.**, |, *, |, jakarta.**, |, java.**, |, javax.**
+ij_java_imports_layout = $*, |, com.**, |, org.**, |, xyz.noisif.**, |, *, |, jakarta.**, |, java.**, |, javax.**
 
 [{Makefile,*.mk}]
 indent_style = tab

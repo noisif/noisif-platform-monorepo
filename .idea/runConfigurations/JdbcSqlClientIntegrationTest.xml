@@ -1,14 +1,14 @@
 <component name="ProjectRunConfigurationManager">
   <configuration default="false" name="JdbcSqlClientIntegrationTest" type="JUnit" factoryName="JUnit" folderName="jwl-sql" nameIsGenerated="true">
-    <module name="jwizard-platform-monorepo.jwl-sql.test" />
+    <module name="noisif-platform-monorepo.nsl-sql.test" />
     <extension name="coverage">
       <pattern>
         <option name="PATTERN" value="xyz.jwizard.jwl.sql.jdbc.*" />
         <option name="ENABLED" value="true" />
       </pattern>
     </extension>
-    <option name="PACKAGE_NAME" value="xyz.jwizard.jwl.sql.jdbc" />
-    <option name="MAIN_CLASS_NAME" value="xyz.jwizard.jwl.sql.jdbc.JdbcSqlClientIntegrationTest" />
+    <option name="PACKAGE_NAME" value="xyz.noisif.nsl.sql.jdbc" />
+    <option name="MAIN_CLASS_NAME" value="xyz.noisif.nsl.sql.jdbc.JdbcSqlClientIntegrationTest" />
     <option name="METHOD_NAME" value="" />
     <option name="TEST_OBJECT" value="class" />
     <method v="2">

@@ -1,0 +1,34 @@
+ALL_MODULES := $(wildcard nsl-*) $(wildcard nss-*)
+
+TEST_TARGETS         := $(addprefix test-, $(ALL_MODULES))
+FORMAT_CHECK_TARGETS := $(addprefix format-check-, $(ALL_MODULES))
+FORMAT_APPLY_TARGETS := $(addprefix format-apply-, $(ALL_MODULES))
+PROTO_TARGETS        := $(addprefix proto-, $(ALL_MODULES))
+
+.PHONY: $(TEST_TARGETS)
+$(TEST_TARGETS): test-%:
+	./gradlew :$*:test
+
+.PHONY: $(FORMAT_CHECK_TARGETS)
+$(FORMAT_CHECK_TARGETS): format-check-%:
+	./gradlew :$*:spotlessCheck
+
+.PHONY: $(FORMAT_APPLY_TARGETS)
+$(FORMAT_APPLY_TARGETS): format-apply-%:
+	./gradlew :$*:spotlessApply
+
+.PHONY: $(PROTO_TARGETS)
+$(PROTO_TARGETS): proto-%:
+	./gradlew :$*:generateProto
+
+NSS_MODULES := $(wildcard nss-*)
+RUN_TARGETS := $(addprefix run-, $(NSS_MODULES))
+JAR_TARGETS := $(addprefix jar-, $(NSS_MODULES))
+
+.PHONY: $(RUN_TARGETS)
+$(RUN_TARGETS): run-%:
+	./gradlew :$*:run -q
+
+.PHONY: $(JAR_TARGETS)
+$(JAR_TARGETS): jar-%:
+	./gradlew :$*:shadowJar

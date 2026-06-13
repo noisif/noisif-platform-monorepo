@@ -1,14 +1,14 @@
 <component name="ProjectRunConfigurationManager">
   <configuration default="false" name="KahnLifecycleGraphTest" type="JUnit" factoryName="JUnit" folderName="jwl-common" nameIsGenerated="true">
-    <module name="jwizard-platform-monorepo.jwl-common.test" />
+    <module name="noisif-platform-monorepo.nsl-common.test" />
     <extension name="coverage">
       <pattern>
         <option name="PATTERN" value="xyz.jwizard.jwl.common.bootstrap.lifecycle.*" />
         <option name="ENABLED" value="true" />
       </pattern>
     </extension>
-    <option name="PACKAGE_NAME" value="xyz.jwizard.jwl.common.bootstrap.lifecycle" />
-    <option name="MAIN_CLASS_NAME" value="xyz.jwizard.jwl.common.bootstrap.lifecycle.KahnLifecycleGraphTest" />
+    <option name="PACKAGE_NAME" value="xyz.noisif.nsl.common.bootstrap.lifecycle" />
+    <option name="MAIN_CLASS_NAME" value="xyz.noisif.nsl.common.bootstrap.lifecycle.KahnLifecycleGraphTest" />
     <option name="METHOD_NAME" value="" />
     <option name="TEST_OBJECT" value="class" />
     <method v="2">

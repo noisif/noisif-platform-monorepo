@@ -1,1 +1,1 @@
-jwizard-postgres:5432:*:postgres:root
+noisif-postgres:5432:*:postgres:root

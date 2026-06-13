@@ -1,14 +1,14 @@
 <component name="ProjectRunConfigurationManager">
   <configuration default="false" name="OpCodeTest" type="JUnit" factoryName="JUnit" folderName="jwl-codec" nameIsGenerated="true">
-    <module name="jwizard-platform-monorepo.jwl-codec.test" />
+    <module name="noisif-platform-monorepo.nsl-codec.test" />
     <extension name="coverage">
       <pattern>
         <option name="PATTERN" value="xyz.jwizard.jwl.codec.envelope.*" />
         <option name="ENABLED" value="true" />
       </pattern>
     </extension>
-    <option name="PACKAGE_NAME" value="xyz.jwizard.jwl.codec.envelope" />
-    <option name="MAIN_CLASS_NAME" value="xyz.jwizard.jwl.codec.envelope.OpCodeTest" />
+    <option name="PACKAGE_NAME" value="xyz.noisif.nsl.codec.envelope" />
+    <option name="MAIN_CLASS_NAME" value="xyz.noisif.nsl.codec.envelope.OpCodeTest" />
     <option name="METHOD_NAME" value="" />
     <option name="TEST_OBJECT" value="class" />
     <method v="2">
