@@ -1,0 +1,18 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="S3FileStorageIntegrationTest" type="JUnit" factoryName="JUnit" folderName="nsl-storage" nameIsGenerated="true">
+    <module name="noisif-platform-monorepo.nsl-storage.test" />
+    <extension name="coverage">
+      <pattern>
+        <option name="PATTERN" value="xyz.noisif.nsl.storage.s3.*" />
+        <option name="ENABLED" value="true" />
+      </pattern>
+    </extension>
+    <option name="PACKAGE_NAME" value="xyz.noisif.nsl.storage.s3" />
+    <option name="MAIN_CLASS_NAME" value="xyz.noisif.nsl.storage.s3.S3FileStorageIntegrationTest" />
+    <option name="METHOD_NAME" value="" />
+    <option name="TEST_OBJECT" value="class" />
+    <method v="2">
+      <option name="Make" enabled="true" />
+    </method>
+  </configuration>
+</component>

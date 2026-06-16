@@ -16,28 +16,14 @@
  * Please refer to the LICENSE file in the root directory for full restrictions.
  */
 
-rootProject.name = "noisif-platform-monorepo"
+dependencies {
+  implementation(libs.awssdk.s3)
 
-include("nsl-ci")
-include("nsl-codec")
-include("nsl-common")
-include("nsl-contracts")
-include("nsl-graph")
-include("nsl-http")
-include("nsl-i18n")
-include("nsl-kv")
-include("nsl-net")
-include("nsl-netclient")
-include("nsl-queue")
-include("nsl-sql")
-include("nsl-storage")
-include("nsl-websocket")
+  implementation(project(":nsl-common"))
 
-include("nss-api")
-include("nss-cli")
-include("nss-gateway")
-include("nss-ingestor")
-include("nss-ingress")
-include("nss-registry")
-include("nss-translator")
-include("nss-worker")
+  testImplementation(libs.testcontainers)
+  testImplementation(libs.testcontainers.jupyter)
+  testImplementation(libs.testcontainers.minio)
+
+  testImplementation(testFixtures(project(":nsl-common")))
+}

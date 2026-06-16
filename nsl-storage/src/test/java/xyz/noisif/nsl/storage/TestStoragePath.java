@@ -15,29 +15,21 @@
  *
  * Please refer to the LICENSE file in the root directory for full restrictions.
  */
+package xyz.noisif.nsl.storage;
 
-rootProject.name = "noisif-platform-monorepo"
+public enum TestStoragePath implements StoragePath {
+  USER_AVATAR("users/%s/avatar.png"),
+  DOCUMENT("docs/%s/%s.pdf"),
+  SIMPLE_FILE("files/static.txt");
 
-include("nsl-ci")
-include("nsl-codec")
-include("nsl-common")
-include("nsl-contracts")
-include("nsl-graph")
-include("nsl-http")
-include("nsl-i18n")
-include("nsl-kv")
-include("nsl-net")
-include("nsl-netclient")
-include("nsl-queue")
-include("nsl-sql")
-include("nsl-storage")
-include("nsl-websocket")
+  private final String pathTemplate;
 
-include("nss-api")
-include("nss-cli")
-include("nss-gateway")
-include("nss-ingestor")
-include("nss-ingress")
-include("nss-registry")
-include("nss-translator")
-include("nss-worker")
+  TestStoragePath(String pathTemplate) {
+    this.pathTemplate = pathTemplate;
+  }
+
+  @Override
+  public String buildWithArgs(Object... args) {
+    return args != null && args.length > 0 ? String.format(pathTemplate, args) : pathTemplate;
+  }
+}

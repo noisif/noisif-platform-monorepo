@@ -1,6 +1,7 @@
 [versions]
 amqpClient = "5.29.0"
 awaitility = "4.3.0"
+awsSdk = "2.46.10"
 assertj = "3.27.7"
 bucket4j = "8.18.0"
 clazzGraph = "4.8.184"
@@ -39,6 +40,7 @@ wsMockServer = "1.5.7"
 [libraries]
 ampq-client = { module = "com.rabbitmq:amqp-client", version.ref = "amqpClient" }
 awaitility = { module = "org.awaitility:awaitility", version.ref = "awaitility" }
+awssdk-s3 = { module = "software.amazon.awssdk:s3", version.ref = "awsSdk" }
 assertj-core = { module = "org.assertj:assertj-core", version.ref = "assertj" }
 bucket4j = { module = "com.bucket4j:bucket4j_jdk17-core", version.ref = "bucket4j" }
 clazz-graph = { module = "io.github.classgraph:classgraph", version.ref = "clazzGraph" }
@@ -77,6 +79,7 @@ slf4j-jdk-platform = { module = "org.slf4j:slf4j-jdk-platform-logging", version.
 spotless-gradle-plugin = { module = "com.diffplug.spotless:spotless-plugin-gradle", version.ref = "spotless" }
 testcontainers = { module = "org.testcontainers:testcontainers", version.ref = "testcontainers" }
 testcontainers-jupyter = { module = "org.testcontainers:testcontainers-junit-jupiter", version.ref = "testcontainers" }
+testcontainers-minio = { module = "org.testcontainers:testcontainers-minio", version.ref = "testcontainers" }
 testcontainers-neo4j = { module = "org.testcontainers:testcontainers-neo4j", version.ref = "testcontainers" }
 testcontainers-postgresql = { module = "org.testcontainers:testcontainers-postgresql", version.ref = "testcontainers" }
 testcontainers-rabbitmq = { module = "org.testcontainers:testcontainers-rabbitmq", version.ref = "testcontainers" }
