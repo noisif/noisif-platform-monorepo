@@ -1,5 +1,5 @@
 <component name="ProjectRunConfigurationManager">
-  <configuration default="false" name="TrieRouterTest" type="JUnit" factoryName="JUnit" folderName="jwl-http" nameIsGenerated="true">
+  <configuration default="false" name="TrieRouterTest" type="JUnit" factoryName="JUnit" folderName="nsl-http" nameIsGenerated="true">
     <module name="noisif-platform-monorepo.nsl-http.test" />
     <extension name="coverage">
       <pattern>

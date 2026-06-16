@@ -1,5 +1,5 @@
 <component name="ProjectRunConfigurationManager">
-  <configuration default="false" name="Neo4jConfigUnitTest" type="JUnit" factoryName="JUnit" folderName="jwl-graph" nameIsGenerated="true">
+  <configuration default="false" name="Neo4jConfigUnitTest" type="JUnit" factoryName="JUnit" folderName="nsl-graph" nameIsGenerated="true">
     <module name="noisif-platform-monorepo.nsl-graph.test" />
     <extension name="coverage">
       <pattern>

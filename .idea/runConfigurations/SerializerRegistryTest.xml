@@ -1,5 +1,5 @@
 <component name="ProjectRunConfigurationManager">
-  <configuration default="false" name="SerializerRegistryTest" type="JUnit" factoryName="JUnit" folderName="jwl-codec" nameIsGenerated="true">
+  <configuration default="false" name="SerializerRegistryTest" type="JUnit" factoryName="JUnit" folderName="nsl-codec" nameIsGenerated="true">
     <module name="noisif-platform-monorepo.nsl-codec.test" />
     <extension name="coverage">
       <pattern>

@@ -1,5 +1,5 @@
 <component name="ProjectRunConfigurationManager">
-  <configuration default="false" name="StringUtilTest" type="JUnit" factoryName="JUnit" folderName="jwl-common" nameIsGenerated="true">
+  <configuration default="false" name="StringUtilTest" type="JUnit" factoryName="JUnit" folderName="nsl-common" nameIsGenerated="true">
     <module name="noisif-platform-monorepo.nsl-common.test" />
     <extension name="coverage">
       <pattern>

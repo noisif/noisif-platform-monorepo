@@ -1,5 +1,5 @@
 <component name="ProjectRunConfigurationManager">
-  <configuration default="false" name="RabbitMqServerIntegrationTest" type="JUnit" factoryName="JUnit" folderName="jwl-queue" nameIsGenerated="true">
+  <configuration default="false" name="RabbitMqServerIntegrationTest" type="JUnit" factoryName="JUnit" folderName="nsl-queue" nameIsGenerated="true">
     <module name="noisif-platform-monorepo.nsl-queue.test" />
     <extension name="coverage">
       <pattern>

@@ -1,5 +1,5 @@
 <component name="ProjectRunConfigurationManager">
-  <configuration default="false" name="NetworkUtilTest" type="JUnit" factoryName="JUnit" folderName="jwl-net" nameIsGenerated="true">
+  <configuration default="false" name="NetworkUtilTest" type="JUnit" factoryName="JUnit" folderName="nsl-net" nameIsGenerated="true">
     <module name="noisif-platform-monorepo.nsl-net.test" />
     <extension name="coverage">
       <pattern>

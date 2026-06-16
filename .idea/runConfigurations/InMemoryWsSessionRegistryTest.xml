@@ -1,5 +1,5 @@
 <component name="ProjectRunConfigurationManager">
-  <configuration default="false" name="InMemoryWsSessionRegistryTest" type="JUnit" factoryName="JUnit" folderName="jwl-websocket" nameIsGenerated="true">
+  <configuration default="false" name="InMemoryWsSessionRegistryTest" type="JUnit" factoryName="JUnit" folderName="nsl-websocket" nameIsGenerated="true">
     <module name="noisif-platform-monorepo.nsl-websocket.test" />
     <extension name="coverage">
       <pattern>

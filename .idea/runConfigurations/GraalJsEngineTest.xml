@@ -1,5 +1,5 @@
 <component name="ProjectRunConfigurationManager">
-  <configuration default="false" name="GraalJsEngineTest" type="JUnit" factoryName="JUnit" folderName="jws-ingestor" nameIsGenerated="true">
+  <configuration default="false" name="GraalJsEngineTest" type="JUnit" factoryName="JUnit" folderName="nsl-ingestor" nameIsGenerated="true">
     <module name="noisif-platform-monorepo.nss-ingestor.test" />
     <extension name="coverage">
       <pattern>

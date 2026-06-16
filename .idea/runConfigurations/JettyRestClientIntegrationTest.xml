@@ -1,5 +1,5 @@
 <component name="ProjectRunConfigurationManager">
-  <configuration default="false" name="JettyRestClientIntegrationTest" type="JUnit" factoryName="JUnit" folderName="jwl-netclient" nameIsGenerated="true">
+  <configuration default="false" name="JettyRestClientIntegrationTest" type="JUnit" factoryName="JUnit" folderName="nsl-netclient" nameIsGenerated="true">
     <module name="noisif-platform-monorepo.nsl-netclient.test" />
     <extension name="coverage">
       <pattern>

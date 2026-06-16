@@ -1,5 +1,5 @@
 <component name="ProjectRunConfigurationManager">
-  <configuration default="false" name="JedisServerTest" type="JUnit" factoryName="JUnit" folderName="jwl-kv" nameIsGenerated="true">
+  <configuration default="false" name="JedisServerTest" type="JUnit" factoryName="JUnit" folderName="nsl-kv" nameIsGenerated="true">
     <module name="noisif-platform-monorepo.nsl-kv.test" />
     <extension name="coverage">
       <pattern>

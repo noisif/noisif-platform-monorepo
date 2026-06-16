@@ -1,5 +1,5 @@
 <component name="ProjectRunConfigurationManager">
-  <configuration default="false" name="SqlDatabaseRegistryTest" type="JUnit" factoryName="JUnit" folderName="jwl-sql" nameIsGenerated="true">
+  <configuration default="false" name="SqlDatabaseRegistryTest" type="JUnit" factoryName="JUnit" folderName="nsl-sql" nameIsGenerated="true">
     <module name="noisif-platform-monorepo.nsl-sql.test" />
     <extension name="coverage">
       <pattern>
