@@ -104,7 +104,7 @@ public class WsClientGroupConfig extends GenericClientGroupConfig {
 
     public Builder addAuthenticator(WsClientAuthenticator authenticator) {
       authenticators.add(authenticator);
-      return this;
+      return self();
     }
 
     public WsEnvelopeBusConfig.Step setEnvelopeMode() {
@@ -117,27 +117,27 @@ public class WsClientGroupConfig extends GenericClientGroupConfig {
 
     public Builder addCustomHeader(HttpHeaderName name, HttpHeaderValue value, Object... args) {
       customHeaders.put(name, value.buildWithArgs(args));
-      return this;
+      return self();
     }
 
     public Builder addCustomHeader(HttpHeaderName name, String value) {
       customHeaders.put(name, value);
-      return this;
+      return self();
     }
 
     public Builder componentProvider(ComponentProvider componentProvider) {
       this.componentProvider = componentProvider;
-      return this;
+      return self();
     }
 
     public Builder heartbeatConfig(WsHeartbeatConfig heartbeatConfig) {
       this.heartbeatConfig = heartbeatConfig;
-      return this;
+      return self();
     }
 
     public Builder reconnectConfig(WsReconnectConfig reconnectConfig) {
       this.reconnectConfig = reconnectConfig;
-      return this;
+      return self();
     }
 
     @Override

@@ -68,7 +68,7 @@ public class WsTypedMessageBusConfig extends GenericWsBusConfig {
     @CanIgnoreReturnValue
     public Builder serializer(TypedMessageSerializer<?> typedMessageSerializer) {
       this.typedMessageSerializer = typedMessageSerializer;
-      return this;
+      return self();
     }
 
     @CanIgnoreReturnValue

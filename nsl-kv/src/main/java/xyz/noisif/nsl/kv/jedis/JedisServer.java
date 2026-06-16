@@ -160,27 +160,27 @@ public class JedisServer extends KvServer {
 
     public Builder poolMaxTotal(int poolMaxTotal) {
       this.poolMaxTotal = poolMaxTotal;
-      return this;
+      return self();
     }
 
     public Builder poolMaxIdle(int poolMaxIdle) {
       this.poolMaxIdle = poolMaxIdle;
-      return this;
+      return self();
     }
 
     public Builder poolMinIdle(int poolMinIdle) {
       this.poolMinIdle = poolMinIdle;
-      return this;
+      return self();
     }
 
     public Builder withFactory(FactoryType factoryType) {
       factory = factoryType.getFactory();
-      return this;
+      return self();
     }
 
     public Builder withFactory(JedisClientFactory factory) {
       this.factory = factory;
-      return this;
+      return self();
     }
 
     @Override

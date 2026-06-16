@@ -55,12 +55,12 @@ public class Neo4jConfig extends GraphConfig {
 
     public Builder username(String username) {
       this.username = username;
-      return this;
+      return self();
     }
 
     public Builder password(String password) {
       this.password = password;
-      return this;
+      return self();
     }
 
     @Override

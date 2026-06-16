@@ -169,17 +169,17 @@ public class RabbitMqServer extends QueueServer {
 
     public Builder withConnector(ConnectorType connectorType) {
       connector = connectorType.getConnector();
-      return this;
+      return self();
     }
 
     public Builder withConnector(RabbitMqConnector connector) {
       this.connector = connector;
-      return this;
+      return self();
     }
 
     public Builder virtualHost(String virtualHost) {
       this.virtualHost = virtualHost;
-      return this;
+      return self();
     }
 
     @Override

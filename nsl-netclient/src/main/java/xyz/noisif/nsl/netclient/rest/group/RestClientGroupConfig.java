@@ -76,33 +76,33 @@ public class RestClientGroupConfig extends GenericClientGroupConfig {
 
     public Builder defaultFormat(SerializerFormat defaultFormat) {
       this.defaultFormat = defaultFormat;
-      return this;
+      return self();
     }
 
     public Builder retryOnSafeMethods(int maxRetries, Duration backoff) {
       retryPolicy = RetryPolicy.withSafeMethods(maxRetries + 1, backoff);
-      return this;
+      return self();
     }
 
     public Builder retryOnSafeMethods(int maxRetries, Duration backoff, Duration maxBackoff) {
       retryPolicy = RetryPolicy.withSafeMethods(maxRetries + 1, backoff, maxBackoff);
-      return this;
+      return self();
     }
 
     public Builder retry(
         int maxRetries, Duration backoff, Duration maxBackoff, HttpMethod... methods) {
       retryPolicy = RetryPolicy.with(maxRetries + 1, backoff, maxBackoff, methods);
-      return this;
+      return self();
     }
 
     public Builder retry(int maxRetries, Duration backoff, HttpMethod... methods) {
       retryPolicy = RetryPolicy.with(maxRetries + 1, backoff, methods);
-      return this;
+      return self();
     }
 
     public Builder disableRetry() {
       retryPolicy = RetryPolicy.none();
-      return this;
+      return self();
     }
 
     public Builder auth(AuthScheme scheme, String... credentials) {
@@ -111,24 +111,24 @@ public class RestClientGroupConfig extends GenericClientGroupConfig {
 
     public Builder auth(int order, AuthScheme scheme, String... credentials) {
       interceptors.add(new AuthInterceptor(order, scheme, credentials));
-      return this;
+      return self();
     }
 
     public Builder rateLimit(RateLimiter rateLimiter) {
       interceptors.add(new RateLimitInterceptor(rateLimiter));
-      return this;
+      return self();
     }
 
     public Builder interceptor(RequestInterceptor interceptor) {
       interceptors.add(interceptor);
-      return this;
+      return self();
     }
 
     @Override
     public Builder principalId(String principalId) {
       super.principalId(principalId);
       interceptors.add(new UserAgentInterceptor(principalId));
-      return this;
+      return self();
     }
 
     @Override

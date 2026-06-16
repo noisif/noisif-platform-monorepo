@@ -64,7 +64,7 @@ public class WsEnvelopeBusConfig extends GenericWsBusConfig {
     @CanIgnoreReturnValue
     public Builder serializer(EnvelopeSerializer<?> envelopeSerializer) {
       this.envelopeSerializer = envelopeSerializer;
-      return this;
+      return self();
     }
 
     @CanIgnoreReturnValue
