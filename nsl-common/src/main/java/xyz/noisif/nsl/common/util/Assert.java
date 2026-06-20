@@ -79,7 +79,7 @@ public class Assert {
 
   public static <T extends Number> void lowerOrEqualThan(T value, T lowerOrEqualThan, String name) {
     Assert.state(
-        value.doubleValue() >= lowerOrEqualThan.doubleValue(),
+        value.doubleValue() <= lowerOrEqualThan.doubleValue(),
         "value '" + name + "' must be lower or equal than " + lowerOrEqualThan);
   }
 
