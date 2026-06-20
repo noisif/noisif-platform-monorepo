@@ -79,7 +79,7 @@ public class WsTypedMessageBusConfig extends GenericWsBusConfig {
     @Override
     public WsTypedMessageBusConfig build() {
       super.validate();
-      Assert.notNull(typedMessageSerializer, "TypedMessageSerializer cannot be null");
+      Assert.notNull(typedMessageSerializer, "typedMessageSerializer");
       return new WsTypedMessageBusConfig(this);
     }
   }

@@ -26,8 +26,8 @@ public class WsHeartbeatConfig {
   private final WsHeartbeatAction action;
 
   private WsHeartbeatConfig(Duration interval, WsHeartbeatAction action) {
-    this.interval = Assert.notNullAndGet(interval, "Interval cannot be null");
-    this.action = Assert.notNullAndGet(action, "Action cannot be null");
+    this.interval = Assert.notNullAndGet(interval, "interval");
+    this.action = Assert.notNullAndGet(action, "action");
   }
 
   public static WsHeartbeatConfig create(Duration interval, WsHeartbeatAction action) {

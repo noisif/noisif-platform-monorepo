@@ -224,18 +224,18 @@ public abstract class WsServer extends IdempotentService {
     }
 
     protected void validate() {
-      Assert.notEmpty(busListeners, "EnvelopeBusListeners cannot be empty");
-      Assert.notNullAll(busListeners, "All EnvelopeBusListeners must be initialized");
-      Assert.notNullAll(authenticators, "All WsAuthenticators must be initialized");
-      Assert.state(port >= 0 && port < 65536, "Invalid port number");
-      Assert.notNull(path, "Path cannot be null");
-      Assert.notNull(idleTimeout, "IdleTimeout cannot be null");
-      Assert.notNull(rateLimiter, "RateLimiter cannot be null");
-      Assert.notNull(componentProvider, "ComponentProvider cannot be null");
-      Assert.notNull(serializerRegistry, "EnvelopeSerializerRegistry cannot be null");
-      Assert.notNull(serializerResolverFactory, "WsSerializerResolverFactory cannot be null");
-      Assert.notNull(sessionRegistry, "WsSessionRegistry cannot be null");
-      Assert.notNull(localSessionDispatcherFactory, "LocalSessionDispatcherFactory cannot be null");
+      Assert.notEmpty(busListeners, "busListeners");
+      Assert.notNullAll(busListeners, "busListeners");
+      Assert.notNullAll(authenticators, "authenticators");
+      Assert.minMaxRange(port, 0, 65536, "port");
+      Assert.notNull(path, "path");
+      Assert.notNull(idleTimeout, "idleTimeout");
+      Assert.notNull(rateLimiter, "rateLimiter");
+      Assert.notNull(componentProvider, "componentProvider");
+      Assert.notNull(serializerRegistry, "serializerRegistry");
+      Assert.notNull(serializerResolverFactory, "serializerResolverFactory");
+      Assert.notNull(sessionRegistry, "sessionRegistry");
+      Assert.notNull(localSessionDispatcherFactory, "localSessionDispatcherFactory");
     }
 
     public abstract WsServer build();

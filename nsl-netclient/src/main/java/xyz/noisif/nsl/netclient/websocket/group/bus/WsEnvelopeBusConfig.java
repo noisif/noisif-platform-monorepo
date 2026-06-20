@@ -75,7 +75,7 @@ public class WsEnvelopeBusConfig extends GenericWsBusConfig {
     @Override
     public WsEnvelopeBusConfig build() {
       super.validate();
-      Assert.notNull(envelopeSerializer, "EnvelopeSerializer cannot be null");
+      Assert.notNull(envelopeSerializer, "envelopeSerializer");
       return new WsEnvelopeBusConfig(this);
     }
   }

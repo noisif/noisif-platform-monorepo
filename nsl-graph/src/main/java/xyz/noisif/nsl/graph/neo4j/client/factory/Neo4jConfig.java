@@ -66,8 +66,8 @@ public class Neo4jConfig extends GraphConfig {
     @Override
     protected void validate() {
       super.validate();
-      Assert.notNull(username, "Username cannot be null");
-      Assert.notNull(password, "Password cannot be null");
+      Assert.notNull(username, "username");
+      Assert.notNull(password, "password");
     }
 
     @Override

@@ -186,12 +186,12 @@ public class JedisServer extends KvServer {
     @Override
     public JedisServer build() {
       validate();
-      Assert.notNull(factory, "JedisClientFactory cannot be null");
-      Assert.state(poolMaxTotal > 0, "PoolMaxTotal must be greater than zero");
-      Assert.state(poolMinIdle >= 0, "PoolMinIdle cannot be negative");
-      Assert.state(poolMaxIdle >= 0, "PoolMaxIdle cannot be negative");
-      Assert.state(poolMinIdle <= poolMaxIdle, "PoolMinIdle cannot be greater than PoolMaxIdle");
-      Assert.state(poolMaxIdle <= poolMaxTotal, "PoolMaxIdle cannot be greater than PoolMaxTotal");
+      Assert.notNull(factory, "factory");
+      Assert.greaterThan(poolMaxTotal, 0, "poolMaxTotal");
+      Assert.greaterOrEqualThan(poolMinIdle, 0, "poolMinIdle");
+      Assert.greaterOrEqualThan(poolMaxIdle, 0, "poolMaxIdle");
+      Assert.lowerOrEqualThan(poolMinIdle, poolMaxIdle, "poolMinIdle");
+      Assert.lowerOrEqualThan(poolMaxIdle, poolMaxTotal, "poolMaxIdle");
       return new JedisServer(this);
     }
   }

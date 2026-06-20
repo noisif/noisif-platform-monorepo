@@ -65,9 +65,9 @@ public abstract class NetworkClient<T extends ClientGroupConfig> extends Idempot
     }
 
     protected void validate() {
-      Assert.notNull(connectTimeout, "ConnectTimeout cannot be null");
-      Assert.notNull(clientsRegistry, "ClientsRegistry cannot be null");
-      Assert.notNullAll(clientsRegistry.getEntries(), "All ClientGroupConfigs must be initialized");
+      Assert.notNull(connectTimeout, "connectTimeout");
+      Assert.notNull(clientsRegistry, "clientsRegistry");
+      Assert.notNullAll(clientsRegistry.getEntries(), "clientsRegistry.getEntries()");
     }
   }
 }

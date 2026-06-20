@@ -61,8 +61,8 @@ public class WsQueryParamAuthenticator implements WsClientAuthenticator {
     }
 
     public WsQueryParamAuthenticator build() {
-      Assert.notNull(queryParameterKey, "QueryParameterKey cannot be null");
-      Assert.notNull(queryParameterValue, "QueryParameterValue cannot be null");
+      Assert.notNull(queryParameterKey, "queryParameterKey");
+      Assert.notNull(queryParameterValue, "queryParameterValue");
       return new WsQueryParamAuthenticator(this);
     }
   }

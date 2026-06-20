@@ -29,7 +29,7 @@ public class FileTypeRegistry extends GenericConcurrentRegistry<String, FileType
 
   private FileTypeRegistry(boolean allowOverwrite, FileType fallbackType) {
     super(allowOverwrite);
-    Assert.notNull(fallbackType, "FallbackType cannot be null");
+    Assert.notNull(fallbackType, "fallbackType");
     this.fallbackType = fallbackType;
   }
 

@@ -153,11 +153,11 @@ public abstract class QueueServer extends IdempotentService {
     }
 
     protected void validate() {
-      Assert.notNull(nodes, "Nodes cannot be null");
-      Assert.notNull(username, "Username cannot be null");
-      Assert.notNull(password, "Password cannot be null");
-      Assert.notNull(serializerRegistry, "SerializerRegistry cannot be null");
-      Assert.notNull(componentProvider, "ComponentProvider cannot be null");
+      Assert.notNull(nodes, "nodes");
+      Assert.notNull(username, "username");
+      Assert.notNull(password, "password");
+      Assert.notNull(serializerRegistry, "serializerRegistry");
+      Assert.notNull(componentProvider, "componentProvider");
     }
 
     public abstract QueueServer build();

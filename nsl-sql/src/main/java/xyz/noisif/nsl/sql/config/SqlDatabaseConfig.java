@@ -89,10 +89,10 @@ public record SqlDatabaseConfig(
     }
 
     public SqlDatabaseConfig build() {
-      Assert.notNull(dialect, "Database dialect cannot be null");
-      Assert.notNull(hostPort, "Database host/port cannot be null");
-      Assert.notNull(username, "Database username cannot be null");
-      Assert.notNull(databaseName, "Database name cannot be null");
+      Assert.notNull(dialect, "dialect");
+      Assert.notNull(hostPort, "hostPort");
+      Assert.notNull(username, "username");
+      Assert.notNull(databaseName, "databaseName");
       return new SqlDatabaseConfig(
           dialect, hostPort, username, password, databaseName, maxPoolSize);
     }

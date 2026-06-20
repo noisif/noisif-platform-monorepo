@@ -194,7 +194,7 @@ public abstract class GenericWsClient extends NetworkClient<WsClientGroupConfig>
     @Override
     protected void validate() {
       super.validate();
-      Assert.notNull(sessionRegistry, "WsSessionRegistry cannot be null");
+      Assert.notNull(sessionRegistry, "sessionRegistry");
     }
 
     public abstract GenericWsClient build();

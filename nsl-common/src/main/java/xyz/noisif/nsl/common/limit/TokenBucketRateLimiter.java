@@ -93,7 +93,7 @@ public class TokenBucketRateLimiter implements RateLimiter {
     }
 
     public RateLimiter build() {
-      Assert.notNull(refillPeriod, "RefillPeriod cannot be null");
+      Assert.notNull(refillPeriod, "refillPeriod");
       return new TokenBucketRateLimiter(this);
     }
   }

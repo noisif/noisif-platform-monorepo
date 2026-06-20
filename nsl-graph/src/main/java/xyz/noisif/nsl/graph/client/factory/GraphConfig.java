@@ -56,8 +56,8 @@ public abstract class GraphConfig {
     }
 
     protected void validate() {
-      Assert.notNull(protocol, "Protocol cannot be null");
-      Assert.notNull(address, "Address cannot be null");
+      Assert.notNull(protocol, "protocol");
+      Assert.notNull(address, "address");
     }
 
     public abstract C build();

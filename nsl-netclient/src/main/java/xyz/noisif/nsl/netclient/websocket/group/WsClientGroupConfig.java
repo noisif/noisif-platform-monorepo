@@ -143,7 +143,7 @@ public class WsClientGroupConfig extends GenericClientGroupConfig {
     @Override
     public WsClientGroupConfig build() {
       super.validate();
-      Assert.notNull(componentProvider, "ComponentProvider cannot be null");
+      Assert.notNull(componentProvider, "componentProvider");
       return new WsClientGroupConfig(this);
     }
   }

@@ -162,8 +162,8 @@ public abstract class KvServer extends IdempotentService
     }
 
     protected void validate() {
-      Assert.notNull(nodes, "Nodes cannot be null");
-      Assert.notNull(componentProvider, "ComponentProvider cannot be null");
+      Assert.notNull(nodes, "nodes");
+      Assert.notNull(componentProvider, "componentProvider");
     }
 
     public abstract KvServer build();

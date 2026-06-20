@@ -73,8 +73,8 @@ public class WsClientHeaderAuthenticator implements WsClientAuthenticator {
     }
 
     public WsClientHeaderAuthenticator build() {
-      Assert.notNull(headerName, "HeaderName cannot be null");
-      Assert.notNull(authScheme, "AuthScheme cannot be null");
+      Assert.notNull(headerName, "headerName");
+      Assert.notNull(authScheme, "authScheme");
       return new WsClientHeaderAuthenticator(this);
     }
   }

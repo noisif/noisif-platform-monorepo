@@ -166,9 +166,9 @@ public class S3FileStorage extends GenericFileStorage {
     @Override
     public GenericFileStorage build() {
       super.validate();
-      Assert.notNull(storageRegion, "StorageRegion cannot be null");
-      Assert.notNull(accessKey, "AccessKey cannot be null");
-      Assert.notNull(secretKey, "SecretKey cannot be null");
+      Assert.notNull(storageRegion, "storageRegion");
+      Assert.notNull(accessKey, "accessKey");
+      Assert.notNull(secretKey, "secretKey");
       return new S3FileStorage(this);
     }
   }

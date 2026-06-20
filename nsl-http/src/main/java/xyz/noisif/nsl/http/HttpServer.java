@@ -161,9 +161,9 @@ public abstract class HttpServer extends IdempotentService {
     }
 
     protected void validate() {
-      Assert.notNull(componentProvider, "ComponentProvider cannot be null");
-      Assert.notNull(serializerRegistry, "SerializerRegistry cannot be null");
-      Assert.state(port >= 0 && port < 65536, "Invalid port number");
+      Assert.notNull(componentProvider, "componentProvider");
+      Assert.notNull(serializerRegistry, "serializerRegistry");
+      Assert.minMaxRange(port, 0, 65536, "port");
     }
 
     public abstract HttpServer build();

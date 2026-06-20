@@ -59,8 +59,8 @@ public class GenericClientGroupConfig implements ClientGroupConfig {
     }
 
     protected void validate() {
-      Assert.notNull(url, "Url cannot be null");
-      Assert.notNull(principalId, "PrincipalId cannot be null");
+      Assert.notNull(url, "url");
+      Assert.notNull(principalId, "principalId");
     }
 
     public abstract C build();

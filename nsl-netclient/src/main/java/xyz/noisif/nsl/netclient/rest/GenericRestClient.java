@@ -73,9 +73,9 @@ public abstract class GenericRestClient extends NetworkClient<RestClientGroupCon
     @Override
     protected void validate() {
       super.validate();
-      Assert.state(maxRedirects > 0, "MaxRedirects must be greater than zero");
-      Assert.notNull(serializerRegistry, "SerializerRegistry cannot be null");
-      Assert.notNull(scanner, "ClassScanner cannot be null");
+      Assert.greaterThan(maxRedirects, 0, "maxRedirects");
+      Assert.notNull(serializerRegistry, "serializerRegistry");
+      Assert.notNull(scanner, "scanner");
     }
 
     public abstract GenericRestClient build();

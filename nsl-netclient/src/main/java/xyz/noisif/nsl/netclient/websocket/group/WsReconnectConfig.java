@@ -37,12 +37,12 @@ public class WsReconnectConfig {
   }
 
   public static WsReconnectConfig enabled(Duration delay, int maxAttempts) {
-    Assert.notNull(delay, "Delay cannot be null");
+    Assert.notNull(delay, "delay");
     return new WsReconnectConfig(true, delay, maxAttempts);
   }
 
   public static WsReconnectConfig enabledInfinite(Duration delay) {
-    Assert.notNull(delay, "Delay cannot be null");
+    Assert.notNull(delay, "delay");
     return new WsReconnectConfig(true, delay, -1);
   }
 

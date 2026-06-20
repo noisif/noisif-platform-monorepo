@@ -88,7 +88,7 @@ public class SqlDatabaseRegistry extends GenericConcurrentRegistry<String, Gener
     }
 
     public SqlDatabaseRegistry build() {
-      Assert.notNull(poolFactory, "PoolFactory cannot be null");
+      Assert.notNull(poolFactory, "poolFactory");
       return new SqlDatabaseRegistry(sqlRegistryConfigs, poolFactory);
     }
   }

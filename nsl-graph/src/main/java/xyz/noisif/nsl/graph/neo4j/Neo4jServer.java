@@ -41,8 +41,8 @@ public class Neo4jServer extends GraphServer<Neo4jConfig> {
     @Override
     protected void validate() {
       super.validate();
-      Assert.notNull(config.getUsername(), "Username cannot be null");
-      Assert.notNull(config.getPassword(), "Password cannot be null");
+      Assert.notNull(config.getUsername(), "username");
+      Assert.notNull(config.getPassword(), "password");
     }
 
     @Override

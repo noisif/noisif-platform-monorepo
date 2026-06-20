@@ -29,25 +29,58 @@ public class Assert {
     throw new ForbiddenInstantiationException(Assert.class);
   }
 
-  public static <T> void notNull(T object, String message) {
-    state(object != null, message);
+  public static <T> void notNull(T object, String name) {
+    state(object != null, "object '" + name + "' cannot be null");
   }
 
-  public static <T> T notNullAndGet(T object, String message) {
-    state(object != null, message);
+  public static <T> T notNullAndGet(T object, String name) {
+    notNull(object, name);
     return object;
   }
 
-  public static void notEmpty(Collection<?> collection, String message) {
-    state(collection != null && !collection.isEmpty(), message);
+  public static void notEmpty(Collection<?> collection, String name) {
+    state(collection != null && !collection.isEmpty(), "collection '" + name + "' cannot be empty");
   }
 
-  public static void notNullAll(Collection<?> collection, String message) {
-    state(collection != null && collection.stream().allMatch(Objects::nonNull), message);
+  public static void notNullAll(Collection<?> collection, String name) {
+    state(
+        collection != null && collection.stream().allMatch(Objects::nonNull),
+        "all elements in collection '" + name + "' cannot have nullable values");
   }
 
-  public static void notNullAll(Map<?, ?> collection, String message) {
-    notNullAll(collection.values(), message);
+  public static void notNullAll(Map<?, ?> collection, String name) {
+    notNullAll(collection.values(), name);
+  }
+
+  public static <T extends Number> void minMaxRange(T value, T minInc, T maxExc, String name) {
+    Assert.state(
+        value.doubleValue() >= minInc.doubleValue() && value.doubleValue() < maxExc.doubleValue(),
+        "value '"
+            + name
+            + "' must be between "
+            + minInc
+            + " (inclusive) and "
+            + maxExc
+            + " (exclusive)");
+  }
+
+  public static <T extends Number> void greaterThan(T value, T greaterThan, String name) {
+    Assert.state(
+        value.doubleValue() > greaterThan.doubleValue(),
+        "value '" + name + "' must be greater than " + greaterThan);
+  }
+
+  public static <T extends Number> void greaterOrEqualThan(
+      T value, T greaterOrEqualThan, String name) {
+    Assert.state(
+        value.doubleValue() >= greaterOrEqualThan.doubleValue(),
+        "value '" + name + "' must be greater or equal than " + greaterOrEqualThan);
+  }
+
+  public static <T extends Number> void lowerOrEqualThan(T value, T lowerOrEqualThan, String name) {
+    Assert.state(
+        value.doubleValue() >= lowerOrEqualThan.doubleValue(),
+        "value '" + name + "' must be lower or equal than " + lowerOrEqualThan);
   }
 
   public static void state(boolean expression, String message) {

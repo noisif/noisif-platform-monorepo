@@ -107,8 +107,8 @@ public class WsTokenAuthenticator implements WsAuthenticator {
     }
 
     public WsTokenAuthenticator build() {
-      Assert.notNull(expectedToken, "ExpectedToken cannot be null");
-      Assert.notNull(principalId, "PrincipalId cannot be null");
+      Assert.notNull(expectedToken, "expectedToken");
+      Assert.notNull(principalId, "principalId");
       return new WsTokenAuthenticator(this);
     }
   }

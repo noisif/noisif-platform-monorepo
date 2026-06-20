@@ -141,9 +141,9 @@ public abstract class EnvelopeBusListener<S extends EnvelopeSession> implements 
     }
 
     public void validate() {
-      Assert.notNull(actionGroup, "ActionGroup cannot be null");
-      Assert.notNull(order, "Order cannot be null");
-      Assert.notNull(componentProvider, "ComponentProvider cannot be null");
+      Assert.notNull(actionGroup, "actionGroup");
+      Assert.notNull(order, "order");
+      Assert.notNull(componentProvider, "componentProvider");
     }
 
     public abstract EnvelopeBusListener<S> build();

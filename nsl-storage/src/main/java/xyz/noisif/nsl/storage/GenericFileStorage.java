@@ -48,7 +48,7 @@ public abstract class GenericFileStorage extends IdempotentService {
     }
 
     protected void validate() {
-      Assert.notNull(fileTypeRegistry, "FileTypeRegistry cannot be null");
+      Assert.notNull(fileTypeRegistry, "fileTypeRegistry");
     }
 
     protected abstract B self();

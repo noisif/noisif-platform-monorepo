@@ -84,10 +84,10 @@ abstract class GenericWsBusConfig implements WsBusConfig {
 
     protected void validate() {
       if (paramsRequired) {
-        Assert.notNull(encodingParamName, "EncodingParamName cannot be null");
-        Assert.notNull(dataTypeParamName, "DataTypeParamName cannot be null");
+        Assert.notNull(encodingParamName, "encodingParamName");
+        Assert.notNull(dataTypeParamName, "dataTypeParamName");
       }
-      Assert.notNullAll(busListeners, "All BusListeners must be initialized");
+      Assert.notNullAll(busListeners, "busListeners");
     }
 
     public abstract C build();

@@ -99,9 +99,9 @@ public abstract class GraphServer<C extends GraphConfig> extends IdempotentServi
     }
 
     protected void validate() {
-      Assert.notNull(config, "Config cannot be null");
-      Assert.notNull(clientFactory, "ClientFactory cannot be null");
-      Assert.notNull(repositoryFactory, "RepositoryFactory cannot be null");
+      Assert.notNull(config, "config");
+      Assert.notNull(clientFactory, "clientFactory");
+      Assert.notNull(repositoryFactory, "repositoryFactory");
     }
 
     public abstract GraphServer<C> build();

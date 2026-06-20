@@ -76,10 +76,10 @@ public class QueryParamSerializerResolver implements WsSerializerResolver {
     }
 
     public WsSerializerResolver build() {
-      Assert.notNull(registry, "EnvelopeSerializerRegistry cannot be null");
-      Assert.notNull(cache, "EnvelopeSerializerCache cannot be null");
-      Assert.notNull(encodingParamName, "EncodingParamName cannot be null");
-      Assert.notNull(frameParamName, "FrameParamName cannot be null");
+      Assert.notNull(registry, "registry");
+      Assert.notNull(cache, "cache");
+      Assert.notNull(encodingParamName, "encodingParamName");
+      Assert.notNull(frameParamName, "frameParamName");
       return new QueryParamSerializerResolver(this);
     }
   }
