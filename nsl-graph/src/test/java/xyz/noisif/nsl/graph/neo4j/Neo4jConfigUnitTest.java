@@ -57,7 +57,7 @@ class Neo4jConfigUnitTest {
     // when & then
     assertThatThrownBy(builder::build)
         .isInstanceOf(CriticalBootstrapException.class)
-        .hasMessageContaining("password cannot be null");
+        .hasMessageContaining("object 'password' cannot be null");
   }
 
   @Test
@@ -72,6 +72,6 @@ class Neo4jConfigUnitTest {
     // when & then
     assertThatThrownBy(builder::build)
         .isInstanceOf(CriticalBootstrapException.class)
-        .hasMessageContaining("protocol cannot be null");
+        .hasMessageContaining("object 'protocol' cannot be null");
   }
 }
