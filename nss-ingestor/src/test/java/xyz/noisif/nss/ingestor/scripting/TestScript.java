@@ -33,7 +33,7 @@ public enum TestScript implements ScriptFile {
   }
 
   @Override
-  public String getCode() {
+  public String getFileName() {
     return code;
   }
 }

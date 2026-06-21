@@ -52,12 +52,12 @@ public class GraalJsEngine extends IdempotentService implements JsEngine {
         "Initializing GraalVM JS context, libraries to preload: {}", librariesToPreload.size());
     context = Context.newBuilder("js").allowAllAccess(false).build();
     for (final ScriptFile scriptFile : librariesToPreload) {
-      log.debug("Preloading library: {}", scriptFile.getCode());
+      log.debug("Preloading library: {}", scriptFile.getFileName());
       final long start = System.currentTimeMillis();
       context.eval(buildSourceFromResource(scriptFile));
       log.trace(
           "Library '{}' loaded in {} ms",
-          scriptFile.getCode(),
+          scriptFile.getFileName(),
           (System.currentTimeMillis() - start));
     }
     log.info("GraalVM JS context initialized successfully");
@@ -75,7 +75,7 @@ public class GraalJsEngine extends IdempotentService implements JsEngine {
     ensureRunning();
     log.debug(
         "Executing script: '{}' with {} injected variables, expected return type: {}",
-        scriptFile.getCode(),
+        scriptFile.getFileName(),
         variables.size(),
         returnType.getSimpleName());
     if (log.isTraceEnabled()) {
@@ -91,7 +91,7 @@ public class GraalJsEngine extends IdempotentService implements JsEngine {
       for (final String key : variables.keySet()) {
         bindings.removeMember(key);
       }
-      log.trace("Cleaned up injected variables for script: '{}'", scriptFile.getCode());
+      log.trace("Cleaned up injected variables for script: '{}'", scriptFile.getFileName());
     }
   }
 
@@ -99,14 +99,14 @@ public class GraalJsEngine extends IdempotentService implements JsEngine {
   public <T> T executeScript(ScriptFile scriptFile, Class<T> returnType) throws IOException {
     log.debug(
         "Executing script: '{}'. Expected return type: {}",
-        scriptFile.getCode(),
+        scriptFile.getFileName(),
         returnType.getSimpleName());
     return doExecuteScript(scriptFile).as(returnType);
   }
 
   @Override
   public void executeScript(ScriptFile scriptFile) throws IOException {
-    log.debug("Executing script (fire-and-forget): '{}'", scriptFile.getCode());
+    log.debug("Executing script (fire-and-forget): '{}'", scriptFile.getFileName());
     doExecuteScript(scriptFile);
   }
 
@@ -129,12 +129,12 @@ public class GraalJsEngine extends IdempotentService implements JsEngine {
 
   private Value doExecuteScript(ScriptFile scriptFile) throws IOException {
     ensureRunning();
-    log.trace("Evaluating source for script: '{}'", scriptFile.getCode());
+    log.trace("Evaluating source for script: '{}'", scriptFile.getFileName());
     final long start = System.currentTimeMillis();
     final Value result = context.eval(buildSourceFromResource(scriptFile));
     log.trace(
         "Script '{}' executed in {} ms",
-        scriptFile.getCode(),
+        scriptFile.getFileName(),
         (System.currentTimeMillis() - start));
     return result;
   }
@@ -157,7 +157,7 @@ public class GraalJsEngine extends IdempotentService implements JsEngine {
   }
 
   private Source buildSourceFromResource(ScriptFile scriptFile) throws IOException {
-    final URL resourceUrl = IoUtil.getRequiredResourceUrl(scriptFile.getCode());
+    final URL resourceUrl = IoUtil.getRequiredResourceUrl(scriptFile.getFileName());
     return Source.newBuilder("js", resourceUrl).name(resourceUrl.getPath()).build();
   }
 

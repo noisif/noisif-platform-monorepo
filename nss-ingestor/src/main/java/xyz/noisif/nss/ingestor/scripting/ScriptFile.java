@@ -17,6 +17,6 @@
  */
 package xyz.noisif.nss.ingestor.scripting;
 
-import xyz.noisif.nsl.common.Identifiable;
-
-public interface ScriptFile extends Identifiable<String> {}
+public interface ScriptFile {
+  String getFileName();
+}

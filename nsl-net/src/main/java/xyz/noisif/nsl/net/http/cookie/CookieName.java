@@ -17,6 +17,6 @@
  */
 package xyz.noisif.nsl.net.http.cookie;
 
-import xyz.noisif.nsl.common.Identifiable;
-
-public interface CookieName extends Identifiable<String> {}
+public interface CookieName {
+  String getCode();
+}

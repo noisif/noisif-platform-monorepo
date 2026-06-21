@@ -17,6 +17,6 @@
  */
 package xyz.noisif.nsl.net.http.header;
 
-import xyz.noisif.nsl.common.Identifiable;
-
-public interface HttpHeaderName extends Identifiable<String> {}
+public interface HttpHeaderName {
+  String getCode();
+}

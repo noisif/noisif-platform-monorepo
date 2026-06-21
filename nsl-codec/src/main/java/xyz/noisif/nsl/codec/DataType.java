@@ -17,9 +17,7 @@
  */
 package xyz.noisif.nsl.codec;
 
-import xyz.noisif.nsl.common.Identifiable;
-
-public enum DataType implements Identifiable<String> {
+public enum DataType {
   TEXT("text"),
   BINARY("binary"),
   ;
@@ -30,7 +28,6 @@ public enum DataType implements Identifiable<String> {
     this.code = code;
   }
 
-  @Override
   public String getCode() {
     return code;
   }
