@@ -53,7 +53,7 @@ public class Assert {
   }
 
   public static <T extends Number> void minMaxRange(T value, T minInc, T maxExc, String name) {
-    Assert.state(
+    state(
         value.doubleValue() >= minInc.doubleValue() && value.doubleValue() < maxExc.doubleValue(),
         "value '"
             + name
@@ -65,20 +65,20 @@ public class Assert {
   }
 
   public static <T extends Number> void greaterThan(T value, T greaterThan, String name) {
-    Assert.state(
+    state(
         value.doubleValue() > greaterThan.doubleValue(),
         "value '" + name + "' must be greater than " + greaterThan);
   }
 
   public static <T extends Number> void greaterOrEqualThan(
       T value, T greaterOrEqualThan, String name) {
-    Assert.state(
+    state(
         value.doubleValue() >= greaterOrEqualThan.doubleValue(),
         "value '" + name + "' must be greater or equal than " + greaterOrEqualThan);
   }
 
   public static <T extends Number> void lowerOrEqualThan(T value, T lowerOrEqualThan, String name) {
-    Assert.state(
+    state(
         value.doubleValue() <= lowerOrEqualThan.doubleValue(),
         "value '" + name + "' must be lower or equal than " + lowerOrEqualThan);
   }
