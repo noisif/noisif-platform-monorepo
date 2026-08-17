@@ -101,4 +101,8 @@ public class StringUtil {
       return "";
     }
   }
+
+  public static String create(byte[] bytes) {
+    return new String(bytes, StandardCharsets.UTF_8);
+  }
 }
