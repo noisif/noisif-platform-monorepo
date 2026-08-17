@@ -97,6 +97,7 @@ java-gradle-plugin = { id = "java-gradle-plugin" }
 java-library = { id = "java-library" }
 kotlin-dsl = { id = "org.gradle.kotlin.kotlin-dsl", version.ref = "kotlinDsl" }
 protobuf = { id = "com.google.protobuf", version.ref = "protobufPlugin" }
+scala = { id = "scala" }
 shadow = { id = "com.gradleup.shadow", version.ref = "shadow" }
 spotless = { id = "com.diffplug.spotless", version.ref = "spotless" }
 test-fixtures = { id = "java-test-fixtures" }
