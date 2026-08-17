@@ -1,7 +1,6 @@
 .idea/*
 !.idea/misc.xml
 !.idea/inspectionProfiles/
-!.idea/codeStyles/
 !.idea/runConfigurations/
 
 .bin
