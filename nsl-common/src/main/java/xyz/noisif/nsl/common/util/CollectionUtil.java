@@ -26,6 +26,8 @@ import java.util.Comparator;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
 import java.util.function.Predicate;
 
 public class CollectionUtil {
@@ -97,5 +99,11 @@ public class CollectionUtil {
     }
     final String first = values.getFirst();
     return (first == null || first.isBlank()) ? null : first;
+  }
+
+  public static <U, V> ConcurrentMap<U, V> createWithInitSize(int initialCapacity) {
+    return initialCapacity > 0
+        ? new ConcurrentHashMap<>(initialCapacity)
+        : new ConcurrentHashMap<>();
   }
 }
