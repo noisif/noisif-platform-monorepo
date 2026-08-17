@@ -42,6 +42,13 @@ class NsSpotlessPlugin : NsSpotlessBasePlugin() {
       trimTrailingWhitespace()
       endWithNewline()
     }
+    scala {
+      target("src/main/scala/**/*.scala", "src/test/scala/**/*.scala")
+      licenseHeader(buildLicense(licenseFile, "/*", " * ", " */"), "package ")
+      scalafmt().configFile(root.file("spotless/.scalafmt.conf"))
+      trimTrailingWhitespace()
+      endWithNewline()
+    }
     kotlin {
       target("src/**/*.kt")
       licenseHeader(buildLicense(licenseFile, "/*", " * ", " */"))

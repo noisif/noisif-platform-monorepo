@@ -18,6 +18,7 @@
 
 plugins {
   alias(libs.plugins.test.fixtures)
+  alias(libs.plugins.scala)
 }
 
 dependencies {
@@ -28,6 +29,7 @@ dependencies {
     // 7.0.0 has vulnerable old guava version, fetch the newest version explicitly
     exclude(group = "com.google.guava", module = "guava")
   }
+  implementation(libs.scala.library)
 
   api(libs.jakarta.inject.api)
   api(libs.jakarta.cdi.api)

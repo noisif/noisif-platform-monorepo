@@ -29,6 +29,7 @@ nvWebsocketClient = "2.14"
 postgresql = "42.7.10"
 protobuf = "4.34.1"
 protobufPlugin = "0.10.0"
+scala = "3.8.4"
 shadow = "8.3.0"
 slf4j = "2.0.17"
 spotless = "8.5.1"
@@ -73,6 +74,7 @@ postgresql = { module = "org.postgresql:postgresql", version.ref = "postgresql" 
 protobuf-gradle-plugin = { module = "com.google.protobuf:protobuf-gradle-plugin", version.ref = "protobufPlugin" }
 protobuf-java = { module = "com.google.protobuf:protobuf-java", version.ref = "protobuf" }
 protoc = { module = "com.google.protobuf:protoc", version.ref = "protobuf" }
+scala-library = { module = "org.scala-lang:scala3-library_3", version.ref = "scala" }
 shadow-marker = { module = "com.gradleup.shadow:com.gradleup.shadow.gradle.plugin", version.ref = "shadow" }
 slf4j-api = { module = "org.slf4j:slf4j-api", version.ref = "slf4j" }
 slf4j-jdk-platform = { module = "org.slf4j:slf4j-jdk-platform-logging", version.ref = "slf4j" }
