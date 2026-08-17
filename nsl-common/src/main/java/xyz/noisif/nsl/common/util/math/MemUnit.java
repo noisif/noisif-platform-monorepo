@@ -17,20 +17,44 @@
  */
 package xyz.noisif.nsl.common.util.math;
 
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
+
 public enum MemUnit {
-  BYTES(1L),
-  KB(1024L),
-  MB(1024L * 1024L),
-  GB(1024L * 1024L * 1024L),
+  BYTES('\0', 1L),
+  KB('K', 1024L),
+  MB('M', 1024L * 1024L),
+  GB('G', 1024L * 1024L * 1024L),
   ;
 
+  private final char jvmSuffix;
   private final long factor;
 
-  MemUnit(long factor) {
+  private static final Map<Character, MemUnit> SUFFIX_MAP;
+
+  static {
+    final Map<Character, MemUnit> tempMap = new HashMap<>();
+    for (final MemUnit unit : values()) {
+      tempMap.put(unit.jvmSuffix, unit);
+    }
+    SUFFIX_MAP = Collections.unmodifiableMap(tempMap);
+  }
+
+  MemUnit(char jvmSuffix, long factor) {
+    this.jvmSuffix = jvmSuffix;
     this.factor = factor;
   }
 
   public long toBytes(long value) {
     return value * factor;
+  }
+
+  public static MemUnit fromSuffix(char suffix) {
+    final MemUnit unit = SUFFIX_MAP.get(suffix);
+    if (unit == null) {
+      throw new IllegalArgumentException("unsupported memory unit suffix: " + suffix);
+    }
+    return unit;
   }
 }
