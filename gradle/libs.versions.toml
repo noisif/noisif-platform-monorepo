@@ -25,6 +25,7 @@ kotlinDsl = "5.2.0"
 logback = "1.5.32"
 mockito = "5.11.0"
 neo4jDriver = "6.0.4"
+netty = "4.2.17.Final"
 nvWebsocketClient = "2.14"
 postgresql = "42.7.10"
 protobuf = "4.34.1"
@@ -69,6 +70,8 @@ logback-classic = { module = "ch.qos.logback:logback-classic", version.ref = "lo
 mockito-core = { module = "org.mockito:mockito-core", version.ref = "mockito" }
 mockito-jupiter = { module = "org.mockito:mockito-junit-jupiter", version.ref = "mockito" }
 neo4j-driver = { module = "org.neo4j.driver:neo4j-java-driver", version.ref = "neo4jDriver" }
+netty-buffer = { module = "io.netty:netty-buffer", version.ref = "netty" }
+netty-transport = { module = "io.netty:netty-transport", version.ref = "netty" }
 nv-websocket-client = { module = "com.neovisionaries:nv-websocket-client", version.ref = "nvWebsocketClient" }
 postgresql = { module = "org.postgresql:postgresql", version.ref = "postgresql" }
 protobuf-gradle-plugin = { module = "com.google.protobuf:protobuf-gradle-plugin", version.ref = "protobufPlugin" }

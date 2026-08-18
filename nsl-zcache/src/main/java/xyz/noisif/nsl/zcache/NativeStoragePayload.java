@@ -15,30 +15,17 @@
  *
  * Please refer to the LICENSE file in the root directory for full restrictions.
  */
+package xyz.noisif.nsl.zcache;
 
-rootProject.name = "noisif-platform-monorepo"
+import io.netty.buffer.ByteBuf;
 
-include("nsl-ci")
-include("nsl-codec")
-include("nsl-common")
-include("nsl-contracts")
-include("nsl-graph")
-include("nsl-http")
-include("nsl-i18n")
-include("nsl-kv")
-include("nsl-net")
-include("nsl-netclient")
-include("nsl-queue")
-include("nsl-sql")
-include("nsl-storage")
-include("nsl-websocket")
-include("nsl-zcache")
+public interface NativeStoragePayload {
+  // zero-copy netty bytebuffer wrapping our off-heap memory
+  ByteBuf asNettyBuffer();
 
-include("nss-api")
-include("nss-cli")
-include("nss-gateway")
-include("nss-ingestor")
-include("nss-ingress")
-include("nss-registry")
-include("nss-translator")
-include("nss-worker")
+  // decrements ref count; if hits 0, native memory goes back to os
+  // must be called exactly once by the consumer (ex. Netty future listener)
+  void release();
+
+  int byteSize();
+}

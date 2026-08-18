@@ -15,30 +15,17 @@
  *
  * Please refer to the LICENSE file in the root directory for full restrictions.
  */
+package xyz.noisif.nsl.zcache;
 
-rootProject.name = "noisif-platform-monorepo"
+public interface NativeStorage {
+  void store(NativeStorageKey key, byte[] rawData);
 
-include("nsl-ci")
-include("nsl-codec")
-include("nsl-common")
-include("nsl-contracts")
-include("nsl-graph")
-include("nsl-http")
-include("nsl-i18n")
-include("nsl-kv")
-include("nsl-net")
-include("nsl-netclient")
-include("nsl-queue")
-include("nsl-sql")
-include("nsl-storage")
-include("nsl-websocket")
-include("nsl-zcache")
+  // pre-retained payload or null if cache miss; you own it now, release it later
+  NativeStoragePayload fetch(NativeStorageKey key);
 
-include("nss-api")
-include("nss-cli")
-include("nss-gateway")
-include("nss-ingestor")
-include("nss-ingress")
-include("nss-registry")
-include("nss-translator")
-include("nss-worker")
+  void remove(NativeStorageKey key);
+
+  void remove(NativeStorageKey... keys);
+
+  void empty();
+}
