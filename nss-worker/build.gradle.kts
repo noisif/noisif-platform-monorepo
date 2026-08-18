@@ -29,6 +29,7 @@ dependencies {
   implementation(project(":nsl-common"))
   implementation(project(":nsl-contracts"))
   implementation(project(":nsl-http"))
+  implementation(project(":nsl-zcache"))
 
   testImplementation(testFixtures(project(":nsl-common")))
 }
