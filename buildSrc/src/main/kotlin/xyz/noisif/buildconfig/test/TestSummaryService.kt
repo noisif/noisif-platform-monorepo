@@ -18,6 +18,8 @@
 package xyz.noisif.buildconfig.test
 
 import org.gradle.api.Project
+import org.gradle.api.logging.Logger
+import org.gradle.api.logging.Logging
 import org.gradle.api.provider.Provider
 import org.gradle.api.services.BuildService
 import org.gradle.api.services.BuildServiceParameters
@@ -30,6 +32,8 @@ import java.util.concurrent.atomic.AtomicLong
 abstract class TestSummaryService :
   BuildService<BuildServiceParameters.None>,
   AutoCloseable {
+  private val logger: Logger = Logging.getLogger(TestSummaryService::class.java)
+
   private val totalPassed = AtomicLong(0)
   private val totalFailed = AtomicLong(0)
   private val totalSkipped = AtomicLong(0)
@@ -52,13 +56,13 @@ abstract class TestSummaryService :
     val header = "GLOBAL TEST SUMMARY (ALL MODULES)"
     val separator = "=".repeat(header.length)
 
-    println("\n$separator")
-    println(header)
-    println("Total passed  : ${GREEN}$passed$RESET")
-    println("Total failed  : ${RED}$failed$RESET")
-    println("Total skipped : ${YELLOW}$skipped$RESET")
-    println("Grand total   : $total")
-    println("$separator\n")
+    logger.lifecycle("\n$separator")
+    logger.lifecycle(header)
+    logger.lifecycle("Total passed  : ${GREEN}$passed$RESET")
+    logger.lifecycle("Total failed  : ${RED}$failed$RESET")
+    logger.lifecycle("Total skipped : ${YELLOW}$skipped$RESET")
+    logger.lifecycle("Grand total   : $total")
+    logger.lifecycle("$separator\n")
   }
 }
 

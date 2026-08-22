@@ -17,6 +17,7 @@
  */
 package xyz.noisif.buildconfig.test
 
+import org.gradle.api.logging.Logger
 import org.gradle.api.tasks.testing.TestDescriptor
 import org.gradle.api.tasks.testing.TestListener
 import org.gradle.api.tasks.testing.TestResult
@@ -25,7 +26,10 @@ import xyz.noisif.buildconfig.RED
 import xyz.noisif.buildconfig.RESET
 import xyz.noisif.buildconfig.YELLOW
 
-class CompactTestOutputListener(private val summaryService: TestSummaryService) : TestListener {
+class CompactTestOutputListener(
+  private val summaryService: TestSummaryService,
+  private val logger: Logger
+) : TestListener {
   override fun beforeSuite(suite: TestDescriptor) {
   }
 
@@ -54,10 +58,10 @@ class CompactTestOutputListener(private val summaryService: TestSummaryService) 
     val failedStr = "${RED}$plainFailedStr$RESET"
     val skippedStr = "${YELLOW}$plainSkippedStr$RESET"
 
-    println("\n$separator")
-    println("Test summary: $passedStr, $failedStr, $skippedStr")
-    println("Total tests : $total")
-    println("$separator\n")
+    logger.lifecycle("\n$separator")
+    logger.lifecycle("Test summary: $passedStr, $failedStr, $skippedStr")
+    logger.lifecycle("Total tests : $total")
+    logger.lifecycle("$separator\n")
   }
 
   override fun beforeTest(testDescriptor: TestDescriptor) {
@@ -68,15 +72,15 @@ class CompactTestOutputListener(private val summaryService: TestSummaryService) 
     val simpleClassName = testDescriptor.className?.substringAfterLast('.') ?: "UnknownClass"
     when (result.resultType) {
       TestResult.ResultType.SUCCESS -> {
-        println("$simpleClassName > $name ${GREEN}PASSED$RESET")
+        logger.lifecycle("$simpleClassName > $name ${GREEN}PASSED$RESET")
       }
 
       TestResult.ResultType.FAILURE -> {
-        println("$simpleClassName > $name ${RED}FAILED$RESET")
+        logger.lifecycle("$simpleClassName > $name ${RED}FAILED$RESET")
       }
 
       TestResult.ResultType.SKIPPED -> {
-        println("$simpleClassName > $name ${YELLOW}SKIPPED$RESET")
+        logger.lifecycle("$simpleClassName > $name ${YELLOW}SKIPPED$RESET")
       }
 
       else -> {}

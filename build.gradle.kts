@@ -80,7 +80,7 @@ subprojects {
     }
     val summaryService = registerTestSummaryService()
     usesService(summaryService)
-    addTestListener(CompactTestOutputListener(summaryService.get()))
+    addTestListener(CompactTestOutputListener(summaryService.get(), project.logger))
     // suppress JDK 21+ warnings regarding dynamic agent loading (used by mockito)
     // -Xshare:off: disables class data sharing
     jvmArgs(
