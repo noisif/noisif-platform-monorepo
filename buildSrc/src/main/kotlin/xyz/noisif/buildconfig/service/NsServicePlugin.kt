@@ -26,9 +26,10 @@ import org.gradle.api.provider.Property
 import org.gradle.kotlin.dsl.attributes
 import org.gradle.kotlin.dsl.configure
 import org.gradle.kotlin.dsl.dependencies
-import org.gradle.kotlin.dsl.withType
-import xyz.noisif.buildconfig.getLibrary
-import xyz.noisif.buildconfig.getPlugin
+import xyz.noisif.buildconfig.alias.LibraryAlias
+import xyz.noisif.buildconfig.alias.PluginAlias
+import xyz.noisif.buildconfig.alias.apply
+import xyz.noisif.buildconfig.alias.getLibrary
 import xyz.noisif.buildconfig.libs
 import kotlin.reflect.KProperty1
 
@@ -43,15 +44,10 @@ class NsServicePlugin : Plugin<Project> {
   }
 
   private fun applyApplicationConventions(project: Project, nsExt: NsServiceExtension) {
-    project.pluginManager.apply(
-      project.libs
-        .getPlugin("shadow")
-        .get()
-        .pluginId,
-    )
-    project.pluginManager.apply("application")
+    project.pluginManager.apply(project, PluginAlias.SHADOW)
+    project.pluginManager.apply(project, PluginAlias.APPLICATION)
     project.dependencies {
-      add("runtimeOnly", project.libs.getLibrary("logback.classic"))
+      add("runtimeOnly", project.libs.getLibrary(LibraryAlias.LOGBACK_CLASSIC))
     }
     val mainClazzProvider =
       nsExt.packageSuffix.zip(nsExt.mainClass) { suffix, clazz ->

@@ -15,28 +15,25 @@
  *
  * Please refer to the LICENSE file in the root directory for full restrictions.
  */
-package xyz.noisif.buildconfig
+package xyz.noisif.buildconfig.alias
 
-import org.gradle.api.Project
+import org.gradle.api.artifacts.MinimalExternalModuleDependency
 import org.gradle.api.artifacts.VersionCatalog
-import org.gradle.api.artifacts.VersionCatalogsExtension
 import org.gradle.api.provider.Provider
-import org.gradle.plugin.use.PluginDependency
 
-fun getPluginId(accessor: Provider<PluginDependency>): String = accessor.get().pluginId
+enum class LibraryAlias(private val alias: String) : DependencyAlias {
+  LOGBACK_CLASSIC("logback.classic"),
+  PROTOBUF_COMPILER("protoc"),
+  SCALA_LIBRARY("scala.library"),
+  ;
 
-fun getEnv(name: String, defValue: String = ""): String = System.getenv("NS_$name") ?: defValue
+  override fun getAlias() = alias
 
-val Project.libs: VersionCatalog
-  get() = extensions.getByType(VersionCatalogsExtension::class.java).named("libs")
+  override fun toString() = getAlias()
+}
 
-fun getExecutableOsDependentFileName(): String {
-  val osName = System.getProperty("os.name").lowercase()
-  val arch = System.getProperty("os.arch").lowercase()
-  return when {
-    "win" in osName -> "win-amd64.exe"
-    "mac" in osName && ("aarch" in arch || "arm" in arch) -> "macos-arm64"
-    "mac" in osName -> "macos-amd64"
-    else -> "linux-amd64"
-  }
+fun VersionCatalog.getLibrary(
+  libraryAlias: LibraryAlias,
+): Provider<MinimalExternalModuleDependency> = findLibrary(libraryAlias.getAlias()).orElseThrow {
+  IllegalArgumentException("Library '${libraryAlias.getAlias()}' not found in TOML")
 }

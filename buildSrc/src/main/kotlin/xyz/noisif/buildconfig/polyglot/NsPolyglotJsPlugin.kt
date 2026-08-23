@@ -23,16 +23,14 @@ import com.github.gradle.node.npm.task.NpmTask
 import com.github.gradle.node.npm.task.NpxTask
 import org.gradle.api.Plugin
 import org.gradle.api.Project
-import org.gradle.api.tasks.SourceSetContainer
 import org.gradle.kotlin.dsl.apply
-import org.gradle.kotlin.dsl.getByType
-import org.gradle.kotlin.dsl.register
-import org.gradle.plugins.ide.idea.model.IdeaModel
+import xyz.noisif.buildconfig.alias.PluginAlias
+import xyz.noisif.buildconfig.alias.apply
 
 class NsPolyglotJsPlugin : Plugin<Project> {
   override fun apply(target: Project) {
     target.apply<NodePlugin>()
-    target.pluginManager.apply("idea")
+    target.pluginManager.apply(target, PluginAlias.IDEA)
 
     val extension = target.extensions.create("polyglotJs", NsPolyglotJsExtension::class.java)
     val nodeExtension = target.extensions.getByType(NodeExtension::class.java)

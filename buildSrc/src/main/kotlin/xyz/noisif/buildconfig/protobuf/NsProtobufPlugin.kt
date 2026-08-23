@@ -26,12 +26,10 @@ import org.gradle.plugins.ide.idea.model.IdeaModel
 
 class NsProtobufPlugin : Plugin<Project> {
   override fun apply(target: Project) {
-    val protobufPlugin = target.libs.getPlugin("protobuf")
+    target.pluginManager.apply(target, PluginAlias.PROTOBUF)
+    target.pluginManager.apply(target, PluginAlias.IDEA)
 
-    target.pluginManager.apply(getPluginId(protobufPlugin))
-    target.pluginManager.apply("idea")
-
-    val protocLib = target.libs.getLibrary("protoc").get()
+    val protocLib = target.libs.getLibrary(LibraryAlias.PROTOBUF_COMPILER).get()
     val protocGroup = protocLib.module.group
     val protocName = protocLib.module.name
     val protocVersion = protocLib.versionConstraint.requiredVersion
