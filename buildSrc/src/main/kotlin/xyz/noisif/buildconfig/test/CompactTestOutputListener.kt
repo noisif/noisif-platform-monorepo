@@ -28,7 +28,7 @@ import xyz.noisif.buildconfig.YELLOW
 
 class CompactTestOutputListener(
   private val summaryService: TestSummaryService,
-  private val logger: Logger
+  private val logger: Logger,
 ) : TestListener {
   override fun beforeSuite(suite: TestDescriptor) {
   }
