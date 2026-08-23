@@ -61,6 +61,10 @@ gradlePlugin {
       id = "xyz.noisif.ns-spotless-protobuf"
       implementationClass = "xyz.noisif.buildconfig.spotless.NsSpotlessProtobufPlugin"
     }
+    create("nsScala") {
+      id = "xyz.noisif.ns-scala"
+      implementationClass = "xyz.noisif.buildconfig.NsScalaPlugin"
+    }
   }
 }
 

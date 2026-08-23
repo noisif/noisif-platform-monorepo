@@ -15,27 +15,21 @@
  *
  * Please refer to the LICENSE file in the root directory for full restrictions.
  */
-import xyz.noisif.buildconfig.NsScalaPlugin
+package xyz.noisif.buildconfig
 
-plugins {
-  alias(libs.plugins.test.fixtures)
-}
+import org.gradle.api.Plugin
+import org.gradle.api.Project
+import org.gradle.kotlin.dsl.dependencies
+import xyz.noisif.buildconfig.alias.LibraryAlias
+import xyz.noisif.buildconfig.alias.PluginAlias
+import xyz.noisif.buildconfig.alias.apply
+import xyz.noisif.buildconfig.alias.getLibrary
 
-apply<NsScalaPlugin>()
-
-dependencies {
-  implementation(libs.bucket4j)
-  implementation(libs.clazz.graph)
-  implementation(libs.guava)
-  implementation(libs.guice) {
-    // 7.0.0 has vulnerable old guava version, fetch the newest version explicitly
-    exclude(group = "com.google.guava", module = "guava")
+class NsScalaPlugin : Plugin<Project> {
+  override fun apply(target: Project) {
+    target.pluginManager.apply(target, PluginAlias.SCALA)
+    target.dependencies {
+      add("implementation", target.libs.getLibrary(LibraryAlias.SCALA_LIBRARY))
+    }
   }
-
-  api(libs.jakarta.inject.api)
-  api(libs.jakarta.cdi.api)
-
-  testFixturesApi(libs.assertj.core)
-  testFixturesApi(libs.junit.jupiter)
-  testFixturesApi(libs.slf4j.api)
 }
