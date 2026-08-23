@@ -15,16 +15,17 @@
  *
  * Please refer to the LICENSE file in the root directory for full restrictions.
  */
-import xyz.noisif.buildconfig.protobuf.NsProtobufPlugin
-import xyz.noisif.buildconfig.spotless.NsSpotlessProtobufPlugin
+package xyz.noisif.buildconfig.protobuf
 
-apply<NsProtobufPlugin>()
-apply<NsSpotlessProtobufPlugin>()
+import com.google.protobuf.gradle.ExecutableLocator
+import org.gradle.api.Action
 
-dependencies {
-  implementation(libs.jackson.databind)
-  implementation(libs.protobuf.java)
-  implementation(project(":nsl-common"))
-
-  testImplementation(testFixtures(project(":nsl-common")))
+internal class ProtocConfigAction(
+  private val group: String,
+  private val name: String,
+  private val version: String,
+) : Action<ExecutableLocator?> {
+  override fun execute(locator: ExecutableLocator) {
+    locator.artifact = "$group:$name:$version"
+  }
 }

@@ -19,8 +19,6 @@ package xyz.noisif.buildconfig.polyglot
 
 import com.github.gradle.node.NodeExtension
 import com.github.gradle.node.NodePlugin
-import com.github.gradle.node.npm.task.NpmTask
-import com.github.gradle.node.npm.task.NpxTask
 import org.gradle.api.Plugin
 import org.gradle.api.Project
 import org.gradle.kotlin.dsl.apply
@@ -39,80 +37,6 @@ class NsPolyglotJsPlugin : Plugin<Project> {
     nodeExtension.download.set(true)
     nodeExtension.nodeProjectDir.set(target.file("src/main/js"))
 
-    target.afterEvaluate {
-      registerTasks(project, extension)
-      configureSourceSets(project)
-    }
-  }
-
-  private fun registerTasks(project: Project, extension: NsPolyglotJsExtension) {
-    val npmInstall =
-      project.tasks.register<NpmTask>("npmInstallDeps") {
-        val deps = mutableListOf("install")
-        deps.addAll(extension.npmDependencies.get())
-
-        args.set(deps)
-        inputs.file("src/main/js/package.json")
-        outputs.dir("src/main/js/node_modules")
-      }
-    val bundleTask =
-      project.tasks.register<NpxTask>("bundleJs") {
-        dependsOn(npmInstall)
-
-        val outputDir = project.layout.projectDirectory.dir("src/main/generated/js")
-
-        inputs.dir("src/main/js").withPropertyName("sourceDir")
-        inputs.dir("src/main/js/node_modules").withPropertyName("nodeModules")
-        outputs.dir(outputDir).withPropertyName("outputDir")
-
-        doFirst {
-          val outDirFile = outputDir.asFile
-          if (!outDirFile.exists()) {
-            outDirFile.mkdirs()
-          }
-        }
-        command.set("esbuild")
-
-        val esbuildArgs = mutableListOf<String>()
-        extension.entryPoints.get().forEach { (alias, srcPath) ->
-          val absoluteSrc = project.file("src/main/js/$srcPath").absolutePath
-          esbuildArgs.add("$alias=$absoluteSrc")
-        }
-        esbuildArgs.addAll(
-          listOf(
-            "--bundle",
-            "--format=iife",
-            "--minify",
-            "--outdir=${outputDir.asFile.absolutePath}",
-          ),
-        )
-        args.set(esbuildArgs)
-      }
-    project.tasks.named("processResources") {
-      dependsOn(bundleTask)
-    }
-    project.pluginManager.withPlugin("com.diffplug.spotless") {
-      project.tasks.matching { it.name.startsWith("spotless") }.configureEach {
-        dependsOn(npmInstall)
-        dependsOn(bundleTask)
-      }
-    }
-  }
-
-  private fun configureSourceSets(project: Project) {
-    val sourceSets = project.extensions.getByType<SourceSetContainer>()
-    val generatedBaseDir = project.file("src/main/generated")
-    sourceSets.named("main") {
-      resources.srcDir(generatedBaseDir)
-    }
-    project.plugins.withId("idea") {
-      val idea = project.extensions.getByType<IdeaModel>()
-      with(idea.module) {
-        excludeDirs.add(project.file("src/main/js/node_modules"))
-        sourceDirs.add(project.file("src/main/js"))
-        generatedSourceDirs.add(generatedBaseDir)
-        excludeDirs.remove(generatedBaseDir)
-      }
-    }
+    target.afterEvaluate(NsPolyglotJsConfigAction(extension))
   }
 }

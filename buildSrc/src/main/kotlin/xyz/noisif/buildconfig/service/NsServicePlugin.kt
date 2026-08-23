@@ -23,7 +23,6 @@ import org.gradle.api.Plugin
 import org.gradle.api.Project
 import org.gradle.api.plugins.JavaApplication
 import org.gradle.api.provider.Property
-import org.gradle.kotlin.dsl.attributes
 import org.gradle.kotlin.dsl.configure
 import org.gradle.kotlin.dsl.dependencies
 import xyz.noisif.buildconfig.alias.LibraryAlias
@@ -56,13 +55,9 @@ class NsServicePlugin : Plugin<Project> {
     project.configure<JavaApplication> {
       mainClass.set(mainClazzProvider)
     }
-    project.tasks.withType<ShadowJar>().configureEach {
-      archiveFileName.set("${project.name}.jar")
-      destinationDirectory.set(project.layout.projectDirectory.dir(".bin"))
-      manifest {
-        attributes("Main-Class" to mainClazzProvider.get())
-      }
-    }
+    project.tasks.withType(ShadowJar::class.java).configureEach(
+      NsShadowJarConfigAction(project, mainClazzProvider),
+    )
   }
 
   private fun NsServiceExtension.require(

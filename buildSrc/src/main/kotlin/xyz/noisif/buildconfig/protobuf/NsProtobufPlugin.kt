@@ -15,7 +15,7 @@
  *
  * Please refer to the LICENSE file in the root directory for full restrictions.
  */
-package xyz.noisif.buildconfig
+package xyz.noisif.buildconfig.protobuf
 
 import com.google.protobuf.gradle.ProtobufExtension
 import org.gradle.api.Plugin
@@ -23,6 +23,11 @@ import org.gradle.api.Project
 import org.gradle.api.tasks.SourceSetContainer
 import org.gradle.kotlin.dsl.getByType
 import org.gradle.plugins.ide.idea.model.IdeaModel
+import xyz.noisif.buildconfig.alias.LibraryAlias
+import xyz.noisif.buildconfig.alias.PluginAlias
+import xyz.noisif.buildconfig.alias.apply
+import xyz.noisif.buildconfig.alias.getLibrary
+import xyz.noisif.buildconfig.libs
 
 class NsProtobufPlugin : Plugin<Project> {
   override fun apply(target: Project) {
@@ -35,17 +40,15 @@ class NsProtobufPlugin : Plugin<Project> {
     val protocVersion = protocLib.versionConstraint.requiredVersion
 
     val protobufExt = target.extensions.getByType(ProtobufExtension::class.java)
-    protobufExt.protoc {
-      artifact = "$protocGroup:$protocName:$protocVersion"
-    }
+    protobufExt.protoc(ProtocConfigAction(protocGroup, protocName, protocVersion))
     configureSourceSets(target)
   }
 
   private fun configureSourceSets(project: Project) {
     val sourceSets = project.extensions.getByType<SourceSetContainer>()
-    sourceSets.all {
-      val generatedDir = project.file("build/generated/source/proto/$name/java")
-      java.srcDir(generatedDir)
+    for (sourceSet in sourceSets) {
+      val generatedDir = project.file("build/generated/source/proto/${sourceSet.name}/java")
+      sourceSet.java.srcDir(generatedDir)
     }
     project.plugins.withId("idea") {
       val idea = project.extensions.getByType<IdeaModel>()

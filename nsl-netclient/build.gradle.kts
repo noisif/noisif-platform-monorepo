@@ -15,7 +15,7 @@
  *
  * Please refer to the LICENSE file in the root directory for full restrictions.
  */
-import xyz.noisif.buildconfig.NsProtobufPlugin
+import xyz.noisif.buildconfig.protobuf.NsProtobufPlugin
 import xyz.noisif.buildconfig.spotless.NsSpotlessProtobufPlugin
 
 apply<NsProtobufPlugin>()

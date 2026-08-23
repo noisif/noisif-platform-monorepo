@@ -93,6 +93,7 @@ wiremock = { module = "org.wiremock:wiremock-standalone", version.ref = "wiremoc
 ws-mock-server = { module = "org.java-websocket:Java-WebSocket", version.ref = "wsMockServer" }
 
 [plugins]
+application = { id = "application" }
 error-prone = { id = "net.ltgt.errorprone", version.ref = "errorPronePlugin" }
 idea = { id = "idea" }
 java = { id = "java" }
