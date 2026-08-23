@@ -20,6 +20,7 @@ package xyz.noisif.buildconfig.spotless
 import com.diffplug.gradle.spotless.SpotlessExtension
 import org.gradle.api.Project
 import xyz.noisif.buildconfig.getExecutableOsDependentFileName
+import xyz.noisif.buildconfig.spotless.spec.ProtobufFormatSpec
 import java.io.File
 
 class NsSpotlessProtobufPlugin : NsSpotlessBasePlugin() {
@@ -30,19 +31,10 @@ class NsSpotlessProtobufPlugin : NsSpotlessBasePlugin() {
     target: Project,
     licenseFile: File,
   ) {
-    val clangExe = getClangFormatExecutable(target)
-    val detectedVersion = getClangFormatVersion(clangExe, target)
-    format("proto") {
-      target("src/**/*.proto")
-      targetExclude("build/**/*.proto")
-      clangFormat(detectedVersion).pathToExe(clangExe.absolutePath)
-      licenseHeader(
-        buildLicense(licenseFile, "/*", " * ", " */"),
-        """syntax = "proto3";""",
-      )
-      trimTrailingWhitespace()
-      endWithNewline()
-    }
+    val clangBin = getClangFormatExecutable(target)
+    val detectedVersion = getClangFormatVersion(clangBin, target)
+    val formatSpec = ProtobufFormatSpec(root, licenseFile, detectedVersion, clangBin)
+    formatSpec.applyFormat(this)
   }
 
   private fun getClangFormatExecutable(target: Project): File {
@@ -57,11 +49,11 @@ class NsSpotlessProtobufPlugin : NsSpotlessBasePlugin() {
     return clangExe
   }
 
-  private fun getClangFormatVersion(clangExe: File, target: Project): String {
-    val process = ProcessBuilder(clangExe.absolutePath, "--version").start()
+  private fun getClangFormatVersion(clangBin: File, target: Project): String {
+    val process = ProcessBuilder(clangBin.absolutePath, "--version").start()
     val output = process.inputStream.bufferedReader().use { it.readText() }
     val detectedVersion = output.substringAfter("version ").substringBefore(" ").trim()
-    target.logger.lifecycle("Using local clang-format ($detectedVersion) from ${clangExe.path}")
+    target.logger.lifecycle("Using local clang-format ($detectedVersion) from ${clangBin.path}")
     return detectedVersion
   }
 }

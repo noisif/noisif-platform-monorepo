@@ -15,27 +15,29 @@
  *
  * Please refer to the LICENSE file in the root directory for full restrictions.
  */
-package xyz.noisif.buildconfig.spotless
+package xyz.noisif.buildconfig.spotless.spec
 
+import com.diffplug.gradle.spotless.JavaExtension
 import com.diffplug.gradle.spotless.SpotlessExtension
-import org.gradle.api.Plugin
 import org.gradle.api.Project
-import org.gradle.kotlin.dsl.configure
 import java.io.File
 
-abstract class NsSpotlessBasePlugin : Plugin<Project> {
-  override fun apply(target: Project) {
-    target.pluginManager.apply("com.diffplug.spotless")
-    target.configure<SpotlessExtension> {
-      val baseDir = target.rootProject.projectDir
-      val licenseFile = File(baseDir, "spotless/license-header.txt")
-      configureSpotless(target.rootProject, target, licenseFile)
-    }
+class JavaFormatSpec(root: Project, licenseFile: File) :
+  SpotlessFormatSpec<JavaExtension>(root, licenseFile) {
+  override fun execute(spec: JavaExtension) {
+    spec.target("src/**/*.java")
+    spec.targetExclude("build/generated/**/*.java")
+    spec.googleJavaFormat()
+    spec.replaceRegex(
+      "Force enum semicolon to new line with indent",
+      "(?m)^([ \\t]*)(.*?)(,\\s*;)",
+      "$1$2,\n$1;",
+    )
+    spec.importOrder("\\#", "com", "org", "xyz.noisif", "", "jakarta", "java", "javax")
+    spec.licenseHeader(buildLicense(licenseFile, "/*", " * ", " */"))
+    spec.trimTrailingWhitespace()
+    spec.endWithNewline()
   }
 
-  protected abstract fun SpotlessExtension.configureSpotless(
-    root: Project,
-    target: Project,
-    licenseFile: File,
-  )
+  override fun applyFormat(spotless: SpotlessExtension) = spotless.java(this)
 }

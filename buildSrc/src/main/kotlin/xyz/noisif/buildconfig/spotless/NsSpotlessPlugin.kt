@@ -18,8 +18,13 @@
 package xyz.noisif.buildconfig.spotless
 
 import com.diffplug.gradle.spotless.SpotlessExtension
-import com.diffplug.spotless.extra.wtp.EclipseWtpFormatterStep
 import org.gradle.api.Project
+import xyz.noisif.buildconfig.spotless.spec.JavaFormatSpec
+import xyz.noisif.buildconfig.spotless.spec.KotlinFormatSpec
+import xyz.noisif.buildconfig.spotless.spec.KotlinGradleFormatSpec
+import xyz.noisif.buildconfig.spotless.spec.PropertiesFormatSpec
+import xyz.noisif.buildconfig.spotless.spec.ScalaFormatSpec
+import xyz.noisif.buildconfig.spotless.spec.XmlFormatSpec
 import java.io.File
 
 class NsSpotlessPlugin : NsSpotlessBasePlugin() {
@@ -28,55 +33,16 @@ class NsSpotlessPlugin : NsSpotlessBasePlugin() {
     target: Project,
     licenseFile: File,
   ) {
-    java {
-      target("src/**/*.java")
-      targetExclude("build/generated/**/*.java")
-      googleJavaFormat()
-      replaceRegex(
-        "Force enum semicolon to new line with indent",
-        "(?m)^([ \\t]*)(.*?)(,\\s*;)",
-        "$1$2,\n$1;",
-      )
-      importOrder("\\#", "com", "org", "xyz.noisif", "", "jakarta", "java", "javax")
-      licenseHeader(buildLicense(licenseFile, "/*", " * ", " */"))
-      trimTrailingWhitespace()
-      endWithNewline()
-    }
-    scala {
-      target("src/main/scala/**/*.scala", "src/test/scala/**/*.scala")
-      licenseHeader(buildLicense(licenseFile, "/*", " * ", " */"), "package ")
-      scalafmt().configFile(root.file("spotless/.scalafmt.conf"))
-      trimTrailingWhitespace()
-      endWithNewline()
-    }
-    kotlin {
-      target("src/**/*.kt")
-      licenseHeader(buildLicense(licenseFile, "/*", " * ", " */"))
-      ktlint().editorConfigOverride(mapOf("indent_size" to "2"))
-      trimTrailingWhitespace()
-      endWithNewline()
-    }
-    kotlinGradle {
-      target("**/*.gradle.kts")
-      targetExclude("buildSrc/**/*.gradle.kts", "build/**/*.gradle.kts")
-      licenseHeader(buildLicense(licenseFile, "/*", " * ", " */"), """(?m)^\s*[a-zA-Z@_]""")
-      ktlint().editorConfigOverride(mapOf("indent_size" to "2"))
-      trimTrailingWhitespace()
-      endWithNewline()
-    }
-    format("xml") {
-      target("src/**/*.xml")
-      eclipseWtp(EclipseWtpFormatterStep.XML).configFile(root.file("spotless/wtp-xml.prefs"))
-      licenseHeader(buildLicense(licenseFile, "<!-- ", "  ~ ", "  -->"), "^(<[^!?])")
-      trimTrailingWhitespace()
-      endWithNewline()
-    }
-    format("properties") {
-      target("*.properties", "src/**/*.properties")
-      targetExclude("build/**/*.properties")
-      licenseHeader(buildLicense(licenseFile, "#", "# ", "#"), """[a-zA-Z]""")
-      trimTrailingWhitespace()
-      endWithNewline()
+    val formatSpecs = listOf(
+      JavaFormatSpec(root, licenseFile),
+      ScalaFormatSpec(root, licenseFile),
+      KotlinFormatSpec(root, licenseFile),
+      KotlinGradleFormatSpec(root, licenseFile),
+      XmlFormatSpec(root, licenseFile),
+      PropertiesFormatSpec(root, licenseFile),
+    )
+    for (spec in formatSpecs) {
+      spec.applyFormat(this)
     }
   }
 }

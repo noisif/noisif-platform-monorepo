@@ -15,27 +15,23 @@
  *
  * Please refer to the LICENSE file in the root directory for full restrictions.
  */
-package xyz.noisif.buildconfig.spotless
+package xyz.noisif.buildconfig.spotless.spec
 
+import com.diffplug.gradle.spotless.KotlinGradleExtension
 import com.diffplug.gradle.spotless.SpotlessExtension
-import org.gradle.api.Plugin
 import org.gradle.api.Project
-import org.gradle.kotlin.dsl.configure
 import java.io.File
 
-abstract class NsSpotlessBasePlugin : Plugin<Project> {
-  override fun apply(target: Project) {
-    target.pluginManager.apply("com.diffplug.spotless")
-    target.configure<SpotlessExtension> {
-      val baseDir = target.rootProject.projectDir
-      val licenseFile = File(baseDir, "spotless/license-header.txt")
-      configureSpotless(target.rootProject, target, licenseFile)
-    }
+class KotlinGradleFormatSpec(root: Project, licenseFile: File) :
+  SpotlessFormatSpec<KotlinGradleExtension>(root, licenseFile) {
+  override fun execute(spec: KotlinGradleExtension) {
+    spec.target("**/*.gradle.kts")
+    spec.targetExclude("buildSrc/**/*.gradle.kts", "build/**/*.gradle.kts")
+    spec.licenseHeader(buildLicense(licenseFile, "/*", " * ", " */"), """(?m)^\s*[a-zA-Z@_]""")
+    spec.ktlint().editorConfigOverride(mapOf("indent_size" to "2"))
+    spec.trimTrailingWhitespace()
+    spec.endWithNewline()
   }
 
-  protected abstract fun SpotlessExtension.configureSpotless(
-    root: Project,
-    target: Project,
-    licenseFile: File,
-  )
+  override fun applyFormat(spotless: SpotlessExtension) = spotless.kotlinGradle(this)
 }

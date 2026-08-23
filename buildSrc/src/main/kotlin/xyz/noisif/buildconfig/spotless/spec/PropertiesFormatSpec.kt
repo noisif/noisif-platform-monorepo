@@ -15,27 +15,22 @@
  *
  * Please refer to the LICENSE file in the root directory for full restrictions.
  */
-package xyz.noisif.buildconfig.spotless
+package xyz.noisif.buildconfig.spotless.spec
 
+import com.diffplug.gradle.spotless.FormatExtension
 import com.diffplug.gradle.spotless.SpotlessExtension
-import org.gradle.api.Plugin
 import org.gradle.api.Project
-import org.gradle.kotlin.dsl.configure
 import java.io.File
 
-abstract class NsSpotlessBasePlugin : Plugin<Project> {
-  override fun apply(target: Project) {
-    target.pluginManager.apply("com.diffplug.spotless")
-    target.configure<SpotlessExtension> {
-      val baseDir = target.rootProject.projectDir
-      val licenseFile = File(baseDir, "spotless/license-header.txt")
-      configureSpotless(target.rootProject, target, licenseFile)
-    }
+class PropertiesFormatSpec(root: Project, licenseFile: File) :
+  SpotlessFormatSpec<FormatExtension>(root, licenseFile) {
+  override fun execute(spec: FormatExtension) {
+    spec.target("*.properties", "src/**/*.properties")
+    spec.targetExclude("build/**/*.properties")
+    spec.licenseHeader(buildLicense(licenseFile, "#", "# ", "#"), """[a-zA-Z]""")
+    spec.trimTrailingWhitespace()
+    spec.endWithNewline()
   }
 
-  protected abstract fun SpotlessExtension.configureSpotless(
-    root: Project,
-    target: Project,
-    licenseFile: File,
-  )
+  override fun applyFormat(spotless: SpotlessExtension) = spotless.format("properties", this)
 }
