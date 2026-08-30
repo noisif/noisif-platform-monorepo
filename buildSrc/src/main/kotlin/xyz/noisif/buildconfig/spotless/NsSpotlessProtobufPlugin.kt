@@ -41,7 +41,7 @@ class NsSpotlessProtobufPlugin : NsSpotlessBasePlugin() {
     val fileName = getExecutableOsDependentFileName()
     val clangExe = target.rootProject.file("$binariesDirectory/$fileName")
     check(clangExe.exists()) {
-      "Clang-format binary not found at: ${clangExe.absolutePath}"
+      "clang-format binary not found at: ${clangExe.absolutePath}"
     }
     if (!clangExe.canExecute()) {
       clangExe.setExecutable(true)
@@ -53,7 +53,7 @@ class NsSpotlessProtobufPlugin : NsSpotlessBasePlugin() {
     val process = ProcessBuilder(clangBin.absolutePath, "--version").start()
     val output = process.inputStream.bufferedReader().use { it.readText() }
     val detectedVersion = output.substringAfter("version ").substringBefore(" ").trim()
-    target.logger.lifecycle("Using local clang-format ($detectedVersion) from ${clangBin.path}")
+    target.logger.lifecycle("using local clang-format ($detectedVersion) from ${clangBin.path}")
     return detectedVersion
   }
 }
