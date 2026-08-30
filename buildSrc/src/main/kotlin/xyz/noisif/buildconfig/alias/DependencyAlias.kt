@@ -17,6 +17,6 @@
  */
 package xyz.noisif.buildconfig.alias
 
-interface DependencyAlias {
+internal interface DependencyAlias {
   fun getAlias(): String
 }

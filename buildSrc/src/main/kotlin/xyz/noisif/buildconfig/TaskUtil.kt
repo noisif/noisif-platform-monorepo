@@ -24,23 +24,23 @@ import org.gradle.api.specs.Spec
 import org.gradle.api.tasks.SourceSet
 import java.io.File
 
-class TaskConfigureAction(private val action: (Task) -> Unit) : Action<Task> {
+internal class TaskConfigureAction(private val action: (Task) -> Unit) : Action<Task> {
   override fun execute(task: Task) {
     action(task)
   }
 }
 
-class WithPluginAction(private val onPluginApplied: () -> Unit) : Action<AppliedPlugin> {
+internal class WithPluginAction(private val onPluginApplied: () -> Unit) : Action<AppliedPlugin> {
   override fun execute(appliedPlugin: AppliedPlugin) {
     onPluginApplied()
   }
 }
 
-class TaskNameStartsWithSpec(private val prefix: String) : Spec<Task> {
+internal class TaskNameStartsWithSpec(private val prefix: String) : Spec<Task> {
   override fun isSatisfiedBy(task: Task): Boolean = task.name.startsWith(prefix)
 }
 
-class SourceSetConfigureAction(private val generatedBaseDir: File) : Action<SourceSet> {
+internal class SourceSetConfigureAction(private val generatedBaseDir: File) : Action<SourceSet> {
   override fun execute(sourceSet: SourceSet) {
     sourceSet.resources.srcDir(generatedBaseDir)
   }

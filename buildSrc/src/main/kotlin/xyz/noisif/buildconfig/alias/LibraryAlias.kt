@@ -21,7 +21,7 @@ import org.gradle.api.artifacts.MinimalExternalModuleDependency
 import org.gradle.api.artifacts.VersionCatalog
 import org.gradle.api.provider.Provider
 
-enum class LibraryAlias(private val alias: String) : DependencyAlias {
+internal enum class LibraryAlias(private val alias: String) : DependencyAlias {
   LOGBACK_CLASSIC("logback.classic"),
   PROTOBUF_COMPILER("protoc"),
   SCALA_LIBRARY("scala.library"),
@@ -32,7 +32,7 @@ enum class LibraryAlias(private val alias: String) : DependencyAlias {
   override fun toString() = getAlias()
 }
 
-fun VersionCatalog.getLibrary(
+internal fun VersionCatalog.getLibrary(
   libraryAlias: LibraryAlias,
 ): Provider<MinimalExternalModuleDependency> = findLibrary(libraryAlias.getAlias()).orElseThrow {
   IllegalArgumentException("Library '${libraryAlias.getAlias()}' not found in TOML")

@@ -22,7 +22,7 @@ import com.diffplug.gradle.spotless.SpotlessExtension
 import org.gradle.api.Project
 import java.io.File
 
-class JavaFormatSpec(root: Project, licenseFile: File) :
+internal class JavaFormatSpec(root: Project, licenseFile: File) :
   SpotlessFormatSpec<JavaExtension>(root, licenseFile) {
   override fun execute(spec: JavaExtension) {
     spec.target("src/**/*.java")

@@ -22,7 +22,7 @@ import com.diffplug.gradle.spotless.SpotlessExtension
 import org.gradle.api.Project
 import java.io.File
 
-class KotlinFormatSpec(root: Project, licenseFile: File) :
+internal class KotlinFormatSpec(root: Project, licenseFile: File) :
   SpotlessFormatSpec<KotlinExtension>(root, licenseFile) {
   override fun execute(spec: KotlinExtension) {
     spec.target("src/**/*.kt")

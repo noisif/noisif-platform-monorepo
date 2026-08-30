@@ -22,7 +22,7 @@ import com.diffplug.gradle.spotless.SpotlessExtension
 import org.gradle.api.Project
 import java.io.File
 
-class ScalaFormatSpec(root: Project, licenseFile: File) :
+internal class ScalaFormatSpec(root: Project, licenseFile: File) :
   SpotlessFormatSpec<ScalaExtension>(root, licenseFile) {
   override fun execute(spec: ScalaExtension) {
     spec.target("src/main/scala/**/*.scala", "src/test/scala/**/*.scala")

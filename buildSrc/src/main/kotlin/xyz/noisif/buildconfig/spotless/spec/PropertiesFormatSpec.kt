@@ -22,7 +22,7 @@ import com.diffplug.gradle.spotless.SpotlessExtension
 import org.gradle.api.Project
 import java.io.File
 
-class PropertiesFormatSpec(root: Project, licenseFile: File) :
+internal class PropertiesFormatSpec(root: Project, licenseFile: File) :
   SpotlessFormatSpec<FormatExtension>(root, licenseFile) {
   override fun execute(spec: FormatExtension) {
     spec.target("*.properties", "src/**/*.properties")

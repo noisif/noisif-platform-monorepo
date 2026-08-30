@@ -22,7 +22,7 @@ import com.diffplug.gradle.spotless.SpotlessExtension
 import org.gradle.api.Project
 import java.io.File
 
-class ProtobufFormatSpec(
+internal class ProtobufFormatSpec(
   root: Project,
   licenseFile: File,
   private val detectedVersion: String,

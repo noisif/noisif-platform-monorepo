@@ -27,7 +27,7 @@ fun getPluginId(accessor: Provider<PluginDependency>): String = accessor.get().p
 
 fun getEnv(name: String, defValue: String = ""): String = System.getenv("NS_$name") ?: defValue
 
-val Project.libs: VersionCatalog
+internal val Project.libs: VersionCatalog
   get() = extensions.getByType(VersionCatalogsExtension::class.java).named("libs")
 
 fun getExecutableOsDependentFileName(): String {

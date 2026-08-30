@@ -17,7 +17,7 @@
  */
 package xyz.noisif.buildconfig
 
-const val RESET = "\u001B[0m"
-const val GREEN = "\u001B[32m"
-const val RED = "\u001B[31m"
-const val YELLOW = "\u001B[33m"
+internal const val RESET = "\u001B[0m"
+internal const val GREEN = "\u001B[32m"
+internal const val RED = "\u001B[31m"
+internal const val YELLOW = "\u001B[33m"

@@ -30,7 +30,8 @@ import xyz.noisif.buildconfig.TaskConfigureAction
 import xyz.noisif.buildconfig.TaskNameStartsWithSpec
 import xyz.noisif.buildconfig.WithPluginAction
 
-class NsPolyglotJsConfigAction(private val extension: NsPolyglotJsExtension) : Action<Project> {
+internal class NsPolyglotJsConfigAction(private val extension: NsPolyglotJsExtension) :
+  Action<Project> {
   override fun execute(project: Project) {
     registerTasks(project, extension)
     configureSourceSets(project)

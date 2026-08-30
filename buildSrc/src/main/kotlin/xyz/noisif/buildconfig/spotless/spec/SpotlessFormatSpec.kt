@@ -22,7 +22,7 @@ import org.gradle.api.Action
 import org.gradle.api.Project
 import java.io.File
 
-abstract class SpotlessFormatSpec<T : Any>(
+internal abstract class SpotlessFormatSpec<T : Any>(
   protected val root: Project,
   protected val licenseFile: File,
 ) : Action<T> {

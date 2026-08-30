@@ -25,7 +25,7 @@ import org.gradle.plugin.use.PluginDependency
 import xyz.noisif.buildconfig.getPluginId
 import xyz.noisif.buildconfig.libs
 
-enum class PluginAlias(private val alias: String) : DependencyAlias {
+internal enum class PluginAlias(private val alias: String) : DependencyAlias {
   APPLICATION("application"),
   IDEA("idea"),
   PROTOBUF("protobuf"),
@@ -38,10 +38,10 @@ enum class PluginAlias(private val alias: String) : DependencyAlias {
   override fun toString() = getAlias()
 }
 
-fun VersionCatalog.getPlugin(pluginAlias: PluginAlias): Provider<PluginDependency> =
+internal fun VersionCatalog.getPlugin(pluginAlias: PluginAlias): Provider<PluginDependency> =
   findPlugin(pluginAlias.getAlias()).orElseThrow {
     IllegalArgumentException("Plugin '${pluginAlias.getAlias()}' not found in TOML")
   }
 
-fun PluginManager.apply(target: Project, pluginAlias: PluginAlias) =
+internal fun PluginManager.apply(target: Project, pluginAlias: PluginAlias) =
   apply(getPluginId(target.libs.getPlugin(pluginAlias)))

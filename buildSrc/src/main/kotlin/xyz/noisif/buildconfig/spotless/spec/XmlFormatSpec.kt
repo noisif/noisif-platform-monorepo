@@ -23,7 +23,7 @@ import com.diffplug.spotless.extra.wtp.EclipseWtpFormatterStep
 import org.gradle.api.Project
 import java.io.File
 
-class XmlFormatSpec(root: Project, licenseFile: File) :
+internal class XmlFormatSpec(root: Project, licenseFile: File) :
   SpotlessFormatSpec<FormatExtension>(root, licenseFile) {
   override fun execute(spec: FormatExtension) {
     spec.target("src/**/*.xml")
