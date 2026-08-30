@@ -19,12 +19,15 @@ package xyz.noisif.buildconfig.spotless
 
 import com.diffplug.gradle.spotless.SpotlessExtension
 import org.gradle.api.Project
-import xyz.noisif.buildconfig.getExecutableOsDependentFileName
+import xyz.noisif.buildconfig.HostPlatform
 import xyz.noisif.buildconfig.spotless.spec.ProtobufFormatSpec
 import java.io.File
 
 class NsSpotlessProtobufPlugin : NsSpotlessBasePlugin() {
   private val binariesDirectory = "gradle/tools/clang-format"
+
+  private val hostPlatform = HostPlatform.current()
+  private val spotlessProtobufBinariesPlatform = SpotlessProtobufBinariesPlatform.current()
 
   override fun SpotlessExtension.configureSpotless(
     root: Project,
@@ -38,12 +41,12 @@ class NsSpotlessProtobufPlugin : NsSpotlessBasePlugin() {
   }
 
   private fun getClangFormatExecutable(target: Project): File {
-    val fileName = getExecutableOsDependentFileName()
-    val clangExe = target.rootProject.file("$binariesDirectory/$fileName")
+    val clangExe =
+      target.rootProject.file("$binariesDirectory/${spotlessProtobufBinariesPlatform.platformKey}")
     check(clangExe.exists()) {
       "clang-format binary not found at: ${clangExe.absolutePath}"
     }
-    if (!clangExe.canExecute()) {
+    if (!hostPlatform.isWindows && !clangExe.canExecute()) {
       clangExe.setExecutable(true)
     }
     return clangExe

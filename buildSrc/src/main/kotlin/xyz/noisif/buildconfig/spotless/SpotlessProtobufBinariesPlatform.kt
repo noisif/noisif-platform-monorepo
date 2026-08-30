@@ -15,17 +15,23 @@
  *
  * Please refer to the LICENSE file in the root directory for full restrictions.
  */
-package xyz.noisif.buildconfig
+package xyz.noisif.buildconfig.spotless
 
-import org.gradle.api.Project
-import org.gradle.api.artifacts.VersionCatalog
-import org.gradle.api.artifacts.VersionCatalogsExtension
-import org.gradle.api.provider.Provider
-import org.gradle.plugin.use.PluginDependency
+import xyz.noisif.buildconfig.HostPlatform
+import xyz.noisif.buildconfig.PlatformSupported
+import xyz.noisif.buildconfig.findCurrentPlatform
 
-fun getPluginId(accessor: Provider<PluginDependency>): String = accessor.get().pluginId
+internal enum class SpotlessProtobufBinariesPlatform(
+  val platformKey: String,
+  override vararg val supportedHosts: HostPlatform,
+) : PlatformSupported {
+  WINDOWS_X86_64("win-amd64.exe", HostPlatform.WINDOWS_X86_64),
+  MACOS_ARM64("macos-arm64", HostPlatform.MACOS_ARM64),
+  MACOS_X86_64("macos-amd64", HostPlatform.MACOS_X86_64),
+  LINUX_X86_64("linux-amd64", HostPlatform.LINUX_X86_64),
+  ;
 
-fun getEnv(name: String, defValue: String = ""): String = System.getenv("NS_$name") ?: defValue
-
-internal val Project.libs: VersionCatalog
-  get() = extensions.getByType(VersionCatalogsExtension::class.java).named("libs")
+  companion object {
+    fun current() = findCurrentPlatform<SpotlessProtobufBinariesPlatform>()
+  }
+}
