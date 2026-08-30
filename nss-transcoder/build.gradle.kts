@@ -15,31 +15,29 @@
  *
  * Please refer to the LICENSE file in the root directory for full restrictions.
  */
+import xyz.noisif.buildconfig.ffmpeg.NsFFmpegPlugin
+import xyz.noisif.buildconfig.ffmpeg.nsFFmpeg
+import xyz.noisif.buildconfig.service.NsServicePlugin
+import xyz.noisif.buildconfig.service.nsService
 
-rootProject.name = "noisif-platform-monorepo"
+apply<NsServicePlugin>()
+apply<NsFFmpegPlugin>()
 
-include("nsl-ci")
-include("nsl-codec")
-include("nsl-common")
-include("nsl-contracts")
-include("nsl-graph")
-include("nsl-http")
-include("nsl-i18n")
-include("nsl-kv")
-include("nsl-net")
-include("nsl-netclient")
-include("nsl-queue")
-include("nsl-sql")
-include("nsl-storage")
-include("nsl-websocket")
-include("nsl-zcache")
+nsService {
+  packageSuffix.set("transcoder")
+  mainClass.set("NssTranscoderMain")
+}
 
-include("nss-api")
-include("nss-cli")
-include("nss-gateway")
-include("nss-ingestor")
-include("nss-ingress")
-include("nss-registry")
-include("nss-transcoder")
-include("nss-translator")
-include("nss-worker")
+nsFFmpeg {
+  version.set("6.1")
+  directoryName.set("ffmpeg")
+  downloadFfprobe.set(true)
+}
+
+dependencies {
+  implementation(project(":nsl-common"))
+
+  implementation(libs.ffmpeg.wrapper)
+
+  testImplementation(testFixtures(project(":nsl-common")))
+}

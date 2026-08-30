@@ -15,31 +15,18 @@
  *
  * Please refer to the LICENSE file in the root directory for full restrictions.
  */
+package xyz.noisif.nss.transcoder;
 
-rootProject.name = "noisif-platform-monorepo"
+import xyz.noisif.nsl.common.ModuleIdentityTest;
 
-include("nsl-ci")
-include("nsl-codec")
-include("nsl-common")
-include("nsl-contracts")
-include("nsl-graph")
-include("nsl-http")
-include("nsl-i18n")
-include("nsl-kv")
-include("nsl-net")
-include("nsl-netclient")
-include("nsl-queue")
-include("nsl-sql")
-include("nsl-storage")
-include("nsl-websocket")
-include("nsl-zcache")
+class NssTranscoderIdentityTest extends ModuleIdentityTest {
+  @Override
+  protected String getModuleName() {
+    return "transcoder";
+  }
 
-include("nss-api")
-include("nss-cli")
-include("nss-gateway")
-include("nss-ingestor")
-include("nss-ingress")
-include("nss-registry")
-include("nss-transcoder")
-include("nss-translator")
-include("nss-worker")
+  @Override
+  protected String getPackageSuffix() {
+    return "nss";
+  }
+}
