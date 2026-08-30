@@ -19,6 +19,7 @@ package xyz.noisif.buildconfig
 
 import org.gradle.api.Action
 import org.gradle.api.Task
+import org.gradle.api.file.CopySpec
 import org.gradle.api.plugins.AppliedPlugin
 import org.gradle.api.specs.Spec
 import org.gradle.api.tasks.SourceSet
@@ -43,5 +44,11 @@ internal class TaskNameStartsWithSpec(private val prefix: String) : Spec<Task> {
 internal class SourceSetConfigureAction(private val generatedBaseDir: File) : Action<SourceSet> {
   override fun execute(sourceSet: SourceSet) {
     sourceSet.resources.srcDir(generatedBaseDir)
+  }
+}
+
+internal class CopySpecConfigureAction(private val action: (CopySpec) -> Unit) : Action<CopySpec> {
+  override fun execute(copySpec: CopySpec) {
+    action(copySpec)
   }
 }
