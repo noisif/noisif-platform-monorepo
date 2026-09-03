@@ -2,6 +2,7 @@
   <configuration default="false" name="(:0000) NSS TRANSCODER" type="Application" factoryName="Application" singleton="false">
     <option name="MAIN_CLASS_NAME" value="xyz.noisif.nss.transcoder.NssTranscoderMain" />
     <module name="noisif-platform-monorepo.nss-transcoder.main" />
+    <option name="VM_PARAMETERS" value="-Dlogback.configurationFile=logback-dev.xml" />
     <option name="WORKING_DIRECTORY" value="$MODULE_DIR$" />
     <extension name="coverage">
       <pattern>
