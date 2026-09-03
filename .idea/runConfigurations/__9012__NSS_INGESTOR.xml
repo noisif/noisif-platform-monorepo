@@ -3,6 +3,7 @@
     <option name="MAIN_CLASS_NAME" value="xyz.noisif.nss.ingestor.NssIngestorMain" />
     <module name="noisif-platform-monorepo.nss-ingestor.main" />
     <option name="VM_PARAMETERS" value="-Dlogback.configurationFile=logback-dev.xml" />
+    <option name="WORKING_DIRECTORY" value="$MODULE_DIR$" />
     <extension name="coverage">
       <pattern>
         <option name="PATTERN" value="xyz.jwizard.jws.ingestor.*" />

@@ -2,6 +2,7 @@
   <configuration default="false" name="(:0000) NSS INGRESS" type="Application" factoryName="Application" singleton="false">
     <option name="MAIN_CLASS_NAME" value="xyz.noisif.nss.ingress.NssIngressMain" />
     <module name="noisif-platform-monorepo.nss-ingress.main" />
+    <option name="WORKING_DIRECTORY" value="$MODULE_DIR$" />
     <extension name="coverage">
       <pattern>
         <option name="PATTERN" value="xyz.jwizard.jws.ingress.*" />
