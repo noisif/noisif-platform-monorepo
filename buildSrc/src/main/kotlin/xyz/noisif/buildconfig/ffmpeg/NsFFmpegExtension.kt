@@ -28,7 +28,7 @@ abstract class NsFFmpegExtension {
 
   init {
     version.convention("6.1")
-    directoryName.convention("ffmpeg")
+    directoryName.convention("libav")
     downloadFfprobe.convention(true)
   }
 }

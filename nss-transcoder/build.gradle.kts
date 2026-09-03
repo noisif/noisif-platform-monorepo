@@ -30,7 +30,7 @@ nsService {
 
 nsFFmpeg {
   version.set("6.1")
-  directoryName.set("ffmpeg")
+  directoryName.set("libav")
   downloadFfprobe.set(true)
 }
 
