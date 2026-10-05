@@ -23,8 +23,11 @@ import org.slf4j.LoggerFactory;
 import xyz.noisif.nsl.common.bootstrap.ForbiddenInstantiationException;
 
 import java.io.Closeable;
+import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.URL;
+import java.nio.charset.StandardCharsets;
 import java.util.function.Predicate;
 
 public class IoUtil {
@@ -92,5 +95,16 @@ public class IoUtil {
       throw new IOException("Unable to find file on classpath: " + rawPath);
     }
     return resourceUrl;
+  }
+
+  public static String getResourceAsString(String rawPath) throws IOException {
+    final String path = removeTrailingSlash(rawPath);
+    final ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
+    try (final InputStream inputStream = classLoader.getResourceAsStream(path)) {
+      if (inputStream == null) {
+        throw new FileNotFoundException("InputStream for resource " + path + " not found");
+      }
+      return new String(inputStream.readAllBytes(), StandardCharsets.UTF_8);
+    }
   }
 }
