@@ -69,7 +69,7 @@ public abstract class KvServer extends IdempotentService
   }
 
   @Override
-  protected final void onStart() {
+  protected final void onStart() throws Exception {
     if (nodes.isEmpty()) {
       log.warn("Not providing any nodes, skipping configuration");
       return;
@@ -90,7 +90,7 @@ public abstract class KvServer extends IdempotentService
         "KV subscribers auto-discovery completed, total registered: {}", stringCount + binaryCount);
   }
 
-  protected abstract void onKvServerStart();
+  protected abstract void onKvServerStart() throws Exception;
 
   protected abstract PubSubRegistrar createRegistrar();
 

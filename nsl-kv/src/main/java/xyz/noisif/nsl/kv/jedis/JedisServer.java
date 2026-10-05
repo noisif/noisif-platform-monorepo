@@ -25,6 +25,10 @@ import xyz.noisif.nsl.kv.jedis.factory.ClusterJedisClientFactory;
 import xyz.noisif.nsl.kv.jedis.factory.FactoryType;
 import xyz.noisif.nsl.kv.jedis.factory.JedisClientFactory;
 import xyz.noisif.nsl.kv.jedis.pubsub.JedisPubSubRegistrar;
+import xyz.noisif.nsl.kv.jedis.scriptable.KvScript;
+import xyz.noisif.nsl.kv.jedis.scriptable.LoadedScript;
+import xyz.noisif.nsl.kv.jedis.scriptable.ScriptCacheManager;
+import xyz.noisif.nsl.kv.jedis.scriptable.ScriptableKeyValueStore;
 import xyz.noisif.nsl.kv.pubsub.KvChannel;
 import xyz.noisif.nsl.kv.pubsub.PubSubRegistrar;
 
@@ -33,19 +37,25 @@ import redis.clients.jedis.DefaultJedisClientConfig;
 import redis.clients.jedis.HostAndPort;
 import redis.clients.jedis.JedisClientConfig;
 import redis.clients.jedis.UnifiedJedis;
+import redis.clients.jedis.exceptions.JedisDataException;
 import redis.clients.jedis.params.SetParams;
 
 import java.nio.charset.StandardCharsets;
+import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-public class JedisServer extends KvServer {
+public class JedisServer extends KvServer implements ScriptableKeyValueStore {
   private final JedisClientFactory clientFactory;
   private final int poolMaxTotal;
   private final int poolMaxIdle;
   private final int poolMinIdle;
+  private final String kvScriptsBasePath;
+  private final Set<KvScript> kvScripts;
 
   private UnifiedJedis redisClient;
+  private ScriptCacheManager scriptCacheManager;
 
   private JedisServer(Builder builder) {
     super(builder);
@@ -53,6 +63,8 @@ public class JedisServer extends KvServer {
     poolMaxTotal = builder.poolMaxTotal;
     poolMaxIdle = builder.poolMaxIdle;
     poolMinIdle = builder.poolMinIdle;
+    kvScriptsBasePath = builder.kvScriptsBasePath;
+    kvScripts = builder.kvScripts;
   }
 
   public static Builder builder() {
@@ -60,7 +72,7 @@ public class JedisServer extends KvServer {
   }
 
   @Override
-  protected final void onKvServerStart() {
+  protected final void onKvServerStart() throws Exception {
     final JedisClientConfig config =
         DefaultJedisClientConfig.builder()
             .password(password != null && !password.isBlank() ? password : null)
@@ -68,6 +80,12 @@ public class JedisServer extends KvServer {
 
     final Set<HostAndPort> clusterNodes =
         nodes.stream().map(c -> new HostAndPort(c.host(), c.port())).collect(Collectors.toSet());
+
+    if (!kvScripts.isEmpty()) {
+      scriptCacheManager = ScriptCacheManager.create(kvScriptsBasePath, kvScripts);
+    } else {
+      log.debug("No scripts provided, skipping ScriptCacheManager initialization");
+    }
 
     final ConnectionPoolConfig poolConfig = new ConnectionPoolConfig();
     poolConfig.setMaxTotal(poolMaxTotal);
@@ -145,11 +163,34 @@ public class JedisServer extends KvServer {
     redisClient.publish(channelBytes, message);
   }
 
+  @Override
+  public Object eval(KvScript scriptKey, List<String> keys, List<String> args) {
+    if (scriptCacheManager == null) {
+      throw new IllegalStateException("Scripts manager not instantiated, scripts cache is empty");
+    }
+    final LoadedScript script = scriptCacheManager.getCachedScript(scriptKey);
+    if (script == null) {
+      throw new IllegalArgumentException("Unable to found script with key " + scriptKey);
+    }
+    log.debug("KV EVAL SCRIPT -> {}, keys: {}", scriptKey, keys);
+    try {
+      return redisClient.evalsha(script.sha1(), keys, args);
+    } catch (JedisDataException ex) {
+      if (ex.getMessage() != null && ex.getMessage().contains("NOSCRIPT")) {
+        log.debug("NOSCRIPT for {}, switching to full eval statement", scriptKey);
+        return redisClient.eval(script.content(), keys, args);
+      }
+      throw ex;
+    }
+  }
+
   public static class Builder extends KvServer.AbstractBuilder<Builder> {
     private int poolMaxTotal = 128;
     private int poolMaxIdle = 64;
     private int poolMinIdle = 16;
     private JedisClientFactory factory = new ClusterJedisClientFactory();
+    private String kvScriptsBasePath = "";
+    private final Set<KvScript> kvScripts = new HashSet<>();
 
     private Builder() {}
 
@@ -183,6 +224,21 @@ public class JedisServer extends KvServer {
       return self();
     }
 
+    public Builder kvScriptsBasePath(String kvScriptsBasePath) {
+      this.kvScriptsBasePath = kvScriptsBasePath;
+      return self();
+    }
+
+    public Builder appendKvScript(KvScript kvScript) {
+      kvScripts.add(kvScript);
+      return self();
+    }
+
+    public Builder appendKvScripts(KvScript... kvScripts) {
+      this.kvScripts.addAll(List.of(kvScripts));
+      return self();
+    }
+
     @Override
     public JedisServer build() {
       validate();
@@ -192,6 +248,7 @@ public class JedisServer extends KvServer {
       Assert.greaterOrEqualThan(poolMaxIdle, 0, "poolMaxIdle");
       Assert.lowerOrEqualThan(poolMinIdle, poolMaxIdle, "poolMinIdle");
       Assert.lowerOrEqualThan(poolMaxIdle, poolMaxTotal, "poolMaxIdle");
+      Assert.notNull(kvScriptsBasePath, "kvScriptsBasePath");
       return new JedisServer(this);
     }
   }

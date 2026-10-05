@@ -46,11 +46,13 @@ import xyz.noisif.nsl.kv.jedis.pubsub.ParameterizedStringTestSubscriber;
 import xyz.noisif.nsl.kv.jedis.pubsub.PatternStringTestSubscriber;
 import xyz.noisif.nsl.kv.jedis.pubsub.SimpleBinaryTestSubscriber;
 import xyz.noisif.nsl.kv.jedis.pubsub.SimpleStringTestSubscriber;
+import xyz.noisif.nsl.kv.jedis.scriptable.TestKvScript;
 import xyz.noisif.nsl.kv.pubsub.KvChannel;
 import xyz.noisif.nsl.kv.pubsub.TestKvChannel;
 import xyz.noisif.nsl.net.HostPort;
 
 import java.nio.charset.StandardCharsets;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.CountDownLatch;
@@ -85,6 +87,8 @@ class JedisServerIntegrationTest {
             .poolMinIdle(16)
             .poolMaxIdle(64)
             .withFactory(FactoryType.SINGLE_NODE)
+            .kvScriptsBasePath("redis/script")
+            .appendKvScripts(TestKvScript.values())
             .componentProvider(componentProvider)
             .build();
     jedisServer.start();
@@ -227,5 +231,82 @@ class JedisServerIntegrationTest {
     assertNotNull(paramsRef.get(), "Params array should not be null");
     assertEquals(1, paramsRef.get().length, "Should extract exactly one parameter");
     assertEquals(targetUserId, paramsRef.get()[0], "Extracted wildcard param does not match!");
+  }
+
+  @Test
+  @DisplayName("should execute Lua script and fallback to EVAL when NOSCRIPT occurs")
+  void shouldExecuteLuaScriptWithFallback() {
+    // given
+    final KvKey dummyKey = TestKvKey.USER_PROFILE;
+    final String userId = "lua_user_1";
+    final String exactKey = dummyKey.build(userId);
+    final String expectedValue = "lua_value_1";
+    // when
+    // since this is the first call in the Redis container, it doesn't know the hash yet
+    final Object result =
+        jedisServer.eval(TestKvScript.TEST_EVAL, List.of(exactKey), List.of(expectedValue));
+    // then
+    assertNotNull(result, "script result should not be null");
+    assertEquals(expectedValue, result.toString(), "script should return the newly set value");
+    // check if the change worked via the standard client (simple get)
+    assertEquals(
+        expectedValue,
+        jedisServer.get(dummyKey, userId),
+        "value should be accessible via standard get");
+  }
+
+  @Test
+  @DisplayName("should execute Lua script using cached SHA-1 on subsequent calls")
+  void shouldExecuteLuaScriptUsingCachedSha1() {
+    // given
+    final KvKey dummyKey = TestKvKey.USER_PROFILE;
+    final String userId = "lua_user_2";
+    final String exactKey = dummyKey.build(userId);
+    final String expectedValue = "lua_value_2";
+    // prerequisite: force the script to be loaded into redis ram
+    jedisServer.eval(TestKvScript.TEST_EVAL, List.of("dummy:key"), List.of("dummy_val"));
+    // when
+    final Object result =
+        jedisServer.eval(TestKvScript.TEST_EVAL, List.of(exactKey), List.of(expectedValue));
+    // then
+    assertEquals(
+        expectedValue,
+        result.toString(),
+        "script should return the updated value using cached sha-1");
+    assertEquals(
+        expectedValue,
+        jedisServer.get(dummyKey, userId),
+        "value should be accessible via standard get");
+  }
+
+  @Test
+  @DisplayName("should handle complex Lua script for atomic shard locking and renewing")
+  void shouldExecuteComplexLuaScriptForAtomicLocking() {
+    // given
+    final KvKey shardLockKey = TestKvKey.TEMP_SESSION;
+    final String shardId = "shard_0";
+    final String exactKey = shardLockKey.build(shardId);
+    final String pod1 = "pod-1";
+    final String pod2 = "pod-2";
+    final String ttlSeconds = "10";
+    // when & then
+    // 1. pod-1 tries to acquire a free shard (expected success: 1)
+    final Object acquireResult =
+        jedisServer.eval(TestKvScript.COMPLEX_LOCK, List.of(exactKey), List.of(pod1, ttlSeconds));
+    assertEquals(1L, acquireResult, "pod-1 should successfully acquire the free shard lock");
+    assertEquals(pod1, jedisServer.get(shardLockKey, shardId), "pod-1 should be the owner");
+    // 2. pod-2 tries to steal the same shard (expected denial: 0)
+    final Object stealResult =
+        jedisServer.eval(TestKvScript.COMPLEX_LOCK, List.of(exactKey), List.of(pod2, ttlSeconds));
+    assertEquals(0L, stealResult, "pod-2 should be denied because pod-1 owns the lock");
+    assertEquals(pod1, jedisServer.get(shardLockKey, shardId), "pod-1 should still be the owner");
+    // 3. pod-1 renews its own shard (lease renewal) (expected success: 1)
+    final Object renewResult =
+        jedisServer.eval(
+            TestKvScript.COMPLEX_LOCK,
+            List.of(exactKey),
+            List.of(pod1, "30") // renews with a new ttl = 30s
+            );
+    assertEquals(1L, renewResult, "pod-1 should successfully renew its own lock");
   }
 }
