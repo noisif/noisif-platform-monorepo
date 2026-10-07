@@ -26,12 +26,14 @@ import com.rabbitmq.client.ShutdownNotifier;
 
 import xyz.noisif.nsl.common.util.io.IoUtil;
 import xyz.noisif.nsl.common.util.thread.TaskExecutor;
+import xyz.noisif.nsl.queue.MessageProcessor;
 import xyz.noisif.nsl.queue.QueueListener;
 import xyz.noisif.nsl.queue.QueueServer;
 import xyz.noisif.nsl.queue.QueueTopology;
 import xyz.noisif.nsl.queue.rabbitmq.connector.ConnectorType;
 import xyz.noisif.nsl.queue.rabbitmq.connector.RabbitMqClusterConnector;
 import xyz.noisif.nsl.queue.rabbitmq.connector.RabbitMqConnector;
+import xyz.noisif.nsl.queue.retryable.RetryableMessageProcessor;
 
 import java.io.IOException;
 import java.util.HashMap;
@@ -133,24 +135,11 @@ public class RabbitMqServer extends QueueServer {
           exchangeName,
           routingKey);
     }
+    final MessageProcessor processor = new RetryableMessageProcessor(topology, queueName);
     channel.basicConsume(
         queueName,
         false,
-        (consumerTag, message) -> {
-          final long deliveryTag = message.getEnvelope().getDeliveryTag();
-          try {
-            processDelivery(listener, message.getBody());
-            channel.basicAck(deliveryTag, false);
-          } catch (Throwable t) {
-            log.error("Processing failed for message on {}, sending to DLX", queueName, t);
-            try {
-              // requeue set to false, without DLX delete message
-              channel.basicNack(deliveryTag, false, false);
-            } catch (IOException ex) {
-              log.error("Critical: could not send NACK", ex);
-            }
-          }
-        },
+        new RabbitMqDeliverCallback(processor, this, listener, channel),
         cancelTag -> {});
   }
 

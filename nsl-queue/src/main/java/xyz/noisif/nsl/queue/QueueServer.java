@@ -33,7 +33,7 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-public abstract class QueueServer extends IdempotentService {
+public abstract class QueueServer extends IdempotentService implements MessageHandler {
   protected final String username;
   protected final String password;
   protected final Set<HostPort> nodes;
@@ -72,7 +72,8 @@ public abstract class QueueServer extends IdempotentService {
     return queuePublisher;
   }
 
-  protected <T> void processDelivery(QueueListener<T> listener, byte[] body) {
+  @Override
+  public <T> void processDelivery(QueueListener<T> listener, byte[] body) {
     if (log.isTraceEnabled()) {
       final String rawPayload = StringUtil.create(body);
       log.trace("Raw bytes received from queue '{}': {}", listener.getQueueName(), rawPayload);
