@@ -96,7 +96,7 @@ public class RabbitMqServer extends QueueServer {
   protected void onPublish(String exchange, String routingKey, byte[] body) throws Exception {
     if (channel == null || !channel.isOpen()) {
       throw new IllegalStateException(
-          "Cannot publish message, " + "channel is closed or not initialized");
+          "Cannot publish message, channel is closed or not initialized");
     }
     channel.basicPublish(exchange, routingKey, MessageProperties.PERSISTENT_BASIC, body);
   }
@@ -148,8 +148,8 @@ public class RabbitMqServer extends QueueServer {
             try {
               // requeue set to false, without DLX delete message
               channel.basicNack(deliveryTag, false, false);
-            } catch (IOException e) {
-              log.error("Critical: could not send NACK", e);
+            } catch (IOException ex) {
+              log.error("Critical: could not send NACK", ex);
             }
           }
         },
