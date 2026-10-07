@@ -18,8 +18,7 @@
 package xyz.noisif.nsl.websocket.broadcast;
 
 import xyz.noisif.nsl.codec.envelope.OpCode;
-
-import java.nio.charset.StandardCharsets;
+import xyz.noisif.nsl.common.util.StringUtil;
 
 public interface WsBroadcaster {
   void broadcast(OpCode op, Object payload);
@@ -39,10 +38,10 @@ public interface WsBroadcaster {
   void broadcastRaw(WsTopic topic, byte[] payload);
 
   default void broadcastRaw(String payload) {
-    broadcastRaw(payload.getBytes(StandardCharsets.UTF_8));
+    broadcastRaw(StringUtil.getBytes(payload));
   }
 
   default void broadcastRaw(WsTopic topic, String payload) {
-    broadcastRaw(topic, payload.getBytes(StandardCharsets.UTF_8));
+    broadcastRaw(topic, StringUtil.getBytes(payload));
   }
 }

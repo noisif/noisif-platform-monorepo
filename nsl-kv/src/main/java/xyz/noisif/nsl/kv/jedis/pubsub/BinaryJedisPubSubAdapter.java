@@ -20,12 +20,11 @@ package xyz.noisif.nsl.kv.jedis.pubsub;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import xyz.noisif.nsl.common.util.StringUtil;
 import xyz.noisif.nsl.kv.pubsub.pattern.ChannelParamExtractor;
 import xyz.noisif.nsl.kv.pubsub.subscriber.KvSubscriber;
 
 import redis.clients.jedis.BinaryJedisPubSub;
-
-import java.nio.charset.StandardCharsets;
 
 public class BinaryJedisPubSubAdapter extends BinaryJedisPubSub {
   private static final Logger LOG = LoggerFactory.getLogger(BinaryJedisPubSubAdapter.class);
@@ -41,7 +40,7 @@ public class BinaryJedisPubSubAdapter extends BinaryJedisPubSub {
 
   @Override
   public void onMessage(byte[] channel, byte[] message) {
-    final String channelStr = new String(channel, StandardCharsets.UTF_8);
+    final String channelStr = StringUtil.create(channel);
     if (LOG.isDebugEnabled()) {
       LOG.debug("KV RECEIVED (pubSub, byte[]) -> channel: '{}'", channelStr);
     }
@@ -52,9 +51,9 @@ public class BinaryJedisPubSubAdapter extends BinaryJedisPubSub {
 
   @Override
   public void onPMessage(byte[] pattern, byte[] channel, byte[] message) {
-    final String channelStr = new String(channel, StandardCharsets.UTF_8);
+    final String channelStr = StringUtil.create(channel);
     if (LOG.isDebugEnabled()) {
-      final String patternStr = new String(pattern, StandardCharsets.UTF_8);
+      final String patternStr = StringUtil.create(pattern);
       LOG.debug(
           "KV RECEIVED (pattern, byte[]) -> pattern: '{}', channel: '{}'", patternStr, channelStr);
     }
@@ -71,7 +70,7 @@ public class BinaryJedisPubSubAdapter extends BinaryJedisPubSub {
       if (LOG.isDebugEnabled()) {
         LOG.debug(
             "Successfully subscribed to channel/pattern: '{}' (total active: {})",
-            new String(channel, StandardCharsets.UTF_8),
+            StringUtil.create(channel),
             subscribedChannels);
       }
     }

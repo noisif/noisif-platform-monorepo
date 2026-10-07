@@ -46,6 +46,7 @@ import xyz.noisif.nsl.codec.serialization.raw.RawByteSerializer;
 import xyz.noisif.nsl.common.di.ComponentProvider;
 import xyz.noisif.nsl.common.reflect.TypeReference;
 import xyz.noisif.nsl.common.util.CastUtil;
+import xyz.noisif.nsl.common.util.StringUtil;
 import xyz.noisif.nsl.net.HostPort;
 import xyz.noisif.nsl.queue.FailingListener;
 import xyz.noisif.nsl.queue.HappyPathListener;
@@ -56,7 +57,6 @@ import xyz.noisif.nsl.queue.QueueListener;
 import xyz.noisif.nsl.queue.QueueServer;
 import xyz.noisif.nsl.queue.rabbitmq.connector.ConnectorType;
 
-import java.nio.charset.StandardCharsets;
 import java.util.Collections;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
@@ -93,13 +93,13 @@ class RabbitMqServerIntegrationTest {
     mockListenerRegistration(listener);
     startServer();
     // when
-    final byte[] payload = "Hello RabbitMQ".getBytes(StandardCharsets.UTF_8);
+    final byte[] payload = StringUtil.getBytes("Hello RabbitMQ");
     messagePublisher.publishToQueue("test.happy.queue", payload, StandardSerializerFormat.RAW);
 
     // then
     final boolean received = listener.getLatch().await(5, TimeUnit.SECONDS);
     assertThat(received).as("Message should be received").isTrue();
-    final String receivedStr = new String(listener.getReceivedMessage(), StandardCharsets.UTF_8);
+    final String receivedStr = StringUtil.create(listener.getReceivedMessage());
     assertThat(receivedStr).isEqualTo("Hello RabbitMQ");
   }
 
@@ -111,7 +111,7 @@ class RabbitMqServerIntegrationTest {
     mockListenerRegistration(listener);
     startServer();
     // when
-    final byte[] poisonPill = "Poison Pill".getBytes(StandardCharsets.UTF_8);
+    final byte[] poisonPill = StringUtil.getBytes("Poison Pill");
     messagePublisher.publishToQueue("test.fail.queue", poisonPill, StandardSerializerFormat.RAW);
     // then
     Thread.sleep(500);
@@ -121,7 +121,7 @@ class RabbitMqServerIntegrationTest {
       final GetResponse response = channel.basicGet("test.fail.queue.dlq", true);
       assertThat(response).as("Message should be routed to DLQ").isNotNull();
 
-      final String dlqMessage = new String(response.getBody(), StandardCharsets.UTF_8);
+      final String dlqMessage = StringUtil.create(response.getBody());
       assertThat(dlqMessage).isEqualTo("Poison Pill");
     }
   }

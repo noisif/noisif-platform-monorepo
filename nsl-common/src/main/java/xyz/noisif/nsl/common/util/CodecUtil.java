@@ -19,7 +19,6 @@ package xyz.noisif.nsl.common.util;
 
 import xyz.noisif.nsl.common.bootstrap.ForbiddenInstantiationException;
 
-import java.nio.charset.StandardCharsets;
 import java.util.Base64;
 
 public class CodecUtil {
@@ -31,7 +30,7 @@ public class CodecUtil {
     if (text == null) {
       return null;
     }
-    return Base64.getEncoder().encodeToString(text.getBytes(StandardCharsets.UTF_8));
+    return Base64.getEncoder().encodeToString(StringUtil.getBytes(text));
   }
 
   public static String decodeBase64(String base64Text) {
@@ -39,6 +38,6 @@ public class CodecUtil {
       return null;
     }
     final byte[] decodedBytes = Base64.getDecoder().decode(base64Text);
-    return new String(decodedBytes, StandardCharsets.UTF_8);
+    return StringUtil.create(decodedBytes);
   }
 }

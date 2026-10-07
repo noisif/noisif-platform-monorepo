@@ -25,8 +25,7 @@ import xyz.noisif.nsl.codec.serialization.SerializerFormat;
 import xyz.noisif.nsl.codec.serialization.StandardSerializerFormat;
 import xyz.noisif.nsl.codec.serialization.TypedMessageSerializer;
 import xyz.noisif.nsl.common.util.CastUtil;
-
-import java.nio.charset.StandardCharsets;
+import xyz.noisif.nsl.common.util.StringUtil;
 
 public class RawTextSerializer implements MessageSerializer, TypedMessageSerializer<String> {
   private RawTextSerializer() {}
@@ -37,12 +36,12 @@ public class RawTextSerializer implements MessageSerializer, TypedMessageSeriali
 
   @Override
   public byte[] serializeToBytes(Object value) {
-    return serializePayload(value).getBytes(StandardCharsets.UTF_8);
+    return StringUtil.getBytes(serializePayload(value));
   }
 
   @Override
   public <T> T deserializeFromBytes(byte[] bytes, Class<T> type) {
-    final String str = new String(bytes, StandardCharsets.UTF_8);
+    final String str = StringUtil.create(bytes);
     return deserializePayload(str, type);
   }
 

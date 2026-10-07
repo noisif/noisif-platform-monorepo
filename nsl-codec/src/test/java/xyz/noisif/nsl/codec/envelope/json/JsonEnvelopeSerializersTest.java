@@ -34,8 +34,7 @@ import xyz.noisif.nsl.codec.DataType;
 import xyz.noisif.nsl.codec.EncodedPayloadVisitor;
 import xyz.noisif.nsl.codec.envelope.TestOpCode;
 import xyz.noisif.nsl.codec.serialization.json.JsonSerializer;
-
-import java.nio.charset.StandardCharsets;
+import xyz.noisif.nsl.common.util.StringUtil;
 
 @ExtendWith(MockitoExtension.class)
 class JsonEnvelopeSerializersTest {
@@ -64,7 +63,7 @@ class JsonEnvelopeSerializersTest {
     // then
     verify(visitorMock).accept(mockJson);
     // when
-    final byte[] rawInput = "raw_test".getBytes(StandardCharsets.UTF_8);
+    final byte[] rawInput = StringUtil.getBytes("raw_test");
     textSerializer.acceptRaw(rawInput, visitorMock);
     // then
     verify(visitorMock).accept("raw_test"); // Bytes are converted to String!

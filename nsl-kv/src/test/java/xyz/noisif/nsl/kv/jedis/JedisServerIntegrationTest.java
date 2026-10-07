@@ -38,6 +38,7 @@ import xyz.noisif.nsl.common.di.ComponentProvider;
 import xyz.noisif.nsl.common.di.GuiceComponentProvider;
 import xyz.noisif.nsl.common.reflect.ClassGraphScanner;
 import xyz.noisif.nsl.common.reflect.ClassScanner;
+import xyz.noisif.nsl.common.util.StringUtil;
 import xyz.noisif.nsl.common.util.io.IoUtil;
 import xyz.noisif.nsl.kv.KvKey;
 import xyz.noisif.nsl.kv.TestKvKey;
@@ -51,7 +52,6 @@ import xyz.noisif.nsl.kv.pubsub.KvChannel;
 import xyz.noisif.nsl.kv.pubsub.TestKvChannel;
 import xyz.noisif.nsl.net.HostPort;
 
-import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -192,8 +192,7 @@ class JedisServerIntegrationTest {
   @DisplayName("should auto-discover, register and receive binary message via DI pub/sub channel")
   void shouldPublishAndReceiveBinaryMessage() throws InterruptedException {
     // given
-    final byte[] expectedPayload =
-        "DI_Auto_Discovery_Binary_Payload".getBytes(StandardCharsets.UTF_8);
+    final byte[] expectedPayload = StringUtil.getBytes("DI_Auto_Discovery_Binary_Payload");
     final CountDownLatch latch = new CountDownLatch(1);
     final AtomicReference<byte[]> receivedRef = new AtomicReference<>();
     final SimpleBinaryTestSubscriber subscriber =

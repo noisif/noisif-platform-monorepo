@@ -34,6 +34,7 @@ import xyz.noisif.nsl.common.di.ComponentProvider;
 import xyz.noisif.nsl.common.di.GuiceComponentProvider;
 import xyz.noisif.nsl.common.reflect.ClassGraphScanner;
 import xyz.noisif.nsl.common.reflect.ClassScanner;
+import xyz.noisif.nsl.common.util.StringUtil;
 import xyz.noisif.nsl.common.util.io.IoUtil;
 import xyz.noisif.nsl.net.envelope.ActionGroup;
 import xyz.noisif.nsl.net.http.cookie.CommonCookieName;
@@ -54,7 +55,6 @@ import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.WebSocket;
 import java.nio.ByteBuffer;
-import java.nio.charset.StandardCharsets;
 import java.time.Duration;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
@@ -421,13 +421,13 @@ class JettyWsServerIntegrationTest {
             .join();
     final String heartbeatRequest =
         jsonSerializer.serialize(new MessageEnvelope<>(StandardOpCode.HEARTBEAT.getCode(), null));
-    final byte[] payloadBytes = heartbeatRequest.getBytes(StandardCharsets.UTF_8);
+    final byte[] payloadBytes = StringUtil.getBytes(heartbeatRequest);
     // when
     webSocket.sendBinary(ByteBuffer.wrap(payloadBytes), true).join();
     // then
     final byte[] rawResponse = responses.poll(5, TimeUnit.SECONDS);
     assertThat(rawResponse).isNotNull();
-    final String responseString = new String(rawResponse, StandardCharsets.UTF_8);
+    final String responseString = StringUtil.create(rawResponse);
     final Map<?, ?> responseEnvelope = jsonSerializer.deserialize(responseString, Map.class);
     assertThat(responseEnvelope.get("op")).isEqualTo(StandardOpCode.HEARTBEAT.getCode());
     // cleanup

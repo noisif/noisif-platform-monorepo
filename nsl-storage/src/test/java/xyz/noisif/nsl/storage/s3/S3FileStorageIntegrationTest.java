@@ -53,7 +53,6 @@ import software.amazon.awssdk.services.s3.model.CreateBucketRequest;
 
 import java.io.InputStream;
 import java.net.URI;
-import java.nio.charset.StandardCharsets;
 import java.util.List;
 
 @Testcontainers
@@ -110,7 +109,7 @@ class S3FileStorageIntegrationTest {
   void shouldSaveAndCheckExistence() {
     // given
     final String path = TestStoragePath.USER_AVATAR.buildWithArgs("123");
-    final byte[] content = "fake-png-content".getBytes(StandardCharsets.UTF_8);
+    final byte[] content = StringUtil.getBytes("fake-png-content");
     // when
     action.save(BUCKET, path, content, StandardFileType.PNG);
     // then
@@ -122,7 +121,7 @@ class S3FileStorageIntegrationTest {
   void shouldRetrieveFileAsByteArray() {
     // given
     final String path = TestStoragePath.SIMPLE_FILE.buildWithArgs();
-    final byte[] originalContent = "Hello NSL".getBytes(StandardCharsets.UTF_8);
+    final byte[] originalContent = StringUtil.getBytes("Hello NSL");
     action.save(BUCKET, path, originalContent, StandardFileType.RAW);
     // when
     final FileContent<byte[]> result = action.get(BUCKET, path);
@@ -137,7 +136,7 @@ class S3FileStorageIntegrationTest {
   void shouldRetrieveFileAsInputStream() throws Exception {
     // given
     final String path = TestStoragePath.DOCUMENT.buildWithArgs("user-99", "invoice");
-    final byte[] originalContent = "PDF-CONTENT".getBytes(StandardCharsets.UTF_8);
+    final byte[] originalContent = StringUtil.getBytes("PDF-CONTENT");
     action.save(BUCKET, path, originalContent, StandardFileType.RAW);
     // when
     final FileContent<InputStream> result = action.getAsInputStream(BUCKET, path);
@@ -220,7 +219,7 @@ class S3FileStorageIntegrationTest {
     // given
     final String userId = "user-77";
     final String docName = "financial-report";
-    final byte[] content = "Report Data".getBytes(StandardCharsets.UTF_8);
+    final byte[] content = StringUtil.getBytes("Report Data");
     // when
     action.save(BUCKET, TestStoragePath.DOCUMENT, content, StandardFileType.RAW, userId, docName);
     // then

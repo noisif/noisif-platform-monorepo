@@ -21,8 +21,7 @@ import xyz.noisif.nsl.codec.DataType;
 import xyz.noisif.nsl.codec.EncodedPayloadVisitor;
 import xyz.noisif.nsl.codec.envelope.OpCode;
 import xyz.noisif.nsl.codec.serialization.json.JsonSerializer;
-
-import java.nio.charset.StandardCharsets;
+import xyz.noisif.nsl.common.util.StringUtil;
 
 public class JsonTextEnvelopeSerializer extends JsonEnvelopeSerializer<String> {
   private JsonTextEnvelopeSerializer(JsonSerializer serializer) {
@@ -51,6 +50,6 @@ public class JsonTextEnvelopeSerializer extends JsonEnvelopeSerializer<String> {
 
   @Override
   public void acceptRaw(byte[] rawPayload, EncodedPayloadVisitor visitor) {
-    visitor.accept(new String(rawPayload, StandardCharsets.UTF_8));
+    visitor.accept(StringUtil.create(rawPayload));
   }
 }

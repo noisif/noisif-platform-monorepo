@@ -18,6 +18,7 @@
 package xyz.noisif.nsl.kv.jedis;
 
 import xyz.noisif.nsl.common.util.Assert;
+import xyz.noisif.nsl.common.util.StringUtil;
 import xyz.noisif.nsl.common.util.io.IoUtil;
 import xyz.noisif.nsl.kv.KvKey;
 import xyz.noisif.nsl.kv.KvServer;
@@ -40,7 +41,6 @@ import redis.clients.jedis.UnifiedJedis;
 import redis.clients.jedis.exceptions.JedisDataException;
 import redis.clients.jedis.params.SetParams;
 
-import java.nio.charset.StandardCharsets;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -158,7 +158,7 @@ public class JedisServer extends KvServer implements ScriptableKeyValueStore {
   @Override
   public void publishBinary(KvChannel channel, byte[] message, Object... channelParams) {
     final String exactChannelName = channel.buildChannel(channelParams);
-    final byte[] channelBytes = exactChannelName.getBytes(StandardCharsets.UTF_8);
+    final byte[] channelBytes = StringUtil.getBytes(exactChannelName);
     log.debug("KV PUBLISH (binary) -> channel: '{}'", exactChannelName);
     redisClient.publish(channelBytes, message);
   }

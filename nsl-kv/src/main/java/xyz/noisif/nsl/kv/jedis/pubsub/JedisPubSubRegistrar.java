@@ -20,6 +20,7 @@ package xyz.noisif.nsl.kv.jedis.pubsub;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import xyz.noisif.nsl.common.util.StringUtil;
 import xyz.noisif.nsl.common.util.io.RunnableWithException;
 import xyz.noisif.nsl.common.util.thread.ThreadUtil;
 import xyz.noisif.nsl.kv.jedis.pubsub.pattern.RegexChannelParamExtractor;
@@ -32,7 +33,6 @@ import redis.clients.jedis.JedisPubSub;
 import redis.clients.jedis.UnifiedJedis;
 import redis.clients.jedis.exceptions.JedisConnectionException;
 
-import java.nio.charset.StandardCharsets;
 import java.util.function.BiConsumer;
 
 public class JedisPubSubRegistrar implements PubSubRegistrar {
@@ -86,7 +86,7 @@ public class JedisPubSubRegistrar implements PubSubRegistrar {
       KvSubscriber<byte[]> subscriber,
       BiConsumer<BinaryJedisPubSub, byte[][]> jedisAction) {
     final String channelOrPattern = buildChannelName(subscriber);
-    final byte[] channelBytes = channelOrPattern.getBytes(StandardCharsets.UTF_8);
+    final byte[] channelBytes = StringUtil.getBytes(channelOrPattern);
     final ChannelParamExtractor extractor = new RegexChannelParamExtractor(channelOrPattern);
     registerAsync(
         logType,

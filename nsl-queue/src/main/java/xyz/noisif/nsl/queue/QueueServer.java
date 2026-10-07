@@ -24,11 +24,11 @@ import xyz.noisif.nsl.common.bootstrap.lifecycle.IdempotentService;
 import xyz.noisif.nsl.common.di.ComponentProvider;
 import xyz.noisif.nsl.common.reflect.TypeReference;
 import xyz.noisif.nsl.common.util.Assert;
+import xyz.noisif.nsl.common.util.StringUtil;
 import xyz.noisif.nsl.net.HostPort;
 import xyz.noisif.nsl.net.NetworkUtil;
 
 import java.io.IOException;
-import java.nio.charset.StandardCharsets;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -74,7 +74,7 @@ public abstract class QueueServer extends IdempotentService {
 
   protected <T> void processDelivery(QueueListener<T> listener, byte[] body) {
     if (log.isTraceEnabled()) {
-      final String rawPayload = new String(body, StandardCharsets.UTF_8);
+      final String rawPayload = StringUtil.create(body);
       log.trace("Raw bytes received from queue '{}': {}", listener.getQueueName(), rawPayload);
     }
     final Class<T> targetType = listener.getMessageType();

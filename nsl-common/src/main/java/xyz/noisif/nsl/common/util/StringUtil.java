@@ -84,7 +84,7 @@ public class StringUtil {
     if (text == null || text.isEmpty()) {
       return text;
     }
-    final byte[] bytes = text.getBytes(StandardCharsets.UTF_8);
+    final byte[] bytes = getBytes(text);
     if (bytes.length <= maxBytes) {
       return text;
     }

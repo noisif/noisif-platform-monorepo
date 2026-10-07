@@ -31,8 +31,7 @@ import xyz.noisif.nsl.codec.DataType;
 import xyz.noisif.nsl.codec.EncodedPayloadVisitor;
 import xyz.noisif.nsl.codec.serialization.MessageSerializerException;
 import xyz.noisif.nsl.codec.serialization.StandardSerializerFormat;
-
-import java.nio.charset.StandardCharsets;
+import xyz.noisif.nsl.common.util.StringUtil;
 
 @ExtendWith(MockitoExtension.class)
 class RawTextSerializerTest {
@@ -101,7 +100,7 @@ class RawTextSerializerTest {
     // when
     final byte[] result = serializer.serializeToBytes(input);
     // then
-    assertThat(result).isEqualTo(input.getBytes(StandardCharsets.UTF_8));
+    assertThat(result).isEqualTo(StringUtil.getBytes(input));
   }
 
   @Test
@@ -109,7 +108,7 @@ class RawTextSerializerTest {
   void shouldDeserializeFromBytesFallback() {
     // given
     final String expected = "hello utf8 ąćęł";
-    final byte[] inputBytes = expected.getBytes(StandardCharsets.UTF_8);
+    final byte[] inputBytes = StringUtil.getBytes(expected);
     // when
     final String result = serializer.deserializeFromBytes(inputBytes, String.class);
     // then
