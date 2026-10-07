@@ -55,6 +55,7 @@ import xyz.noisif.nsl.queue.MessagePublisher;
 import xyz.noisif.nsl.queue.PlayTrackCommand;
 import xyz.noisif.nsl.queue.QueueListener;
 import xyz.noisif.nsl.queue.QueueServer;
+import xyz.noisif.nsl.queue.RetryCountingListener;
 import xyz.noisif.nsl.queue.rabbitmq.connector.ConnectorType;
 
 import java.util.Collections;
@@ -116,7 +117,7 @@ class RabbitMqServerIntegrationTest {
     // then
     Thread.sleep(500);
     try (final Connection conn = createDirectConnection();
-        Channel channel = conn.createChannel()) {
+        final Channel channel = conn.createChannel()) {
 
       final GetResponse response = channel.basicGet("test.fail.queue.dlq", true);
       assertThat(response).as("Message should be routed to DLQ").isNotNull();
@@ -144,6 +145,36 @@ class RabbitMqServerIntegrationTest {
     assertThat(listener.getReceivedCommand().guildId()).isEqualTo("123456789");
     assertThat(listener.getReceivedCommand().trackUrl())
         .isEqualTo("https://youtube.com/watch?v=123");
+  }
+
+  @Test
+  @DisplayName(
+      "should retry message processing according to topology settings and eventually "
+          + "route to DLQ")
+  void shouldRetryMessageProcessing() throws Exception {
+    // given
+    final int maxRetries = 3;
+    final RetryCountingListener listener = new RetryCountingListener(maxRetries);
+    mockListenerRegistration(listener);
+    startServer();
+    // when
+    final byte[] payload = StringUtil.getBytes("Retry Me");
+    messagePublisher.publishToQueue("test.retry.queue", payload, StandardSerializerFormat.RAW);
+    // then
+    final boolean completedAllAttempts = listener.getLatch().await(5, TimeUnit.SECONDS);
+    assertThat(completedAllAttempts).as("Should complete all retry attempts").isTrue();
+    assertThat(listener.getAttempts())
+        .as("Should execute exactly 1 + maxRetries times")
+        .isEqualTo(maxRetries + 1);
+    try (final Connection conn = createDirectConnection();
+        final Channel channel = conn.createChannel()) {
+      final GetResponse response = channel.basicGet("test.retry.queue.dlq", true);
+      assertThat(response)
+          .as("Message should be routed to DLQ after exhausting retries")
+          .isNotNull();
+      final String dlqMessage = StringUtil.create(response.getBody());
+      assertThat(dlqMessage).isEqualTo("Retry Me");
+    }
   }
 
   private void startServer() {
