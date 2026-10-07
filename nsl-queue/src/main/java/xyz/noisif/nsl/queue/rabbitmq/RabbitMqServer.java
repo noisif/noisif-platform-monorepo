@@ -39,12 +39,9 @@ import java.util.Map;
 import java.util.Objects;
 
 public class RabbitMqServer extends QueueServer {
-  // don't send more than 10 messages until finish processing previous
-  private static final int BASIC_QOS = 10;
-  private static final int NETWORK_RECOVERY_INTERVAL = 5000;
-
   private final RabbitMqConnector connector;
   private final String virtualHost;
+  private final int networkRecoveryInterval;
 
   private Connection connection;
   private Channel channel;
@@ -54,6 +51,7 @@ public class RabbitMqServer extends QueueServer {
     super(builder);
     connector = builder.connector;
     virtualHost = builder.virtualHost;
+    networkRecoveryInterval = builder.networkRecoveryInterval;
   }
 
   public static Builder builder() {
@@ -78,7 +76,7 @@ public class RabbitMqServer extends QueueServer {
     // recovers topology (queues, bindings) after node restarts
     factory.setTopologyRecoveryEnabled(true);
     // 5-second interval between reconnection attempts
-    factory.setNetworkRecoveryInterval(NETWORK_RECOVERY_INTERVAL);
+    factory.setNetworkRecoveryInterval(networkRecoveryInterval);
 
     connection = connector.connect(nodes, factory);
     channel = connection.createChannel();
@@ -123,7 +121,7 @@ public class RabbitMqServer extends QueueServer {
     channel.queueDeclare(
         queueName, topology.durable(), topology.exclusive(), topology.autoDelete(), args);
 
-    channel.basicQos(BASIC_QOS);
+    channel.basicQos(topology.prefetchCount());
     if (topology.hasExchange()) {
       final String exchangeName = topology.exchangeName();
       final String routingKey = topology.routingKey();
@@ -159,6 +157,7 @@ public class RabbitMqServer extends QueueServer {
   public static class Builder extends QueueServer.AbstractBuilder<Builder> {
     private RabbitMqConnector connector = new RabbitMqClusterConnector();
     private String virtualHost;
+    private int networkRecoveryInterval = 5000; // in millis
 
     private Builder() {}
 
@@ -179,6 +178,11 @@ public class RabbitMqServer extends QueueServer {
 
     public Builder virtualHost(String virtualHost) {
       this.virtualHost = virtualHost;
+      return self();
+    }
+
+    public Builder networkRecoveryInterval(int networkRecoveryInterval) {
+      this.networkRecoveryInterval = networkRecoveryInterval;
       return self();
     }
 

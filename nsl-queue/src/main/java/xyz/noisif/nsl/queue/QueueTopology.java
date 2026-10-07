@@ -30,7 +30,10 @@ public record QueueTopology(
     String exchangeName, // name of the exchange to bind the queue to (null/empty if none)
     ExchangeType exchangeType, // type of the exchange (most common: "direct", "topic", "fanout")
     String routingKey, // routing key used by the exchange to route messages to this queue
-    boolean useDeadLetter // use DLX (dead letter exchange)
+    boolean useDeadLetter, // use DLX (dead letter exchange)
+    int prefetchCount, // don't send more than 10 messages until finish processing previous
+    int maxRetries, // max count of retries (0 = no retry)
+    long retryDelayMs // delay between next retries (in millis)
     ) {
   public static Builder builder() {
     return new Builder();
@@ -45,6 +48,9 @@ public record QueueTopology(
     private boolean exclusive = false;
     private boolean autoDelete = false;
     private Map<String, Object> arguments = Map.of();
+    private int prefetchCount = 10;
+    private int maxRetries = 0;
+    private long retryDelayMs = 2000L;
 
     private String exchangeName;
     private ExchangeType exchangeType = DefaultExchangeType.DIRECT;
@@ -84,6 +90,17 @@ public record QueueTopology(
       return this;
     }
 
+    public Builder prefetchCount(int prefetchCount) {
+      this.prefetchCount = prefetchCount;
+      return this;
+    }
+
+    public Builder withRetries(int maxRetries, long retryDelayMs) {
+      this.maxRetries = maxRetries;
+      this.retryDelayMs = retryDelayMs;
+      return this;
+    }
+
     public QueueTopology build() {
       return new QueueTopology(
           durable,
@@ -93,7 +110,10 @@ public record QueueTopology(
           exchangeName,
           exchangeType,
           routingKey,
-          useDeadLetter);
+          useDeadLetter,
+          prefetchCount,
+          maxRetries,
+          retryDelayMs);
     }
   }
 }
