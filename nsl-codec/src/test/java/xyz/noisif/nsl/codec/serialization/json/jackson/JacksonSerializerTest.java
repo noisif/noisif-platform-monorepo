@@ -15,7 +15,7 @@
  *
  * Please refer to the LICENSE file in the root directory for full restrictions.
  */
-package xyz.noisif.nsl.codec.serialization.json;
+package xyz.noisif.nsl.codec.serialization.json.jackson;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -25,6 +25,7 @@ import org.junit.jupiter.api.Test;
 
 import xyz.noisif.nsl.codec.serialization.SerializerFormat;
 import xyz.noisif.nsl.codec.serialization.StandardSerializerFormat;
+import xyz.noisif.nsl.codec.serialization.json.JsonSerializerException;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;

@@ -7,8 +7,8 @@
         <option name="ENABLED" value="true" />
       </pattern>
     </extension>
-    <option name="PACKAGE_NAME" value="xyz.noisif.nsl.codec.serialization.json" />
-    <option name="MAIN_CLASS_NAME" value="xyz.noisif.nsl.codec.serialization.json.JacksonSerializerTest" />
+    <option name="PACKAGE_NAME" value="xyz.noisif.nsl.codec.serialization.json.jackson" />
+    <option name="MAIN_CLASS_NAME" value="xyz.noisif.nsl.codec.serialization.json.jackson.JacksonSerializerTest" />
     <option name="METHOD_NAME" value="" />
     <option name="TEST_OBJECT" value="class" />
     <method v="2">
