@@ -15,7 +15,7 @@
  *
  * Please refer to the LICENSE file in the root directory for full restrictions.
  */
-package xyz.noisif.nss.ingestor.scripting.graal;
+package xyz.noisif.nss.ingestor.graal.scripting;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -26,8 +26,6 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import xyz.noisif.nsl.common.util.CastUtil;
-import xyz.noisif.nss.ingestor.scripting.ScriptFile;
-import xyz.noisif.nss.ingestor.scripting.TestScript;
 
 import java.util.Map;
 

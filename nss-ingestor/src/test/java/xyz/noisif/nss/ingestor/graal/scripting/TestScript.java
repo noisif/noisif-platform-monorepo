@@ -15,7 +15,7 @@
  *
  * Please refer to the LICENSE file in the root directory for full restrictions.
  */
-package xyz.noisif.nss.ingestor.scripting;
+package xyz.noisif.nss.ingestor.graal.scripting;
 
 public enum TestScript implements ScriptFile {
   CLEANUP("scripting/test-check-cleanup.js"),
