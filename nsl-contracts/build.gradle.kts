@@ -15,7 +15,15 @@
  *
  * Please refer to the LICENSE file in the root directory for full restrictions.
  */
+import xyz.noisif.buildconfig.protobuf.NsProtobufPlugin
+import xyz.noisif.buildconfig.spotless.NsSpotlessProtobufPlugin
+
+apply<NsProtobufPlugin>()
+apply<NsSpotlessProtobufPlugin>()
 
 dependencies {
+  implementation(libs.jackson.databind)
+  implementation(libs.protobuf.java)
+
   testImplementation(testFixtures(project(":nsl-common")))
 }

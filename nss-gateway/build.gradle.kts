@@ -26,6 +26,8 @@ nsService {
 }
 
 dependencies {
+  implementation(libs.protobuf.java)
+
   implementation(project(":nsl-codec"))
   implementation(project(":nsl-common"))
   implementation(project(":nsl-contracts"))

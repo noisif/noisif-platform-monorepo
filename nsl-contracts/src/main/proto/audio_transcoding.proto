@@ -1,0 +1,50 @@
+/*
+ * Copyright (c) 2022-2026 NOISIF. All Rights Reserved.
+ *
+ * NOTICE: This source code is publicly available for reference
+ * and educational purposes only. It is NOT open-source software.
+ *
+ * You are granted permission to view this code. However, you are strictly
+ * PROHIBITED from copying, modifying, or merging this code into other software,
+ * distributing, publishing, or sublicensing this code, using this code for
+ * commercial purposes or in production environments.
+ *
+ * THIS SOFTWARE IS PROVIDED "AS IS" WITHOUT WARRANTY OF ANY KIND, EITHER
+ * EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO WARRANTIES OF
+ * MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE.
+ *
+ * Please refer to the LICENSE file in the root directory for full restrictions.
+ */
+syntax = "proto3";
+
+package xyz.noisif.nsl.contracts.protobuf;
+
+option java_package = "xyz.noisif.nsl.contracts.protobuf";
+option java_outer_classname = "TranscoderProtobuf";
+option java_multiple_files = true;
+
+message ProcessAudioCommand {
+  string job_id = 1;
+  string user_id = 2; // for addressing return-events
+  string input_s3_bucket = 3;
+  string input_s3_key = 4;
+  string output_s3_bucket = 5;
+  string output_s3_key = 6;
+}
+
+enum TranscodeStatus {
+  UNKNOWN = 0;
+  DOWNLOADING = 1; // downloading from S3
+  PROCESSING = 2;  // ffmpeg transcoding
+  UPLOADING = 3;   // saving into S3
+  COMPLETED = 4;
+  FAILED = 5;
+}
+
+message TranscodeProgressEvent {
+  string job_id = 1;
+  string user_id = 2; // for WS gateway and correct redis pubsub channel
+  TranscodeStatus status = 3;
+  float progress = 4;
+  string error_message = 5;
+}
