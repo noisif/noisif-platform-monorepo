@@ -12,7 +12,6 @@
     </extension>
     <method v="2">
       <option name="Make" enabled="true" />
-      <option name="Gradle.BeforeRunTask" enabled="true" tasks="downloadFFmpeg" externalProjectPath="$PROJECT_DIR$/nss-transcoder" vmOptions="" scriptParameters="" />
     </method>
   </configuration>
 </component>
