@@ -34,7 +34,7 @@ public class JacksonSpiTypeSerializerModule<T> extends SimpleModule {
   @Serial private static final long serialVersionUID = 1L;
   private static final Logger LOG = LoggerFactory.getLogger(JacksonSpiTypeSerializerModule.class);
 
-  private final JsonSpiTypeSerializer<T> serializer;
+  private final transient JsonSpiTypeSerializer<T> serializer;
 
   private JacksonSpiTypeSerializerModule(JsonSpiTypeSerializer<T> serializer) {
     this.serializer = serializer;
