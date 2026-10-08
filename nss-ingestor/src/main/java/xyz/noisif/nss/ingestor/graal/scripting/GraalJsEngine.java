@@ -15,7 +15,7 @@
  *
  * Please refer to the LICENSE file in the root directory for full restrictions.
  */
-package xyz.noisif.nss.ingestor.scripting.graal;
+package xyz.noisif.nss.ingestor.graal.scripting;
 
 import org.graalvm.polyglot.Context;
 import org.graalvm.polyglot.Source;
@@ -23,8 +23,6 @@ import org.graalvm.polyglot.Value;
 
 import xyz.noisif.nsl.common.bootstrap.lifecycle.IdempotentService;
 import xyz.noisif.nsl.common.util.io.IoUtil;
-import xyz.noisif.nss.ingestor.scripting.JsEngine;
-import xyz.noisif.nss.ingestor.scripting.ScriptFile;
 
 import java.io.IOException;
 import java.net.URL;

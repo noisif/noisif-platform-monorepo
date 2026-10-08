@@ -15,8 +15,20 @@
  *
  * Please refer to the LICENSE file in the root directory for full restrictions.
  */
-package xyz.noisif.nss.ingestor.scripting;
+package xyz.noisif.nss.ingestor.graal.scripting;
 
-public interface ScriptFile {
-  String getFileName();
+import java.io.IOException;
+import java.util.Map;
+
+public interface JsEngine {
+  <T> T executeScript(ScriptFile scriptFile, Map<String, Object> variables, Class<T> returnType)
+      throws IOException;
+
+  <T> T executeScript(ScriptFile scriptFile, Class<T> returnType) throws IOException;
+
+  void executeScript(ScriptFile scriptFile) throws IOException;
+
+  <T> T callFunction(String functionName, Class<T> returnType, Object... args);
+
+  void callFunction(String functionName, Object... args);
 }

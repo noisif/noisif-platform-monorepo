@@ -15,9 +15,7 @@
  *
  * Please refer to the LICENSE file in the root directory for full restrictions.
  */
-package xyz.noisif.nss.ingestor.config.scripting;
-
-import xyz.noisif.nss.ingestor.scripting.ScriptFile;
+package xyz.noisif.nss.ingestor.graal.scripting;
 
 public enum IngestorScript implements ScriptFile {
   YARN_PARSER("js/yarn-parser.bundle.js"),
