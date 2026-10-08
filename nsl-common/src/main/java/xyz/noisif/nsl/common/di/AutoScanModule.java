@@ -21,6 +21,7 @@ import com.google.inject.AbstractModule;
 import com.google.inject.Injector;
 import com.google.inject.Provider;
 import com.google.inject.Scopes;
+import com.google.inject.TypeLiteral;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -33,6 +34,7 @@ import jakarta.inject.Singleton;
 
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
+import java.lang.reflect.Type;
 import java.util.Set;
 
 class AutoScanModule extends AbstractModule {
@@ -66,16 +68,19 @@ class AutoScanModule extends AbstractModule {
       if (!method.isAnnotationPresent(Produces.class)) {
         continue;
       }
-      final Class<Object> returnType = CastUtil.unsafeCast(method.getReturnType());
-      if (returnType.equals(void.class)) {
+      final Type genericReturnType = method.getGenericReturnType();
+      final Class<?> rawReturnType = method.getReturnType();
+      if (rawReturnType.equals(void.class)) {
         throw new IllegalStateException("@Produces method cannot return void: " + method.getName());
       }
-      bind(returnType)
+      final TypeLiteral<Object> typeLiteral =
+          CastUtil.unsafeCast(TypeLiteral.get(genericReturnType));
+      bind(typeLiteral)
           .toProvider(new BeanProvider<>(clazz, method, injectorProvider))
           .in(Scopes.SINGLETON);
       LOG.debug(
           "Bound @Produces method: {} from {}.{}()",
-          returnType.getSimpleName(),
+          typeLiteral.getType().getTypeName(),
           clazz.getSimpleName(),
           method.getName());
     }
