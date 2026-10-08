@@ -27,6 +27,7 @@ import xyz.noisif.nsl.net.bus.RawBusListener;
 import xyz.noisif.nsl.net.lifecycle.NetworkSessionLifecycleListener;
 import xyz.noisif.nsl.net.ws.GenericWsListenerHandler;
 import xyz.noisif.nsl.websocket.WsSession;
+import xyz.noisif.nsl.websocket.broadcast.SelfWsTopic;
 import xyz.noisif.nsl.websocket.registry.WsSessionRegistry;
 
 import java.nio.ByteBuffer;
@@ -57,6 +58,8 @@ public class JettyWsListenerAdapter extends GenericWsListenerHandler<WsSession>
     log.debug("WS connection opening for principal: {}", principalId);
     sessionAdapter = new JettyWsSessionAdapter(session, principalId, envelopeSerializer);
     registry.register(sessionAdapter);
+    // subscribe for self-channel
+    registry.subscribe(sessionAdapter, new SelfWsTopic(principalId));
     super.handleConnect();
   }
 
@@ -99,6 +102,8 @@ public class JettyWsListenerAdapter extends GenericWsListenerHandler<WsSession>
   @Override
   protected void cleanupSession() {
     super.cleanupSession();
+    // unsubscribe from self-channel
+    registry.unsubscribe(sessionAdapter, new SelfWsTopic(principalId));
     rateLimiter.reset(principalId);
   }
 
