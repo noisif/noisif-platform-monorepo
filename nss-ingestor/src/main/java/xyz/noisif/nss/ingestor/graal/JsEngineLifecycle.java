@@ -36,7 +36,7 @@ class JsEngineLifecycle implements LifecycleHook {
   }
 
   @Override
-  public void onStart(ComponentProvider componentProvider, ClassScanner scanner) {
+  public void onStart(ComponentProvider componentProvider, ClassScanner classScanner) {
     jsEngine.start();
   }
 

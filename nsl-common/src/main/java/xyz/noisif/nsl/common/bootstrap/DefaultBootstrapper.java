@@ -65,13 +65,13 @@ public class DefaultBootstrapper {
     LOG.info("Start bootstrapping application on package(s): {}", Arrays.asList(packagesToScan));
 
     final long startTime = System.currentTimeMillis();
-    try (final ClassScanner scanner = new ClassGraphScanner(packagesToScan)) {
+    try (final ClassScanner classScanner = new ClassGraphScanner(packagesToScan)) {
       final ApplicationContext context =
           ApplicationContext.create(
-              scanner,
+              classScanner,
               Map.of(ComponentProvider.class, GuiceComponentProvider.class),
-              Map.of(ClassScanner.class, scanner));
-      final List<? extends LifecycleHook> hooks = discoverAndSortHooks(scanner, context);
+              Map.of(ClassScanner.class, classScanner));
+      final List<? extends LifecycleHook> hooks = discoverAndSortHooks(classScanner, context);
       registerShutdownHook(hooks, wait);
       startHooks(hooks, context);
       awaitTermination(startTime, wait);
@@ -87,9 +87,9 @@ public class DefaultBootstrapper {
   }
 
   private static List<? extends LifecycleHook> discoverAndSortHooks(
-      ClassScanner scanner, ApplicationContext context) {
+      ClassScanner classScanner, ApplicationContext context) {
     final List<LifecycleHook> rawHooks =
-        scanner.getSubtypesOf(LifecycleHook.class).stream()
+        classScanner.getSubtypesOf(LifecycleHook.class).stream()
             .map(clazz -> (LifecycleHook) context.getComponentProvider().getInstance(clazz))
             .toList();
     LIFECYCLE_GRAPH.addNodes(rawHooks);
@@ -107,7 +107,7 @@ public class DefaultBootstrapper {
       final String name = hook.getClass().getSimpleName();
       try {
         LOG.debug("Starting lifecycle hook: {}", name);
-        hook.onStart(context.getComponentProvider(), context.getScanner());
+        hook.onStart(context.getComponentProvider(), context.getClassScanner());
       } catch (Exception ex) {
         throw new CriticalBootstrapException("Failed to start hook: " + name, ex);
       }

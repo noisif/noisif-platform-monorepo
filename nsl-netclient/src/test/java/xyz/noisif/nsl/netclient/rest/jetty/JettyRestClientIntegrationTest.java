@@ -68,13 +68,13 @@ class JettyRestClientIntegrationTest {
   private static final String USER_AGENT = "NSL-Test-Bot/1.0";
 
   private static WireMockServer wireMockServer;
-  private static ClassScanner scanner;
+  private static ClassScanner classScanner;
 
   private GenericRestClient client;
 
   @BeforeAll
   static void startWireMock() {
-    scanner = new ClassGraphScanner("xyz.noisif.nsl.netclient.rest");
+    classScanner = new ClassGraphScanner("xyz.noisif.nsl.netclient.rest");
     wireMockServer = new WireMockServer(wireMockConfig().dynamicPort());
     wireMockServer.start();
   }
@@ -82,7 +82,7 @@ class JettyRestClientIntegrationTest {
   @AfterAll
   static void stopWireMock() {
     IoUtil.closeQuietly(wireMockServer, WireMockServer::stop);
-    IoUtil.closeQuietly(scanner);
+    IoUtil.closeQuietly(classScanner);
   }
 
   @BeforeEach
@@ -93,7 +93,7 @@ class JettyRestClientIntegrationTest {
 
     client =
         JettyRestClient.builder()
-            .scanner(scanner)
+            .classScanner(classScanner)
             .serializerRegistry(
                 SerializerRegistry.createDefault()
                     .register(JacksonSerializer.createDefaultStrictMapper()))

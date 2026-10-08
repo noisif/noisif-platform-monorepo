@@ -35,8 +35,8 @@ class ClassGraphScannerTest {
     // given
     final String currentPackage = this.getClass().getPackageName();
     // when
-    try (final ClassGraphScanner scanner = new ClassGraphScanner(currentPackage)) {
-      final Set<Class<?>> foundClasses = scanner.getTypesAnnotatedWith(TestComponent.class);
+    try (final ClassGraphScanner classScanner = new ClassGraphScanner(currentPackage)) {
+      final Set<Class<?>> foundClasses = classScanner.getTypesAnnotatedWith(TestComponent.class);
       // then
       assertThat(foundClasses)
           .hasSizeGreaterThanOrEqualTo(2)
@@ -51,8 +51,8 @@ class ClassGraphScannerTest {
     // given
     final String nonExistentPackage = "xyz.noisif.nsl.this.package.does.not.exist";
     // when
-    try (final ClassGraphScanner scanner = new ClassGraphScanner(nonExistentPackage)) {
-      final Set<Class<?>> foundClasses = scanner.getTypesAnnotatedWith(TestComponent.class);
+    try (final ClassGraphScanner classScanner = new ClassGraphScanner(nonExistentPackage)) {
+      final Set<Class<?>> foundClasses = classScanner.getTypesAnnotatedWith(TestComponent.class);
       // then
       assertThat(foundClasses).isEmpty();
     }
@@ -64,9 +64,9 @@ class ClassGraphScannerTest {
     // given
     final String currentPackage = this.getClass().getPackageName();
     // when
-    try (final ClassGraphScanner scanner = new ClassGraphScanner(currentPackage)) {
+    try (final ClassGraphScanner classScanner = new ClassGraphScanner(currentPackage)) {
       final Set<Class<? extends BaseTestInterface>> foundClasses =
-          scanner.getSubtypesOf(BaseTestInterface.class);
+          classScanner.getSubtypesOf(BaseTestInterface.class);
       // then
       assertThat(foundClasses)
           .contains(AbstractTestImpl.class, ConcreteTestImpl.class, SubInterface.class);
@@ -79,9 +79,9 @@ class ClassGraphScannerTest {
     // given
     final String currentPackage = this.getClass().getPackageName();
     // when
-    try (final ClassGraphScanner scanner = new ClassGraphScanner(currentPackage)) {
+    try (final ClassGraphScanner classScanner = new ClassGraphScanner(currentPackage)) {
       final Set<Class<? extends BaseTestInterface>> foundClasses =
-          scanner.getInstantiableSubtypesOf(BaseTestInterface.class);
+          classScanner.getInstantiableSubtypesOf(BaseTestInterface.class);
       // then
       assertThat(foundClasses)
           .containsExactly(ConcreteTestImpl.class)

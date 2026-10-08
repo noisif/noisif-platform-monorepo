@@ -39,7 +39,7 @@ public class NssZCacheLifecycle implements LifecycleHook {
   }
 
   @Override
-  public void onStart(ComponentProvider componentProvider, ClassScanner scanner) {
+  public void onStart(ComponentProvider componentProvider, ClassScanner classScanner) {
     nativeStorage.start();
   }
 

@@ -63,7 +63,7 @@ class JettyWsEnvelopeIntegrationTest {
   private final JsonSerializer jsonSerializer = TestConstants.JSON_SERIALIZER;
   private final TestQueueProvider testQueueProvider = new TestQueueProvider();
 
-  private ClassScanner scanner;
+  private ClassScanner classScanner;
   private ProtobufSerializer protobufSerializer;
   private InMemoryWsSessionRegistry registry;
   private ComponentProvider componentProvider;
@@ -72,16 +72,16 @@ class JettyWsEnvelopeIntegrationTest {
 
   @BeforeEach
   void setUp() {
-    scanner =
+    classScanner =
         new ClassGraphScanner(
             "xyz.noisif.nsl.netclient.websocket",
             "xyz.noisif.nsl.codec.envelope.protobuf" // for protobuf
             );
-    protobufSerializer = ProtobufSerializer.createDefault(scanner);
+    protobufSerializer = ProtobufSerializer.createDefault(classScanner);
     registry = InMemoryWsSessionRegistry.createDefault();
     final ApplicationContext context =
         ApplicationContext.create(
-            scanner,
+            classScanner,
             Map.of(ComponentProvider.class, GuiceComponentProvider.class),
             Map.of(
                 TestQueueProvider.class, testQueueProvider,
@@ -170,7 +170,7 @@ class JettyWsEnvelopeIntegrationTest {
   void tearDown() {
     IoUtil.closeQuietly(client);
     IoUtil.closeQuietly(server);
-    IoUtil.closeQuietly(scanner);
+    IoUtil.closeQuietly(classScanner);
     testQueueProvider.clear();
   }
 

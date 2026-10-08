@@ -26,36 +26,37 @@ import java.util.Map;
 
 public class ApplicationContext {
   private final ComponentProvider componentProvider;
-  private final ClassScanner scanner;
+  private final ClassScanner classScanner;
 
   private ApplicationContext(
-      ClassScanner scanner,
+      ClassScanner classScanner,
       Map<Class<?>, Class<?>> components,
       Map<Class<?>, Object> instanceComponents) {
-    this.scanner = scanner;
+    this.classScanner = classScanner;
     final Injector injector =
         Guice.createInjector(
-            new ManualBootstrapModule(components, instanceComponents), new AutoScanModule(scanner));
+            new ManualBootstrapModule(components, instanceComponents),
+            new AutoScanModule(classScanner));
     componentProvider = injector.getInstance(ComponentProvider.class);
   }
 
   public static ApplicationContext create(
-      ClassScanner scanner,
+      ClassScanner classScanner,
       Map<Class<?>, Class<?>> components,
       Map<Class<?>, Object> instanceComponents) {
-    return new ApplicationContext(scanner, components, instanceComponents);
+    return new ApplicationContext(classScanner, components, instanceComponents);
   }
 
   public static ApplicationContext createDefault(
-      ClassScanner scanner, Map<Class<?>, Class<?>> components) {
-    return create(scanner, components, Map.of());
+      ClassScanner classScanner, Map<Class<?>, Class<?>> components) {
+    return create(classScanner, components, Map.of());
   }
 
   public ComponentProvider getComponentProvider() {
     return componentProvider;
   }
 
-  public ClassScanner getScanner() {
-    return scanner;
+  public ClassScanner getClassScanner() {
+    return classScanner;
   }
 }

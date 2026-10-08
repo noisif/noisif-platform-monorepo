@@ -54,16 +54,16 @@ import java.util.concurrent.ThreadLocalRandom;
 public class JettyHttpServerIntegrationTest {
   private static HttpServer httpServer;
   private static int dynamicPort;
-  private static ClassScanner scanner;
+  private static ClassScanner classScanner;
 
   private final HttpClient httpClient = HttpClient.newHttpClient();
 
   @BeforeAll
   static void startServer() {
-    scanner = new ClassGraphScanner("xyz.noisif.nsl.http");
+    classScanner = new ClassGraphScanner("xyz.noisif.nsl.http");
     final ApplicationContext context =
         ApplicationContext.createDefault(
-            scanner, Map.of(ComponentProvider.class, GuiceComponentProvider.class));
+            classScanner, Map.of(ComponentProvider.class, GuiceComponentProvider.class));
     httpServer =
         JettyHttpServer.builder()
             .componentProvider(context.getComponentProvider())
@@ -80,7 +80,7 @@ public class JettyHttpServerIntegrationTest {
   @AfterAll
   static void stopServer() {
     httpServer.close();
-    IoUtil.closeQuietly(scanner);
+    IoUtil.closeQuietly(classScanner);
   }
 
   private HttpResponse<String> get(String path) throws Exception {

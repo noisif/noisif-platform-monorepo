@@ -69,14 +69,14 @@ class JedisServerIntegrationTest {
 
   private static JedisServer jedisServer;
   private static ComponentProvider componentProvider;
-  private static ClassScanner scanner;
+  private static ClassScanner classScanner;
 
   @BeforeAll
   static void setupAll() {
-    scanner = new ClassGraphScanner("xyz.noisif.nsl.kv");
+    classScanner = new ClassGraphScanner("xyz.noisif.nsl.kv");
     final ApplicationContext context =
         ApplicationContext.createDefault(
-            scanner, Map.of(ComponentProvider.class, GuiceComponentProvider.class));
+            classScanner, Map.of(ComponentProvider.class, GuiceComponentProvider.class));
     final String host = redisContainer.getHost();
     final int port = redisContainer.getMappedPort(REDIS_PORT);
     componentProvider = context.getComponentProvider();
@@ -98,7 +98,7 @@ class JedisServerIntegrationTest {
   @AfterAll
   static void tearDownAll() {
     jedisServer.close();
-    IoUtil.closeQuietly(scanner);
+    IoUtil.closeQuietly(classScanner);
   }
 
   @Test

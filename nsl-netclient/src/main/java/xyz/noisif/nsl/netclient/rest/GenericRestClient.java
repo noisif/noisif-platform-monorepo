@@ -29,14 +29,14 @@ public abstract class GenericRestClient extends NetworkClient<RestClientGroupCon
   protected final boolean followRedirects;
   protected final int maxRedirects;
   protected final SerializerRegistry<MessageSerializer> serializerRegistry;
-  protected final ClassScanner scanner;
+  protected final ClassScanner classScanner;
 
   protected GenericRestClient(AbstractBuilder<?> builder) {
     super(builder);
     followRedirects = builder.followRedirects;
     maxRedirects = builder.maxRedirects;
     serializerRegistry = builder.serializerRegistry;
-    scanner = builder.scanner;
+    classScanner = builder.classScanner;
   }
 
   protected abstract static class AbstractBuilder<B extends AbstractBuilder<B>>
@@ -44,7 +44,7 @@ public abstract class GenericRestClient extends NetworkClient<RestClientGroupCon
     private boolean followRedirects = true;
     private int maxRedirects = 8;
     private SerializerRegistry<MessageSerializer> serializerRegistry;
-    private ClassScanner scanner;
+    private ClassScanner classScanner;
 
     protected AbstractBuilder() {
       super();
@@ -65,8 +65,8 @@ public abstract class GenericRestClient extends NetworkClient<RestClientGroupCon
       return self();
     }
 
-    public B scanner(ClassScanner scanner) {
-      this.scanner = scanner;
+    public B classScanner(ClassScanner classScanner) {
+      this.classScanner = classScanner;
       return self();
     }
 
@@ -75,7 +75,7 @@ public abstract class GenericRestClient extends NetworkClient<RestClientGroupCon
       super.validate();
       Assert.greaterThan(maxRedirects, 0, "maxRedirects");
       Assert.notNull(serializerRegistry, "serializerRegistry");
-      Assert.notNull(scanner, "scanner");
+      Assert.notNull(classScanner, "classScanner");
     }
 
     public abstract GenericRestClient build();

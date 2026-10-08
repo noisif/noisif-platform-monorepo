@@ -55,10 +55,10 @@ public class JettyRequestSpec extends GenericRequestSpec {
       String url,
       HttpMethod method,
       SerializerRegistry<MessageSerializer> serializerRegistry,
-      ClassScanner scanner) {
+      ClassScanner classScanner) {
     super(clientRegistry, url, method, serializerRegistry);
     this.client = client;
-    bodyStrategies = loadRequestBodyStrategies(scanner);
+    bodyStrategies = loadRequestBodyStrategies(classScanner);
   }
 
   @Override
@@ -110,11 +110,12 @@ public class JettyRequestSpec extends GenericRequestSpec {
     }
   }
 
-  private List<JettyBodyStrategy> loadRequestBodyStrategies(ClassScanner scanner) {
-    LOG.info("Loading JettyBodyStrategies using scanner: {}", scanner.getClass().getSimpleName());
+  private List<JettyBodyStrategy> loadRequestBodyStrategies(ClassScanner classScanner) {
+    LOG.info(
+        "Loading JettyBodyStrategies using scanner: {}", classScanner.getClass().getSimpleName());
     final List<JettyBodyStrategy> strategies = new ArrayList<>();
     final Set<Class<? extends JettyBodyStrategy>> strategyClasses =
-        scanner.getInstantiableSubtypesOf(JettyBodyStrategy.class);
+        classScanner.getInstantiableSubtypesOf(JettyBodyStrategy.class);
     try {
       for (final Class<? extends JettyBodyStrategy> clazz : strategyClasses) {
         strategies.add(clazz.getDeclaredConstructor().newInstance());

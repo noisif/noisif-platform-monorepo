@@ -55,17 +55,17 @@ import java.util.Map;
 class JettyWsRawIntegrationTest {
   private final TestQueueProvider testQueueProvider = new TestQueueProvider();
 
-  private ClassScanner scanner;
+  private ClassScanner classScanner;
   private ComponentProvider componentProvider;
   private WebsocketServerIntegrationMock webSocketServer;
   private GenericWsClient client;
 
   @BeforeEach
   void setUp() throws IOException {
-    scanner = new ClassGraphScanner("xyz.noisif.nsl.netclient.websocket");
+    classScanner = new ClassGraphScanner("xyz.noisif.nsl.netclient.websocket");
     final ApplicationContext context =
         ApplicationContext.create(
-            scanner,
+            classScanner,
             Map.of(ComponentProvider.class, GuiceComponentProvider.class),
             Map.of(TestQueueProvider.class, testQueueProvider));
     componentProvider = context.getComponentProvider();
@@ -127,7 +127,7 @@ class JettyWsRawIntegrationTest {
   void tearDown() {
     IoUtil.closeQuietly(client);
     IoUtil.closeQuietly(webSocketServer, WebSocketServer::stop);
-    IoUtil.closeQuietly(scanner);
+    IoUtil.closeQuietly(classScanner);
     testQueueProvider.clear();
   }
 

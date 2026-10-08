@@ -65,17 +65,17 @@ import java.util.concurrent.TimeUnit;
 class JettyWsServerIntegrationTest {
   private final JsonSerializer jsonSerializer = TestConstants.JSON_SERIALIZER;
 
-  private ClassScanner scanner;
+  private ClassScanner classScanner;
   private WsServer server;
   private int port;
 
   @BeforeEach
   void startServer() {
-    scanner = new ClassGraphScanner("xyz.noisif.nsl.websocket");
+    classScanner = new ClassGraphScanner("xyz.noisif.nsl.websocket");
     final InMemoryWsSessionRegistry registry = InMemoryWsSessionRegistry.createDefault();
     final ApplicationContext context =
         ApplicationContext.create(
-            scanner,
+            classScanner,
             Map.of(ComponentProvider.class, GuiceComponentProvider.class),
             Map.of(WsSubscriptionRegistry.class, registry));
     final ComponentProvider componentProvider = context.getComponentProvider();
@@ -111,7 +111,7 @@ class JettyWsServerIntegrationTest {
   @AfterEach
   void stopServer() {
     server.close();
-    IoUtil.closeQuietly(scanner);
+    IoUtil.closeQuietly(classScanner);
   }
 
   @Test

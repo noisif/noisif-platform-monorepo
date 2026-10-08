@@ -111,7 +111,7 @@ public class JettyRestClient extends GenericRestClient {
   public RequestSpec request(HttpMethod method, String url) {
     log.trace("Creating new JettyRequestSpec: {} {}", method, url);
     return new JettyRequestSpec(
-        jettyClient, clientsRegistry, url, method, serializerRegistry, scanner);
+        jettyClient, clientsRegistry, url, method, serializerRegistry, classScanner);
   }
 
   public static class Builder extends GenericRestClient.AbstractBuilder<Builder> {

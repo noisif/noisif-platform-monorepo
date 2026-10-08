@@ -15,7 +15,7 @@
  *
  * Please refer to the LICENSE file in the root directory for full restrictions.
  */
-package xyz.noisif.nss.registry;
+package xyz.noisif.nss.gateway;
 
 import xyz.noisif.nsl.codec.serialization.SerializerRegistry;
 import xyz.noisif.nsl.codec.serialization.json.JacksonSerializer;
@@ -23,39 +23,51 @@ import xyz.noisif.nsl.codec.serialization.raw.RawByteSerializer;
 import xyz.noisif.nsl.common.bootstrap.lifecycle.LifecycleHook;
 import xyz.noisif.nsl.common.di.ComponentProvider;
 import xyz.noisif.nsl.common.reflect.ClassScanner;
-import xyz.noisif.nsl.http.HttpServer;
-import xyz.noisif.nsl.http.jetty.JettyHttpServer;
+import xyz.noisif.nsl.queue.MessagePublisher;
+import xyz.noisif.nsl.queue.QueueServer;
+import xyz.noisif.nsl.queue.rabbitmq.RabbitMqServer;
+import xyz.noisif.nsl.queue.rabbitmq.connector.ConnectorType;
 
+import jakarta.enterprise.inject.Produces;
 import jakarta.inject.Inject;
 import jakarta.inject.Singleton;
 
 import java.util.Set;
 
 @Singleton
-class HttpServerLifecycle implements LifecycleHook {
-  private final HttpServer httpServer;
+class QueueServerLifecycle implements LifecycleHook {
+  private final QueueServer queueServer;
 
   @Inject
-  HttpServerLifecycle(ComponentProvider componentProvider) {
-    httpServer =
-        JettyHttpServer.builder()
-            .componentProvider(componentProvider)
+  QueueServerLifecycle(ComponentProvider componentProvider) {
+    queueServer =
+        RabbitMqServer.builder()
+            .rawNodes(Set.of("localhost:9111") /* TODO: incoming from config server */)
+            .withConnector(ConnectorType.SINGLE_NODE)
+            .username("guest" /* TODO: incoming from config server */)
+            .password("guest" /* TODO: incoming from config server */)
+            .virtualHost("noisif-main" /* TODO: incoming from config server */)
             .serializerRegistry(
                 SerializerRegistry.createDefault()
-                    .register(JacksonSerializer.createDefaultStrictMapper())
+                    .register(JacksonSerializer.createLenientForMessaging())
                     .register(RawByteSerializer.createDefault()))
-            .ignoredPaths(Set.of())
-            .port(9093) /* TODO: incoming from config server */
+            .componentProvider(componentProvider)
             .build();
   }
 
   @Override
-  public void onStart(ComponentProvider componentProvider, ClassScanner scanner) {
-    httpServer.start();
+  public void onStart(ComponentProvider componentProvider, ClassScanner classScanner) {
+    queueServer.start();
   }
 
   @Override
   public void onStop() {
-    httpServer.close();
+    queueServer.close();
+  }
+
+  @Produces
+  @Singleton
+  MessagePublisher messagePublisher() {
+    return queueServer.getQueuePublisher();
   }
 }

@@ -44,12 +44,12 @@ public class ProtobufSerializer implements MessageSerializer, TypedMessageSerial
   private static final Logger LOG = LoggerFactory.getLogger(ProtobufSerializer.class);
   private static final Map<Class<?>, Parser<?>> PARSER_CACHE = new ConcurrentHashMap<>();
 
-  private ProtobufSerializer(ClassScanner scanner) {
-    registerAllFrom(scanner);
+  private ProtobufSerializer(ClassScanner classScanner) {
+    registerAllFrom(classScanner);
   }
 
-  public static ProtobufSerializer createDefault(ClassScanner scanner) {
-    return new ProtobufSerializer(scanner);
+  public static ProtobufSerializer createDefault(ClassScanner classScanner) {
+    return new ProtobufSerializer(classScanner);
   }
 
   @Override
@@ -97,8 +97,9 @@ public class ProtobufSerializer implements MessageSerializer, TypedMessageSerial
     return parser;
   }
 
-  private void registerAllFrom(ClassScanner scanner) {
-    final Set<Class<? extends MessageLite>> protoClasses = scanner.getSubtypesOf(MessageLite.class);
+  private void registerAllFrom(ClassScanner classScanner) {
+    final Set<Class<? extends MessageLite>> protoClasses =
+        classScanner.getSubtypesOf(MessageLite.class);
     for (final Class<? extends MessageLite> type : protoClasses) {
       if (!isInstantiableMessage(type)) {
         continue;

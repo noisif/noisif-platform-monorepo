@@ -101,8 +101,8 @@ public abstract class HttpServer extends IdempotentService {
 
   protected HttpRequestHandler prepareRequestHandler() {
     log.info("Scanning routes and preparing HTTP request handler");
-    final RouteScanner scanner = new RouteScanner(componentProvider, router, resolvers);
-    scanner.scan();
+    final RouteScanner classScanner = new RouteScanner(componentProvider, router, resolvers);
+    classScanner.scan();
     return new HttpRequestHandler(
         router, ignoredPaths, filters, resolvers, writers, exceptionHandlers);
   }

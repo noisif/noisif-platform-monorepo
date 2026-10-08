@@ -28,7 +28,7 @@ public interface LifecycleHook {
     return List.of();
   }
 
-  void onStart(ComponentProvider componentProvider, ClassScanner scanner);
+  void onStart(ComponentProvider componentProvider, ClassScanner classScanner);
 
   default void onStop() {}
 }

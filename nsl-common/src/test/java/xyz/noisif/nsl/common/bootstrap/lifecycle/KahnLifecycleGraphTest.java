@@ -128,7 +128,7 @@ class KahnLifecycleGraphTest {
 
 class HookA implements LifecycleHook {
   @Override
-  public void onStart(ComponentProvider provider, ClassScanner scanner) {}
+  public void onStart(ComponentProvider provider, ClassScanner classScanner) {}
 }
 
 class HookB implements LifecycleHook {
@@ -138,7 +138,7 @@ class HookB implements LifecycleHook {
   }
 
   @Override
-  public void onStart(ComponentProvider provider, ClassScanner scanner) {}
+  public void onStart(ComponentProvider provider, ClassScanner classScanner) {}
 }
 
 class HookC implements LifecycleHook {
@@ -148,13 +148,13 @@ class HookC implements LifecycleHook {
   }
 
   @Override
-  public void onStart(ComponentProvider provider, ClassScanner scanner) {}
+  public void onStart(ComponentProvider provider, ClassScanner classScanner) {}
 }
 
 // DAG
 class Root implements LifecycleHook {
   @Override
-  public void onStart(ComponentProvider provider, ClassScanner scanner) {}
+  public void onStart(ComponentProvider provider, ClassScanner classScanner) {}
 }
 
 class Branch1 implements LifecycleHook {
@@ -164,7 +164,7 @@ class Branch1 implements LifecycleHook {
   }
 
   @Override
-  public void onStart(ComponentProvider provider, ClassScanner scanner) {}
+  public void onStart(ComponentProvider provider, ClassScanner classScanner) {}
 }
 
 class Branch2 implements LifecycleHook {
@@ -174,7 +174,7 @@ class Branch2 implements LifecycleHook {
   }
 
   @Override
-  public void onStart(ComponentProvider provider, ClassScanner scanner) {}
+  public void onStart(ComponentProvider provider, ClassScanner classScanner) {}
 }
 
 class Leaf implements LifecycleHook {
@@ -184,7 +184,7 @@ class Leaf implements LifecycleHook {
   }
 
   @Override
-  public void onStart(ComponentProvider provider, ClassScanner scanner) {}
+  public void onStart(ComponentProvider provider, ClassScanner classScanner) {}
 }
 
 // cycles (errors)
@@ -195,7 +195,7 @@ class CycleA implements LifecycleHook {
   }
 
   @Override
-  public void onStart(ComponentProvider provider, ClassScanner scanner) {}
+  public void onStart(ComponentProvider provider, ClassScanner classScanner) {}
 }
 
 class CycleB implements LifecycleHook {
@@ -205,7 +205,7 @@ class CycleB implements LifecycleHook {
   }
 
   @Override
-  public void onStart(ComponentProvider provider, ClassScanner scanner) {}
+  public void onStart(ComponentProvider provider, ClassScanner classScanner) {}
 }
 
 class CycleC implements LifecycleHook {
@@ -215,21 +215,21 @@ class CycleC implements LifecycleHook {
   }
 
   @Override
-  public void onStart(ComponentProvider provider, ClassScanner scanner) {}
+  public void onStart(ComponentProvider provider, ClassScanner classScanner) {}
 }
 
 // independent (no dependency)
 class IndependentHook1 implements LifecycleHook {
   @Override
-  public void onStart(ComponentProvider provider, ClassScanner scanner) {}
+  public void onStart(ComponentProvider provider, ClassScanner classScanner) {}
 }
 
 class IndependentHook2 implements LifecycleHook {
   @Override
-  public void onStart(ComponentProvider provider, ClassScanner scanner) {}
+  public void onStart(ComponentProvider provider, ClassScanner classScanner) {}
 }
 
 class IndependentHook3 implements LifecycleHook {
   @Override
-  public void onStart(ComponentProvider provider, ClassScanner scanner) {}
+  public void onStart(ComponentProvider provider, ClassScanner classScanner) {}
 }

@@ -40,8 +40,8 @@ class DependencyInjectionTest {
   @BeforeEach
   void setUp() {
     // given
-    final ClassScanner scanner = mock(ClassScanner.class);
-    when(scanner.getTypesAnnotatedWith(Singleton.class))
+    final ClassScanner classScanner = mock(ClassScanner.class);
+    when(classScanner.getTypesAnnotatedWith(Singleton.class))
         .thenReturn(
             Set.of(
                 MarkedComponent.class,
@@ -50,7 +50,7 @@ class DependencyInjectionTest {
                 SecondTestInterfaceComponent.class));
     final ApplicationContext context =
         ApplicationContext.createDefault(
-            scanner, Map.of(ComponentProvider.class, GuiceComponentProvider.class));
+            classScanner, Map.of(ComponentProvider.class, GuiceComponentProvider.class));
     componentProvider = context.getComponentProvider();
   }
 

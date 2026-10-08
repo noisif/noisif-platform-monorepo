@@ -15,7 +15,7 @@
  *
  * Please refer to the LICENSE file in the root directory for full restrictions.
  */
-package xyz.noisif.nss.translator;
+package xyz.noisif.nss.api;
 
 import xyz.noisif.nsl.codec.serialization.SerializerRegistry;
 import xyz.noisif.nsl.codec.serialization.json.JacksonSerializer;
@@ -29,6 +29,7 @@ import xyz.noisif.nsl.http.jetty.JettyHttpServer;
 import jakarta.inject.Inject;
 import jakarta.inject.Singleton;
 
+import java.util.List;
 import java.util.Set;
 
 @Singleton
@@ -45,12 +46,17 @@ class HttpServerLifecycle implements LifecycleHook {
                     .register(JacksonSerializer.createDefaultStrictMapper())
                     .register(RawByteSerializer.createDefault()))
             .ignoredPaths(Set.of())
-            .port(9094) /* TODO: incoming from config server */
+            .port(9091) /* TODO: incoming from config server */
             .build();
   }
 
   @Override
-  public void onStart(ComponentProvider componentProvider, ClassScanner scanner) {
+  public List<Class<? extends LifecycleHook>> dependsOn() {
+    return List.of(KvServerLifecycle.class, SqlClientLifecycle.class);
+  }
+
+  @Override
+  public void onStart(ComponentProvider componentProvider, ClassScanner classScanner) {
     httpServer.start();
   }
 
