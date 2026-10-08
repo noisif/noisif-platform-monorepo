@@ -15,14 +15,14 @@
  *
  * Please refer to the LICENSE file in the root directory for full restrictions.
  */
-package xyz.noisif.nss.gateway;
+package xyz.noisif.nss.gateway.kv.ws;
 
 import xyz.noisif.nsl.kv.pubsub.KvChannel;
 
 public enum WsKvChannel implements KvChannel {
-  TOPIC_BROADCAST("ws:topic:%s"),
-  TOPIC_RECEIVE_EVENTS("ws:topic:*:events"),
-  GLOBAL_BROADCAST("ws:global"),
+  TOPIC_PUBLISH_FORMAT("ws:topic:%s"),
+  TOPIC_SUBSCRIBE_PATTERN("ws:topic:*"),
+  GLOBAL_CHANNEL("ws:global"),
   ;
 
   private final String pattern;

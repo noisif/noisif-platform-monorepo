@@ -15,12 +15,11 @@
  *
  * Please refer to the LICENSE file in the root directory for full restrictions.
  */
-package xyz.noisif.nss.gateway.redis;
+package xyz.noisif.nss.gateway.kv.ws;
 
 import xyz.noisif.nsl.kv.pubsub.PubSubBroadcaster;
 import xyz.noisif.nsl.websocket.broadcast.WsMessageSink;
 import xyz.noisif.nsl.websocket.broadcast.WsTopic;
-import xyz.noisif.nss.gateway.WsKvChannel;
 
 public class RedisWsMessageSink implements WsMessageSink {
   private final PubSubBroadcaster pubSubBroadcaster;
@@ -35,11 +34,11 @@ public class RedisWsMessageSink implements WsMessageSink {
 
   @Override
   public void payload(WsTopic topic, byte[] payload) {
-    pubSubBroadcaster.publishBinary(WsKvChannel.TOPIC_BROADCAST, payload, topic.getTopic());
+    pubSubBroadcaster.publishBinary(WsKvChannel.TOPIC_PUBLISH_FORMAT, payload, topic.getTopic());
   }
 
   @Override
   public void payloadAll(byte[] payload) {
-    pubSubBroadcaster.publishBinary(WsKvChannel.GLOBAL_BROADCAST, payload);
+    pubSubBroadcaster.publishBinary(WsKvChannel.GLOBAL_CHANNEL, payload);
   }
 }

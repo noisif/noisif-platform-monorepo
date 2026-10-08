@@ -15,28 +15,28 @@
  *
  * Please refer to the LICENSE file in the root directory for full restrictions.
  */
-package xyz.noisif.nss.gateway.redis;
+package xyz.noisif.nss.gateway.kv.ws;
 
 import xyz.noisif.nsl.kv.pubsub.KvChannel;
 import xyz.noisif.nsl.kv.pubsub.subscriber.AbstractKvSubscriber;
+import xyz.noisif.nsl.kv.pubsub.subscriber.SubscriptionMode;
 import xyz.noisif.nsl.websocket.dispatcher.LocalSessionDispatcher;
-import xyz.noisif.nss.gateway.WsKvChannel;
 
 import jakarta.inject.Inject;
 import jakarta.inject.Singleton;
 
 @Singleton
-class RedisGlobalWsSubscriber extends AbstractKvSubscriber<byte[]> {
+class RedisTopicWsSubscriber extends AbstractKvSubscriber<byte[]> {
   private final LocalSessionDispatcher localSessionDispatcher;
 
   @Inject
-  RedisGlobalWsSubscriber(LocalSessionDispatcher localSessionDispatcher) {
+  RedisTopicWsSubscriber(LocalSessionDispatcher localSessionDispatcher) {
     this.localSessionDispatcher = localSessionDispatcher;
   }
 
   @Override
   public KvChannel getChannel() {
-    return WsKvChannel.GLOBAL_BROADCAST;
+    return WsKvChannel.TOPIC_SUBSCRIBE_PATTERN;
   }
 
   @Override
@@ -45,7 +45,14 @@ class RedisGlobalWsSubscriber extends AbstractKvSubscriber<byte[]> {
   }
 
   @Override
+  public SubscriptionMode getMode() {
+    return SubscriptionMode.PATTERN;
+  }
+
+  @Override
   public void handle(String channel, String[] params, byte[] message) {
-    localSessionDispatcher.dispatchRawAll(message);
+    if (params != null && params.length > 0) {
+      localSessionDispatcher.dispatchRaw(params[0], message);
+    }
   }
 }
