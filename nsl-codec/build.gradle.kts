@@ -24,6 +24,8 @@ apply<NsSpotlessProtobufPlugin>()
 dependencies {
   implementation(libs.jackson.databind)
   implementation(libs.protobuf.java)
+  implementation(libs.protobuf.java.util)
+
   implementation(project(":nsl-common"))
 
   testImplementation(testFixtures(project(":nsl-common")))

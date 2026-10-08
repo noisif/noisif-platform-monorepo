@@ -18,7 +18,7 @@
 package xyz.noisif.nss.ingestor;
 
 import xyz.noisif.nsl.codec.envelope.EnvelopeSerializerRegistry;
-import xyz.noisif.nsl.codec.serialization.json.JacksonSerializer;
+import xyz.noisif.nsl.codec.serialization.json.jackson.JacksonSerializer;
 import xyz.noisif.nsl.codec.serialization.protobuf.ProtobufSerializer;
 import xyz.noisif.nsl.common.bootstrap.lifecycle.LifecycleHook;
 import xyz.noisif.nsl.common.di.ComponentProvider;

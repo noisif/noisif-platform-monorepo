@@ -17,8 +17,8 @@
  */
 package xyz.noisif.nsl.netclient;
 
-import xyz.noisif.nsl.codec.serialization.json.JacksonSerializer;
 import xyz.noisif.nsl.codec.serialization.json.JsonSerializer;
+import xyz.noisif.nsl.codec.serialization.json.jackson.JacksonSerializer;
 import xyz.noisif.nsl.common.bootstrap.ForbiddenInstantiationException;
 
 public class TestConstants {

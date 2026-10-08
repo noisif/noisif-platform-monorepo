@@ -43,7 +43,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import xyz.noisif.nsl.codec.serialization.SerializerRegistry;
-import xyz.noisif.nsl.codec.serialization.json.JacksonSerializer;
+import xyz.noisif.nsl.codec.serialization.json.jackson.JacksonSerializer;
 import xyz.noisif.nsl.common.limit.TokenBucketRateLimiter;
 import xyz.noisif.nsl.common.reflect.ClassGraphScanner;
 import xyz.noisif.nsl.common.reflect.ClassScanner;

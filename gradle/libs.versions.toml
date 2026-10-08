@@ -78,6 +78,7 @@ nv-websocket-client = { module = "com.neovisionaries:nv-websocket-client", versi
 postgresql = { module = "org.postgresql:postgresql", version.ref = "postgresql" }
 protobuf-gradle-plugin = { module = "com.google.protobuf:protobuf-gradle-plugin", version.ref = "protobufPlugin" }
 protobuf-java = { module = "com.google.protobuf:protobuf-java", version.ref = "protobuf" }
+protobuf-java-util = { module = "com.google.protobuf:protobuf-java-util", version.ref = "protobuf" }
 protoc = { module = "com.google.protobuf:protoc", version.ref = "protobuf" }
 scala-library = { module = "org.scala-lang:scala3-library_3", version.ref = "scala" }
 shadow-marker = { module = "com.gradleup.shadow:com.gradleup.shadow.gradle.plugin", version.ref = "shadow" }

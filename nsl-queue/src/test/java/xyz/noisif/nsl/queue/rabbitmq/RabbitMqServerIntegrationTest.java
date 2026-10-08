@@ -41,7 +41,7 @@ import org.testcontainers.utility.DockerImageName;
 import xyz.noisif.nsl.codec.serialization.MessageSerializer;
 import xyz.noisif.nsl.codec.serialization.SerializerRegistry;
 import xyz.noisif.nsl.codec.serialization.StandardSerializerFormat;
-import xyz.noisif.nsl.codec.serialization.json.JacksonSerializer;
+import xyz.noisif.nsl.codec.serialization.json.jackson.JacksonSerializer;
 import xyz.noisif.nsl.codec.serialization.raw.RawByteSerializer;
 import xyz.noisif.nsl.common.di.ComponentProvider;
 import xyz.noisif.nsl.common.reflect.TypeReference;

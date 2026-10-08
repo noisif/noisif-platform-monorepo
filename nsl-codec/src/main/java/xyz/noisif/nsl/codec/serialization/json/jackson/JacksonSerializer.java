@@ -15,10 +15,15 @@
  *
  * Please refer to the LICENSE file in the root directory for full restrictions.
  */
-package xyz.noisif.nsl.codec.serialization.json;
+package xyz.noisif.nsl.codec.serialization.json.jackson;
 
 import xyz.noisif.nsl.codec.serialization.SerializerFormat;
 import xyz.noisif.nsl.codec.serialization.StandardSerializerFormat;
+import xyz.noisif.nsl.codec.serialization.json.JsonSerializer;
+import xyz.noisif.nsl.codec.serialization.json.JsonSerializerException;
+import xyz.noisif.nsl.codec.serialization.json.jackson.spi.JacksonSpiTypeSerializerModule;
+import xyz.noisif.nsl.codec.serialization.json.spi.serializer.RawJson;
+import xyz.noisif.nsl.codec.serialization.json.spi.serializer.RawJsonSerializer;
 import xyz.noisif.nsl.common.util.StringUtil;
 
 import tools.jackson.core.JacksonException;
@@ -30,6 +35,9 @@ import java.io.InputStream;
 import java.io.OutputStream;
 
 public class JacksonSerializer implements JsonSerializer {
+  private static final JacksonSpiTypeSerializerModule<RawJson> RAW_JSON_SERIALIZER =
+      JacksonSpiTypeSerializerModule.create(RawJsonSerializer.create());
+
   private final ObjectMapper objectMapper;
 
   private JacksonSerializer(ObjectMapper objectMapper) {
@@ -46,6 +54,7 @@ public class JacksonSerializer implements JsonSerializer {
             .enable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES)
             // prevents setting null for primitive types (int, boolean, etc.)
             .enable(DeserializationFeature.FAIL_ON_NULL_FOR_PRIMITIVES)
+            .addModule(RAW_JSON_SERIALIZER)
             .build();
     return new JacksonSerializer(mapper);
   }
@@ -57,6 +66,7 @@ public class JacksonSerializer implements JsonSerializer {
             .enable(DeserializationFeature.FAIL_ON_MISSING_CREATOR_PROPERTIES)
             .disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES)
             .enable(DeserializationFeature.FAIL_ON_NULL_FOR_PRIMITIVES)
+            .addModule(RAW_JSON_SERIALIZER)
             .build();
     return new JacksonSerializer(mapper);
   }

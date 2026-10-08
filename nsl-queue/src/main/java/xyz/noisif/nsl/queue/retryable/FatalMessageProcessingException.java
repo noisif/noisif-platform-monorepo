@@ -15,17 +15,14 @@
  *
  * Please refer to the LICENSE file in the root directory for full restrictions.
  */
-package xyz.noisif.nsl.http;
+package xyz.noisif.nsl.queue.retryable;
 
-import xyz.noisif.nsl.codec.serialization.json.JsonSerializer;
-import xyz.noisif.nsl.codec.serialization.json.jackson.JacksonSerializer;
-import xyz.noisif.nsl.common.bootstrap.ForbiddenInstantiationException;
+import java.io.Serial;
 
-public class TestConstants {
-  public static final String TEST_PASSWORD = "SecretToken-123";
-  public static final JsonSerializer SERIALIZER = JacksonSerializer.createDefaultStrictMapper();
+public class FatalMessageProcessingException extends RuntimeException {
+  @Serial private static final long serialVersionUID = 1L;
 
-  private TestConstants() {
-    throw new ForbiddenInstantiationException(TestConstants.class);
+  public FatalMessageProcessingException(Throwable cause) {
+    super(cause);
   }
 }

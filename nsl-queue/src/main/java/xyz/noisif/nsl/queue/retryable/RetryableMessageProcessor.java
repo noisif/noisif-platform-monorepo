@@ -46,6 +46,12 @@ public class RetryableMessageProcessor implements MessageProcessor {
         task.run();
         success = true;
         break;
+      } catch (FatalMessageProcessingException ex) {
+        LOG.error(
+            "Fatal error detected on queue '{}', aborting retries and routing straight to DLX",
+            queueName,
+            ex);
+        break;
       } catch (Exception ex) {
         if (currentAttempt < maxAttempts) {
           LOG.warn(

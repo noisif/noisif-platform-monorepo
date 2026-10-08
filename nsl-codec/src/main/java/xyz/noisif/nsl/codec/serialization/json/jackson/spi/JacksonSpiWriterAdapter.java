@@ -15,17 +15,21 @@
  *
  * Please refer to the LICENSE file in the root directory for full restrictions.
  */
-package xyz.noisif.nsl.http;
+package xyz.noisif.nsl.codec.serialization.json.jackson.spi;
 
-import xyz.noisif.nsl.codec.serialization.json.JsonSerializer;
-import xyz.noisif.nsl.codec.serialization.json.jackson.JacksonSerializer;
-import xyz.noisif.nsl.common.bootstrap.ForbiddenInstantiationException;
+import xyz.noisif.nsl.codec.serialization.json.spi.JsonSpiWriter;
 
-public class TestConstants {
-  public static final String TEST_PASSWORD = "SecretToken-123";
-  public static final JsonSerializer SERIALIZER = JacksonSerializer.createDefaultStrictMapper();
+import tools.jackson.core.JsonGenerator;
 
-  private TestConstants() {
-    throw new ForbiddenInstantiationException(TestConstants.class);
+class JacksonSpiWriterAdapter implements JsonSpiWriter {
+  private final JsonGenerator generator;
+
+  JacksonSpiWriterAdapter(JsonGenerator generator) {
+    this.generator = generator;
+  }
+
+  @Override
+  public void writeRawValue(String value) {
+    generator.writeRawValue(value);
   }
 }
