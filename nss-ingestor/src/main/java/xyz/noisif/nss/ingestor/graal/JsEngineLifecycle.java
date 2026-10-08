@@ -15,24 +15,23 @@
  *
  * Please refer to the LICENSE file in the root directory for full restrictions.
  */
-package xyz.noisif.nss.ingestor;
+package xyz.noisif.nss.ingestor.graal;
 
 import xyz.noisif.nsl.common.bootstrap.lifecycle.LifecycleHook;
 import xyz.noisif.nsl.common.di.ComponentProvider;
 import xyz.noisif.nsl.common.reflect.ClassScanner;
-import xyz.noisif.nss.ingestor.config.scripting.IngestorScript;
-import xyz.noisif.nss.ingestor.scripting.JsEngine;
-import xyz.noisif.nss.ingestor.scripting.graal.GraalJsEngine;
+import xyz.noisif.nss.ingestor.graal.scripting.GraalJsEngine;
 
-import jakarta.enterprise.inject.Produces;
+import jakarta.inject.Inject;
 import jakarta.inject.Singleton;
 
 @Singleton
-class JsEngineLifecycle implements LifecycleHook {
+public class JsEngineLifecycle implements LifecycleHook {
   private final GraalJsEngine jsEngine;
 
-  JsEngineLifecycle() {
-    jsEngine = GraalJsEngine.builder().withLibrary(IngestorScript.YARN_PARSER).build();
+  @Inject
+  JsEngineLifecycle(GraalJsEngine jsEngine) {
+    this.jsEngine = jsEngine;
   }
 
   @Override
@@ -43,11 +42,5 @@ class JsEngineLifecycle implements LifecycleHook {
   @Override
   public void onStop() {
     jsEngine.close();
-  }
-
-  @Produces
-  @Singleton
-  JsEngine jsEngine() {
-    return jsEngine;
   }
 }

@@ -15,27 +15,23 @@
  *
  * Please refer to the LICENSE file in the root directory for full restrictions.
  */
-package xyz.noisif.nss.worker;
+package xyz.noisif.nss.worker.zcache;
 
 import xyz.noisif.nsl.common.bootstrap.lifecycle.LifecycleHook;
 import xyz.noisif.nsl.common.di.ComponentProvider;
 import xyz.noisif.nsl.common.reflect.ClassScanner;
-import xyz.noisif.nsl.common.util.math.MemUnit;
 import xyz.noisif.nsl.zcache.GenericNativeStorage;
-import xyz.noisif.nsl.zcache.NativeStorage;
-import xyz.noisif.nsl.zcache.lru.ConcurrentLruNativeStorage;
 
-import jakarta.enterprise.inject.Produces;
+import jakarta.inject.Inject;
+import jakarta.inject.Singleton;
 
-public class NssZCacheLifecycle implements LifecycleHook {
+@Singleton
+public class ZCacheLifecycle implements LifecycleHook {
   private final GenericNativeStorage nativeStorage;
 
-  NssZCacheLifecycle() {
-    nativeStorage =
-        ConcurrentLruNativeStorage.builder()
-            .maxMemory(512, MemUnit.MB) /* TODO: incoming from config server */
-            .initialCapacity(20) /* TODO: incoming from config server */
-            .build();
+  @Inject
+  ZCacheLifecycle(GenericNativeStorage nativeStorage) {
+    this.nativeStorage = nativeStorage;
   }
 
   @Override
@@ -46,10 +42,5 @@ public class NssZCacheLifecycle implements LifecycleHook {
   @Override
   public void onStop() {
     nativeStorage.close();
-  }
-
-  @Produces
-  NativeStorage getNativeStorage() {
-    return nativeStorage;
   }
 }

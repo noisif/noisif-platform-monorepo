@@ -15,32 +15,26 @@
  *
  * Please refer to the LICENSE file in the root directory for full restrictions.
  */
-package xyz.noisif.nss.translator.http;
+package xyz.noisif.nss.ingestor.graal;
 
-import xyz.noisif.nsl.common.bootstrap.lifecycle.LifecycleHook;
-import xyz.noisif.nsl.common.di.ComponentProvider;
-import xyz.noisif.nsl.common.reflect.ClassScanner;
-import xyz.noisif.nsl.http.HttpServer;
+import xyz.noisif.nss.ingestor.graal.scripting.GraalJsEngine;
+import xyz.noisif.nss.ingestor.graal.scripting.IngestorScript;
+import xyz.noisif.nss.ingestor.graal.scripting.JsEngine;
 
-import jakarta.inject.Inject;
+import jakarta.enterprise.inject.Produces;
 import jakarta.inject.Singleton;
 
 @Singleton
-class HttpServerLifecycle implements LifecycleHook {
-  private final HttpServer httpServer;
-
-  @Inject
-  HttpServerLifecycle(HttpServer httpServer) {
-    this.httpServer = httpServer;
+class JsEngineConfiguration {
+  @Produces
+  @Singleton
+  GraalJsEngine jsEngine() {
+    return GraalJsEngine.builder().withLibrary(IngestorScript.YARN_PARSER).build();
   }
 
-  @Override
-  public void onStart(ComponentProvider componentProvider, ClassScanner classScanner) {
-    httpServer.start();
-  }
-
-  @Override
-  public void onStop() {
-    httpServer.close();
+  @Produces
+  @Singleton
+  JsEngine jsEngine(GraalJsEngine jsEngine) {
+    return jsEngine;
   }
 }

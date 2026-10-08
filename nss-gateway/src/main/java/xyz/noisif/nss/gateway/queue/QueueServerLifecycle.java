@@ -15,44 +15,23 @@
  *
  * Please refer to the LICENSE file in the root directory for full restrictions.
  */
-package xyz.noisif.nss.gateway;
+package xyz.noisif.nss.gateway.queue;
 
-import xyz.noisif.nsl.codec.serialization.SerializerRegistry;
-import xyz.noisif.nsl.codec.serialization.json.JacksonSerializer;
-import xyz.noisif.nsl.codec.serialization.raw.RawByteSerializer;
 import xyz.noisif.nsl.common.bootstrap.lifecycle.LifecycleHook;
 import xyz.noisif.nsl.common.di.ComponentProvider;
 import xyz.noisif.nsl.common.reflect.ClassScanner;
-import xyz.noisif.nsl.queue.MessagePublisher;
 import xyz.noisif.nsl.queue.QueueServer;
-import xyz.noisif.nsl.queue.rabbitmq.RabbitMqServer;
-import xyz.noisif.nsl.queue.rabbitmq.connector.ConnectorType;
 
-import jakarta.enterprise.inject.Produces;
 import jakarta.inject.Inject;
 import jakarta.inject.Singleton;
 
-import java.util.Set;
-
 @Singleton
-class QueueServerLifecycle implements LifecycleHook {
+public class QueueServerLifecycle implements LifecycleHook {
   private final QueueServer queueServer;
 
   @Inject
-  QueueServerLifecycle(ComponentProvider componentProvider) {
-    queueServer =
-        RabbitMqServer.builder()
-            .rawNodes(Set.of("localhost:9111") /* TODO: incoming from config server */)
-            .withConnector(ConnectorType.SINGLE_NODE)
-            .username("guest" /* TODO: incoming from config server */)
-            .password("guest" /* TODO: incoming from config server */)
-            .virtualHost("noisif-main" /* TODO: incoming from config server */)
-            .serializerRegistry(
-                SerializerRegistry.createDefault()
-                    .register(JacksonSerializer.createLenientForMessaging())
-                    .register(RawByteSerializer.createDefault()))
-            .componentProvider(componentProvider)
-            .build();
+  QueueServerLifecycle(QueueServer queueServer) {
+    this.queueServer = queueServer;
   }
 
   @Override
@@ -63,11 +42,5 @@ class QueueServerLifecycle implements LifecycleHook {
   @Override
   public void onStop() {
     queueServer.close();
-  }
-
-  @Produces
-  @Singleton
-  MessagePublisher messagePublisher() {
-    return queueServer.getQueuePublisher();
   }
 }

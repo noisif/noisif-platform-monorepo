@@ -15,32 +15,41 @@
  *
  * Please refer to the LICENSE file in the root directory for full restrictions.
  */
-package xyz.noisif.nss.translator.http;
+package xyz.noisif.nss.gateway.ws;
 
 import xyz.noisif.nsl.common.bootstrap.lifecycle.LifecycleHook;
 import xyz.noisif.nsl.common.di.ComponentProvider;
 import xyz.noisif.nsl.common.reflect.ClassScanner;
-import xyz.noisif.nsl.http.HttpServer;
+import xyz.noisif.nsl.websocket.WsServer;
+import xyz.noisif.nss.gateway.kv.KvServerLifecycle;
+import xyz.noisif.nss.gateway.queue.QueueServerLifecycle;
 
 import jakarta.inject.Inject;
 import jakarta.inject.Singleton;
 
+import java.util.List;
+
 @Singleton
-class HttpServerLifecycle implements LifecycleHook {
-  private final HttpServer httpServer;
+class WsServerLifecycle implements LifecycleHook {
+  private final WsServer wsServer;
 
   @Inject
-  HttpServerLifecycle(HttpServer httpServer) {
-    this.httpServer = httpServer;
+  WsServerLifecycle(WsServer wsServer) {
+    this.wsServer = wsServer;
   }
 
   @Override
   public void onStart(ComponentProvider componentProvider, ClassScanner classScanner) {
-    httpServer.start();
+    wsServer.start();
   }
 
   @Override
   public void onStop() {
-    httpServer.close();
+    wsServer.close();
+  }
+
+  @Override
+  public List<Class<? extends LifecycleHook>> dependsOn() {
+    return List.of(KvServerLifecycle.class, QueueServerLifecycle.class);
   }
 }

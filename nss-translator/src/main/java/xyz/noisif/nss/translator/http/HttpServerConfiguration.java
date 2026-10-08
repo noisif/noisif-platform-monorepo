@@ -17,30 +17,31 @@
  */
 package xyz.noisif.nss.translator.http;
 
-import xyz.noisif.nsl.common.bootstrap.lifecycle.LifecycleHook;
+import xyz.noisif.nsl.codec.serialization.SerializerRegistry;
+import xyz.noisif.nsl.codec.serialization.json.jackson.JacksonSerializer;
+import xyz.noisif.nsl.codec.serialization.raw.RawByteSerializer;
 import xyz.noisif.nsl.common.di.ComponentProvider;
-import xyz.noisif.nsl.common.reflect.ClassScanner;
 import xyz.noisif.nsl.http.HttpServer;
+import xyz.noisif.nsl.http.jetty.JettyHttpServer;
 
-import jakarta.inject.Inject;
+import jakarta.enterprise.inject.Produces;
 import jakarta.inject.Singleton;
 
+import java.util.Set;
+
 @Singleton
-class HttpServerLifecycle implements LifecycleHook {
-  private final HttpServer httpServer;
-
-  @Inject
-  HttpServerLifecycle(HttpServer httpServer) {
-    this.httpServer = httpServer;
-  }
-
-  @Override
-  public void onStart(ComponentProvider componentProvider, ClassScanner classScanner) {
-    httpServer.start();
-  }
-
-  @Override
-  public void onStop() {
-    httpServer.close();
+class HttpServerConfiguration {
+  @Produces
+  @Singleton
+  HttpServer httpServer(ComponentProvider componentProvider) {
+    return JettyHttpServer.builder()
+        .componentProvider(componentProvider)
+        .serializerRegistry(
+            SerializerRegistry.createDefault()
+                .register(JacksonSerializer.createDefaultStrictMapper())
+                .register(RawByteSerializer.createDefault()))
+        .ignoredPaths(Set.of())
+        .port(9094) /* TODO: incoming from config server */
+        .build();
   }
 }

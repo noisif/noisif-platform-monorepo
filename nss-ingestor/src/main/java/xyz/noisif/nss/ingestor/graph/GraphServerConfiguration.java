@@ -15,11 +15,8 @@
  *
  * Please refer to the LICENSE file in the root directory for full restrictions.
  */
-package xyz.noisif.nss.ingestor;
+package xyz.noisif.nss.ingestor.graph;
 
-import xyz.noisif.nsl.common.bootstrap.lifecycle.LifecycleHook;
-import xyz.noisif.nsl.common.di.ComponentProvider;
-import xyz.noisif.nsl.common.reflect.ClassScanner;
 import xyz.noisif.nsl.graph.GraphReader;
 import xyz.noisif.nsl.graph.GraphServer;
 import xyz.noisif.nsl.graph.GraphWriter;
@@ -34,58 +31,39 @@ import xyz.noisif.nsl.net.HostPort;
 import jakarta.enterprise.inject.Produces;
 import jakarta.inject.Singleton;
 
-import java.util.List;
-
 @Singleton
-class GraphServerLifecycle implements LifecycleHook {
-  private final GraphServer<Neo4jConfig> graphServer;
-
-  GraphServerLifecycle() {
-    graphServer =
-        Neo4jServer.builder()
-            .config(
-                Neo4jConfig.builder()
-                    .protocol(Neo4jGraphProtocol.BOLT) /* TODO: incoming from config server */
-                    .address(
-                        HostPort.from("localhost", 9118)) /* TODO: incoming from config server */
-                    .username("neo4j") /* TODO: incoming from config server */
-                    .password("root") /* TODO: incoming from config server */
-                    .build())
-            .clientFactory(DefaultNeo4jClientFactory.create())
-            .repositoryFactory(Neo4jGraphRepository::createDefault)
-            .build();
-  }
-
-  @Override
-  public void onStart(ComponentProvider componentProvider, ClassScanner scanner) {
-    graphServer.start();
-  }
-
-  @Override
-  public void onStop() {
-    graphServer.close();
-  }
-
-  @Override
-  public List<Class<? extends LifecycleHook>> dependsOn() {
-    return List.of(JsEngineLifecycle.class);
+class GraphServerConfiguration {
+  @Produces
+  @Singleton
+  GraphServer<Neo4jConfig> graphServer() {
+    return Neo4jServer.builder()
+        .config(
+            Neo4jConfig.builder()
+                .protocol(Neo4jGraphProtocol.BOLT) /* TODO: incoming from config server */
+                .address(HostPort.from("localhost", 9118)) /* TODO: incoming from config server */
+                .username("neo4j") /* TODO: incoming from config server */
+                .password("root") /* TODO: incoming from config server */
+                .build())
+        .clientFactory(DefaultNeo4jClientFactory.create())
+        .repositoryFactory(Neo4jGraphRepository::createDefault)
+        .build();
   }
 
   @Produces
   @Singleton
-  GraphReader graphReader() {
+  GraphReader graphReader(GraphServer<Neo4jConfig> graphServer) {
     return graphServer.getRepository();
   }
 
   @Produces
   @Singleton
-  GraphWriter graphWriter() {
+  GraphWriter graphWriter(GraphServer<Neo4jConfig> graphServer) {
     return graphServer.getRepository();
   }
 
   @Produces
   @Singleton
-  GraphClient graphClient() {
+  GraphClient graphClient(GraphServer<Neo4jConfig> graphServer) {
     return graphServer.getClient();
   }
 }

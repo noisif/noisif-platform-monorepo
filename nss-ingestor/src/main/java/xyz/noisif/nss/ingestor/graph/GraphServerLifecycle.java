@@ -15,32 +15,41 @@
  *
  * Please refer to the LICENSE file in the root directory for full restrictions.
  */
-package xyz.noisif.nss.translator.http;
+package xyz.noisif.nss.ingestor.graph;
 
 import xyz.noisif.nsl.common.bootstrap.lifecycle.LifecycleHook;
 import xyz.noisif.nsl.common.di.ComponentProvider;
 import xyz.noisif.nsl.common.reflect.ClassScanner;
-import xyz.noisif.nsl.http.HttpServer;
+import xyz.noisif.nsl.graph.GraphServer;
+import xyz.noisif.nsl.graph.neo4j.client.factory.Neo4jConfig;
+import xyz.noisif.nss.ingestor.graal.JsEngineLifecycle;
 
 import jakarta.inject.Inject;
 import jakarta.inject.Singleton;
 
+import java.util.List;
+
 @Singleton
-class HttpServerLifecycle implements LifecycleHook {
-  private final HttpServer httpServer;
+public class GraphServerLifecycle implements LifecycleHook {
+  private final GraphServer<Neo4jConfig> graphServer;
 
   @Inject
-  HttpServerLifecycle(HttpServer httpServer) {
-    this.httpServer = httpServer;
+  GraphServerLifecycle(GraphServer<Neo4jConfig> graphServer) {
+    this.graphServer = graphServer;
   }
 
   @Override
   public void onStart(ComponentProvider componentProvider, ClassScanner classScanner) {
-    httpServer.start();
+    graphServer.start();
   }
 
   @Override
   public void onStop() {
-    httpServer.close();
+    graphServer.close();
+  }
+
+  @Override
+  public List<Class<? extends LifecycleHook>> dependsOn() {
+    return List.of(JsEngineLifecycle.class);
   }
 }

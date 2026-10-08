@@ -15,32 +15,30 @@
  *
  * Please refer to the LICENSE file in the root directory for full restrictions.
  */
-package xyz.noisif.nss.translator.http;
+package xyz.noisif.nss.worker.zcache;
 
-import xyz.noisif.nsl.common.bootstrap.lifecycle.LifecycleHook;
-import xyz.noisif.nsl.common.di.ComponentProvider;
-import xyz.noisif.nsl.common.reflect.ClassScanner;
-import xyz.noisif.nsl.http.HttpServer;
+import xyz.noisif.nsl.common.util.math.MemUnit;
+import xyz.noisif.nsl.zcache.GenericNativeStorage;
+import xyz.noisif.nsl.zcache.NativeStorage;
+import xyz.noisif.nsl.zcache.lru.ConcurrentLruNativeStorage;
 
-import jakarta.inject.Inject;
+import jakarta.enterprise.inject.Produces;
 import jakarta.inject.Singleton;
 
 @Singleton
-class HttpServerLifecycle implements LifecycleHook {
-  private final HttpServer httpServer;
-
-  @Inject
-  HttpServerLifecycle(HttpServer httpServer) {
-    this.httpServer = httpServer;
+class ZCacheConfiguration {
+  @Produces
+  @Singleton
+  GenericNativeStorage nativeStorage() {
+    return ConcurrentLruNativeStorage.builder()
+        .maxMemory(512, MemUnit.MB) /* TODO: incoming from config server */
+        .initialCapacity(20) /* TODO: incoming from config server */
+        .build();
   }
 
-  @Override
-  public void onStart(ComponentProvider componentProvider, ClassScanner classScanner) {
-    httpServer.start();
-  }
-
-  @Override
-  public void onStop() {
-    httpServer.close();
+  @Produces
+  @Singleton
+  NativeStorage getNativeStorage(GenericNativeStorage nativeStorage) {
+    return nativeStorage;
   }
 }

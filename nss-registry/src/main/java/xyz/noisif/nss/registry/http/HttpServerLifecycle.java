@@ -15,38 +15,23 @@
  *
  * Please refer to the LICENSE file in the root directory for full restrictions.
  */
-package xyz.noisif.nss.registry;
+package xyz.noisif.nss.registry.http;
 
-import xyz.noisif.nsl.codec.serialization.SerializerRegistry;
-import xyz.noisif.nsl.codec.serialization.json.JacksonSerializer;
-import xyz.noisif.nsl.codec.serialization.raw.RawByteSerializer;
 import xyz.noisif.nsl.common.bootstrap.lifecycle.LifecycleHook;
 import xyz.noisif.nsl.common.di.ComponentProvider;
 import xyz.noisif.nsl.common.reflect.ClassScanner;
 import xyz.noisif.nsl.http.HttpServer;
-import xyz.noisif.nsl.http.jetty.JettyHttpServer;
 
 import jakarta.inject.Inject;
 import jakarta.inject.Singleton;
-
-import java.util.Set;
 
 @Singleton
 class HttpServerLifecycle implements LifecycleHook {
   private final HttpServer httpServer;
 
   @Inject
-  HttpServerLifecycle(ComponentProvider componentProvider) {
-    httpServer =
-        JettyHttpServer.builder()
-            .componentProvider(componentProvider)
-            .serializerRegistry(
-                SerializerRegistry.createDefault()
-                    .register(JacksonSerializer.createDefaultStrictMapper())
-                    .register(RawByteSerializer.createDefault()))
-            .ignoredPaths(Set.of())
-            .port(9093) /* TODO: incoming from config server */
-            .build();
+  HttpServerLifecycle(HttpServer httpServer) {
+    this.httpServer = httpServer;
   }
 
   @Override
