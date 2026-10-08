@@ -27,11 +27,15 @@ nsService {
 
 dependencies {
   runtimeOnly(libs.postgresql)
+  implementation(libs.protobuf.java)
 
   implementation(project(":nsl-codec"))
   implementation(project(":nsl-common"))
+  implementation(project(":nsl-contracts"))
   implementation(project(":nsl-http"))
   implementation(project(":nsl-kv"))
+  implementation(project(":nsl-net"))
+  implementation(project(":nsl-queue"))
   implementation(project(":nsl-sql"))
 
   testImplementation(testFixtures(project(":nsl-common")))

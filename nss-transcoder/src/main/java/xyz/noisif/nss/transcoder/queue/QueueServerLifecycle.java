@@ -15,33 +15,32 @@
  *
  * Please refer to the LICENSE file in the root directory for full restrictions.
  */
-import xyz.noisif.buildconfig.ffmpeg.NsFFmpegPlugin
-import xyz.noisif.buildconfig.ffmpeg.nsFFmpeg
-import xyz.noisif.buildconfig.service.NsServicePlugin
-import xyz.noisif.buildconfig.service.nsService
+package xyz.noisif.nss.transcoder.queue;
 
-apply<NsServicePlugin>()
-apply<NsFFmpegPlugin>()
+import xyz.noisif.nsl.common.bootstrap.lifecycle.LifecycleHook;
+import xyz.noisif.nsl.common.di.ComponentProvider;
+import xyz.noisif.nsl.common.reflect.ClassScanner;
+import xyz.noisif.nsl.queue.QueueServer;
 
-nsService {
-  packageSuffix.set("transcoder")
-  mainClass.set("NssTranscoderMain")
-}
+import jakarta.inject.Inject;
+import jakarta.inject.Singleton;
 
-nsFFmpeg {
-  version.set("6.1")
-  directoryName.set("libav")
-  downloadFfprobe.set(true)
-}
+@Singleton
+class QueueServerLifecycle implements LifecycleHook {
+  private final QueueServer queueServer;
 
-dependencies {
-  implementation(libs.ffmpeg.wrapper)
-  implementation(libs.protobuf.java)
+  @Inject
+  QueueServerLifecycle(QueueServer queueServer) {
+    this.queueServer = queueServer;
+  }
 
-  implementation(project(":nsl-codec"))
-  implementation(project(":nsl-common"))
-  implementation(project(":nsl-contracts"))
-  implementation(project(":nsl-queue"))
+  @Override
+  public void onStart(ComponentProvider componentProvider, ClassScanner classScanner) {
+    queueServer.start();
+  }
 
-  testImplementation(testFixtures(project(":nsl-common")))
+  @Override
+  public void onStop() {
+    queueServer.close();
+  }
 }
