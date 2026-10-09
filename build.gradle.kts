@@ -104,7 +104,7 @@ subprojects {
       "-XX:+EnableDynamicAgentLoading",
       "-Xshare:off",
       // GC
-      "-XX:+UseZGC",
+      "-XX:+UseG1GC", // ZGC not supported in JVMCI required by GraalVM
       "-XX:+ZGenerational", // high-performance, low-latency gc for java 21+
       // memory
       "-Xms1G",
