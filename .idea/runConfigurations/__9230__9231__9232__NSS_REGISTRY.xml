@@ -1,12 +1,12 @@
 <component name="ProjectRunConfigurationManager">
-  <configuration default="false" name="(:9011) NSS API" type="Application" factoryName="Application">
-    <option name="MAIN_CLASS_NAME" value="xyz.noisif.nss.api.NssApiMain" />
-    <module name="noisif-platform-monorepo.nss-api.main" />
+  <configuration default="false" name="(:9230,:9231,:9232) NSS REGISTRY" type="Application" factoryName="Application">
+    <option name="MAIN_CLASS_NAME" value="xyz.noisif.nss.registry.NssRegistryMain" />
+    <module name="noisif-platform-monorepo.nss-registry.nss-registry.main" />
     <option name="VM_PARAMETERS" value="-Dlogback.configurationFile=logback-dev.xml" />
     <option name="WORKING_DIRECTORY" value="$MODULE_DIR$" />
     <extension name="coverage">
       <pattern>
-        <option name="PATTERN" value="xyz.jwizard.jws.api.*" />
+        <option name="PATTERN" value="xyz.jwizard.jws.registry.*" />
         <option name="ENABLED" value="true" />
       </pattern>
     </extension>

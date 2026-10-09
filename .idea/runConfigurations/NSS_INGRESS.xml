@@ -1,5 +1,5 @@
 <component name="ProjectRunConfigurationManager">
-  <configuration default="false" name="(:0000) NSS INGRESS" type="Application" factoryName="Application" singleton="false">
+  <configuration default="false" name="NSS INGRESS" type="Application" factoryName="Application" singleton="false">
     <option name="MAIN_CLASS_NAME" value="xyz.noisif.nss.ingress.NssIngressMain" />
     <module name="noisif-platform-monorepo.nss-ingress.main" />
     <option name="WORKING_DIRECTORY" value="$MODULE_DIR$" />

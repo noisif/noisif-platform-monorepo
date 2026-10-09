@@ -59,7 +59,7 @@ class WsServerConfiguration {
       PubSubBroadcaster pubSubBroadcaster,
       ClassScanner classScanner) {
     return JettyWsServer.builder()
-        .port(9016)
+        .port(9210)
         .path("/v1")
         .idleTimeout(Duration.ofMinutes(10))
         .sessionRegistry(wsSessionRegistry)

@@ -1,12 +1,12 @@
 <component name="ProjectRunConfigurationManager">
-  <configuration default="false" name="(:9014) NSS TRANSLATOR" type="Application" factoryName="Application">
-    <option name="MAIN_CLASS_NAME" value="xyz.noisif.nss.translator.NssTranslatorMain" />
-    <module name="noisif-platform-monorepo.nss-translator.main" />
+  <configuration default="false" name="(:9210) NSS GATEWAY" type="Application" factoryName="Application" singleton="false">
+    <option name="MAIN_CLASS_NAME" value="xyz.noisif.nss.gateway.NssGatewayMain" />
+    <module name="noisif-platform-monorepo.nss-gateway.main" />
     <option name="VM_PARAMETERS" value="-Dlogback.configurationFile=logback-dev.xml" />
     <option name="WORKING_DIRECTORY" value="$MODULE_DIR$" />
     <extension name="coverage">
       <pattern>
-        <option name="PATTERN" value="xyz.jwizard.jws.translator.*" />
+        <option name="PATTERN" value="xyz.jwizard.jws.gateway.redis.*" />
         <option name="ENABLED" value="true" />
       </pattern>
     </extension>

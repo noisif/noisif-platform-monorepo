@@ -41,7 +41,7 @@ class HttpServerConfiguration {
                 .register(JacksonSerializer.createDefaultStrictMapper())
                 .register(RawByteSerializer.createDefault()))
         .ignoredPaths(Set.of())
-        .port(9091) /* TODO: incoming from config server */
+        .port(9201) /* TODO: incoming from config server */
         .build();
   }
 }

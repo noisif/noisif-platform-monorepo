@@ -1,12 +1,12 @@
 <component name="ProjectRunConfigurationManager">
-  <configuration default="false" name="(:9015) NSS GATEWAY" type="Application" factoryName="Application" singleton="false">
-    <option name="MAIN_CLASS_NAME" value="xyz.noisif.nss.gateway.NssGatewayMain" />
-    <module name="noisif-platform-monorepo.nss-gateway.main" />
+  <configuration default="false" name="(:9220) NSS INGESTOR" type="Application" factoryName="Application">
+    <option name="MAIN_CLASS_NAME" value="xyz.noisif.nss.ingestor.NssIngestorMain" />
+    <module name="noisif-platform-monorepo.nss-ingestor.main" />
     <option name="VM_PARAMETERS" value="-Dlogback.configurationFile=logback-dev.xml" />
     <option name="WORKING_DIRECTORY" value="$MODULE_DIR$" />
     <extension name="coverage">
       <pattern>
-        <option name="PATTERN" value="xyz.jwizard.jws.gateway.redis.*" />
+        <option name="PATTERN" value="xyz.jwizard.jws.ingestor.*" />
         <option name="ENABLED" value="true" />
       </pattern>
     </extension>

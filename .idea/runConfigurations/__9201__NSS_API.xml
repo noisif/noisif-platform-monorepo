@@ -1,12 +1,12 @@
 <component name="ProjectRunConfigurationManager">
-  <configuration default="false" name="(:0000) NSS TRANSCODER" type="Application" factoryName="Application" singleton="false">
-    <option name="MAIN_CLASS_NAME" value="xyz.noisif.nss.transcoder.NssTranscoderMain" />
-    <module name="noisif-platform-monorepo.nss-transcoder.main" />
+  <configuration default="false" name="(:9201) NSS API" type="Application" factoryName="Application">
+    <option name="MAIN_CLASS_NAME" value="xyz.noisif.nss.api.NssApiMain" />
+    <module name="noisif-platform-monorepo.nss-api.main" />
     <option name="VM_PARAMETERS" value="-Dlogback.configurationFile=logback-dev.xml" />
     <option name="WORKING_DIRECTORY" value="$MODULE_DIR$" />
     <extension name="coverage">
       <pattern>
-        <option name="PATTERN" value="xyz.noisif.nss.transcoder.*" />
+        <option name="PATTERN" value="xyz.jwizard.jws.api.*" />
         <option name="ENABLED" value="true" />
       </pattern>
     </extension>

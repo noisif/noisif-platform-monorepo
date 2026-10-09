@@ -55,7 +55,7 @@ class WsServerConfiguration {
       ClassScanner classScanner,
       WsSessionRegistry wsSessionRegistry) {
     return JettyWsServer.builder()
-        .port(9092) /* TODO: incoming from config server */
+        .port(9220) /* TODO: incoming from config server */
         .path("/v1") /* TODO: incoming from config server */
         .idleTimeout(Duration.ofMinutes(10))
         .sessionRegistry(wsSessionRegistry)
