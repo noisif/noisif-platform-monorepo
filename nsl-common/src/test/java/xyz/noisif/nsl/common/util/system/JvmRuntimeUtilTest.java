@@ -104,7 +104,12 @@ class JvmRuntimeUtilTest {
 class MissingJvmArg implements JvmArg {
   @Override
   public String getPrefix() {
-    return "-XX:NonExistentFlag=";
+    return "-XX:NonExistentFlag";
+  }
+
+  @Override
+  public String getSearchPrefix() {
+    return getPrefix() + "=";
   }
 
   @Override

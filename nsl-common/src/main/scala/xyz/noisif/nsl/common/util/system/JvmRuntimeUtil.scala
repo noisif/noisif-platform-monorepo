@@ -28,7 +28,7 @@ object JvmRuntimeUtil {
   private val LOG = LoggerFactory.getLogger(getClass)
 
   def getJvmArg[T](arg: JvmArg, defaultValue: T): T = {
-    val prefix = arg.getPrefix
+    val prefix = arg.getSearchPrefix
     findRawArgument(prefix) match {
       case Some(rawValue) =>
         LOG.trace("found jvm argument match for {}: {}, transforming", prefix, rawValue)

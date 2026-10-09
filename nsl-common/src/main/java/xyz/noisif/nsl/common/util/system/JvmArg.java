@@ -22,6 +22,8 @@ import java.util.function.Function;
 public interface JvmArg {
   String getPrefix();
 
+  String getSearchPrefix();
+
   Function<String, ?> getTransformer();
 
   Class<?> getType();

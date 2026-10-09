@@ -22,7 +22,7 @@ import xyz.noisif.nsl.common.util.math.MemSize;
 import java.util.function.Function;
 
 public enum DefaultJvmArg implements JvmArg {
-  MAX_DIRECT_MEMORY_SIZE("-XX:MaxDirectMemorySize=", MemSize::parseFromStr, Long.class),
+  MAX_DIRECT_MEMORY_SIZE("-XX:MaxDirectMemorySize", MemSize::parseFromStr, Long.class),
   ;
 
   private final String prefix;
@@ -38,6 +38,11 @@ public enum DefaultJvmArg implements JvmArg {
   @Override
   public String getPrefix() {
     return prefix;
+  }
+
+  @Override
+  public String getSearchPrefix() {
+    return prefix + "=";
   }
 
   @Override
