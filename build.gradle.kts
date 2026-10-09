@@ -17,7 +17,8 @@
  */
 import net.ltgt.gradle.errorprone.errorprone
 import org.gradle.plugins.ide.idea.model.IdeaModel
-import xyz.noisif.buildconfig.getEnv
+import xyz.noisif.buildconfig.Env
+import xyz.noisif.buildconfig.ProjectEnvVar
 import xyz.noisif.buildconfig.getPluginId
 import xyz.noisif.buildconfig.spotless.NsSpotlessPlugin
 import xyz.noisif.buildconfig.test.CompactTestOutputListener
@@ -33,7 +34,7 @@ allprojects {
   apply(plugin = getPluginId(rootProject.libs.plugins.idea))
 
   group = "xyz.noisif"
-  version = getEnv("VERSION", "0.0.0")
+  version = Env.get<String>(ProjectEnvVar.VERSION, "0.0.0")
 
   repositories {
     mavenCentral()

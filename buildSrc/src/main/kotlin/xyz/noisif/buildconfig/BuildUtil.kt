@@ -20,12 +20,11 @@ package xyz.noisif.buildconfig
 import org.gradle.api.Project
 import org.gradle.api.artifacts.VersionCatalog
 import org.gradle.api.artifacts.VersionCatalogsExtension
+import org.gradle.api.plugins.PluginManager
 import org.gradle.api.provider.Provider
 import org.gradle.plugin.use.PluginDependency
 
 fun getPluginId(accessor: Provider<PluginDependency>): String = accessor.get().pluginId
-
-fun getEnv(name: String, defValue: String = ""): String = System.getenv("NS_$name") ?: defValue
 
 internal val Project.libs: VersionCatalog
   get() = extensions.getByType(VersionCatalogsExtension::class.java).named("libs")
