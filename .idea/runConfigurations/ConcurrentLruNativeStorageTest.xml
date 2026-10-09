@@ -1,5 +1,5 @@
 <component name="ProjectRunConfigurationManager">
-  <configuration default="false" name="ConcurrentLruNativeStorageTest" type="JUnit" factoryName="JUnit" folderName="nsl-silo" nameIsGenerated="true">
+  <configuration default="false" name="ConcurrentLruNativeStorageTest" type="JUnit" factoryName="JUnit" folderName="nsl-zcache" nameIsGenerated="true">
     <module name="noisif-platform-monorepo.nsl-zcache.test" />
     <extension name="coverage">
       <pattern>
