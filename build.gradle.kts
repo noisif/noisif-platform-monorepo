@@ -19,6 +19,7 @@ import net.ltgt.gradle.errorprone.errorprone
 import org.gradle.plugins.ide.idea.model.IdeaModel
 import xyz.noisif.buildconfig.Env
 import xyz.noisif.buildconfig.ProjectEnvVar
+import xyz.noisif.buildconfig.apply
 import xyz.noisif.buildconfig.getPluginId
 import xyz.noisif.buildconfig.spotless.NsSpotlessPlugin
 import xyz.noisif.buildconfig.test.CompactTestOutputListener
@@ -31,7 +32,8 @@ plugins {
 }
 
 allprojects {
-  apply(plugin = getPluginId(rootProject.libs.plugins.idea))
+  plugins.apply(getPluginId(rootProject.libs.plugins.idea))
+  plugins.apply(getPluginId(rootProject.libs.plugins.sonatype.scan))
 
   group = "xyz.noisif"
   version = Env.get<String>(ProjectEnvVar.VERSION, "0.0.0")
@@ -51,12 +53,12 @@ allprojects {
     }
   }
 
-  apply<NsSpotlessPlugin>()
+  pluginManager.apply<NsSpotlessPlugin>()
 }
 
 subprojects {
-  apply(plugin = getPluginId(rootProject.libs.plugins.java.library))
-  apply(plugin = getPluginId(rootProject.libs.plugins.error.prone))
+  plugins.apply(getPluginId(rootProject.libs.plugins.java.library))
+  plugins.apply(getPluginId(rootProject.libs.plugins.error.prone))
 
   java {
     toolchain.languageVersion.set(JavaLanguageVersion.of(21))

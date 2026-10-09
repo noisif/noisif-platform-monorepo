@@ -16,12 +16,13 @@
  * Please refer to the LICENSE file in the root directory for full restrictions.
  */
 import xyz.noisif.buildconfig.NsScalaPlugin
+import xyz.noisif.buildconfig.apply
 
 plugins {
   alias(libs.plugins.test.fixtures)
 }
 
-apply<NsScalaPlugin>()
+pluginManager.apply<NsScalaPlugin>()
 
 dependencies {
   implementation(libs.bucket4j)

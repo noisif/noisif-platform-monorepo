@@ -15,10 +15,11 @@
  *
  * Please refer to the LICENSE file in the root directory for full restrictions.
  */
+import xyz.noisif.buildconfig.apply
 import xyz.noisif.buildconfig.service.NsServicePlugin
 import xyz.noisif.buildconfig.service.nsService
 
-apply<NsServicePlugin>()
+pluginManager.apply<NsServicePlugin>()
 
 nsService {
   packageSuffix.set("api")

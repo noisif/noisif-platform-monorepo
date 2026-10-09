@@ -15,13 +15,14 @@
  *
  * Please refer to the LICENSE file in the root directory for full restrictions.
  */
+import xyz.noisif.buildconfig.apply
 import xyz.noisif.buildconfig.polyglot.NsPolyglotJsPlugin
 import xyz.noisif.buildconfig.polyglot.nsPolyglotJs
 import xyz.noisif.buildconfig.service.NsServicePlugin
 import xyz.noisif.buildconfig.service.nsService
 
-apply<NsServicePlugin>()
-apply<NsPolyglotJsPlugin>()
+pluginManager.apply<NsServicePlugin>()
+pluginManager.apply<NsPolyglotJsPlugin>()
 
 nsService {
   packageSuffix.set("ingestor")

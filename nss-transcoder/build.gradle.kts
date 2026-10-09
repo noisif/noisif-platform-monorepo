@@ -15,13 +15,14 @@
  *
  * Please refer to the LICENSE file in the root directory for full restrictions.
  */
+import xyz.noisif.buildconfig.apply
 import xyz.noisif.buildconfig.ffmpeg.NsFFmpegPlugin
 import xyz.noisif.buildconfig.ffmpeg.nsFFmpeg
 import xyz.noisif.buildconfig.service.NsServicePlugin
 import xyz.noisif.buildconfig.service.nsService
 
-apply<NsServicePlugin>()
-apply<NsFFmpegPlugin>()
+pluginManager.apply<NsServicePlugin>()
+pluginManager.apply<NsFFmpegPlugin>()
 
 nsService {
   packageSuffix.set("transcoder")

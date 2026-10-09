@@ -15,11 +15,12 @@
  *
  * Please refer to the LICENSE file in the root directory for full restrictions.
  */
+import xyz.noisif.buildconfig.apply
 import xyz.noisif.buildconfig.protobuf.NsProtobufPlugin
 import xyz.noisif.buildconfig.spotless.NsSpotlessProtobufPlugin
 
-apply<NsProtobufPlugin>()
-apply<NsSpotlessProtobufPlugin>()
+pluginManager.apply<NsProtobufPlugin>()
+pluginManager.apply<NsSpotlessProtobufPlugin>()
 
 dependencies {
   implementation(libs.jetty.client)
