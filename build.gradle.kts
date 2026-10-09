@@ -98,7 +98,7 @@ subprojects {
     val summaryService = registerTestSummaryService()
     usesService(summaryService)
     addTestListener(CompactTestOutputListener(summaryService.get(), project.logger))
-    // suppress JDK 21+ warnings regarding dynamic agent loading (used by mockito)
+    // suppress JDK 21+ warnings regarding dynamic agent loading (used by Mockito)
     // -Xshare:off: disables class data sharing
     jvmArgs(
       "-XX:+EnableDynamicAgentLoading",
@@ -118,7 +118,7 @@ subprojects {
     )
     systemProperty(
       // avoids port conflicts during parallel execution by forcing testcontainers to use
-      // the unix socket strategy
+      // the Unix socket strategy
       "org.testcontainers.docker-client.strategy",
       "org.testcontainers.dockerclient.UnixSocketClientProviderStrategy",
     )
