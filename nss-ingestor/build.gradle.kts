@@ -16,6 +16,8 @@
  * Please refer to the LICENSE file in the root directory for full restrictions.
  */
 import xyz.noisif.buildconfig.apply
+import xyz.noisif.buildconfig.jvm.NsGC
+import xyz.noisif.buildconfig.jvm.nsJvm
 import xyz.noisif.buildconfig.polyglot.NsPolyglotJsPlugin
 import xyz.noisif.buildconfig.polyglot.nsPolyglotJs
 import xyz.noisif.buildconfig.service.NsServicePlugin
@@ -32,6 +34,10 @@ nsService {
 nsPolyglotJs {
   entryPoints.put("yarn-parser.bundle", "node_modules/@yarnpkg/parsers/lib/index.js")
   npmDependencies.add("@yarnpkg/parsers")
+}
+
+nsJvm {
+  gc.set(NsGC.G1GC) // ZGC not supported in JVMCI required by GraalVM
 }
 
 dependencies {

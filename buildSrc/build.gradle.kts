@@ -69,6 +69,10 @@ gradlePlugin {
       id = "xyz.noisif.ns-ffmpeg"
       implementationClass = "xyz.noisif.buildconfig.ffmpeg.NsFFmpegPlugin"
     }
+    create("nsJvm") {
+      id = "xyz.noisif.ns-jvm"
+      implementationClass = "xyz.noisif.buildconfig.jvm.NsJvmPlugin"
+    }
   }
 }
 

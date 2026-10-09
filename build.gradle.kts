@@ -21,6 +21,7 @@ import xyz.noisif.buildconfig.Env
 import xyz.noisif.buildconfig.ProjectEnvVar
 import xyz.noisif.buildconfig.apply
 import xyz.noisif.buildconfig.getPluginId
+import xyz.noisif.buildconfig.jvm.NsJvmPlugin
 import xyz.noisif.buildconfig.spotless.NsSpotlessPlugin
 import xyz.noisif.buildconfig.test.CompactTestOutputListener
 import xyz.noisif.buildconfig.test.registerTestSummaryService
@@ -90,6 +91,8 @@ subprojects {
     testRuntimeOnly(rootProject.libs.logback.classic)
   }
 
+  pluginManager.apply<NsJvmPlugin>()
+
   tasks.withType<Test> {
     useJUnitPlatform()
     testLogging {
@@ -103,9 +106,6 @@ subprojects {
     jvmArgs(
       "-XX:+EnableDynamicAgentLoading",
       "-Xshare:off",
-      // GC
-      "-XX:+UseG1GC", // ZGC not supported in JVMCI required by GraalVM
-      "-XX:+ZGenerational", // high-performance, low-latency gc for java 21+
       // memory
       "-Xms1G",
       "-Xmx1G",
@@ -166,9 +166,6 @@ subprojects {
   tasks.withType<JavaExec> {
     jvmArgs(
       "-Dlogback.configurationFile=logback-dev.xml",
-      // GC
-      "-XX:+UseZGC",
-      "-XX:+ZGenerational",
       // memory
       "-Xms4G",
       "-Xmx4G",

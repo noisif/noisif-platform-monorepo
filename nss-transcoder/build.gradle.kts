@@ -18,6 +18,8 @@
 import xyz.noisif.buildconfig.apply
 import xyz.noisif.buildconfig.ffmpeg.NsFFmpegPlugin
 import xyz.noisif.buildconfig.ffmpeg.nsFFmpeg
+import xyz.noisif.buildconfig.jvm.NsGC
+import xyz.noisif.buildconfig.jvm.nsJvm
 import xyz.noisif.buildconfig.service.NsServicePlugin
 import xyz.noisif.buildconfig.service.nsService
 
@@ -33,6 +35,12 @@ nsFFmpeg {
   version.set("6.1")
   directoryName.set("libav")
   downloadFfprobe.set(true)
+}
+
+nsJvm {
+  gc.set(NsGC.PARALLEL)
+  // limit gc threads for preventing os threads starvation (ffmpeg processes)
+  extraJvmArgs.add("-XX:ParallelGCThreads=4")
 }
 
 dependencies {
