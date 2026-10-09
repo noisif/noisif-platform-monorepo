@@ -26,6 +26,9 @@ format-check:
 format-apply:
 	./gradlew :buildSrc:spotlessApply spotlessApply
 
+.PHONY: proto
+proto:
+	./gradlew generateProto
+
 include Makefile.docker
 include Makefile.ns
-include Makefile.tools
