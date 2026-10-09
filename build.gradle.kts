@@ -29,6 +29,7 @@ plugins {
   alias(libs.plugins.error.prone)
   alias(libs.plugins.java)
   alias(libs.plugins.idea)
+  alias(libs.plugins.sonatype.scan)
 }
 
 allprojects {
@@ -54,6 +55,19 @@ allprojects {
   }
 
   pluginManager.apply<NsSpotlessPlugin>()
+
+  ossIndexAudit {
+    username = Env.require(ProjectEnvVar.OSS_INDEX_USER)
+    password = Env.require(ProjectEnvVar.OSS_INDEX_TOKEN)
+    isAllConfigurations = false
+    isUseCache = true
+    cacheDirectory = layout.buildDirectory
+      .dir("ossindex")
+      .get()
+      .asFile
+      .absolutePath
+    isFailOnDetection = false
+  }
 }
 
 subprojects {

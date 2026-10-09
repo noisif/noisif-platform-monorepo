@@ -26,6 +26,10 @@ format-check:
 format-apply:
 	./gradlew :buildSrc:spotlessApply spotlessApply
 
+.PHONY: oss-scan
+oss-scan:
+	./gradlew ossIndexAudit --info
+
 .PHONY: proto
 proto:
 	./gradlew generateProto

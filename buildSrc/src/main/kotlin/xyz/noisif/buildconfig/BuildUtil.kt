@@ -28,3 +28,7 @@ fun getPluginId(accessor: Provider<PluginDependency>): String = accessor.get().p
 
 internal val Project.libs: VersionCatalog
   get() = extensions.getByType(VersionCatalogsExtension::class.java).named("libs")
+
+inline fun <reified T : Any> PluginManager.apply() {
+  apply(T::class.java)
+}
