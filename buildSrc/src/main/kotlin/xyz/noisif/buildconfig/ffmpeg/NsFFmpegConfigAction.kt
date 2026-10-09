@@ -24,6 +24,8 @@ import org.gradle.kotlin.dsl.getByType
 import org.gradle.kotlin.dsl.register
 import org.gradle.plugins.ide.idea.model.IdeaModel
 import xyz.noisif.buildconfig.TaskConfigureAction
+import xyz.noisif.buildconfig.alias.PluginAlias
+import xyz.noisif.buildconfig.alias.getPluginId
 import xyz.noisif.buildconfig.ffmpeg.libav.FFmpegDownloader
 import xyz.noisif.buildconfig.ffmpeg.libav.FFprobeDownloader
 
@@ -64,7 +66,7 @@ internal class NsFFmpegConfigAction(private val extension: NsFFmpegExtension) : 
   private fun configureIdea(project: Project, extension: NsFFmpegExtension) {
     val dirName = extension.directoryName.get()
     project.plugins.withId(
-      "idea",
+      getPluginId(project, PluginAlias.IDEA),
       Action {
         val idea = project.extensions.getByType<IdeaModel>()
         idea.module.excludeDirs.remove(project.file(dirName))

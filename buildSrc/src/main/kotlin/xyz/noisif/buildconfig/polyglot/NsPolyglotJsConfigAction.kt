@@ -29,6 +29,8 @@ import xyz.noisif.buildconfig.SourceSetConfigureAction
 import xyz.noisif.buildconfig.TaskConfigureAction
 import xyz.noisif.buildconfig.TaskNameStartsWithSpec
 import xyz.noisif.buildconfig.WithPluginAction
+import xyz.noisif.buildconfig.alias.PluginAlias
+import xyz.noisif.buildconfig.alias.getPluginId
 
 internal class NsPolyglotJsConfigAction(private val extension: NsPolyglotJsExtension) :
   Action<Project> {
@@ -89,7 +91,7 @@ internal class NsPolyglotJsConfigAction(private val extension: NsPolyglotJsExten
     )
 
     project.pluginManager.withPlugin(
-      "com.diffplug.spotless",
+      getPluginId(project, PluginAlias.SPOTLESS),
       WithPluginAction {
         project.tasks.matching(TaskNameStartsWithSpec("spotless")).configureEach(
           TaskConfigureAction { task ->
@@ -108,7 +110,7 @@ internal class NsPolyglotJsConfigAction(private val extension: NsPolyglotJsExten
     sourceSets.named("main", SourceSetConfigureAction(generatedBaseDir))
 
     project.plugins.withId(
-      "idea",
+      getPluginId(project, PluginAlias.IDEA),
       Action {
         val idea = project.extensions.getByType<IdeaModel>()
         val ideaModule = idea.module

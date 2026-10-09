@@ -27,6 +27,7 @@ import xyz.noisif.buildconfig.alias.LibraryAlias
 import xyz.noisif.buildconfig.alias.PluginAlias
 import xyz.noisif.buildconfig.alias.apply
 import xyz.noisif.buildconfig.alias.getLibrary
+import xyz.noisif.buildconfig.alias.withPlugin
 import xyz.noisif.buildconfig.libs
 
 class NsProtobufPlugin : Plugin<Project> {
@@ -50,7 +51,7 @@ class NsProtobufPlugin : Plugin<Project> {
       val generatedDir = project.file("build/generated/source/proto/${sourceSet.name}/java")
       sourceSet.java.srcDir(generatedDir)
     }
-    project.plugins.withId("idea") {
+    project.withPlugin(PluginAlias.IDEA) {
       val idea = project.extensions.getByType<IdeaModel>()
       with(idea.module) {
         val mainProto = project.file("src/main/proto")

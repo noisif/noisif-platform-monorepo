@@ -31,6 +31,7 @@ internal enum class PluginAlias(private val alias: String) : DependencyAlias {
   PROTOBUF("protobuf"),
   SCALA("scala"),
   SHADOW("shadow"),
+  SPOTLESS("spotless"),
   ;
 
   override fun getAlias() = alias
@@ -42,6 +43,9 @@ internal fun VersionCatalog.getPlugin(pluginAlias: PluginAlias): Provider<Plugin
   findPlugin(pluginAlias.getAlias()).orElseThrow {
     IllegalArgumentException("Plugin '${pluginAlias.getAlias()}' not found in TOML")
   }
+
+internal fun getPluginId(target: Project, pluginAlias: PluginAlias) =
+  getPluginId(target.libs.getPlugin(pluginAlias))
 
 internal fun PluginManager.apply(target: Project, pluginAlias: PluginAlias) =
   apply(getPluginId(target.libs.getPlugin(pluginAlias)))
