@@ -19,7 +19,15 @@ import { svelte } from '@sveltejs/vite-plugin-svelte';
 import { defineConfig } from 'vite';
 
 export default defineConfig({
-  plugins: [svelte()],
+  plugins: [
+    svelte(),
+    {
+      name: 'remove-html-comments',
+      transformIndexHtml(html) {
+        return html.replace(/[ \t]*<!--[\s\S]*?-->\r?\n?/g, '');
+      },
+    },
+  ],
   base: './',
   build: {
     outDir: 'dist',
