@@ -17,6 +17,7 @@
  */
 package xyz.noisif.buildconfig.alias
 
+import org.gradle.api.Plugin
 import org.gradle.api.Project
 import org.gradle.api.artifacts.VersionCatalog
 import org.gradle.api.plugins.PluginManager
@@ -27,8 +28,11 @@ import xyz.noisif.buildconfig.libs
 
 internal enum class PluginAlias(private val alias: String) : DependencyAlias {
   APPLICATION("application"),
+  BASE("base"),
   IDEA("idea"),
+  JAVA("java"),
   PROTOBUF("protobuf"),
+  NODE("node"),
   SCALA("scala"),
   SHADOW("shadow"),
   SPOTLESS("spotless"),
@@ -48,4 +52,8 @@ internal fun getPluginId(target: Project, pluginAlias: PluginAlias) =
   getPluginId(target.libs.getPlugin(pluginAlias))
 
 internal fun PluginManager.apply(target: Project, pluginAlias: PluginAlias) =
-  apply(getPluginId(target.libs.getPlugin(pluginAlias)))
+  apply(getPluginId(target, pluginAlias))
+
+internal fun Project.withPlugin(pluginAlias: PluginAlias, block: (Plugin<Any>) -> Unit) {
+  plugins.withId(pluginAlias.getAlias(), block)
+}

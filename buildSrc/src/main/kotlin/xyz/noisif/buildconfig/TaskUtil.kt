@@ -23,6 +23,7 @@ import org.gradle.api.file.CopySpec
 import org.gradle.api.plugins.AppliedPlugin
 import org.gradle.api.specs.Spec
 import org.gradle.api.tasks.SourceSet
+import org.gradle.api.tasks.TaskProvider
 import java.io.File
 
 internal class TaskConfigureAction(private val action: (Task) -> Unit) : Action<Task> {
@@ -50,5 +51,12 @@ internal class SourceSetConfigureAction(private val generatedBaseDir: File) : Ac
 internal class CopySpecConfigureAction(private val action: (CopySpec) -> Unit) : Action<CopySpec> {
   override fun execute(copySpec: CopySpec) {
     action(copySpec)
+  }
+}
+
+internal class AddDependencyAction<T : Task>(private val taskProvider: TaskProvider<T>) :
+  Action<Task> {
+  override fun execute(task: Task) {
+    task.dependsOn(taskProvider)
   }
 }

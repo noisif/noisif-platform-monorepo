@@ -98,12 +98,14 @@ ws-mock-server = { module = "org.java-websocket:Java-WebSocket", version.ref = "
 
 [plugins]
 application = { id = "application" }
+base = { id = "base" }
 error-prone = { id = "net.ltgt.errorprone", version.ref = "errorPronePlugin" }
 idea = { id = "idea" }
 java = { id = "java" }
 java-gradle-plugin = { id = "java-gradle-plugin" }
 java-library = { id = "java-library" }
 kotlin-dsl = { id = "org.gradle.kotlin.kotlin-dsl", version.ref = "kotlinDsl" }
+node = { id = "com.github.node-gradle.node" }
 protobuf = { id = "com.google.protobuf", version.ref = "protobufPlugin" }
 sonatype-scan = { id = "org.sonatype.gradle.plugins.scan", version.ref = "sonatypeScan" }
 scala = { id = "scala" }

@@ -73,6 +73,14 @@ gradlePlugin {
       id = "xyz.noisif.ns-jvm"
       implementationClass = "xyz.noisif.buildconfig.jvm.NsJvmPlugin"
     }
+    create("nsSpaUi") {
+      id = "xyz.noisif.ns-spa-ui"
+      implementationClass = "xyz.noisif.buildconfig.spa.NsSpaUiPlugin"
+    }
+    create("nsSpaWebRoot") {
+      id = "xyz.noisif.ns-spa-web-root"
+      implementationClass = "xyz.noisif.buildconfig.spa.NsSpaWebRootPlugin"
+    }
   }
 }
 
