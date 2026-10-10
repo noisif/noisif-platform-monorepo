@@ -25,6 +25,10 @@ import xyz.noisif.buildconfig.spotless.spec.KotlinGradleFormatSpec
 import xyz.noisif.buildconfig.spotless.spec.PropertiesFormatSpec
 import xyz.noisif.buildconfig.spotless.spec.ScalaFormatSpec
 import xyz.noisif.buildconfig.spotless.spec.XmlFormatSpec
+import xyz.noisif.buildconfig.spotless.spec.ui.CssFormatSpec
+import xyz.noisif.buildconfig.spotless.spec.ui.HtmlFormatSpec
+import xyz.noisif.buildconfig.spotless.spec.ui.SvelteFormatSpec
+import xyz.noisif.buildconfig.spotless.spec.ui.TypescriptFormatSpec
 import java.io.File
 
 class NsSpotlessPlugin : NsSpotlessBasePlugin() {
@@ -40,9 +44,15 @@ class NsSpotlessPlugin : NsSpotlessBasePlugin() {
       KotlinGradleFormatSpec(root, licenseFile),
       XmlFormatSpec(root, licenseFile),
       PropertiesFormatSpec(root, licenseFile),
+      CssFormatSpec(root, licenseFile),
+      HtmlFormatSpec(root, licenseFile),
+      SvelteFormatSpec(root, licenseFile),
+      TypescriptFormatSpec(root, licenseFile),
     )
     for (spec in formatSpecs) {
-      spec.applyFormat(this)
+      if (spec.isApplicable(target)) {
+        spec.applyFormat(this)
+      }
     }
   }
 }

@@ -15,35 +15,24 @@
  *
  * Please refer to the LICENSE file in the root directory for full restrictions.
  */
-package xyz.noisif.buildconfig.spotless.spec
+package xyz.noisif.buildconfig.spotless.spec.ui
 
-import com.diffplug.gradle.spotless.SpotlessExtension
-import org.gradle.api.Action
 import org.gradle.api.Project
+import xyz.noisif.buildconfig.spotless.spec.SpotlessFormatSpec
 import java.io.File
 
-internal abstract class SpotlessFormatSpec<T : Any>(
-  protected val root: Project,
-  protected val licenseFile: File,
-) : Action<T> {
-  protected fun buildLicense(
-    licenseFile: File,
-    startToken: String,
-    linePrefix: String,
-    endToken: String,
-  ): String {
-    if (!licenseFile.exists()) {
-      return ""
-    }
-    val rawText = licenseFile.readText().trim()
-    return "$startToken\n" +
-      rawText.lines().joinToString("\n") { "$linePrefix$it".trimEnd() } +
-      "\n$endToken"
+internal abstract class UiSpotlessFormatSpec<T : Any>(root: Project, licenseFile: File) :
+  SpotlessFormatSpec<T>(root, licenseFile) {
+  protected val excludes = arrayOf(
+    "**/node_modules/**",
+    "**/dist/**",
+    "**/build/**",
+    "**/.volumes/**",
+    "**/.idea/**",
+  )
+
+  override fun isApplicable(target: Project): Boolean {
+    val packageJsonFile = File(target.projectDir, "package.json")
+    return packageJsonFile.exists()
   }
-
-  abstract override fun execute(spec: T)
-
-  abstract fun applyFormat(spotless: SpotlessExtension)
-
-  open fun isApplicable(target: Project): Boolean = true
 }
