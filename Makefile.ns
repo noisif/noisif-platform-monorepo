@@ -1,4 +1,5 @@
-ALL_MODULES := $(wildcard nsl-*) $(wildcard nss-*)
+GRADLE_FILES := $(wildcard nsl-*/build.gradle.kts nss-*/build.gradle.kts nss-*/*/build.gradle.kts)
+ALL_MODULES := $(notdir $(patsubst %/build.gradle.kts,%,$(GRADLE_FILES)))
 
 TEST_TARGETS         := $(addprefix test-, $(ALL_MODULES))
 FORMAT_CHECK_TARGETS := $(addprefix format-check-, $(ALL_MODULES))
@@ -7,28 +8,28 @@ PROTO_TARGETS        := $(addprefix proto-, $(ALL_MODULES))
 
 .PHONY: $(TEST_TARGETS)
 $(TEST_TARGETS): test-%:
-	./gradlew :$*:test
+	./gradlew $*:test
 
 .PHONY: $(FORMAT_CHECK_TARGETS)
 $(FORMAT_CHECK_TARGETS): format-check-%:
-	./gradlew :$*:spotlessCheck
+	./gradlew $*:spotlessCheck
 
 .PHONY: $(FORMAT_APPLY_TARGETS)
 $(FORMAT_APPLY_TARGETS): format-apply-%:
-	./gradlew :$*:spotlessApply
+	./gradlew $*:spotlessApply
 
 .PHONY: $(PROTO_TARGETS)
 $(PROTO_TARGETS): proto-%:
-	./gradlew :$*:generateProto
+	./gradlew $*:generateProto
 
-NSS_MODULES := $(wildcard nss-*)
+NSS_MODULES := $(filter nss-%, $(ALL_MODULES))
 RUN_TARGETS := $(addprefix run-, $(NSS_MODULES))
 JAR_TARGETS := $(addprefix jar-, $(NSS_MODULES))
 
 .PHONY: $(RUN_TARGETS)
 $(RUN_TARGETS): run-%:
-	./gradlew :$*:run -q
+	./gradlew $*:run -q
 
 .PHONY: $(JAR_TARGETS)
 $(JAR_TARGETS): jar-%:
-	./gradlew :$*:shadowJar
+	./gradlew $*:shadowJar
