@@ -63,6 +63,11 @@ class NsSpaUiPlugin : Plugin<Project> {
       inputs.file("tsconfig.json")
       outputs.dir("dist")
     }
+    target.tasks.register<YarnTask>("runDev") {
+      group = "application"
+      dependsOn("yarn")
+      args.set(listOf("run", "dev"))
+    }
     target.tasks.named(
       "build",
       TaskConfigureAction { task ->
