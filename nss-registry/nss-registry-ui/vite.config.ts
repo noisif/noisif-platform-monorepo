@@ -15,22 +15,24 @@
  *
  * Please refer to the LICENSE file in the root directory for full restrictions.
  */
-import xyz.noisif.buildconfig.apply
-import xyz.noisif.buildconfig.service.NsServicePlugin
-import xyz.noisif.buildconfig.service.nsService
+import { svelte } from '@sveltejs/vite-plugin-svelte';
+import { defineConfig } from 'vite';
 
-pluginManager.apply<NsServicePlugin>()
-
-nsService {
-  packageSuffix.set("registry")
-  mainClass.set("NssRegistryMain")
-}
-
-dependencies {
-  implementation(project(":nsl-codec"))
-  implementation(project(":nsl-common"))
-  implementation(project(":nsl-contracts"))
-  implementation(project(":nsl-http"))
-
-  testImplementation(testFixtures(project(":nsl-common")))
-}
+export default defineConfig({
+  plugins: [svelte()],
+  base: './',
+  build: {
+    outDir: 'dist',
+    emptyOutDir: true,
+  },
+  server: {
+    port: 9233,
+    proxy: {
+      '/api': {
+        target: 'http://localhost:9232',
+        changeOrigin: true,
+        secure: false,
+      },
+    },
+  },
+});

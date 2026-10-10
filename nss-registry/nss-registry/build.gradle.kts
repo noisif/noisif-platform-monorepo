@@ -15,32 +15,30 @@
  *
  * Please refer to the LICENSE file in the root directory for full restrictions.
  */
+import xyz.noisif.buildconfig.apply
+import xyz.noisif.buildconfig.service.NsServicePlugin
+import xyz.noisif.buildconfig.service.nsService
+import xyz.noisif.buildconfig.spa.NsSpaWebRootPlugin
+import xyz.noisif.buildconfig.spa.nsSpaWebRoot
 
-rootProject.name = "noisif-platform-monorepo"
+pluginManager.apply<NsServicePlugin>()
+pluginManager.apply<NsSpaWebRootPlugin>()
 
-include("nsl-ci")
-include("nsl-codec")
-include("nsl-common")
-include("nsl-contracts")
-include("nsl-graph")
-include("nsl-http")
-include("nsl-i18n")
-include("nsl-kv")
-include("nsl-net")
-include("nsl-netclient")
-include("nsl-queue")
-include("nsl-sql")
-include("nsl-storage")
-include("nsl-websocket")
-include("nsl-zcache")
+nsService {
+  packageSuffix.set("registry")
+  mainClass.set("NssRegistryMain")
+}
 
-include("nss-api")
-include("nss-cli")
-include("nss-gateway")
-include("nss-ingestor")
-include("nss-ingress")
-include("nss-registry:nss-registry")
-include("nss-registry:nss-registry-ui")
-include("nss-transcoder")
-include("nss-translator")
-include("nss-worker")
+nsSpaWebRoot {
+  frontendProject.set(":nss-registry:nss-registry-ui")
+  resourcesTargetDir.set("webroot")
+}
+
+dependencies {
+  implementation(project(":nsl-codec"))
+  implementation(project(":nsl-common"))
+  implementation(project(":nsl-contracts"))
+  implementation(project(":nsl-http"))
+
+  testImplementation(testFixtures(project(":nsl-common")))
+}

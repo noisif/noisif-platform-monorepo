@@ -15,32 +15,33 @@
  *
  * Please refer to the LICENSE file in the root directory for full restrictions.
  */
+import eslint from '@eslint/js';
+import tseslint from 'typescript-eslint';
+import eslintPluginSvelte from 'eslint-plugin-svelte';
+import svelteParser from 'svelte-eslint-parser';
+import globals from 'globals';
 
-rootProject.name = "noisif-platform-monorepo"
-
-include("nsl-ci")
-include("nsl-codec")
-include("nsl-common")
-include("nsl-contracts")
-include("nsl-graph")
-include("nsl-http")
-include("nsl-i18n")
-include("nsl-kv")
-include("nsl-net")
-include("nsl-netclient")
-include("nsl-queue")
-include("nsl-sql")
-include("nsl-storage")
-include("nsl-websocket")
-include("nsl-zcache")
-
-include("nss-api")
-include("nss-cli")
-include("nss-gateway")
-include("nss-ingestor")
-include("nss-ingress")
-include("nss-registry:nss-registry")
-include("nss-registry:nss-registry-ui")
-include("nss-transcoder")
-include("nss-translator")
-include("nss-worker")
+export default tseslint.config(
+  { ignores: ['build/', '.svelte-kit/', 'dist/', 'node_modules/'] },
+  eslint.configs.recommended,
+  ...tseslint.configs.recommended,
+  ...eslintPluginSvelte.configs['flat/recommended'],
+  {
+    languageOptions: {
+      globals: {
+        ...globals.browser,
+        ...globals.node
+      }
+    }
+  },
+  {
+    files: ['**/*.svelte'],
+    languageOptions: {
+      parser: svelteParser,
+      parserOptions: {
+        parser: tseslint.parser,
+        extraFileExtensions: ['.svelte']
+      }
+    }
+  },
+);

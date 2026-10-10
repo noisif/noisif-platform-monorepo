@@ -7,11 +7,13 @@
 .gradle/
 .volumes/**/*volume/
 build/
+dist/
 buildSrc/.kotlin
 out/
 **/src/**/node_modules/
 **/src/**/generated/
 **/src/**/generated_tests/
+node_modules/
 
 nss-*/libav/
 
