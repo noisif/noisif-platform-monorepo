@@ -27,6 +27,7 @@ import xyz.noisif.buildconfig.spotless.spec.ScalaFormatSpec
 import xyz.noisif.buildconfig.spotless.spec.XmlFormatSpec
 import xyz.noisif.buildconfig.spotless.spec.ui.CssFormatSpec
 import xyz.noisif.buildconfig.spotless.spec.ui.HtmlFormatSpec
+import xyz.noisif.buildconfig.spotless.spec.ui.JavascriptFormatSpec
 import xyz.noisif.buildconfig.spotless.spec.ui.SvelteFormatSpec
 import xyz.noisif.buildconfig.spotless.spec.ui.TypescriptFormatSpec
 import java.io.File
@@ -48,6 +49,7 @@ class NsSpotlessPlugin : NsSpotlessBasePlugin() {
       HtmlFormatSpec(root, licenseFile),
       SvelteFormatSpec(root, licenseFile),
       TypescriptFormatSpec(root, licenseFile),
+      JavascriptFormatSpec(root, licenseFile),
     )
     for (spec in formatSpecs) {
       if (spec.isApplicable(target)) {
