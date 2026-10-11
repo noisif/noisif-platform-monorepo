@@ -357,13 +357,11 @@ public class JettyHttpServerIntegrationTest {
     ThreadLocalRandom.current().nextBytes(payload);
     final HttpRequest request =
         HttpRequest.newBuilder()
-            .uri(URI.create("http://localhost:" + dynamicPort + "/api/limited"))
+            .uri(URI.create("http://localhost:" + defaultAcceptorPort + "/api/limited"))
             .header("Content-Type", "application/octet-stream")
             // ofInputStream forces chunked transfer encoding, meaning Content-Length is
-            // not
-            // sent
-            // this bypasses the fail-fast check and forces LimitedInputStream to throw
-            // exception
+            // not sent this bypasses the fail-fast check and forces LimitedInputStream
+            // to throw exception
             .POST(HttpRequest.BodyPublishers.ofInputStream(() -> new ByteArrayInputStream(payload)))
             .build();
     // when
