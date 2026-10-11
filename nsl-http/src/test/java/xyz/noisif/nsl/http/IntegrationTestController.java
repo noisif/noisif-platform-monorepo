@@ -115,4 +115,9 @@ class IntegrationTestController implements HttpController {
         String.format(
             "method: %s, header: %s", method, customHeader != null ? customHeader : "NONE"));
   }
+
+  @RequestMapping(value = "/api/cache-test", method = HttpMethod.GET)
+  ResponseEntity<String> cacheTestEndpoint() {
+    return ResponseEntity.ok("cache-test");
+  }
 }

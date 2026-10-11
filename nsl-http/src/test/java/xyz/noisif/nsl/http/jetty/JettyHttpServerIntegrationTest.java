@@ -296,10 +296,10 @@ public class JettyHttpServerIntegrationTest {
   void shouldCacheFilterSupportResult() throws Exception {
     CacheSpyFilter.supportsCounter.set(0);
     // given & when
-    get("/api/map");
+    get("/api/cache-test");
     final int countAfterFirstRequest = CacheSpyFilter.supportsCounter.get();
     assertThat(countAfterFirstRequest).isEqualTo(1);
-    get("/api/map");
+    get("/api/cache-test");
     final int countAfterSecondRequest = CacheSpyFilter.supportsCounter.get();
     // then
     assertThat(countAfterSecondRequest)

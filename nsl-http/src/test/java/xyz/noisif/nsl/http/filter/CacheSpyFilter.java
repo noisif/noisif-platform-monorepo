@@ -31,7 +31,7 @@ public class CacheSpyFilter implements HttpFilter {
 
   @Override
   public boolean supports(Route route) {
-    if ("/api/map".equals(route.path())) {
+    if ("/api/cache-test".equals(route.path())) {
       supportsCounter.incrementAndGet();
       return true;
     }
