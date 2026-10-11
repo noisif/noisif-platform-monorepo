@@ -15,18 +15,14 @@
  *
  * Please refer to the LICENSE file in the root directory for full restrictions.
  */
-package xyz.noisif.nsl.http.annotation;
+package xyz.noisif.nsl.http.acceptor;
 
-import jakarta.inject.Singleton;
+public enum TestConnectionAcceptor implements ConnectionAcceptor {
+  EXTERNAL_API,
+  ;
 
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
-
-@Singleton
-@Retention(RetentionPolicy.RUNTIME)
-@Target(ElementType.TYPE)
-public @interface HttpController {
-  String value() default "";
+  @Override
+  public String getConnectionAcceptorName() {
+    return name();
+  }
 }

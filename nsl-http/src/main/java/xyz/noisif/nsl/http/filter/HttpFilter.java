@@ -20,9 +20,10 @@ package xyz.noisif.nsl.http.filter;
 import xyz.noisif.nsl.common.Ordered;
 import xyz.noisif.nsl.http.HttpRequest;
 import xyz.noisif.nsl.http.HttpResponse;
+import xyz.noisif.nsl.http.acceptor.AcceptorBindable;
 import xyz.noisif.nsl.http.route.Route;
 
-public interface HttpFilter extends Ordered {
+public interface HttpFilter extends Ordered, AcceptorBindable {
   boolean supports(Route route);
 
   // true = go forward, false = stop request

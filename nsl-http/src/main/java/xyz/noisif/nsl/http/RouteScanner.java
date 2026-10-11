@@ -22,7 +22,7 @@ import org.slf4j.LoggerFactory;
 
 import xyz.noisif.nsl.common.di.ComponentProvider;
 import xyz.noisif.nsl.common.util.PathUtil;
-import xyz.noisif.nsl.http.annotation.HttpController;
+import xyz.noisif.nsl.http.acceptor.ConnectionAcceptor;
 import xyz.noisif.nsl.http.annotation.RequestMapping;
 import xyz.noisif.nsl.http.resolver.ArgumentResolver;
 import xyz.noisif.nsl.http.route.Route;
@@ -31,6 +31,7 @@ import xyz.noisif.nsl.net.http.HttpMethod;
 
 import java.lang.reflect.Method;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Set;
 
 class RouteScanner {
@@ -39,44 +40,59 @@ class RouteScanner {
   private final ComponentProvider componentProvider;
   private final Router router;
   private final Set<ArgumentResolver> resolvers;
+  private final Set<ConnectionAcceptor> connectionAcceptors;
 
   private int registeredRoutesCount = 0;
 
   RouteScanner(
-      ComponentProvider componentProvider, Router router, Set<ArgumentResolver> resolvers) {
+      ComponentProvider componentProvider,
+      Router router,
+      Set<ArgumentResolver> resolvers,
+      Set<ConnectionAcceptor> connectionAcceptors) {
     this.componentProvider = componentProvider;
     this.router = router;
     this.resolvers = resolvers;
+    this.connectionAcceptors = connectionAcceptors;
   }
 
   void scan() {
-    final Collection<Object> instances =
-        componentProvider.getInstancesAnnotatedWith(HttpController.class);
-    for (final Object instance : instances) {
-      registerRoutesForInstance(instance);
+    final Collection<HttpController> instances =
+        componentProvider.getInstancesOf(HttpController.class);
+    for (final HttpController instance : instances) {
+      if (!Collections.disjoint(connectionAcceptors, instance.getConnectionAcceptors())) {
+        registerRoutesForInstance(instance);
+      }
     }
-    LOG.info("Initialized {} HTTP controller(s)", instances.size());
-    LOG.info("Total routes registered: {}", registeredRoutesCount);
+    LOG.info(
+        "Initialized {} HTTP controller(s) for acceptors {}",
+        instances.size(),
+        connectionAcceptors);
+    LOG.info("Total routes registered in this router: {}", registeredRoutesCount);
   }
 
-  private void registerRoutesForInstance(Object instance) {
+  int getRegisteredRoutesCount() {
+    return registeredRoutesCount;
+  }
+
+  private void registerRoutesForInstance(HttpController instance) {
     final Class<?> clazz = instance.getClass();
-    final String basePath = clazz.getAnnotation(HttpController.class).value();
+    final String basePath = instance.getBasePath();
     for (final Method method : clazz.getDeclaredMethods()) {
       if (method.isAnnotationPresent(RequestMapping.class)) {
         registerMethodRoutes(instance, basePath, method);
-        validateMethod(method);
+        validateMethod(instance, method);
       }
     }
   }
 
-  private void validateMethod(Method method) {
+  private void validateMethod(HttpController instance, Method method) {
     for (final ArgumentResolver resolver : resolvers) {
-      resolver.validate(method);
+      resolver.validate(instance, method);
     }
   }
 
-  private void registerMethodRoutes(Object instance, String basePath, Method method) {
+  private void registerMethodRoutes(
+          HttpController instance, String basePath, Method method) {
     final RequestMapping mapping = method.getAnnotation(RequestMapping.class);
     final String[] paths = mapping.value();
     final HttpMethod httpMethod = mapping.method();
@@ -85,7 +101,8 @@ class RouteScanner {
       router.addRoute(httpMethod.name(), fullPath, new Route(instance, method, path));
       registeredRoutesCount++;
       LOG.debug(
-          "Registered route: [{} {}] -> {}.{}()",
+          "Registered route for {}: [{} {}] -> {}.{}()",
+          connectionAcceptors,
           httpMethod,
           fullPath,
           instance.getClass().getSimpleName(),

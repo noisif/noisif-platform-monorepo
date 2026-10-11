@@ -22,12 +22,11 @@ import xyz.noisif.nsl.codec.serialization.json.jackson.JacksonSerializer;
 import xyz.noisif.nsl.codec.serialization.raw.RawByteSerializer;
 import xyz.noisif.nsl.common.di.ComponentProvider;
 import xyz.noisif.nsl.http.HttpServer;
+import xyz.noisif.nsl.http.acceptor.HttpAcceptorBinding;
 import xyz.noisif.nsl.http.jetty.JettyHttpServer;
 
 import jakarta.enterprise.inject.Produces;
 import jakarta.inject.Singleton;
-
-import java.util.Set;
 
 @Singleton
 class HttpServerConfiguration {
@@ -40,8 +39,10 @@ class HttpServerConfiguration {
             SerializerRegistry.createDefault()
                 .register(JacksonSerializer.createDefaultStrictMapper())
                 .register(RawByteSerializer.createDefault()))
-        .ignoredPaths(Set.of())
-        .port(9201) /* TODO: incoming from config server */
+        .withBinding(
+            HttpAcceptorBinding.builder()
+                .port(9201 /* TODO: incoming from config server */)
+                .build())
         .build();
   }
 }

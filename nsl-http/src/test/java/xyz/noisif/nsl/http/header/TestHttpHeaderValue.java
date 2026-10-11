@@ -23,6 +23,7 @@ public enum TestHttpHeaderValue implements HttpHeaderValue {
   ANNOTATION_FILTER("AnnotationFilter"),
   EXECUTED("Executed"),
   DIRECT_INJECT("DirectInject"),
+  APPLIED("Applied"),
   ;
 
   private final String code;

@@ -17,6 +17,7 @@
  */
 package xyz.noisif.nsl.http.resolver;
 
+import xyz.noisif.nsl.http.HttpController;
 import xyz.noisif.nsl.http.HttpRequest;
 import xyz.noisif.nsl.http.exception.RouteValidationException;
 import xyz.noisif.nsl.http.route.MatchResult;
@@ -31,5 +32,5 @@ public interface ArgumentResolver {
   Object resolve(Parameter parameter, HttpRequest req, MatchResult match) throws Exception;
 
   // runs once, at application startup
-  default void validate(Method method) throws RouteValidationException {}
+  default void validate(HttpController instance, Method method) throws RouteValidationException {}
 }

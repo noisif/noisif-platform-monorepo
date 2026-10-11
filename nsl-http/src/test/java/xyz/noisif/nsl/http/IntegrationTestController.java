@@ -19,7 +19,6 @@ package xyz.noisif.nsl.http;
 
 import xyz.noisif.nsl.common.util.math.MemUnit;
 import xyz.noisif.nsl.http.annotation.Body;
-import xyz.noisif.nsl.http.annotation.HttpController;
 import xyz.noisif.nsl.http.annotation.PathVariable;
 import xyz.noisif.nsl.http.annotation.RequestMapping;
 import xyz.noisif.nsl.http.annotation.RequestParam;
@@ -27,10 +26,12 @@ import xyz.noisif.nsl.http.annotation.SecuredRoute;
 import xyz.noisif.nsl.http.header.TestHttpHeaderName;
 import xyz.noisif.nsl.net.http.HttpMethod;
 
+import jakarta.inject.Singleton;
+
 import java.util.Map;
 
-@HttpController
-class IntegrationTestController {
+@Singleton
+class IntegrationTestController implements HttpController {
   @RequestMapping(value = "/api/test", method = HttpMethod.POST)
   ResponseEntity<String> handleTest(@Body TestEnvelope testEnvelope) {
     return ResponseEntity.ok("Success: " + testEnvelope.testUser().name());

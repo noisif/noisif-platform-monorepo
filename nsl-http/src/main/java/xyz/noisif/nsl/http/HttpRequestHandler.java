@@ -22,6 +22,7 @@ import org.slf4j.LoggerFactory;
 
 import xyz.noisif.nsl.common.cache.MultiProviderCache;
 import xyz.noisif.nsl.common.cache.ProviderCache;
+import xyz.noisif.nsl.http.acceptor.HttpAcceptorBinding;
 import xyz.noisif.nsl.http.exception.handler.ExceptionHandler;
 import xyz.noisif.nsl.http.filter.HttpFilter;
 import xyz.noisif.nsl.http.resolver.ArgumentResolver;
@@ -51,14 +52,13 @@ public class HttpRequestHandler {
   private final MultiProviderCache<Route, Route, HttpFilter> filterCache;
 
   public HttpRequestHandler(
-      Router router,
-      Set<String> ignoredPaths,
+      HttpAcceptorBinding binding,
       List<HttpFilter> sortedFilters,
       Set<ArgumentResolver> resolvers,
       Set<ResponseWriter> writers,
       Set<ExceptionHandler> exceptionHandlers) {
-    this.router = router;
-    this.ignoredPaths = ignoredPaths;
+    router = binding.getRouter();
+    ignoredPaths = binding.getIgnoredPaths();
 
     resolverCache = new ProviderCache<>(resolvers, ArgumentResolver::supports);
     writerCache = new ProviderCache<>(writers, ResponseWriter::supports);

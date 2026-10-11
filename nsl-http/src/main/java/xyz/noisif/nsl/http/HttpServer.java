@@ -25,6 +25,8 @@ import xyz.noisif.nsl.common.bootstrap.lifecycle.IdempotentService;
 import xyz.noisif.nsl.common.di.ComponentProvider;
 import xyz.noisif.nsl.common.util.Assert;
 import xyz.noisif.nsl.common.util.CollectionUtil;
+import xyz.noisif.nsl.http.acceptor.ConnectionAcceptor;
+import xyz.noisif.nsl.http.acceptor.HttpAcceptorBinding;
 import xyz.noisif.nsl.http.annotation.Validator;
 import xyz.noisif.nsl.http.exception.handler.AnnotatedExceptionHandler;
 import xyz.noisif.nsl.http.exception.handler.BadRequestExceptionHandler;
@@ -37,8 +39,6 @@ import xyz.noisif.nsl.http.resolver.HttpRequestArgumentResolver;
 import xyz.noisif.nsl.http.resolver.PathVariableResolver;
 import xyz.noisif.nsl.http.resolver.RequestParamResolver;
 import xyz.noisif.nsl.http.resolver.body.RequestBodyResolver;
-import xyz.noisif.nsl.http.route.Router;
-import xyz.noisif.nsl.http.route.TrieRouter;
 import xyz.noisif.nsl.http.validation.AnnotationValidator;
 import xyz.noisif.nsl.http.validation.ValidationHandler;
 import xyz.noisif.nsl.http.writer.JsonResponseWriter;
@@ -47,29 +47,26 @@ import xyz.noisif.nsl.http.writer.ResponseWriter;
 import xyz.noisif.nsl.http.writer.StringResponseWriter;
 import xyz.noisif.nsl.http.writer.VoidResponseWriter;
 
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
 public abstract class HttpServer extends IdempotentService {
   protected final ComponentProvider componentProvider;
-  protected final Router router;
-  protected final Set<String> ignoredPaths;
-  protected final int port;
+  protected final Map<ConnectionAcceptor, HttpAcceptorBinding> bindings;
 
   protected final List<HttpFilter> filters; // must be list or sorted set!
   protected final Set<ArgumentResolver> resolvers;
   protected final Set<ResponseWriter> writers;
   protected final Set<ExceptionHandler> exceptionHandlers;
 
-  private final Set<String> defaultIgnoredPaths = Set.of("/favicon.ico", "/robots.txt");
-
   protected HttpServer(AbstractBuilder<?> builder) {
     componentProvider = builder.componentProvider;
-    router = new TrieRouter();
-    port = builder.port;
-    ignoredPaths = combinePaths(builder.ignoredPaths);
+    bindings = builder.bindings;
     filters =
         componentProvider.getInstancesOf(HttpFilter.class).stream()
             .sorted(HttpFilter.COMPARATOR)
@@ -80,7 +77,6 @@ public abstract class HttpServer extends IdempotentService {
             .collect(Collectors.toSet());
     resolvers =
         CollectionUtil.linkedSetOf(
-            new PathVariableResolver(router),
             new RequestParamResolver(),
             new HttpRequestArgumentResolver(),
             new RequestBodyResolver(builder.serializerRegistry, new ValidationHandler(validators)));
@@ -92,6 +88,7 @@ public abstract class HttpServer extends IdempotentService {
             new RequestTooLargeExceptionHandler(),
             new GlobalExceptionHandler());
     log.info("HTTP server initialized with:");
+    log.info("-- {} binding(s) configured", bindings.size());
     log.info("-- {} filter(s) (via reflect api)", filters.size());
     log.info("-- {} validator(s) (via reflect api)", validators.size());
     log.info("-- {} resolver(s) (statically typed)", resolvers.size());
@@ -99,18 +96,39 @@ public abstract class HttpServer extends IdempotentService {
     log.info("-- {} exception handler(s) (statically typed)", exceptionHandlers.size());
   }
 
-  protected HttpRequestHandler prepareRequestHandler() {
+  protected Map<ConnectionAcceptor, HttpRequestHandler> prepareRequestHandler() {
     log.info("Scanning routes and preparing HTTP request handler");
-    final RouteScanner classScanner = new RouteScanner(componentProvider, router, resolvers);
-    classScanner.scan();
-    return new HttpRequestHandler(
-        router, ignoredPaths, filters, resolvers, writers, exceptionHandlers);
-  }
+    final Map<ConnectionAcceptor, HttpRequestHandler> handlers = new HashMap<>();
+    for (final HttpAcceptorBinding binding : bindings.values()) {
+      final ConnectionAcceptor acceptor = binding.getConnectionAcceptor();
 
-  private Set<String> combinePaths(Set<String> customPaths) {
-    final Set<String> combined = new HashSet<>(defaultIgnoredPaths);
-    combined.addAll(customPaths);
-    return Set.copyOf(combined);
+      final List<HttpFilter> localFilters =
+          filters.stream()
+              .filter(
+                  filter ->
+                      !Collections.disjoint(Set.of(acceptor), filter.getConnectionAcceptors()))
+              .toList();
+
+      final Set<ArgumentResolver> localResolvers = new HashSet<>(resolvers);
+      localResolvers.add(new PathVariableResolver(binding.getRouter()));
+      final RouteScanner classScanner =
+          new RouteScanner(
+              componentProvider, binding.getRouter(), localResolvers, Set.of(acceptor));
+      classScanner.scan();
+
+      final HttpRequestHandler handler =
+          new HttpRequestHandler(binding, localFilters, localResolvers, writers, exceptionHandlers);
+      handlers.put(acceptor, handler);
+
+      log.info(
+          "Successfully prepared HttpRequestHandler for acceptor: {} on port: {} "
+              + "(routes: {}, filters: {})",
+          acceptor.getConnectionAcceptorName(),
+          binding.getPort(),
+          classScanner.getRegisteredRoutesCount(),
+          localFilters.size());
+    }
+    return handlers;
   }
 
   private Set<ResponseWriter> initWriters(SerializerRegistry<MessageSerializer> registry) {
@@ -127,14 +145,17 @@ public abstract class HttpServer extends IdempotentService {
     return all;
   }
 
-  public abstract int getLocalPort();
+  public abstract int getLocalPort(ConnectionAcceptor acceptor);
+
+  public int getLocalPort() {
+    return getLocalPort(ConnectionAcceptor.DEFAULT);
+  }
 
   protected abstract static class AbstractBuilder<B extends AbstractBuilder<B>> {
-    private final Set<String> ignoredPaths = new HashSet<>();
+    private final Map<ConnectionAcceptor, HttpAcceptorBinding> bindings = new HashMap<>();
 
     private ComponentProvider componentProvider;
     private SerializerRegistry<MessageSerializer> serializerRegistry;
-    private int port = 8080;
 
     protected AbstractBuilder() {}
 
@@ -150,20 +171,16 @@ public abstract class HttpServer extends IdempotentService {
       return self();
     }
 
-    public B port(int port) {
-      this.port = port;
-      return self();
-    }
-
-    public B ignoredPaths(Set<String> paths) {
-      this.ignoredPaths.addAll(paths);
+    public B withBinding(HttpAcceptorBinding binding) {
+      this.bindings.put(binding.getConnectionAcceptor(), binding);
       return self();
     }
 
     protected void validate() {
       Assert.notNull(componentProvider, "componentProvider");
       Assert.notNull(serializerRegistry, "serializerRegistry");
-      Assert.minMaxRange(port, 0, 65536, "port");
+      Assert.notEmpty(bindings.entrySet(), "bindings");
+      Assert.notNullAll(bindings, "bindings");
     }
 
     public abstract HttpServer build();

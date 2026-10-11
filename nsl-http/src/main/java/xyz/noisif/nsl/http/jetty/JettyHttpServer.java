@@ -19,6 +19,8 @@ package xyz.noisif.nsl.http.jetty;
 
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.server.ServerConnector;
+import org.eclipse.jetty.server.handler.ContextHandler;
+import org.eclipse.jetty.server.handler.ContextHandlerCollection;
 import org.eclipse.jetty.util.component.AbstractLifeCycle;
 import org.eclipse.jetty.util.thread.QueuedThreadPool;
 
@@ -26,15 +28,20 @@ import xyz.noisif.nsl.common.util.Assert;
 import xyz.noisif.nsl.common.util.io.IoUtil;
 import xyz.noisif.nsl.http.HttpRequestHandler;
 import xyz.noisif.nsl.http.HttpServer;
+import xyz.noisif.nsl.http.acceptor.ConnectionAcceptor;
+import xyz.noisif.nsl.http.acceptor.HttpAcceptorBinding;
 import xyz.noisif.nsl.http.jetty.adapter.JettyHttpRequestHandlerAdapter;
 
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.concurrent.Executors;
 
 public class JettyHttpServer extends HttpServer {
   private static final long SHUTDOWN_TIMEOUT_MS = 10000;
 
   private Server server;
-  private ServerConnector connector;
+  private final Map<ConnectionAcceptor, ServerConnector> connectors = new HashMap<>();
 
   protected JettyHttpServer(AbstractBuilder<?> builder) {
     super(builder);
@@ -46,7 +53,7 @@ public class JettyHttpServer extends HttpServer {
 
   @Override
   protected final void onStart() throws Exception {
-    final HttpRequestHandler httpRequestHandler = prepareRequestHandler();
+    final Map<ConnectionAcceptor, HttpRequestHandler> requestHandlers = prepareRequestHandler();
 
     final QueuedThreadPool queuedThreadPool = new QueuedThreadPool();
     queuedThreadPool.setVirtualThreadsExecutor(Executors.newVirtualThreadPerTaskExecutor());
@@ -56,12 +63,24 @@ public class JettyHttpServer extends HttpServer {
     server.setStopTimeout(SHUTDOWN_TIMEOUT_MS);
     server.setStopAtShutdown(false);
 
-    connector = new ServerConnector(server);
-    connector.setPort(port);
+    final ContextHandlerCollection handlerCollection = new ContextHandlerCollection();
+    for (final HttpAcceptorBinding binding : bindings.values()) {
+      final ConnectionAcceptor acceptor = binding.getConnectionAcceptor();
+      final HttpRequestHandler httpRequestHandler = requestHandlers.get(acceptor);
+      final String connectorName = acceptor.getConnectionAcceptorName();
 
-    server.addConnector(connector);
-    server.setHandler(new JettyHttpRequestHandlerAdapter(httpRequestHandler));
+      final ServerConnector connector = new ServerConnector(server);
+      connector.setName(connectorName);
+      connector.setPort(binding.getPort());
+      server.addConnector(connector);
+      connectors.put(acceptor, connector);
 
+      final ContextHandler context = new ContextHandler("/");
+      context.setVirtualHosts(List.of("@" + connectorName));
+      context.setHandler(new JettyHttpRequestHandlerAdapter(httpRequestHandler));
+      handlerCollection.addHandler(context);
+    }
+    server.setHandler(handlerCollection);
     server.start();
     log.info("HTTP server started successfully with {}ms shutdown timeout", SHUTDOWN_TIMEOUT_MS);
   }
@@ -72,8 +91,11 @@ public class JettyHttpServer extends HttpServer {
   }
 
   @Override
-  public final int getLocalPort() {
-    Assert.state(connector != null && connector.isRunning(), "Connector is not running");
+  public final int getLocalPort(ConnectionAcceptor connectionAcceptor) {
+    final ServerConnector connector = connectors.get(connectionAcceptor);
+    Assert.state(connector != null, "No connector registered for acceptor: " + connectionAcceptor);
+    Assert.state(
+        connector.isRunning(), "Connector is not running for acceptor: " + connectionAcceptor);
     return connector.getLocalPort();
   }
 

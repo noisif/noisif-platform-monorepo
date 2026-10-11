@@ -18,8 +18,8 @@
 package xyz.noisif.nsl.http.resolver;
 
 import xyz.noisif.nsl.common.util.PathUtil;
+import xyz.noisif.nsl.http.HttpController;
 import xyz.noisif.nsl.http.HttpRequest;
-import xyz.noisif.nsl.http.annotation.HttpController;
 import xyz.noisif.nsl.http.annotation.PathVariable;
 import xyz.noisif.nsl.http.annotation.RequestMapping;
 import xyz.noisif.nsl.http.exception.RouteValidationException;
@@ -58,13 +58,11 @@ public class PathVariableResolver implements ArgumentResolver {
   }
 
   @Override
-  public void validate(Method method) throws RouteValidationException {
+  public void validate(HttpController instance, Method method) throws RouteValidationException {
     final RequestMapping mapping = method.getAnnotation(RequestMapping.class);
-    final HttpController controller =
-        method.getDeclaringClass().getAnnotation(HttpController.class);
 
     final String httpMethod = mapping.method().name();
-    final String basePath = controller != null ? controller.value() : "";
+    final String basePath = instance != null ? instance.getBasePath() : "";
 
     for (final String path : mapping.value()) {
       final String fullPath = PathUtil.combinePaths(basePath, path);

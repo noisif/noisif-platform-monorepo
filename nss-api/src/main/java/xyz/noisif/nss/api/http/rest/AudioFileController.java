@@ -19,17 +19,18 @@ package xyz.noisif.nss.api.http.rest;
 
 import xyz.noisif.nsl.codec.serialization.StandardSerializerFormat;
 import xyz.noisif.nsl.contracts.protobuf.ProcessAudioCommand;
+import xyz.noisif.nsl.http.HttpController;
 import xyz.noisif.nsl.http.ResponseEntity;
-import xyz.noisif.nsl.http.annotation.HttpController;
 import xyz.noisif.nsl.http.annotation.PathVariable;
 import xyz.noisif.nsl.http.annotation.RequestMapping;
 import xyz.noisif.nsl.net.http.HttpMethod;
 import xyz.noisif.nsl.queue.MessagePublisher;
 
 import jakarta.inject.Inject;
+import jakarta.inject.Singleton;
 
-@HttpController
-class AudioFileController {
+@Singleton
+class AudioFileController implements HttpController {
   private final MessagePublisher messagePublisher;
 
   @Inject

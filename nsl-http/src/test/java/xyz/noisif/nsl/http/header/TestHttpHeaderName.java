@@ -24,6 +24,7 @@ public enum TestHttpHeaderName implements HttpHeaderName {
   X_TEST_FILTER("X-Test-Filter"),
   X_FILTER_ORDER("X-Filter-Order"),
   X_INSPECT_HEADER("X-Inspect-Header"),
+  X_EXTERNAL_FILTER("X-External-Filter"),
   ;
 
   private final String code;

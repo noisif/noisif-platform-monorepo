@@ -37,6 +37,8 @@ import xyz.noisif.nsl.http.HttpServer;
 import xyz.noisif.nsl.http.TestConstants;
 import xyz.noisif.nsl.http.TestEnvelope;
 import xyz.noisif.nsl.http.TestUser;
+import xyz.noisif.nsl.http.acceptor.HttpAcceptorBinding;
+import xyz.noisif.nsl.http.acceptor.TestConnectionAcceptor;
 import xyz.noisif.nsl.http.filter.CacheSpyFilter;
 import xyz.noisif.nsl.http.header.TestHttpHeaderName;
 import xyz.noisif.nsl.http.header.TestHttpHeaderValue;
@@ -53,7 +55,8 @@ import java.util.concurrent.ThreadLocalRandom;
 
 public class JettyHttpServerIntegrationTest {
   private static HttpServer httpServer;
-  private static int dynamicPort;
+  private static int defaultAcceptorPort;
+  private static int externalApiAcceptorPort;
   private static ClassScanner classScanner;
 
   private final HttpClient httpClient = HttpClient.newHttpClient();
@@ -71,10 +74,16 @@ public class JettyHttpServerIntegrationTest {
                 SerializerRegistry.createDefault()
                     .register(TestConstants.SERIALIZER)
                     .register(RawByteSerializer.createDefault()))
-            .port(0)
+            .withBinding(HttpAcceptorBinding.builder().port(0).build())
+            .withBinding(
+                HttpAcceptorBinding.builder()
+                    .connectionAcceptor(TestConnectionAcceptor.EXTERNAL_API)
+                    .port(0)
+                    .build())
             .build();
     httpServer.start();
-    dynamicPort = httpServer.getLocalPort();
+    defaultAcceptorPort = httpServer.getLocalPort();
+    externalApiAcceptorPort = httpServer.getLocalPort(TestConnectionAcceptor.EXTERNAL_API);
   }
 
   @AfterAll
@@ -83,20 +92,25 @@ public class JettyHttpServerIntegrationTest {
     IoUtil.closeQuietly(classScanner);
   }
 
-  private HttpResponse<String> get(String path) throws Exception {
+  private HttpResponse<String> getRequest(int port, String path) throws Exception {
     final HttpRequest request =
-        HttpRequest.newBuilder()
-            .uri(URI.create("http://localhost:" + dynamicPort + path))
-            .GET()
-            .build();
+        HttpRequest.newBuilder().uri(URI.create("http://localhost:" + port + path)).GET().build();
     return httpClient.send(request, HttpResponse.BodyHandlers.ofString());
+  }
+
+  private HttpResponse<String> get(String path) throws Exception {
+    return getRequest(defaultAcceptorPort, path);
+  }
+
+  private HttpResponse<String> getExternal(String path) throws Exception {
+    return getRequest(externalApiAcceptorPort, path);
   }
 
   private HttpResponse<String> post(Object body) throws Exception {
     final String json = TestConstants.SERIALIZER.serialize(body);
     final HttpRequest request =
         HttpRequest.newBuilder()
-            .uri(URI.create("http://localhost:" + dynamicPort + "/api/test"))
+            .uri(URI.create("http://localhost:" + defaultAcceptorPort + "/api/test"))
             .header("Content-Type", "application/json")
             .POST(HttpRequest.BodyPublishers.ofString(json))
             .build();
@@ -250,7 +264,7 @@ public class JettyHttpServerIntegrationTest {
     // given
     final HttpRequest request =
         HttpRequest.newBuilder()
-            .uri(URI.create("http://localhost:" + dynamicPort + "/api/private"))
+            .uri(URI.create("http://localhost:" + defaultAcceptorPort + "/api/private"))
             .header(CommonHttpHeaderName.AUTHORIZATION.getCode(), TestConstants.TEST_PASSWORD)
             .GET()
             .build();
@@ -300,7 +314,7 @@ public class JettyHttpServerIntegrationTest {
     final byte[] payload = new byte[] {0x01, 0x02, 0x03, 0x04};
     final HttpRequest request =
         HttpRequest.newBuilder()
-            .uri(URI.create("http://localhost:" + dynamicPort + "/api/raw"))
+            .uri(URI.create("http://localhost:" + defaultAcceptorPort + "/api/raw"))
             .header("Content-Type", "image/png")
             .POST(HttpRequest.BodyPublishers.ofByteArray(payload))
             .build();
@@ -321,7 +335,7 @@ public class JettyHttpServerIntegrationTest {
     final byte[] payload = StringUtil.getBytes("123456789012345");
     final HttpRequest request =
         HttpRequest.newBuilder()
-            .uri(URI.create("http://localhost:" + dynamicPort + "/api/limited"))
+            .uri(URI.create("http://localhost:" + defaultAcceptorPort + "/api/limited"))
             .header("Content-Type", "application/octet-stream")
             .POST(HttpRequest.BodyPublishers.ofByteArray(payload)) // Set's Content-Length: 15
             .build();
@@ -366,7 +380,7 @@ public class JettyHttpServerIntegrationTest {
     final String headerValue = TestHttpHeaderValue.DIRECT_INJECT.buildWithArgs();
     final HttpRequest request =
         HttpRequest.newBuilder()
-            .uri(URI.create("http://localhost:" + dynamicPort + "/api/inspect"))
+            .uri(URI.create("http://localhost:" + defaultAcceptorPort + "/api/inspect"))
             .header(TestHttpHeaderName.X_INSPECT_HEADER.getCode(), headerValue)
             .GET()
             .build();
@@ -376,5 +390,55 @@ public class JettyHttpServerIntegrationTest {
     // then
     assertThat(response.statusCode()).isEqualTo(HttpStatus.OK_200.getCode());
     assertThat(response.body()).isEqualTo("method: GET, header: %s", headerValue);
+  }
+
+  @Test
+  @DisplayName("GET /api/external should return 200 on EXTERNAL_API port but 404 on DEFAULT port")
+  void shouldIsolateExternalController() throws Exception {
+    // given & when
+    final HttpResponse<String> extRes = getExternal("/api/external");
+    final HttpResponse<String> defRes = get("/api/external");
+    // then
+    assertThat(extRes.statusCode()).isEqualTo(HttpStatus.OK_200.getCode());
+    assertThat(extRes.body()).isEqualTo("external-only");
+    assertThat(defRes.statusCode()).isEqualTo(HttpStatus.NOT_FOUND_404.getCode());
+  }
+
+  @Test
+  @DisplayName("GET /api/map should return 200 on DEFAULT port but 404 on EXTERNAL_API port")
+  void shouldIsolateDefaultController() throws Exception {
+    // given & when
+    final HttpResponse<String> defRes = get("/api/map");
+    final HttpResponse<String> extRes = getExternal("/api/map");
+    // then
+    assertThat(defRes.statusCode()).isEqualTo(HttpStatus.OK_200.getCode());
+    assertThat(extRes.statusCode()).isEqualTo(HttpStatus.NOT_FOUND_404.getCode());
+  }
+
+  @Test
+  @DisplayName("GET /api/mixed should return 200 on BOTH ports (due to getAdditionalAcceptors)")
+  void shouldExposeMixedControllerOnBothPorts() throws Exception {
+    // given & when
+    final HttpResponse<String> defRes = get("/api/mixed");
+    final HttpResponse<String> extRes = getExternal("/api/mixed");
+    // then
+    assertThat(defRes.statusCode()).isEqualTo(HttpStatus.OK_200.getCode());
+    assertThat(defRes.body()).isEqualTo("mixed-endpoint");
+    assertThat(extRes.statusCode()).isEqualTo(HttpStatus.OK_200.getCode());
+    assertThat(extRes.body()).isEqualTo("mixed-endpoint");
+  }
+
+  @Test
+  @DisplayName("ExternalApiFilter should execute ONLY on EXTERNAL_API port")
+  void shouldIsolateFilterToExternalPort() throws Exception {
+    // given & when
+    final HttpResponse<String> extRes = getExternal("/api/mixed");
+    final HttpResponse<String> defRes = get("/api/mixed");
+    // then
+    assertThat(extRes.headers().firstValue(TestHttpHeaderName.X_EXTERNAL_FILTER.getCode()))
+        .isPresent()
+        .contains(TestHttpHeaderValue.APPLIED.buildWithArgs());
+    assertThat(defRes.headers().firstValue(TestHttpHeaderName.X_EXTERNAL_FILTER.getCode()))
+        .isEmpty();
   }
 }

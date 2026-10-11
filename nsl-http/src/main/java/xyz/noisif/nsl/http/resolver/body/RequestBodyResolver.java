@@ -19,6 +19,7 @@ package xyz.noisif.nsl.http.resolver.body;
 
 import xyz.noisif.nsl.codec.serialization.MessageSerializer;
 import xyz.noisif.nsl.codec.serialization.SerializerRegistry;
+import xyz.noisif.nsl.http.HttpController;
 import xyz.noisif.nsl.http.HttpRequest;
 import xyz.noisif.nsl.http.annotation.Body;
 import xyz.noisif.nsl.http.exception.RequestTooLargeException;
@@ -82,7 +83,8 @@ public class RequestBodyResolver implements ArgumentResolver {
   }
 
   @Override
-  public void validate(Method method) throws RouteValidationException {
+  public void validate(HttpController instance, Method method)
+      throws RouteValidationException {
     final long bodyParams = Arrays.stream(method.getParameters()).filter(this::supports).count();
     if (bodyParams > 1) {
       throw new RouteValidationException(
