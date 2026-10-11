@@ -15,7 +15,7 @@
  *
  * Please refer to the LICENSE file in the root directory for full restrictions.
  */
-package xyz.noisif.buildconfig.spotless.spec.ui
+package xyz.noisif.buildconfig.spotless.spec
 
 import com.diffplug.gradle.spotless.FormatExtension
 import com.diffplug.gradle.spotless.SpotlessExtension
@@ -23,10 +23,9 @@ import org.gradle.api.Project
 import java.io.File
 
 internal class HtmlFormatSpec(root: Project, licenseFile: File) :
-  UiSpotlessFormatSpec<FormatExtension>(root, licenseFile) {
+  SpotlessFormatSpec<FormatExtension>(root, licenseFile) {
   override fun execute(spec: FormatExtension) {
     spec.target("*.html", "src/**/*.html")
-    spec.targetExclude(*excludes)
     spec.licenseHeader(
       buildLicense(licenseFile, "<!--", "  ~ ", "-->"),
       "(<script|<style|<[a-zA-Z])",
