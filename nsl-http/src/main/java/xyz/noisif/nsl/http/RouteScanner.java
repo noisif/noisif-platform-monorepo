@@ -91,8 +91,7 @@ class RouteScanner {
     }
   }
 
-  private void registerMethodRoutes(
-          HttpController instance, String basePath, Method method) {
+  private void registerMethodRoutes(HttpController instance, String basePath, Method method) {
     final RequestMapping mapping = method.getAnnotation(RequestMapping.class);
     final String[] paths = mapping.value();
     final HttpMethod httpMethod = mapping.method();

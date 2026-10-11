@@ -83,8 +83,7 @@ public class RequestBodyResolver implements ArgumentResolver {
   }
 
   @Override
-  public void validate(HttpController instance, Method method)
-      throws RouteValidationException {
+  public void validate(HttpController instance, Method method) throws RouteValidationException {
     final long bodyParams = Arrays.stream(method.getParameters()).filter(this::supports).count();
     if (bodyParams > 1) {
       throw new RouteValidationException(
