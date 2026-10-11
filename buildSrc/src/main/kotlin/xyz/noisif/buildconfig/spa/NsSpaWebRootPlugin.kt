@@ -20,7 +20,7 @@ package xyz.noisif.buildconfig.spa
 import com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar
 import org.gradle.api.Plugin
 import org.gradle.api.Project
-import org.gradle.api.tasks.Copy
+import org.gradle.api.tasks.Sync
 import org.gradle.kotlin.dsl.create
 import org.gradle.kotlin.dsl.register
 import org.gradle.kotlin.dsl.withType
@@ -37,16 +37,10 @@ class NsSpaWebRootPlugin : Plugin<Project> {
       val path = if (trimmed.isEmpty()) "resources/main" else "resources/main/$trimmed"
       target.layout.buildDirectory.dir(path).get().asFile
     }
-    val copyFrontendTask = target.tasks.register<Copy>("copyFrontendAssets") {
+    val copyFrontendTask = target.tasks.register<Sync>("copyFrontendAssets") {
       val uiProjectProvider = extension.frontendProject.map { target.project(it) }
       from(uiProjectProvider.map { it.layout.projectDirectory.dir("dist") })
       into(targetDirProvider)
-      doFirst {
-        val destDir = targetDirProvider.get()
-        if (!destDir.exists()) {
-          destDir.mkdirs()
-        }
-      }
     }
     target.afterEvaluate {
       val uiProjectPath = extension.frontendProject.orNull
@@ -59,7 +53,10 @@ class NsSpaWebRootPlugin : Plugin<Project> {
     target.pluginManager.withPlugin(
       getPluginId(target, PluginAlias.JAVA),
       WithPluginAction {
-        target.tasks.named("processResources", AddDependencyAction(copyFrontendTask))
+        target.tasks.named(
+          "processResources",
+          AddDependencyAction(copyFrontendTask, excludePattern = "**/.gitkeep"),
+        )
       },
     )
     target.tasks.withType<ShadowJar>().configureEach(AddDependencyAction(copyFrontendTask))

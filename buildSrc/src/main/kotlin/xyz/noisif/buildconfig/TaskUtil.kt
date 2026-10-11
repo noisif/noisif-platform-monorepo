@@ -24,6 +24,7 @@ import org.gradle.api.plugins.AppliedPlugin
 import org.gradle.api.specs.Spec
 import org.gradle.api.tasks.SourceSet
 import org.gradle.api.tasks.TaskProvider
+import org.gradle.api.tasks.util.PatternFilterable
 import java.io.File
 
 internal class TaskConfigureAction(private val action: (Task) -> Unit) : Action<Task> {
@@ -54,9 +55,14 @@ internal class CopySpecConfigureAction(private val action: (CopySpec) -> Unit) :
   }
 }
 
-internal class AddDependencyAction<T : Task>(private val taskProvider: TaskProvider<T>) :
-  Action<Task> {
+internal class AddDependencyAction<T : Task>(
+  private val taskProvider: TaskProvider<T>,
+  private val excludePattern: String = "",
+) : Action<Task> {
   override fun execute(task: Task) {
     task.dependsOn(taskProvider)
+    if (excludePattern.isNotEmpty() && task is PatternFilterable) {
+      task.exclude(excludePattern)
+    }
   }
 }
