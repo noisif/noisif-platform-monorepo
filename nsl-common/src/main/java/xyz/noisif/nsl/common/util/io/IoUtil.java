@@ -88,13 +88,17 @@ public class IoUtil {
 
   // works safety between different modules without flat fat-jar structure
   public static URL getRequiredResourceUrl(String rawPath) throws IOException {
-    final String path = removeTrailingSlash(rawPath);
-    final ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
-    final URL resourceUrl = classLoader.getResource(path);
+    final URL resourceUrl = getResourceUrl(rawPath);
     if (resourceUrl == null) {
       throw new IOException("Unable to find file on classpath: " + rawPath);
     }
     return resourceUrl;
+  }
+
+  public static URL getResourceUrl(String rawPath) {
+    final String path = removeTrailingSlash(rawPath);
+    final ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
+    return classLoader.getResource(path);
   }
 
   public static String getResourceAsString(String rawPath) throws IOException {
