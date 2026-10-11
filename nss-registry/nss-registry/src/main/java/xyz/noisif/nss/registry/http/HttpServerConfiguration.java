@@ -48,6 +48,8 @@ class HttpServerConfiguration {
             HttpAcceptorBinding.builder()
                 .connectionAcceptor(RegistryConnectionAcceptor.EXTERNAL_API)
                 .port(9231 /* TODO: incoming from config server */)
+                .staticContent(true)
+                .spaRouting(true)
                 .build())
         .build();
   }

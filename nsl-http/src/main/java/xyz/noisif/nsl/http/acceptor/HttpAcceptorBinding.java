@@ -18,24 +18,36 @@
 package xyz.noisif.nsl.http.acceptor;
 
 import xyz.noisif.nsl.common.util.Assert;
+import xyz.noisif.nsl.http.Interceptor;
+import xyz.noisif.nsl.http.resource.StaticResourceDecision;
+import xyz.noisif.nsl.http.resource.StaticResourceInterceptor;
 import xyz.noisif.nsl.http.route.Router;
 import xyz.noisif.nsl.http.route.TrieRouter;
 
 import java.util.HashSet;
 import java.util.Set;
+import java.util.function.Function;
 
 public class HttpAcceptorBinding {
   private static final Set<String> DEFAULT_IGNORED_PATHS = Set.of("/favicon.ico", "/robots.txt");
 
   private final ConnectionAcceptor connectionAcceptor;
   private final int port;
+  private final boolean staticContentEnabled;
+  private final String staticContentBase;
+  private final Interceptor<StaticResourceDecision> staticResourcesInterceptor;
+  private final boolean spaRoutingEnabled;
   private final Set<String> ignoredPaths;
   private final Router router;
 
   private HttpAcceptorBinding(Builder builder) {
     connectionAcceptor = builder.connectionAcceptor;
     port = builder.port;
-    ignoredPaths = combinePaths(builder.ignoredPaths);
+    staticContentEnabled = builder.staticContentEnabled;
+    staticContentBase = builder.staticContentBase;
+    spaRoutingEnabled = builder.spaRoutingEnabled;
+    staticResourcesInterceptor = builder.interceptorFactory.apply(this);
+    ignoredPaths = builder.ignoredPaths;
     router = builder.router;
   }
 
@@ -51,6 +63,22 @@ public class HttpAcceptorBinding {
     return port;
   }
 
+  public boolean isStaticContentEnabled() {
+    return staticContentEnabled;
+  }
+
+  public String getStaticContentBase() {
+    return staticContentBase;
+  }
+
+  public boolean isSpaRoutingEnabled() {
+    return spaRoutingEnabled;
+  }
+
+  public Interceptor<StaticResourceDecision> getStaticResourcesInterceptor() {
+    return staticResourcesInterceptor;
+  }
+
   public Set<String> getIgnoredPaths() {
     return ignoredPaths;
   }
@@ -59,16 +87,15 @@ public class HttpAcceptorBinding {
     return router;
   }
 
-  private Set<String> combinePaths(Set<String> customPaths) {
-    final Set<String> combined = new HashSet<>(DEFAULT_IGNORED_PATHS);
-    combined.addAll(customPaths);
-    return Set.copyOf(combined);
-  }
-
   public static class Builder {
     private ConnectionAcceptor connectionAcceptor = ConnectionAcceptor.DEFAULT;
     private int port;
-    private final Set<String> ignoredPaths = new HashSet<>();
+    private boolean staticContentEnabled = false;
+    private String staticContentBase = "webroot";
+    private boolean spaRoutingEnabled = false;
+    private Function<HttpAcceptorBinding, Interceptor<StaticResourceDecision>> interceptorFactory =
+        StaticResourceInterceptor::new;
+    private final Set<String> ignoredPaths = new HashSet<>(DEFAULT_IGNORED_PATHS);
     private Router router = new TrieRouter();
 
     public Builder connectionAcceptor(ConnectionAcceptor connectionAcceptor) {
@@ -81,8 +108,32 @@ public class HttpAcceptorBinding {
       return this;
     }
 
+    public Builder staticContent(boolean enabled) {
+      staticContentEnabled = enabled;
+      if (enabled) {
+        ignoredPaths.removeAll(DEFAULT_IGNORED_PATHS);
+      }
+      return this;
+    }
+
+    public Builder staticContent(boolean enabled, String baseFolder) {
+      staticContentBase = baseFolder;
+      return staticContent(enabled);
+    }
+
+    public Builder setStaticResourceInterceptor(
+        Function<HttpAcceptorBinding, Interceptor<StaticResourceDecision>> interceptorFactory) {
+      this.interceptorFactory = interceptorFactory;
+      return this;
+    }
+
+    public Builder spaRouting(boolean enabled) {
+      spaRoutingEnabled = enabled;
+      return this;
+    }
+
     public Builder ignoredPaths(Set<String> paths) {
-      this.ignoredPaths.addAll(paths);
+      ignoredPaths.addAll(paths);
       return this;
     }
 
@@ -94,6 +145,8 @@ public class HttpAcceptorBinding {
     public HttpAcceptorBinding build() {
       Assert.notNull(connectionAcceptor, "connectionAcceptor");
       Assert.minMaxRange(port, 0, 65536, "port");
+      Assert.notNull(staticContentBase, "staticContentBase");
+      Assert.notNull(interceptorFactory, "interceptorFactory");
       Assert.notNullAll(ignoredPaths, "ignoredPaths");
       Assert.notNull(router, "router");
       return new HttpAcceptorBinding(this);

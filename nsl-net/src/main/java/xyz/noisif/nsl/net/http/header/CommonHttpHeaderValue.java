@@ -22,6 +22,7 @@ public enum CommonHttpHeaderValue implements HttpHeaderValue {
   TEXT_PLAIN_UTF_8("text/plain; charset=utf-8"),
   APPLICATION_JSON("application/json"),
   APPLICATION_X_WWW_FORM_URLENCODED("application/x-www-form-urlencoded"),
+  TEXT_HTML("text/html; charset=utf-8"),
   ;
 
   private final String code;

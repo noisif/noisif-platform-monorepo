@@ -21,6 +21,7 @@ public enum CommonHttpHeaderName implements HttpHeaderName {
   CONTENT_TYPE("Content-Type"),
   AUTHORIZATION("Authorization"),
   USER_AGENT("User-Agent"),
+  ACCEPT("Accept"),
   ;
 
   private final String code;

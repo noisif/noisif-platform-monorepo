@@ -17,10 +17,12 @@
  */
 package xyz.noisif.nsl.http.jetty;
 
+import org.eclipse.jetty.server.Handler;
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.server.ServerConnector;
 import org.eclipse.jetty.server.handler.ContextHandler;
 import org.eclipse.jetty.server.handler.ContextHandlerCollection;
+import org.eclipse.jetty.server.handler.ResourceHandler;
 import org.eclipse.jetty.util.component.AbstractLifeCycle;
 import org.eclipse.jetty.util.thread.QueuedThreadPool;
 
@@ -32,6 +34,8 @@ import xyz.noisif.nsl.http.acceptor.ConnectionAcceptor;
 import xyz.noisif.nsl.http.acceptor.HttpAcceptorBinding;
 import xyz.noisif.nsl.http.jetty.adapter.JettyHttpRequestHandlerAdapter;
 
+import java.io.IOException;
+import java.net.URL;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -75,14 +79,38 @@ public class JettyHttpServer extends HttpServer {
       server.addConnector(connector);
       connectors.put(acceptor, connector);
 
-      final ContextHandler context = new ContextHandler("/");
-      context.setVirtualHosts(List.of("@" + connectorName));
-      context.setHandler(new JettyHttpRequestHandlerAdapter(httpRequestHandler));
+      final ContextHandler context = getContext(binding, httpRequestHandler, connectorName);
       handlerCollection.addHandler(context);
     }
     server.setHandler(handlerCollection);
     server.start();
     log.info("HTTP server started successfully with {}ms shutdown timeout", SHUTDOWN_TIMEOUT_MS);
+  }
+
+  private ContextHandler getContext(
+      HttpAcceptorBinding binding, HttpRequestHandler handler, String connectorName)
+      throws IOException {
+    Handler targetHandler = new JettyHttpRequestHandlerAdapter(handler);
+    if (binding.isStaticContentEnabled()) {
+      final String baseDir = binding.getStaticContentBase();
+      final URL webrootPath = IoUtil.getRequiredResourceUrl(baseDir);
+      log.debug("Static content serving is enabled, base directory: '{}'", baseDir);
+
+      final ResourceHandler resourceHandler = new ResourceHandler();
+      resourceHandler.setDirAllowed(false);
+      resourceHandler.setAcceptRanges(true);
+      resourceHandler.setWelcomeFiles("index.html");
+      resourceHandler.setBaseResourceAsString(webrootPath.toExternalForm());
+
+      final Handler staticContentWrapper =
+          new JettyStaticResourceInterceptor(
+              resourceHandler, binding.getStaticResourcesInterceptor());
+      targetHandler = new Handler.Sequence(staticContentWrapper, targetHandler);
+    }
+    final ContextHandler context = new ContextHandler("/");
+    context.setVirtualHosts(List.of("@" + connectorName));
+    context.setHandler(targetHandler);
+    return context;
   }
 
   @Override

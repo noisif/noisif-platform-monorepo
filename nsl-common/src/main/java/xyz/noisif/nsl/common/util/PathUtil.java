@@ -39,4 +39,11 @@ public class PathUtil {
     }
     return path.startsWith("/") ? path : "/" + path;
   }
+
+  public static String removeLeadingSlashes(String path) {
+    if (path == null || path.isBlank()) {
+      return "";
+    }
+    return path.replaceAll("^/+", "");
+  }
 }

@@ -19,6 +19,7 @@ package xyz.noisif.nsl.http.acceptor;
 
 public enum TestConnectionAcceptor implements ConnectionAcceptor {
   EXTERNAL_API,
+  SPA_CONTENT,
   ;
 
   @Override

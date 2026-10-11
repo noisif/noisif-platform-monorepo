@@ -44,6 +44,7 @@ import xyz.noisif.nsl.http.header.TestHttpHeaderName;
 import xyz.noisif.nsl.http.header.TestHttpHeaderValue;
 import xyz.noisif.nsl.net.http.HttpStatus;
 import xyz.noisif.nsl.net.http.header.CommonHttpHeaderName;
+import xyz.noisif.nsl.net.http.header.CommonHttpHeaderValue;
 
 import java.io.ByteArrayInputStream;
 import java.net.URI;
@@ -57,6 +58,7 @@ public class JettyHttpServerIntegrationTest {
   private static HttpServer httpServer;
   private static int defaultAcceptorPort;
   private static int externalApiAcceptorPort;
+  private static int spaContentAcceptorPort;
   private static ClassScanner classScanner;
 
   private final HttpClient httpClient = HttpClient.newHttpClient();
@@ -80,10 +82,18 @@ public class JettyHttpServerIntegrationTest {
                     .connectionAcceptor(TestConnectionAcceptor.EXTERNAL_API)
                     .port(0)
                     .build())
+            .withBinding(
+                HttpAcceptorBinding.builder()
+                    .connectionAcceptor(TestConnectionAcceptor.SPA_CONTENT)
+                    .staticContent(true, "test-webroot")
+                    .spaRouting(true)
+                    .port(0)
+                    .build())
             .build();
     httpServer.start();
     defaultAcceptorPort = httpServer.getLocalPort();
     externalApiAcceptorPort = httpServer.getLocalPort(TestConnectionAcceptor.EXTERNAL_API);
+    spaContentAcceptorPort = httpServer.getLocalPort(TestConnectionAcceptor.SPA_CONTENT);
   }
 
   @AfterAll
@@ -104,6 +114,10 @@ public class JettyHttpServerIntegrationTest {
 
   private HttpResponse<String> getExternal(String path) throws Exception {
     return getRequest(externalApiAcceptorPort, path);
+  }
+
+  private HttpResponse<String> getSpaContent(String path) throws Exception {
+    return getRequest(spaContentAcceptorPort, path);
   }
 
   private HttpResponse<String> post(Object body) throws Exception {
@@ -438,5 +452,66 @@ public class JettyHttpServerIntegrationTest {
         .contains(TestHttpHeaderValue.APPLIED.buildWithArgs());
     assertThat(defRes.headers().firstValue(TestHttpHeaderName.X_EXTERNAL_FILTER.getCode()))
         .isEmpty();
+  }
+
+  @Test
+  @DisplayName("GET /index.html should serve existing static file directly with 200 OK")
+  void shouldServeExistingStaticFile() throws Exception {
+    // given & when
+    final HttpResponse<String> response = getSpaContent("/index.html");
+    // then
+    assertThat(response.statusCode()).isEqualTo(HttpStatus.OK_200.getCode());
+    assertThat(response.body()).isNotBlank();
+  }
+
+  @Test
+  @DisplayName("GET / (root directory) should resolve to index.html and NOT return 403 Forbidden")
+  void shouldServeIndexHtmlForRootDirectory() throws Exception {
+    // given & when
+    final HttpResponse<String> response = getSpaContent("/");
+    // then
+    assertThat(response.statusCode()).isEqualTo(HttpStatus.OK_200.getCode());
+    assertThat(response.body()).isNotBlank();
+  }
+
+  @Test
+  @DisplayName(
+      "GET /dashboard/settings should serve SPA fallback (index.html) "
+          + "when Accept is text/html")
+  void shouldServeSpaFallbackForHtmlRequests() throws Exception {
+    // given
+    final HttpRequest request =
+        HttpRequest.newBuilder()
+            .uri(URI.create("http://localhost:" + spaContentAcceptorPort + "/dashboard/settings"))
+            .header(CommonHttpHeaderName.ACCEPT.getCode(), "text/html,application/xhtml+xml")
+            .GET()
+            .build();
+    // when
+    final HttpResponse<String> response =
+        httpClient.send(request, HttpResponse.BodyHandlers.ofString());
+    // then
+    assertThat(response.statusCode()).isEqualTo(HttpStatus.OK_200.getCode());
+    assertThat(response.headers().firstValue(CommonHttpHeaderName.CONTENT_TYPE.getCode()))
+        .isPresent()
+        .contains(CommonHttpHeaderValue.TEXT_HTML.buildWithArgs());
+  }
+
+  @Test
+  @DisplayName(
+      "GET /dashboard/settings should return 404 Not Found "
+          + "when Accept is application/json (API Fallback)")
+  void shouldReturn404ForApiRequestsMissingFile() throws Exception {
+    // given
+    final HttpRequest request =
+        HttpRequest.newBuilder()
+            .uri(URI.create("http://localhost:" + spaContentAcceptorPort + "/dashboard/settings"))
+            .header(CommonHttpHeaderName.ACCEPT.getCode(), "application/json")
+            .GET()
+            .build();
+    // when
+    final HttpResponse<String> response =
+        httpClient.send(request, HttpResponse.BodyHandlers.ofString());
+    // then
+    assertThat(response.statusCode()).isEqualTo(HttpStatus.NOT_FOUND_404.getCode());
   }
 }
