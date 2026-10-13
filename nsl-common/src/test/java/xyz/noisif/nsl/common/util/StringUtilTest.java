@@ -19,9 +19,12 @@ package xyz.noisif.nsl.common.util;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+
+import java.util.List;
 
 class StringUtilTest {
   @Test
@@ -42,5 +45,20 @@ class StringUtilTest {
         () -> assertThat(StringUtil.truncateToUtf8Bytes("aą", 3)).isEqualTo("aą"),
         () -> assertThat(StringUtil.truncateToUtf8Bytes("Hi 🚀", 5)).isEqualTo("Hi "),
         () -> assertThat(StringUtil.truncateToUtf8Bytes("Hi 🚀!", 7)).isEqualTo("Hi 🚀"));
+  }
+
+  @Test
+  @DisplayName("should split string correctly using regex separator")
+  void shouldSplitStringUsingRegex() {
+    // given
+    final String input = "proxy.0.prefix";
+    final String regex = "\\.";
+    // when
+    final List<String> result = StringUtil.splitRegex(input, regex);
+    // then
+    assertEquals(3, result.size(), "Result should contain 3 parts");
+    assertEquals("proxy", result.get(0), "First part should match");
+    assertEquals("0", result.get(1), "Second part (ID) should match");
+    assertEquals("prefix", result.get(2), "Third part should match");
   }
 }

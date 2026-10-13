@@ -28,6 +28,8 @@ import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class StringUtil {
   private StringUtil() {
@@ -60,6 +62,27 @@ public class StringUtil {
     while ((nextSeparator = str.indexOf(separator, start)) != -1) {
       result.add(str.substring(start, nextSeparator));
       start = nextSeparator + 1;
+    }
+    result.add(str.substring(start));
+    return result;
+  }
+
+  public static List<String> splitRegex(String str, String regex) {
+    if (str == null) {
+      return new ArrayList<>();
+    }
+    if (regex == null || regex.isEmpty()) {
+      final List<String> result = new ArrayList<>();
+      result.add(str);
+      return result;
+    }
+    final List<String> result = new ArrayList<>();
+    final Pattern pattern = Pattern.compile(regex);
+    final Matcher matcher = pattern.matcher(str);
+    int start = 0;
+    while (matcher.find()) {
+      result.add(str.substring(start, matcher.start()));
+      start = matcher.end();
     }
     result.add(str.substring(start));
     return result;
