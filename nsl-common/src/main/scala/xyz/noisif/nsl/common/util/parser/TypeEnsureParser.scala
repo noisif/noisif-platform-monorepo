@@ -25,7 +25,7 @@ object TypeEnsureParser {
   def parseAndCast[T](
       rawValue: String,
       transformer: JFunction[String, Any],
-      targetType: Class[_],
+      targetType: Class[?],
       defaultValue: T
   ): T = {
     if (rawValue == null) {
