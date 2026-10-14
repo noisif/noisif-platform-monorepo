@@ -26,7 +26,7 @@ internal class JavascriptFormatSpec(root: Project, licenseFile: File) :
   SpotlessFormatSpec<JavascriptExtension>(root, licenseFile) {
   override fun execute(spec: JavascriptExtension) {
     spec.target("src/**/*.js")
-    spec.targetExclude("src/**/node_modules/**", "src/**/generated/**")
+    spec.targetExclude("src/**/node_modules/**", "src/**/generated/**", "build/**")
     spec.licenseHeader(buildLicense(licenseFile, "/*", " * ", " */"), "['\"]use strict['\"]")
   }
 
