@@ -15,7 +15,7 @@
  *
  * Please refer to the LICENSE file in the root directory for full restrictions.
  */
-package xyz.noisif.buildconfig.spotless.spec.ui
+package xyz.noisif.buildconfig.spotless.spec
 
 import com.diffplug.gradle.spotless.JavascriptExtension
 import com.diffplug.gradle.spotless.SpotlessExtension
@@ -23,14 +23,11 @@ import org.gradle.api.Project
 import java.io.File
 
 internal class JavascriptFormatSpec(root: Project, licenseFile: File) :
-  UiSpotlessFormatSpec<JavascriptExtension>(root, licenseFile) {
+  SpotlessFormatSpec<JavascriptExtension>(root, licenseFile) {
   override fun execute(spec: JavascriptExtension) {
-    spec.target("*.js", "*.mjs", "*.cjs", "src/**/*.js", "src/**/*.mjs", "src/**/*.cjs")
-    spec.targetExclude(*excludes)
-    spec.licenseHeader(
-      buildLicense(licenseFile, "/*", " * ", " */"),
-      "(import|export|class|interface|type|enum|const|let|var|function|namespace|declare|///)",
-    )
+    spec.target("src/**/*.js")
+    spec.targetExclude("src/**/node_modules/**", "src/**/generated/**")
+    spec.licenseHeader(buildLicense(licenseFile, "/*", " * ", " */"), "['\"]use strict['\"]")
   }
 
   override fun applyFormat(spotless: SpotlessExtension) = spotless.javascript(this)
