@@ -15,32 +15,12 @@
  *
  * Please refer to the LICENSE file in the root directory for full restrictions.
  */
-import { svelte } from '@sveltejs/vite-plugin-svelte';
-import { defineConfig } from 'vite';
+package xyz.noisif.nsl.serve;
 
-export default defineConfig({
-  plugins: [
-    svelte(),
-    {
-      name: 'remove-html-comments',
-      transformIndexHtml(html) {
-        return html.replace(/[ \t]*<!--[\s\S]*?-->\r?\n?/g, '');
-      },
-    },
-  ],
-  base: './',
-  build: {
-    outDir: 'dist',
-    emptyOutDir: true,
-  },
-  server: {
-    port: 9233,
-    proxy: {
-      '/api': {
-        target: 'http://localhost:9232',
-        changeOrigin: true,
-        secure: false,
-      },
-    },
-  },
-});
+import xyz.noisif.nsl.serve.undertow.UndertowDevServer;
+
+public class DevServerMain {
+  public static void main(String[] args) {
+    UndertowDevServer.run(args);
+  }
+}

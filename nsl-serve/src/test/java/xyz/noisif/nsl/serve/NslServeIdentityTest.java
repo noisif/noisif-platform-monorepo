@@ -15,12 +15,18 @@
  *
  * Please refer to the LICENSE file in the root directory for full restrictions.
  */
-import { mount } from 'svelte';
-import App from './App.svelte';
-import './main.css';
+package xyz.noisif.nsl.serve;
 
-const app = mount(App, {
-  target: document.getElementById('app-mount')!,
-});
+import xyz.noisif.nsl.common.ModuleIdentityTest;
 
-export default app;
+class NslServeIdentityTest extends ModuleIdentityTest {
+  @Override
+  protected String getModuleName() {
+    return "serve";
+  }
+
+  @Override
+  protected String getPackageSuffix() {
+    return "nsl";
+  }
+}

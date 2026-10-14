@@ -27,10 +27,14 @@ public class CodecUtil {
   }
 
   public static String encodeBase64(String text) {
-    if (text == null) {
+    return encodeBase64(StringUtil.getBytes(text));
+  }
+
+  public static String encodeBase64(byte[] bytes) {
+    if (bytes == null) {
       return null;
     }
-    return Base64.getEncoder().encodeToString(StringUtil.getBytes(text));
+    return Base64.getEncoder().encodeToString(bytes);
   }
 
   public static String decodeBase64(String base64Text) {

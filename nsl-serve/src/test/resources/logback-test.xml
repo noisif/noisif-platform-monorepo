@@ -14,18 +14,8 @@
   ~ MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE.
   ~
   ~ Please refer to the LICENSE file in the root directory for full restrictions.
--->
-<script lang="ts">
-  import { onMount } from 'svelte';
-
-  onMount(async () => {
-    console.log('HELLO');
-  });
-</script>
-
-<main>
-  <h1>NOISIF REGISTRY PANEL</h1>
-</main>
-
-<style>
-</style>
+  -->
+<configuration>
+  <property name="SERVICE_OR_LIBRARY_NAME" value="nsl-serve" />
+  <include resource="logback-test-base.xml" />
+</configuration>

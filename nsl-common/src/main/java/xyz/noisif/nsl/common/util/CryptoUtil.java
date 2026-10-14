@@ -22,8 +22,11 @@ import xyz.noisif.nsl.common.bootstrap.ForbiddenInstantiationException;
 
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.security.SecureRandom;
 
 public class CryptoUtil {
+  private static final SecureRandom SECURE_RANDOM = new SecureRandom();
+
   private CryptoUtil() {
     throw new ForbiddenInstantiationException(CryptoUtil.class);
   }
@@ -43,5 +46,11 @@ public class CryptoUtil {
     } catch (NoSuchAlgorithmException ex) {
       throw new CriticalBootstrapException("SHA-1 algorithm not found", ex);
     }
+  }
+
+  public static String generateNonce(int bytesCount) {
+    final byte[] nonceBytes = new byte[bytesCount];
+    SECURE_RANDOM.nextBytes(nonceBytes);
+    return CodecUtil.encodeBase64(nonceBytes);
   }
 }

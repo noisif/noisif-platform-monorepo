@@ -15,17 +15,9 @@
  *
  * Please refer to the LICENSE file in the root directory for full restrictions.
  */
-package xyz.noisif.buildconfig.spa
+package xyz.noisif.nsl.serve;
 
-import org.gradle.api.Project
-import org.gradle.api.provider.Property
-import org.gradle.kotlin.dsl.configure
+import java.util.List;
 
-interface NsSpaUiExtension {
-  val nodeVersion: Property<String>
-  val yarnVersion: Property<String>
-}
-
-fun Project.nsSpaUi(action: NsSpaUiExtension.() -> Unit) {
-  configure<NsSpaUiExtension>(action)
-}
+public record DevServerProperties(
+    String host, int port, String staticDir, List<ProxyDefinition> proxyDefinitions) {}
