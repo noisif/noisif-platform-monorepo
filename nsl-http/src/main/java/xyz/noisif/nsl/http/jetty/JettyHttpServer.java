@@ -33,6 +33,7 @@ import xyz.noisif.nsl.http.HttpServer;
 import xyz.noisif.nsl.http.acceptor.ConnectionAcceptor;
 import xyz.noisif.nsl.http.acceptor.HttpAcceptorBinding;
 import xyz.noisif.nsl.http.jetty.adapter.JettyHttpRequestHandlerAdapter;
+import xyz.noisif.nsl.http.jetty.resource.JettyStaticResourceInterceptor;
 
 import java.io.IOException;
 import java.net.URL;

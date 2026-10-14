@@ -15,7 +15,7 @@
  *
  * Please refer to the LICENSE file in the root directory for full restrictions.
  */
-package xyz.noisif.nsl.http.jetty;
+package xyz.noisif.nsl.http.jetty.resource;
 
 import org.eclipse.jetty.server.Handler;
 import org.eclipse.jetty.server.Request;

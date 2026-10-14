@@ -20,6 +20,7 @@ package xyz.noisif.nsl.http.resource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import xyz.noisif.nsl.common.util.CryptoUtil;
 import xyz.noisif.nsl.common.util.PathUtil;
 import xyz.noisif.nsl.common.util.StringUtil;
 import xyz.noisif.nsl.common.util.io.IoUtil;
@@ -37,6 +38,7 @@ public class StaticResourceInterceptor implements Interceptor<StaticResourceDeci
   private static final Logger LOG = LoggerFactory.getLogger(StaticResourceInterceptor.class);
 
   private final HttpAcceptorBinding binding;
+  private volatile String cachedIndexHtml = null; // might be thread-unsafe
 
   public StaticResourceInterceptor(HttpAcceptorBinding binding) {
     this.binding = binding;
@@ -49,13 +51,16 @@ public class StaticResourceInterceptor implements Interceptor<StaticResourceDeci
     LOG.trace("Intercepting static resource request for path: {}", path);
 
     final String baseDir = binding.getStaticContentBase();
+    if ("/".equals(path) || "/index.html".equals(path)) {
+      return serveIndexHtmlWithNonce(response, baseDir);
+    }
     final String cleanResourcePath = resolveResourcePath(baseDir, path);
     if (IoUtil.getResourceUrl(cleanResourcePath) == null) {
       LOG.trace("Resource not found on classpath: {}", cleanResourcePath);
       final boolean isHtml = isHtmlExpected(path, request.getHeader(CommonHttpHeaderName.ACCEPT));
       if (binding.isSpaRoutingEnabled() && isHtml) {
         LOG.debug("SPA routing enabled and HTML expected, attempting fallback for path: {}", path);
-        return serveSpaFallback(response, baseDir);
+        return serveIndexHtmlWithNonce(response, baseDir);
       }
       LOG.debug("No static resource or SPA fallback matched for path: {}, passing to API", path);
       return StaticResourceDecision.PASS_TO_API;
@@ -68,6 +73,35 @@ public class StaticResourceInterceptor implements Interceptor<StaticResourceDeci
     return StaticResourceDecision.CONTINUE_WITH_DEFAULT_HANDLER;
   }
 
+  private StaticResourceDecision serveIndexHtmlWithNonce(HttpResponse response, String baseDir)
+      throws Exception {
+    String rawHtml = cachedIndexHtml;
+    if (rawHtml == null) {
+      final String indexPath = PathUtil.removeLeadingSlashes(baseDir + "/index.html");
+      final URL indexUrl = IoUtil.getResourceUrl(indexPath);
+      if (indexUrl == null) {
+        LOG.warn(
+            "SPA routing is enabled but fallback file '{}' is missing in resources", indexPath);
+        return StaticResourceDecision.PASS_TO_API;
+      }
+      try (final InputStream inputStream = indexUrl.openStream()) {
+        rawHtml = StringUtil.create(inputStream.readAllBytes());
+        cachedIndexHtml = rawHtml;
+      }
+    }
+    final String nonce = CryptoUtil.generateNonce(16);
+    LOG.trace("Serving SPA file with nonce tag: {}", nonce);
+    final String finalHtml = rawHtml.replace("%NONCE%", nonce);
+    response.setHeader(CommonHttpHeaderName.CONTENT_TYPE, CommonHttpHeaderValue.TEXT_HTML);
+    response.setHeader(
+        CommonHttpHeaderName.CONTENT_SECURITY_POLICY,
+        "script-src 'self' 'nonce-" + nonce + "'; style-src 'self' 'nonce-" + nonce + "';");
+
+    response.write(finalHtml, true);
+    LOG.debug("Successfully served SPA fallback file for requested path");
+    return StaticResourceDecision.HANDLED_BY_FALLBACK;
+  }
+
   private String resolveResourcePath(String baseDir, String path) {
     final String relativePath = PathUtil.removeLeadingSlashes(path);
     return PathUtil.removeLeadingSlashes(baseDir + "/" + relativePath);
@@ -78,24 +112,6 @@ public class StaticResourceInterceptor implements Interceptor<StaticResourceDeci
       return true;
     }
     return path != null && path.endsWith(".html");
-  }
-
-  private StaticResourceDecision serveSpaFallback(HttpResponse response, String baseDir)
-      throws Exception {
-    final String indexPath = PathUtil.removeLeadingSlashes(baseDir + "/index.html");
-    final URL indexUrl = IoUtil.getResourceUrl(indexPath);
-    if (indexUrl == null) {
-      LOG.warn("SPA routing is enabled but fallback file '{}' is missing in resources", indexPath);
-      return StaticResourceDecision.PASS_TO_API;
-    }
-    LOG.trace("Serving SPA fallback file: {}", indexPath);
-    try (final InputStream inputStream = indexUrl.openStream()) {
-      final String content = StringUtil.create(inputStream.readAllBytes());
-      response.setHeader(CommonHttpHeaderName.CONTENT_TYPE, CommonHttpHeaderValue.TEXT_HTML);
-      response.write(content, true);
-      LOG.debug("Successfully served SPA fallback file for requested path");
-      return StaticResourceDecision.HANDLED_BY_FALLBACK;
-    }
   }
 
   private boolean isDirectoryMissingWelcomeFile(String path, String cleanResourcePath) {
