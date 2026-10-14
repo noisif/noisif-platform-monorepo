@@ -15,7 +15,7 @@
  *
  * Please refer to the LICENSE file in the root directory for full restrictions.
  */
-package xyz.noisif.buildconfig.spotless.spec.ui
+package xyz.noisif.buildconfig.spotless.spec
 
 import com.diffplug.gradle.spotless.CssExtension
 import com.diffplug.gradle.spotless.SpotlessExtension
@@ -23,14 +23,11 @@ import org.gradle.api.Project
 import java.io.File
 
 internal class CssFormatSpec(root: Project, licenseFile: File) :
-  UiSpotlessFormatSpec<CssExtension>(root, licenseFile) {
+  SpotlessFormatSpec<CssExtension>(root, licenseFile) {
   override fun execute(spec: CssExtension) {
     spec.target("src/**/*.css")
-    spec.targetExclude(*excludes)
-    spec.licenseHeader(
-      buildLicense(licenseFile, "/*", " * ", " */"),
-      "([a-zA-Z@#*.:])",
-    )
+    spec.targetExclude("src/**/node_modules/**", "build/**")
+    spec.licenseHeader(buildLicense(licenseFile, "/*", " * ", " */"), "([a-zA-Z@#*.:])")
   }
 
   override fun applyFormat(spotless: SpotlessExtension) = spotless.css(this)
