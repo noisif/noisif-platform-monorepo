@@ -19,6 +19,10 @@ package xyz.noisif.buildconfig
 
 import org.gradle.api.Action
 import org.gradle.api.Task
+import org.gradle.api.artifacts.ArtifactView
+import org.gradle.api.artifacts.Configuration
+import org.gradle.api.artifacts.component.ComponentIdentifier
+import org.gradle.api.attributes.AttributeContainer
 import org.gradle.api.file.CopySpec
 import org.gradle.api.plugins.AppliedPlugin
 import org.gradle.api.specs.Spec
@@ -64,5 +68,32 @@ internal class AddDependencyAction<T : Task>(
     if (excludePattern.isNotEmpty() && task is PatternFilterable) {
       task.exclude(excludePattern)
     }
+  }
+}
+
+internal class ArtifactViewConfigureAction(
+  private val action: (ArtifactView.ViewConfiguration) -> Unit,
+) : Action<ArtifactView.ViewConfiguration> {
+  override fun execute(viewConfig: ArtifactView.ViewConfiguration) {
+    action(viewConfig)
+  }
+}
+
+internal class AttributeContainerConfigureAction(private val action: (AttributeContainer) -> Unit) :
+  Action<AttributeContainer> {
+  override fun execute(attrs: AttributeContainer) {
+    action(attrs)
+  }
+}
+
+internal class ComponentFilterSpec(private val condition: (ComponentIdentifier) -> Boolean) :
+  Spec<ComponentIdentifier> {
+  override fun isSatisfiedBy(id: ComponentIdentifier): Boolean = condition(id)
+}
+
+internal class ConfigurationConfigureAction(private val action: (Configuration) -> Unit) :
+  Action<Configuration> {
+  override fun execute(config: Configuration) {
+    action(config)
   }
 }

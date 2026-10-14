@@ -39,7 +39,7 @@ class NsSpaWebRootPlugin : Plugin<Project> {
     }
     val copyFrontendTask = target.tasks.register<Sync>("copyFrontendAssets") {
       val uiProjectProvider = extension.frontendProject.map { target.project(it) }
-      from(uiProjectProvider.map { it.layout.projectDirectory.dir("dist") })
+      from(uiProjectProvider.map { it.layout.buildDirectory.dir("dist") })
       into(targetDirProvider)
     }
     target.afterEvaluate {

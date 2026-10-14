@@ -28,14 +28,13 @@ import xyz.noisif.buildconfig.libs
 
 internal enum class PluginAlias(private val alias: String) : DependencyAlias {
   APPLICATION("application"),
-  BASE("base"),
   IDEA("idea"),
   JAVA("java"),
   PROTOBUF("protobuf"),
-  NODE("node"),
   SCALA("scala"),
   SHADOW("shadow"),
   SPOTLESS("spotless"),
+  TEAVM("teavm"),
   ;
 
   override fun getAlias() = alias

@@ -36,6 +36,7 @@ dependencies {
   implementation(libs.protoc)
   implementation(libs.shadow.marker)
   implementation(libs.spotless.gradle.plugin)
+  implementation(libs.teavm.gradle.plugin)
   implementation(gradleApi())
 }
 
@@ -73,9 +74,9 @@ gradlePlugin {
       id = "xyz.noisif.ns-jvm"
       implementationClass = "xyz.noisif.buildconfig.jvm.NsJvmPlugin"
     }
-    create("nsSpaUi") {
-      id = "xyz.noisif.ns-spa-ui"
-      implementationClass = "xyz.noisif.buildconfig.spa.NsSpaUiPlugin"
+    create("nsSpaTeaVmFrontend") {
+      id = "xyz.noisif.ns-spa-teavm-frontend"
+      implementationClass = "xyz.noisif.buildconfig.spa.teavm.NsSpaTeaVmFrontendPlugin"
     }
     create("nsSpaWebRoot") {
       id = "xyz.noisif.ns-spa-web-root"
