@@ -19,17 +19,15 @@ package xyz.noisif.buildconfig.spotless
 
 import com.diffplug.gradle.spotless.SpotlessExtension
 import org.gradle.api.Project
+import xyz.noisif.buildconfig.spotless.spec.CssFormatSpec
 import xyz.noisif.buildconfig.spotless.spec.HtmlFormatSpec
 import xyz.noisif.buildconfig.spotless.spec.JavaFormatSpec
+import xyz.noisif.buildconfig.spotless.spec.JavascriptFormatSpec
 import xyz.noisif.buildconfig.spotless.spec.KotlinFormatSpec
 import xyz.noisif.buildconfig.spotless.spec.KotlinGradleFormatSpec
 import xyz.noisif.buildconfig.spotless.spec.PropertiesFormatSpec
 import xyz.noisif.buildconfig.spotless.spec.ScalaFormatSpec
 import xyz.noisif.buildconfig.spotless.spec.XmlFormatSpec
-import xyz.noisif.buildconfig.spotless.spec.ui.CssFormatSpec
-import xyz.noisif.buildconfig.spotless.spec.ui.JavascriptFormatSpec
-import xyz.noisif.buildconfig.spotless.spec.ui.SvelteFormatSpec
-import xyz.noisif.buildconfig.spotless.spec.ui.TypescriptFormatSpec
 import java.io.File
 
 class NsSpotlessPlugin : NsSpotlessBasePlugin() {
@@ -47,8 +45,6 @@ class NsSpotlessPlugin : NsSpotlessBasePlugin() {
       PropertiesFormatSpec(root, licenseFile),
       CssFormatSpec(root, licenseFile),
       HtmlFormatSpec(root, licenseFile),
-      SvelteFormatSpec(root, licenseFile),
-      TypescriptFormatSpec(root, licenseFile),
       JavascriptFormatSpec(root, licenseFile),
     )
     for (spec in formatSpecs) {
