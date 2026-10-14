@@ -59,7 +59,7 @@ internal abstract class ProcessFrontendTask : DefaultTask() {
   abstract val outputDir: DirectoryProperty
 
   private companion object {
-    val CSS_ORDER_REGEX = Regex("^.+\\.(\\d+)\\.css$", RegexOption.IGNORE_CASE)
+    val CSS_ORDER_REGEX = Regex("^(\\d+)\\..+\\.css$", RegexOption.IGNORE_CASE)
   }
 
   @TaskAction
