@@ -15,33 +15,18 @@
  *
  * Please refer to the LICENSE file in the root directory for full restrictions.
  */
-import eslint from '@eslint/js';
-import tseslint from 'typescript-eslint';
-import eslintPluginSvelte from 'eslint-plugin-svelte';
-import svelteParser from 'svelte-eslint-parser';
-import globals from 'globals';
+package xyz.noisif.nss.registry.ui;
 
-export default tseslint.config(
-  { ignores: ['build/', '.svelte-kit/', 'dist/', 'node_modules/'] },
-  eslint.configs.recommended,
-  ...tseslint.configs.recommended,
-  ...eslintPluginSvelte.configs['flat/recommended'],
-  {
-    languageOptions: {
-      globals: {
-        ...globals.browser,
-        ...globals.node
-      }
-    }
-  },
-  {
-    files: ['**/*.svelte'],
-    languageOptions: {
-      parser: svelteParser,
-      parserOptions: {
-        parser: tseslint.parser,
-        extraFileExtensions: ['.svelte']
-      }
-    }
-  },
-);
+import xyz.noisif.nsl.common.ModuleIdentityTest;
+
+class NssRegistryUiIdentityTest extends ModuleIdentityTest {
+  @Override
+  protected String getModuleName() {
+    return "registry-ui";
+  }
+
+  @Override
+  protected String getPackageSuffix() {
+    return "nss";
+  }
+}

@@ -14,17 +14,9 @@
   ~ MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE.
   ~
   ~ Please refer to the LICENSE file in the root directory for full restrictions.
--->
-<html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <base href="/">
-  <title>NOISIF Registry panel</title>
-</head>
-<body>
-<div id="app-mount"></div>
-<script type="module" src="/src/main.ts"></script>
-</body>
-</html>
+  -->
+<configuration>
+  <property name="SERVICE_OR_LIBRARY_NAME"
+    value="nss-registry-ui" />
+  <include resource="logback-test-base.xml" />
+</configuration>

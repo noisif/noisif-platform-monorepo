@@ -16,12 +16,29 @@
  * Please refer to the LICENSE file in the root directory for full restrictions.
  */
 import xyz.noisif.buildconfig.apply
-import xyz.noisif.buildconfig.spa.NsSpaUiPlugin
-import xyz.noisif.buildconfig.spa.nsSpaUi
+import xyz.noisif.buildconfig.spa.teavm.NsSpaTeaVmFrontendPlugin
+import xyz.noisif.buildconfig.spa.teavm.nsSpaTeaVm
+import xyz.noisif.buildconfig.spa.teavm.spaFrontend
 
-pluginManager.apply<NsSpaUiPlugin>()
+pluginManager.apply<NsSpaTeaVmFrontendPlugin>()
 
-nsSpaUi {
-  nodeVersion.set("20.19.0")
-  yarnVersion.set("1.22.22")
+nsSpaTeaVm {
+  title.set("NSS Registry Panel")
+  packageSuffix.set("registry.ui")
+  mainClass.set("NssRegistryUiMain")
+  generateHash.set(false)
+  minify.set(true)
+  devServer {
+    port.set(9233)
+    proxy("/api") {
+      url.set("http://localhost:9231")
+      stripPrefix.set(false)
+    }
+  }
+}
+
+dependencies {
+  spaFrontend(project(":nsl-ui"))
+
+  testImplementation(testFixtures(project(":nsl-common")))
 }
