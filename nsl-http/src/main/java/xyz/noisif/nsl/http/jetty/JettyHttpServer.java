@@ -35,7 +35,6 @@ import xyz.noisif.nsl.http.acceptor.HttpAcceptorBinding;
 import xyz.noisif.nsl.http.jetty.adapter.JettyHttpRequestHandlerAdapter;
 import xyz.noisif.nsl.http.jetty.resource.JettyStaticResourceInterceptor;
 
-import java.io.IOException;
 import java.net.URL;
 import java.util.HashMap;
 import java.util.List;
@@ -89,24 +88,29 @@ public class JettyHttpServer extends HttpServer {
   }
 
   private ContextHandler getContext(
-      HttpAcceptorBinding binding, HttpRequestHandler handler, String connectorName)
-      throws IOException {
+      HttpAcceptorBinding binding, HttpRequestHandler handler, String connectorName) {
     Handler targetHandler = new JettyHttpRequestHandlerAdapter(handler);
     if (binding.isStaticContentEnabled()) {
       final String baseDir = binding.getStaticContentBase();
-      final URL webrootPath = IoUtil.getRequiredResourceUrl(baseDir);
-      log.debug("Static content serving is enabled, base directory: '{}'", baseDir);
+      final URL webrootPath = IoUtil.getResourceUrl(baseDir);
+      if (webrootPath != null) {
+        log.debug("Static content serving is enabled, base directory: '{}'", baseDir);
 
-      final ResourceHandler resourceHandler = new ResourceHandler();
-      resourceHandler.setDirAllowed(false);
-      resourceHandler.setAcceptRanges(true);
-      resourceHandler.setWelcomeFiles("index.html");
-      resourceHandler.setBaseResourceAsString(webrootPath.toExternalForm());
+        final ResourceHandler resourceHandler = new ResourceHandler();
+        resourceHandler.setDirAllowed(false);
+        resourceHandler.setAcceptRanges(true);
+        resourceHandler.setWelcomeFiles("index.html");
+        resourceHandler.setBaseResourceAsString(webrootPath.toExternalForm());
 
-      final Handler staticContentWrapper =
-          new JettyStaticResourceInterceptor(
-              resourceHandler, binding.getStaticResourcesInterceptor());
-      targetHandler = new Handler.Sequence(staticContentWrapper, targetHandler);
+        final Handler staticContentWrapper =
+            new JettyStaticResourceInterceptor(
+                resourceHandler, binding.getStaticResourcesInterceptor());
+        targetHandler = new Handler.Sequence(staticContentWrapper, targetHandler);
+      } else {
+        log.warn(
+            "Unable to determine static content serving base directory, "
+                + "skipping static resource handler initialization");
+      }
     }
     final ContextHandler context = new ContextHandler("/");
     context.setVirtualHosts(List.of("@" + connectorName));
