@@ -17,10 +17,47 @@
  */
 package xyz.noisif.nss.registry.ui;
 
-import xyz.noisif.nsl.ui.NslUiRoot;
+import xyz.noisif.nsl.ui.SpaEntrypoint;
+import xyz.noisif.nsl.ui.auth.AuthSession;
+import xyz.noisif.nsl.ui.http.HttpRequest;
+import xyz.noisif.nsl.ui.http.RestClient;
+import xyz.noisif.nsl.ui.router.Router;
+import xyz.noisif.nss.registry.ui.view.DashboardView;
+import xyz.noisif.nss.registry.ui.view.LoginView;
+import xyz.noisif.nss.registry.ui.view.NotFoundView;
 
-public class NssRegistryUiMain {
+public class NssRegistryUiMain extends SpaEntrypoint {
+  public static final RestClient API_V1 =
+    new RestClient("/api/v1")
+      .onUnauthorized(
+        () -> {
+          AuthSession.setAuthenticated(false);
+          router().navigate("/login");
+        });
+
   public static void main(String[] args) {
-    NslUiRoot.run();
+    new NssRegistryUiMain().launch();
+  }
+
+  @Override
+  protected void verifyInitialSession(Runnable proceedToRouter) {
+    API_V1.execute(
+      HttpRequest.get("/auth/session"),
+      response -> handleSessionState(response.isSuccess(), proceedToRouter),
+      errorResponse -> handleSessionState(false, proceedToRouter),
+      networkError -> handleSessionState(false, proceedToRouter));
+  }
+
+  private void handleSessionState(boolean active, Runnable proceedToRouter) {
+    AuthSession.setAuthenticated(active);
+    proceedToRouter.run();
+  }
+
+  @Override
+  protected void configureRouter(Router.Builder router) {
+    router
+      .protectedRoute("/", DashboardView::new)
+      .guestRoute("/login", LoginView::new)
+      .notFound(NotFoundView::new);
   }
 }
