@@ -15,21 +15,14 @@
  *
  * Please refer to the LICENSE file in the root directory for full restrictions.
  */
-package xyz.noisif.nsl.ui;
+package xyz.noisif.nsl.ui.spi;
 
-import org.teavm.jso.browser.Window;
-import org.teavm.jso.dom.html.HTMLDocument;
-import org.teavm.jso.dom.html.HTMLElement;
+public interface ComponentPeer {
+  void setId(String id);
 
-public class NslUiRoot {
-  public static void run() {
-    final HTMLDocument document = Window.current().getDocument();
-    final HTMLElement appMount = document.getElementById("app-mount");
-    if (appMount == null) {
-      return;
-    }
-    final HTMLElement title = document.createElement("h1");
-    title.appendChild(document.createTextNode("NOISIF SPA"));
-    appMount.appendChild(title);
-  }
+  void setVisible(boolean visible);
+
+  void addStyleClass(String cssClass);
+
+  void removeStyleClass(String cssClass);
 }

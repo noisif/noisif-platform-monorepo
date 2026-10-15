@@ -1,0 +1,116 @@
+/*
+ * Copyright (c) 2022-2026 NOISIF. All Rights Reserved.
+ *
+ * NOTICE: This source code is publicly available for reference
+ * and educational purposes only. It is NOT open-source software.
+ *
+ * You are granted permission to view this code. However, you are strictly
+ * PROHIBITED from copying, modifying, or merging this code into other software,
+ * distributing, publishing, or sublicensing this code, using this code for
+ * commercial purposes or in production environments.
+ *
+ * THIS SOFTWARE IS PROVIDED "AS IS" WITHOUT WARRANTY OF ANY KIND, EITHER
+ * EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO WARRANTIES OF
+ * MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE.
+ *
+ * Please refer to the LICENSE file in the root directory for full restrictions.
+ */
+.ns-frame {
+  background: #ffffff;
+  border: 1px solid #dee2e6;
+  border-radius: 8px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+  overflow: hidden;
+  min-width: 340px;
+}
+
+.ns-frame-header {
+  background: #f1f3f5;
+  padding: 12px 16px;
+  font-weight: 600;
+  border-bottom: 1px solid #dee2e6;
+}
+
+.ns-frame-body {
+  padding: 20px;
+}
+
+.ns-field-group {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  width: 100%;
+}
+
+.ns-input {
+  padding: 8px 12px;
+  border: 1px solid #ced4da;
+  border-radius: 4px;
+  font-size: 14px;
+  outline: none;
+  transition: border-color 0.15s ease-in-out;
+}
+
+.ns-input:focus {
+  border-color: #0d6efd;
+}
+
+.ns-input-error {
+  border-color: #dc3545 !important;
+  background-color: #fff8f8;
+}
+
+.ns-error-msg {
+  color: #dc3545;
+  font-size: 12px;
+}
+
+.ns-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  padding: 8px 16px;
+  background: #0d6efd;
+  color: #ffffff;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-weight: 500;
+  font-size: 14px;
+}
+
+.ns-btn:hover {
+  background: #0b5ed7;
+}
+
+.ns-btn:disabled {
+  background: #6c757d;
+  cursor: not-allowed;
+}
+
+.ns-btn.ns-loading {
+  color: transparent !important;
+  pointer-events: none;
+  cursor: wait;
+}
+
+.ns-btn.ns-loading::after {
+  content: "";
+  position: absolute;
+  width: 16px;
+  height: 16px;
+  border: 2px solid #ffffff;
+  border-top-color: transparent;
+  border-radius: 50%;
+  animation: ns-btn-spin 0.6s linear infinite;
+}
+
+@keyframes ns-btn-spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}

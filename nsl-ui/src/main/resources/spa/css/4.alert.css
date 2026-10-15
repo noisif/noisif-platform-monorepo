@@ -1,0 +1,92 @@
+/*
+ * Copyright (c) 2022-2026 NOISIF. All Rights Reserved.
+ *
+ * NOTICE: This source code is publicly available for reference
+ * and educational purposes only. It is NOT open-source software.
+ *
+ * You are granted permission to view this code. However, you are strictly
+ * PROHIBITED from copying, modifying, or merging this code into other software,
+ * distributing, publishing, or sublicensing this code, using this code for
+ * commercial purposes or in production environments.
+ *
+ * THIS SOFTWARE IS PROVIDED "AS IS" WITHOUT WARRANTY OF ANY KIND, EITHER
+ * EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO WARRANTIES OF
+ * MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE.
+ *
+ * Please refer to the LICENSE file in the root directory for full restrictions.
+ */
+.ns-alert {
+  position: relative;
+  padding: 12px 40px 12px 16px;
+  border-radius: 4px;
+  border: 1px solid transparent;
+  font-size: 14px;
+  width: 100%;
+}
+
+.ns-alert-close,
+.ns-alert-close::before,
+.ns-alert-close::after {
+  position: absolute;
+  opacity: 0.5;
+}
+
+.ns-alert-close {
+  top: 0;
+  bottom: 0;
+  right: 0;
+  z-index: 2;
+  width: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: transparent;
+  border: 0;
+  cursor: pointer;
+  outline: none;
+  padding: 0;
+}
+
+.ns-alert-close:hover {
+  opacity: 0.9;
+}
+
+.ns-alert-close::before,
+.ns-alert-close::after {
+  content: '';
+  width: 14px;
+  height: 2px;
+  background-color: currentColor;
+}
+
+.ns-alert-close::before {
+  transform: rotate(45deg);
+}
+
+.ns-alert-close::after {
+  transform: rotate(-45deg);
+}
+
+.ns-alert-info {
+  color: #055160;
+  background-color: #cff4fc;
+  border-color: #b6effb;
+}
+
+.ns-alert-success {
+  color: #0f5132;
+  background-color: #d1e7dd;
+  border-color: #badbcc;
+}
+
+.ns-alert-warning {
+  color: #664d03;
+  background-color: #fff3cd;
+  border-color: #ffecb5;
+}
+
+.ns-alert-danger {
+  color: #842029;
+  background-color: #f8d7da;
+  border-color: #f5c2c7;
+}

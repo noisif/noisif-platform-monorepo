@@ -15,12 +15,28 @@
  *
  * Please refer to the LICENSE file in the root directory for full restrictions.
  */
-* {
-  box-sizing: border-box;
-  margin: 0;
-  padding: 0;
-}
+package xyz.noisif.nsl.ui.component.container;
 
-body {
-  font-family: sans-serif;
+import xyz.noisif.nsl.ui.core.CssClass;
+
+public enum Padding implements CssClass {
+  NONE("ns-pad-0"),
+  XS("ns-pad-4"),
+  SM("ns-pad-8"),
+  MD("ns-pad-12"),
+  LG("ns-pad-16"),
+  XL("ns-pad-24"),
+  XXL("ns-pad-40"),
+  ;
+
+  private final String cssClass;
+
+  Padding(String cssClass) {
+    this.cssClass = cssClass;
+  }
+
+  @Override
+  public String getCssClass() {
+    return cssClass;
+  }
 }

@@ -20,5 +20,7 @@ dependencies {
   implementation(libs.teavm.jso)
   implementation(libs.teavm.jso.apis)
 
+  implementation(project(":nsl-common"))
+
   testImplementation(testFixtures(project(":nsl-common")))
 }
