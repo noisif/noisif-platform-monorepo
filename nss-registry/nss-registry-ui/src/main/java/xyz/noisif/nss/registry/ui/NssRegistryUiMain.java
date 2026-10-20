@@ -42,10 +42,9 @@ public class NssRegistryUiMain extends SpaEntrypoint {
   @Override
   protected void verifyInitialSession(Runnable proceedToRouter) {
     API_V1.execute(
-      HttpRequest.get("/auth/session"),
-      response -> handleSessionState(response.isSuccess(), proceedToRouter),
-      errorResponse -> handleSessionState(false, proceedToRouter),
-      networkError -> handleSessionState(false, proceedToRouter));
+        HttpRequest.get("/auth/session"),
+        response -> handleSessionState(response.isSuccess(), proceedToRouter),
+        onAnyError -> handleSessionState(false, proceedToRouter));
   }
 
   private void handleSessionState(boolean active, Runnable proceedToRouter) {

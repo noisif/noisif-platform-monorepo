@@ -95,8 +95,12 @@ public final class RestClient {
   public void execute(
       HttpRequest.Builder requestBuilder,
       Consumer<HttpResponse> onSuccess,
-      Consumer<HttpResponse> onError) {
-    execute(requestBuilder, onSuccess, onError, err -> {});
+      Consumer<HttpResponse> onAnyError) {
+    execute(
+        requestBuilder,
+        onSuccess,
+        onAnyError,
+        message -> onAnyError.accept(new HttpResponse(0, message)));
   }
 
   private HttpRequest rebuildWithBaseUrl(HttpRequest req) {
