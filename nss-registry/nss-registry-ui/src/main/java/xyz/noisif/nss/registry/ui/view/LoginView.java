@@ -17,6 +17,11 @@
  */
 package xyz.noisif.nss.registry.ui.view;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.slf4j.Marker;
+import org.slf4j.MarkerFactory;
+
 import xyz.noisif.nsl.ui.SpaEntrypoint;
 import xyz.noisif.nsl.ui.auth.AuthSession;
 import xyz.noisif.nsl.ui.component.NFrame;
@@ -42,6 +47,9 @@ import xyz.noisif.nsl.ui.validation.Validators;
 import xyz.noisif.nss.registry.ui.NssRegistryUiMain;
 
 public class LoginView extends NConstraintBox {
+  private static final Logger LOG = LoggerFactory.getLogger(LoginView.class);
+  private static final Marker HTTP_REQ = MarkerFactory.getMarker("HTTP-REQ");
+
   @Override
   protected void initLayout() {
     setSize(ContainerSize.XXL);
@@ -94,6 +102,8 @@ public class LoginView extends NConstraintBox {
     protected void onValidSubmit() {
       submitButton.setLoading(true);
       alertBanner.hide();
+
+      LOG.info(HTTP_REQ, "Validated login form");
 
       final JsonPayload loginData =
           JsonPayload.create()
