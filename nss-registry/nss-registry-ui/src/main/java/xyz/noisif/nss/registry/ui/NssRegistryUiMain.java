@@ -28,12 +28,12 @@ import xyz.noisif.nss.registry.ui.view.NotFoundView;
 
 public class NssRegistryUiMain extends SpaEntrypoint {
   public static final RestClient API_V1 =
-    new RestClient("/api/v1")
-      .onUnauthorized(
-        () -> {
-          AuthSession.setAuthenticated(false);
-          router().navigate("/login");
-        });
+      new RestClient("/api/v1")
+          .onUnauthorized(
+              () -> {
+                AuthSession.setAuthenticated(false);
+                router().navigate("/login");
+              });
 
   public static void main(String[] args) {
     new NssRegistryUiMain().launch();
@@ -56,8 +56,8 @@ public class NssRegistryUiMain extends SpaEntrypoint {
   @Override
   protected void configureRouter(Router.Builder router) {
     router
-      .protectedRoute("/", DashboardView::new)
-      .guestRoute("/login", LoginView::new)
-      .notFound(NotFoundView::new);
+        .protectedRoute("/", DashboardView::new)
+        .guestRoute("/login", LoginView::new)
+        .notFound(NotFoundView::new);
   }
 }
