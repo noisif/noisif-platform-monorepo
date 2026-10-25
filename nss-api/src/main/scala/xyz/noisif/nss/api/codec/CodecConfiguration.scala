@@ -15,18 +15,16 @@
  *
  * Please refer to the LICENSE file in the root directory for full restrictions.
  */
-package xyz.noisif.nss.api.codec;
+package xyz.noisif.nss.api.codec
 
-import xyz.noisif.nsl.codec.serialization.protobuf.ProtobufJsonPrinter;
+import xyz.noisif.nsl.codec.serialization.protobuf.ProtobufJsonPrinter
 
-import jakarta.enterprise.inject.Produces;
-import jakarta.inject.Singleton;
+import jakarta.enterprise.inject.Produces
+import jakarta.inject.Singleton
 
 @Singleton
 class CodecConfiguration {
   @Produces
   @Singleton
-  ProtobufJsonPrinter protobufJsonPrinter() {
-    return new ProtobufJsonPrinter();
-  }
+  def protobufJsonPrinter(): ProtobufJsonPrinter = new ProtobufJsonPrinter()
 }

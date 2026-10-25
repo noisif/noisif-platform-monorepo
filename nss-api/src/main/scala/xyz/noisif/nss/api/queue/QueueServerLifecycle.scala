@@ -15,14 +15,23 @@
  *
  * Please refer to the LICENSE file in the root directory for full restrictions.
  */
-package xyz.noisif.nss.api;
+package xyz.noisif.nss.api.queue
 
-import xyz.noisif.nsl.common.bootstrap.AppBootstrapper;
-import xyz.noisif.nsl.common.bootstrap.DefaultBootstrapper;
+import xyz.noisif.nsl.common.bootstrap.lifecycle.LifecycleHook
+import xyz.noisif.nsl.common.di.ComponentProvider
+import xyz.noisif.nsl.common.reflect.ClassScanner
+import xyz.noisif.nsl.queue.QueueServer
 
-@AppBootstrapper
-public class NssApiMain {
-  public static void main(String[] args) {
-    DefaultBootstrapper.run(NssApiMain.class);
-  }
+import jakarta.inject.Inject
+import jakarta.inject.Singleton
+
+@Singleton
+class QueueServerLifecycle @Inject() (
+    private val queueServer: QueueServer
+) extends LifecycleHook {
+
+  override def onStart(componentProvider: ComponentProvider, classScanner: ClassScanner): Unit =
+    queueServer.start()
+
+  override def onStop(): Unit = queueServer.close()
 }

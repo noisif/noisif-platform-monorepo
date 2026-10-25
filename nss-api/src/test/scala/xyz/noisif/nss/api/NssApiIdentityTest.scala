@@ -15,32 +15,10 @@
  *
  * Please refer to the LICENSE file in the root directory for full restrictions.
  */
-package xyz.noisif.nss.api.kv;
+package xyz.noisif.nss.api
 
-import xyz.noisif.nsl.common.bootstrap.lifecycle.LifecycleHook;
-import xyz.noisif.nsl.common.di.ComponentProvider;
-import xyz.noisif.nsl.common.reflect.ClassScanner;
-import xyz.noisif.nsl.kv.KvServer;
+class NssApiIdentityTest extends ModuleIdentityTest {
+  override protected def getModuleName = "api"
 
-import jakarta.inject.Inject;
-import jakarta.inject.Singleton;
-
-@Singleton
-public class KvServerLifecycle implements LifecycleHook {
-  private final KvServer kvServer;
-
-  @Inject
-  KvServerLifecycle(KvServer kvServer) {
-    this.kvServer = kvServer;
-  }
-
-  @Override
-  public void onStart(ComponentProvider componentProvider, ClassScanner classScanner) {
-    kvServer.start();
-  }
-
-  @Override
-  public void onStop() {
-    kvServer.close();
-  }
+  override protected def getPackageSuffix = "nss"
 }

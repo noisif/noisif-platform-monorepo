@@ -15,18 +15,13 @@
  *
  * Please refer to the LICENSE file in the root directory for full restrictions.
  */
-package xyz.noisif.nss.api;
+package xyz.noisif.nss.api
 
-import xyz.noisif.nsl.common.ModuleIdentityTest;
+import xyz.noisif.nsl.common.bootstrap.{AppBootstrapper, DefaultBootstrapper}
 
-class NssApiIdentityTest extends ModuleIdentityTest {
-  @Override
-  protected String getModuleName() {
-    return "api";
-  }
+@AppBootstrapper
+class NssApiMain
 
-  @Override
-  protected String getPackageSuffix() {
-    return "nss";
-  }
+object NssApiMain {
+  def main(args: Array[String]): Unit = DefaultBootstrapper.run(classOf[NssApiMain])
 }
