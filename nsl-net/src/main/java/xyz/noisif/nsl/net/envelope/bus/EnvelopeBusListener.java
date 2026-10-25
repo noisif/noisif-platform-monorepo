@@ -120,7 +120,7 @@ public abstract class EnvelopeBusListener<S extends EnvelopeSession> implements 
   protected abstract static class AbstractBuilder<
       S extends EnvelopeSession, B extends AbstractBuilder<S, B>> {
     private ActionGroup actionGroup = ActionGroup.GLOBAL;
-    private Integer order = Ordered.HIGHEST_PRIORITY;
+    private Integer order = Ordered.HighestPriority();
     private ComponentProvider componentProvider;
 
     protected abstract B self();

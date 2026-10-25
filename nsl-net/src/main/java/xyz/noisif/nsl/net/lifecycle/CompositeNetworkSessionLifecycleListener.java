@@ -46,7 +46,7 @@ public class CompositeNetworkSessionLifecycleListener<S extends NetworkSession>
         componentProvider
             .getInstancesOf(new TypeReference<NetworkSessionLifecycleListener<S>>() {})
             .stream()
-            .sorted(Ordered.COMPARATOR)
+            .sorted(Ordered.comparator())
             .toList();
     if (LOG.isDebugEnabled()) {
       final String pipeline =

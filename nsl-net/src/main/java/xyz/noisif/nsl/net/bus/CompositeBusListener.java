@@ -37,7 +37,7 @@ public class CompositeBusListener<S extends NetworkSession> implements RawBusLis
 
   public static <S extends NetworkSession> RawBusListener<S> load(
       List<RawBusListener<S>> busListeners) {
-    busListeners.sort(Ordered.COMPARATOR);
+    busListeners.sort(Ordered.comparator());
     if (LOG.isDebugEnabled()) {
       final String pipeline =
           busListeners.stream()

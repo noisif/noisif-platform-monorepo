@@ -45,8 +45,8 @@ class RetryExecutorTest {
 
   @BeforeEach
   void setUp() {
-    lenient().when(policy.getBackoffMs()).thenReturn(0L);
-    lenient().when(policy.getMaxBackoffMs()).thenReturn(0L);
+    lenient().when(policy.backoffMs()).thenReturn(0L);
+    lenient().when(policy.maxBackoffMs()).thenReturn(0L);
   }
 
   @Test
@@ -132,14 +132,14 @@ class RetryExecutorTest {
           if (attempts.incrementAndGet() == 1) return "retry-me";
           return "done";
         };
-    when(policy.getBackoffMs()).thenReturn(10L);
-    when(policy.getMaxBackoffMs()).thenReturn(100L);
+    when(policy.backoffMs()).thenReturn(10L);
+    when(policy.maxBackoffMs()).thenReturn(100L);
     when(policy.shouldRetry(eq(1), eq(context))).thenReturn(true);
     // when
     RetryExecutor.executeSync(
         action, context, policy, (at, res) -> res.equals("retry-me"), (at, ex) -> false);
     // then
-    verify(policy, atLeastOnce()).getBackoffMs();
-    verify(policy, atLeastOnce()).getMaxBackoffMs();
+    verify(policy, atLeastOnce()).backoffMs();
+    verify(policy, atLeastOnce()).maxBackoffMs();
   }
 }

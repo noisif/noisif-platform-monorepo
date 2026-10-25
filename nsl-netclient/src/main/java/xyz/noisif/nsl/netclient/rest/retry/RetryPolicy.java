@@ -81,12 +81,12 @@ public class RetryPolicy implements RetryPolicyContext<HttpMethod> {
   }
 
   @Override
-  public long getBackoffMs() {
+  public long backoffMs() {
     return backoffMs;
   }
 
   @Override
-  public long getMaxBackoffMs() {
+  public long maxBackoffMs() {
     return maxBackoffMs;
   }
 }
