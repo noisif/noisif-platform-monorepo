@@ -134,7 +134,7 @@ public class RestClientGroupConfig extends GenericClientGroupConfig {
     @Override
     public RestClientGroupConfig build() {
       super.validate();
-      interceptors.sort(Ordered.comparator());
+      interceptors.sort(Ordered.COMPARATOR);
       return new RestClientGroupConfig(this);
     }
   }

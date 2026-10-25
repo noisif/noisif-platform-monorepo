@@ -15,15 +15,14 @@
  *
  * Please refer to the LICENSE file in the root directory for full restrictions.
  */
-package xyz.noisif.nsl.common
+package xyz.noisif.nsl.common.retry;
 
-import java.util.Comparator
+public interface RetryPolicyContext<C> {
+  boolean shouldRetry(int currentAttempt, C context);
 
-trait Ordered {
-  def order: Int = Ordered.HighestPriority
-}
+  boolean isEnabled();
 
-object Ordered {
-  val HighestPriority: Int            = Int.MaxValue
-  val comparator: Comparator[Ordered] = Comparator.comparingInt[Ordered](_.order).reversed()
+  long getBackoffMs();
+
+  long getMaxBackoffMs();
 }

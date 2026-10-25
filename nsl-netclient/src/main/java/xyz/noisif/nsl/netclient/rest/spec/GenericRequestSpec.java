@@ -229,7 +229,7 @@ public abstract class GenericRequestSpec implements RequestSpec, RequestView {
       groupInterceptors = clientRegistry.get(clientGroup).getInterceptors();
     }
     if (!localInterceptorsSorted && !interceptors.isEmpty()) {
-      interceptors.sort(Ordered.comparator());
+      interceptors.sort(Ordered.COMPARATOR);
       localInterceptorsSorted = true;
     }
     log.trace(
@@ -240,7 +240,7 @@ public abstract class GenericRequestSpec implements RequestSpec, RequestView {
     CollectionUtil.consumeMergedSorted(
         groupInterceptors,
         interceptors,
-        Ordered.comparator(),
+        Ordered.COMPARATOR,
         interceptor -> {
           log.trace("Running interceptor: {}", interceptor.getClass().getSimpleName());
           interceptor.intercept(reusableContext);
