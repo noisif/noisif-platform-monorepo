@@ -37,6 +37,7 @@ include("nsl-websocket")
 include("nsl-zcache")
 
 include("nss-api")
+include("nss-auth")
 include("nss-cli")
 include("nss-gateway")
 include("nss-ingestor")

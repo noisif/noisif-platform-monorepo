@@ -15,23 +15,23 @@
  *
  * Please refer to the LICENSE file in the root directory for full restrictions.
  */
-package xyz.noisif.nss.api.kv
+import xyz.noisif.buildconfig.apply
+import xyz.noisif.buildconfig.service.NsServicePlugin
+import xyz.noisif.buildconfig.service.nsService
 
-import xyz.noisif.nsl.common.bootstrap.lifecycle.LifecycleHook
-import xyz.noisif.nsl.common.di.ComponentProvider
-import xyz.noisif.nsl.common.reflect.ClassScanner
-import xyz.noisif.nsl.kv.KvServer
+pluginManager.apply<NsServicePlugin>()
 
-import jakarta.inject.Inject
-import jakarta.inject.Singleton
+nsService {
+  packageSuffix.set("auth")
+  mainClass.set("NssAuthMain")
+}
 
-@Singleton
-class KvServerLifecycle @Inject() (
-    private val kvServer: KvServer
-) extends LifecycleHook {
+dependencies {
+  implementation(project(":nsl-codec"))
+  implementation(project(":nsl-common"))
+  implementation(project(":nsl-http"))
+  implementation(project(":nsl-kv"))
+  implementation(project(":nsl-net"))
 
-  override def onStart(componentProvider: ComponentProvider, classScanner: ClassScanner): Unit =
-    kvServer.start()
-
-  override def onStop(): Unit = kvServer.close()
+  testImplementation(testFixtures(project(":nsl-common")))
 }
