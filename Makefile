@@ -33,6 +33,7 @@ oss-scan:
 .PHONY: proto
 proto:
 	./gradlew generateProto
+	./gradlew generateTestProto
 
 include Makefile.docker
 include Makefile.ns

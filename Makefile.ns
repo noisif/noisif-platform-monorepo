@@ -21,6 +21,7 @@ $(FORMAT_APPLY_TARGETS): format-apply-%:
 .PHONY: $(PROTO_TARGETS)
 $(PROTO_TARGETS): proto-%:
 	./gradlew $*:generateProto
+	./gradlew $*:generateTestProto
 
 NSS_MODULES := $(filter nss-%, $(ALL_MODULES))
 RUN_TARGETS := $(addprefix run-, $(NSS_MODULES))
