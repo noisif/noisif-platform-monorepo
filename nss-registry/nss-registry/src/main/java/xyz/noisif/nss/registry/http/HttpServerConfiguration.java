@@ -42,12 +42,12 @@ class HttpServerConfiguration {
         .withBinding(
             HttpAcceptorBinding.builder()
                 .connectionAcceptor(RegistryConnectionAcceptor.INTERNAL_API)
-                .port(9230 /* TODO: incoming from config server */)
+                .port(9241 /* TODO: incoming from config server */)
                 .build())
         .withBinding(
             HttpAcceptorBinding.builder()
                 .connectionAcceptor(RegistryConnectionAcceptor.EXTERNAL_API)
-                .port(9231 /* TODO: incoming from config server */)
+                .port(9242 /* TODO: incoming from config server */)
                 .staticContent(true)
                 .spaRouting(true)
                 .build())

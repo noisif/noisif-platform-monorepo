@@ -1,0 +1,31 @@
+nss-api.localhost {
+  reverse_proxy {$UPSTREAM_HOST}:{$NSS_API_PORT}
+}
+
+nss-auth.localhost {
+  reverse_proxy {$UPSTREAM_HOST}:{$NSS_AUTH_PORT}
+}
+
+nss-gateway.localhost {
+  reverse_proxy {$UPSTREAM_HOST}:{$NSS_GATEWAY_PORT}
+}
+
+nss-ingestor.localhost {
+  reverse_proxy {$UPSTREAM_HOST}:{$NSS_INGESTOR_PORT}
+}
+
+nss-registry-int.localhost {
+  reverse_proxy {$UPSTREAM_HOST}:{$NSS_REGISTRY_INTERNAL_PORT}
+}
+
+nss-registry-ext.localhost {
+  reverse_proxy {$UPSTREAM_HOST}:{$NSS_REGISTRY_EXTERNAL_PORT}
+}
+
+nss-registry-ui.localhost {
+  reverse_proxy {$UPSTREAM_HOST}:{$NSS_REGISTRY_UI_PORT}
+}
+
+nss-translator.localhost {
+  reverse_proxy {$UPSTREAM_HOST}:{$NSS_TRANSLATOR_PORT}
+}

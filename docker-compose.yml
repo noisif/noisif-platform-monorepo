@@ -1,6 +1,27 @@
 name: noisif
 
 services:
+  noisif-caddy:
+    container_name: noisif-caddy
+    image: caddy:alpine
+    ports:
+      - "80:80"
+      - "443:443"
+    environment:
+      UPSTREAM_HOST: host.docker.internal
+      NSS_API_PORT: ${NSS_API_PORT}
+      NSS_AUTH_PORT: ${NSS_AUTH_PORT}
+      NSS_GATEWAY_PORT: ${NSS_GATEWAY_PORT}
+      NSS_INGESTOR_PORT: ${NSS_INGESTOR_PORT}
+      NSS_REGISTRY_INTERNAL_PORT: ${NSS_REGISTRY_INTERNAL_PORT}
+      NSS_REGISTRY_EXTERNAL_PORT: ${NSS_REGISTRY_EXTERNAL_PORT}
+      NSS_REGISTRY_UI_PORT: ${NSS_REGISTRY_UI_PORT}
+      NSS_TRANSLATOR_PORT: ${NSS_TRANSLATOR_PORT}
+    volumes:
+      - ./.volumes/caddy/Caddyfile:/etc/caddy/Caddyfile:ro
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+
   noisif-rabbitmq:
     container_name: noisif-rabbitmq
     image: rabbitmq:3-management

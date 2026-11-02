@@ -29,7 +29,7 @@ nsSpaTeaVm {
   generateHash.set(false)
   minify.set(true)
   devServer {
-    port.set(9233)
+    port.set(9243)
     proxy("/api") {
       url.set("http://localhost:9231")
       stripPrefix.set(false)
