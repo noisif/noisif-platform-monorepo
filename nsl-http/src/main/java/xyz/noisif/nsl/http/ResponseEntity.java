@@ -27,4 +27,8 @@ public record ResponseEntity<T>(HttpStatus status, T body) {
   public static <T> ResponseEntity<T> noContent() {
     return new ResponseEntity<>(HttpStatus.NO_CONTENT_204, null);
   }
+
+  public static ResponseEntity<Redirect> redirect(String url) {
+    return new ResponseEntity<>(HttpStatus.FOUND_302, new Redirect(url));
+  }
 }

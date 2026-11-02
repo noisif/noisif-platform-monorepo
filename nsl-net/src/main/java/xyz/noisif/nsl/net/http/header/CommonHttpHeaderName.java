@@ -23,6 +23,7 @@ public enum CommonHttpHeaderName implements HttpHeaderName {
   USER_AGENT("User-Agent"),
   ACCEPT("Accept"),
   CONTENT_SECURITY_POLICY("Content-Security-Policy"),
+  LOCATION("Location"),
   ;
 
   private final String code;

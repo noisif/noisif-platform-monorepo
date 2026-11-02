@@ -120,4 +120,9 @@ class IntegrationTestController implements HttpController {
   ResponseEntity<String> cacheTestEndpoint() {
     return ResponseEntity.ok("cache-test");
   }
+
+  @RequestMapping(value = "/api/redirect", method = HttpMethod.GET)
+  ResponseEntity<Redirect> testRedirect() {
+    return ResponseEntity.redirect("/api/public");
+  }
 }

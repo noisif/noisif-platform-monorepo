@@ -42,6 +42,7 @@ import xyz.noisif.nsl.http.resolver.body.RequestBodyResolver;
 import xyz.noisif.nsl.http.validation.AnnotationValidator;
 import xyz.noisif.nsl.http.validation.ValidationHandler;
 import xyz.noisif.nsl.http.writer.JsonResponseWriter;
+import xyz.noisif.nsl.http.writer.RedirectResponseWriter;
 import xyz.noisif.nsl.http.writer.ResponseEntityResponseWriter;
 import xyz.noisif.nsl.http.writer.ResponseWriter;
 import xyz.noisif.nsl.http.writer.StringResponseWriter;
@@ -133,7 +134,8 @@ public abstract class HttpServer extends IdempotentService {
 
   private Set<ResponseWriter> initWriters(SerializerRegistry<MessageSerializer> registry) {
     final Set<ResponseWriter> delegates =
-        CollectionUtil.linkedSetOf(new VoidResponseWriter(), new StringResponseWriter());
+        CollectionUtil.linkedSetOf(
+            new VoidResponseWriter(), new StringResponseWriter(), new RedirectResponseWriter());
     final JsonSerializer jsonSerializer =
         (JsonSerializer) registry.get(StandardSerializerFormat.JSON);
     if (jsonSerializer != null) {

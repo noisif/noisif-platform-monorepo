@@ -514,4 +514,15 @@ public class JettyHttpServerIntegrationTest {
     // then
     assertThat(response.statusCode()).isEqualTo(HttpStatus.NOT_FOUND_404.getCode());
   }
+
+  @Test
+  @DisplayName("GET /api/redirect should return 302 Found and Location header")
+  void shouldReturn302AndLocationHeaderForRedirect() throws Exception {
+    // given & when
+    final HttpResponse<String> response = get("/api/redirect");
+    // then
+    assertThat(response.statusCode()).isEqualTo(HttpStatus.FOUND_302.getCode());
+    assertThat(response.headers().firstValue("Location")).isPresent().contains("/api/public");
+    assertThat(response.body()).isEmpty();
+  }
 }
