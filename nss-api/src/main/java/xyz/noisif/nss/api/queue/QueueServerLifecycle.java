@@ -15,23 +15,32 @@
  *
  * Please refer to the LICENSE file in the root directory for full restrictions.
  */
-package xyz.noisif.nss.api.queue
+package xyz.noisif.nss.api.queue;
 
-import xyz.noisif.nsl.common.bootstrap.lifecycle.LifecycleHook
-import xyz.noisif.nsl.common.di.ComponentProvider
-import xyz.noisif.nsl.common.reflect.ClassScanner
-import xyz.noisif.nsl.queue.QueueServer
+import xyz.noisif.nsl.common.bootstrap.lifecycle.LifecycleHook;
+import xyz.noisif.nsl.common.di.ComponentProvider;
+import xyz.noisif.nsl.common.reflect.ClassScanner;
+import xyz.noisif.nsl.queue.QueueServer;
 
-import jakarta.inject.Inject
-import jakarta.inject.Singleton
+import jakarta.inject.Inject;
+import jakarta.inject.Singleton;
 
 @Singleton
-class QueueServerLifecycle @Inject() (
-    private val queueServer: QueueServer
-) extends LifecycleHook {
+class QueueServerLifecycle implements LifecycleHook {
+  private final QueueServer queueServer;
 
-  override def onStart(componentProvider: ComponentProvider, classScanner: ClassScanner): Unit =
-    queueServer.start()
+  @Inject
+  QueueServerLifecycle(QueueServer queueServer) {
+    this.queueServer = queueServer;
+  }
 
-  override def onStop(): Unit = queueServer.close()
+  @Override
+  public void onStart(ComponentProvider componentProvider, ClassScanner classScanner) {
+    queueServer.start();
+  }
+
+  @Override
+  public void onStop() {
+    queueServer.close();
+  }
 }

@@ -15,10 +15,18 @@
  *
  * Please refer to the LICENSE file in the root directory for full restrictions.
  */
-package xyz.noisif.nss.api
+package xyz.noisif.nss.api.codec;
 
-class NssApiIdentityTest extends ModuleIdentityTest {
-  override protected def getModuleName = "api"
+import xyz.noisif.nsl.codec.serialization.protobuf.ProtobufJsonPrinter;
 
-  override protected def getPackageSuffix = "nss"
+import jakarta.enterprise.inject.Produces;
+import jakarta.inject.Singleton;
+
+@Singleton
+class CodecConfiguration {
+  @Produces
+  @Singleton
+  ProtobufJsonPrinter protobufJsonPrinter() {
+    return new ProtobufJsonPrinter();
+  }
 }
