@@ -38,6 +38,10 @@ jobs:
         run: echo "NS_VERSION=${GITHUB_SHA::7}" >> $GITHUB_ENV
 
       - name: Generate Dokka documentation
+        env:
+          NS_OSS_INDEX_USER: ${{ secrets.NS_OSS_INDEX_USER }}
+          NS_OSS_INDEX_TOKEN: ${{ secrets.NS_OSS_INDEX_TOKEN }}
+
         run: ./gradlew clean dokkaGenerate
 
       - name: Deploy to Cloudflare Pages
