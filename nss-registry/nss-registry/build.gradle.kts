@@ -16,6 +16,8 @@
  * Please refer to the LICENSE file in the root directory for full restrictions.
  */
 import xyz.noisif.buildconfig.apply
+import xyz.noisif.buildconfig.dokka.module.NsDokkaModulePlugin
+import xyz.noisif.buildconfig.dokka.module.nsDokkaModule
 import xyz.noisif.buildconfig.service.NsServicePlugin
 import xyz.noisif.buildconfig.service.nsService
 import xyz.noisif.buildconfig.spa.NsSpaWebRootPlugin
@@ -23,6 +25,7 @@ import xyz.noisif.buildconfig.spa.nsSpaWebRoot
 
 pluginManager.apply<NsServicePlugin>()
 pluginManager.apply<NsSpaWebRootPlugin>()
+pluginManager.apply<NsDokkaModulePlugin>()
 
 nsService {
   packageSuffix.set("registry")
@@ -32,6 +35,10 @@ nsService {
 nsSpaWebRoot {
   frontendProject.set(":nss-registry:nss-registry-ui")
   resourcesTargetDir.set("webroot")
+}
+
+nsDokkaModule {
+  moduleName.set("NSS Registry")
 }
 
 dependencies {

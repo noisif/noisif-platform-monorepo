@@ -32,6 +32,7 @@ repositories {
 
 dependencies {
   implementation(libs.gradle.node.plugin)
+  implementation(libs.dokka.gradle.plugin)
   implementation(libs.protobuf.gradle.plugin)
   implementation(libs.protoc)
   implementation(libs.shadow.marker)
@@ -81,6 +82,14 @@ gradlePlugin {
     create("nsSpaWebRoot") {
       id = "xyz.noisif.ns-spa-web-root"
       implementationClass = "xyz.noisif.buildconfig.spa.NsSpaWebRootPlugin"
+    }
+    create("nsDokkaRoot") {
+      id = "xyz.noisif.ns-dokka-root"
+      implementationClass = "xyz.noisif.buildconfig.dokka.NsDokkaRootPlugin"
+    }
+    create("nsDokkaModule") {
+      id = "xyz.noisif.ns-dokka-module"
+      implementationClass = "xyz.noisif.buildconfig.dokka.NsDokkaModulePlugin"
     }
   }
 }

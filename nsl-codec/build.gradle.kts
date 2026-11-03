@@ -16,11 +16,18 @@
  * Please refer to the LICENSE file in the root directory for full restrictions.
  */
 import xyz.noisif.buildconfig.apply
+import xyz.noisif.buildconfig.dokka.module.NsDokkaModulePlugin
+import xyz.noisif.buildconfig.dokka.module.nsDokkaModule
 import xyz.noisif.buildconfig.protobuf.NsProtobufPlugin
 import xyz.noisif.buildconfig.spotless.NsSpotlessProtobufPlugin
 
 pluginManager.apply<NsProtobufPlugin>()
 pluginManager.apply<NsSpotlessProtobufPlugin>()
+pluginManager.apply<NsDokkaModulePlugin>()
+
+nsDokkaModule {
+  moduleName.set("NSL Codec")
+}
 
 dependencies {
   implementation(libs.jackson.databind)

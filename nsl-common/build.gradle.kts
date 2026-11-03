@@ -17,12 +17,19 @@
  */
 import xyz.noisif.buildconfig.NsScalaPlugin
 import xyz.noisif.buildconfig.apply
+import xyz.noisif.buildconfig.dokka.module.NsDokkaModulePlugin
+import xyz.noisif.buildconfig.dokka.module.nsDokkaModule
 
 plugins {
   alias(libs.plugins.test.fixtures)
 }
 
 pluginManager.apply<NsScalaPlugin>()
+pluginManager.apply<NsDokkaModulePlugin>()
+
+nsDokkaModule {
+  moduleName.set("NSL Common")
+}
 
 dependencies {
   implementation(libs.bucket4j)

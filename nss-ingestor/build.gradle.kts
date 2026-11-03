@@ -16,6 +16,8 @@
  * Please refer to the LICENSE file in the root directory for full restrictions.
  */
 import xyz.noisif.buildconfig.apply
+import xyz.noisif.buildconfig.dokka.module.NsDokkaModulePlugin
+import xyz.noisif.buildconfig.dokka.module.nsDokkaModule
 import xyz.noisif.buildconfig.jvm.NsGC
 import xyz.noisif.buildconfig.jvm.nsJvm
 import xyz.noisif.buildconfig.polyglot.NsPolyglotJsPlugin
@@ -25,6 +27,7 @@ import xyz.noisif.buildconfig.service.nsService
 
 pluginManager.apply<NsServicePlugin>()
 pluginManager.apply<NsPolyglotJsPlugin>()
+pluginManager.apply<NsDokkaModulePlugin>()
 
 nsService {
   packageSuffix.set("ingestor")
@@ -38,6 +41,10 @@ nsPolyglotJs {
 
 nsJvm {
   gc.set(NsGC.G1GC) // ZGC not supported in JVMCI required by GraalVM
+}
+
+nsDokkaModule {
+  moduleName.set("NSS Ingestor")
 }
 
 dependencies {

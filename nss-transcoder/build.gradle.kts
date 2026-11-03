@@ -16,6 +16,8 @@
  * Please refer to the LICENSE file in the root directory for full restrictions.
  */
 import xyz.noisif.buildconfig.apply
+import xyz.noisif.buildconfig.dokka.module.NsDokkaModulePlugin
+import xyz.noisif.buildconfig.dokka.module.nsDokkaModule
 import xyz.noisif.buildconfig.ffmpeg.NsFFmpegPlugin
 import xyz.noisif.buildconfig.ffmpeg.nsFFmpeg
 import xyz.noisif.buildconfig.jvm.NsGC
@@ -25,6 +27,7 @@ import xyz.noisif.buildconfig.service.nsService
 
 pluginManager.apply<NsServicePlugin>()
 pluginManager.apply<NsFFmpegPlugin>()
+pluginManager.apply<NsDokkaModulePlugin>()
 
 nsService {
   packageSuffix.set("transcoder")
@@ -41,6 +44,10 @@ nsJvm {
   gc.set(NsGC.PARALLEL)
   // limit gc threads for preventing os threads starvation (ffmpeg processes)
   extraJvmArgs.add("-XX:ParallelGCThreads=4")
+}
+
+nsDokkaModule {
+  moduleName.set("NSS Transcoder")
 }
 
 dependencies {

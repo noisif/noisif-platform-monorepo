@@ -35,5 +35,9 @@ proto:
 	./gradlew generateProto
 	./gradlew generateTestProto
 
+.PHONY: docs
+docs:
+	./gradlew dokkaGenerate
+
 include Makefile.docker
 include Makefile.ns

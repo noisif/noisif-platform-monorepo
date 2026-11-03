@@ -16,11 +16,14 @@
  * Please refer to the LICENSE file in the root directory for full restrictions.
  */
 import xyz.noisif.buildconfig.apply
+import xyz.noisif.buildconfig.dokka.module.NsDokkaModulePlugin
+import xyz.noisif.buildconfig.dokka.module.nsDokkaModule
 import xyz.noisif.buildconfig.spa.teavm.NsSpaTeaVmFrontendPlugin
 import xyz.noisif.buildconfig.spa.teavm.nsSpaTeaVm
 import xyz.noisif.buildconfig.spa.teavm.spaFrontend
 
 pluginManager.apply<NsSpaTeaVmFrontendPlugin>()
+pluginManager.apply<NsDokkaModulePlugin>()
 
 nsSpaTeaVm {
   title.set("NSS Registry Panel")
@@ -35,6 +38,10 @@ nsSpaTeaVm {
       stripPrefix.set(false)
     }
   }
+}
+
+nsDokkaModule {
+  moduleName.set("NSS Registry UI")
 }
 
 dependencies {

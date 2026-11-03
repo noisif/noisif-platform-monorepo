@@ -16,14 +16,21 @@
  * Please refer to the LICENSE file in the root directory for full restrictions.
  */
 import xyz.noisif.buildconfig.apply
+import xyz.noisif.buildconfig.dokka.module.NsDokkaModulePlugin
+import xyz.noisif.buildconfig.dokka.module.nsDokkaModule
 import xyz.noisif.buildconfig.service.NsServicePlugin
 import xyz.noisif.buildconfig.service.nsService
 
 pluginManager.apply<NsServicePlugin>()
+pluginManager.apply<NsDokkaModulePlugin>()
 
 nsService {
   packageSuffix.set("auth")
   mainClass.set("NssAuthMain")
+}
+
+nsDokkaModule {
+  moduleName.set("NSS Auth")
 }
 
 dependencies {

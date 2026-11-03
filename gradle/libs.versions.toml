@@ -6,6 +6,7 @@ assertj = "3.27.7"
 bucket4j = "8.18.0"
 clazzGraph = "4.8.184"
 commonsCli = "1.11.0"
+dokka = "2.2.0"
 erlangJinterface = "1.6.1"
 errorProne = "2.49.0"
 errorPronePlugin = "5.1.0"
@@ -52,6 +53,8 @@ assertj-core = { module = "org.assertj:assertj-core", version.ref = "assertj" }
 bucket4j = { module = "com.bucket4j:bucket4j_jdk17-core", version.ref = "bucket4j" }
 clazz-graph = { module = "io.github.classgraph:classgraph", version.ref = "clazzGraph" }
 commons-cli = { module = "commons-cli:commons-cli", version.ref = "commonsCli" }
+dokka-gradle-plugin = { module = "org.jetbrains.dokka:dokka-gradle-plugin", version.ref = "dokka" }
+dokka-kotlin-as-java-plugin = { module = "org.jetbrains.dokka:kotlin-as-java-plugin", version.ref = "dokka" }
 erlang-jinterface = { module = "org.erlang.otp:jinterface", version.ref = "erlangJinterface" }
 error-prone-annotation = { module = "com.google.errorprone:error_prone_annotations", version.ref = "errorProne" }
 error-prone-core = { module = "com.google.errorprone:error_prone_core", version.ref = "errorProne" }
@@ -108,6 +111,7 @@ ws-mock-server = { module = "org.java-websocket:Java-WebSocket", version.ref = "
 [plugins]
 application = { id = "application" }
 base = { id = "base" }
+dokka = { id = "org.jetbrains.dokka" }
 error-prone = { id = "net.ltgt.errorprone", version.ref = "errorPronePlugin" }
 idea = { id = "idea" }
 java = { id = "java" }

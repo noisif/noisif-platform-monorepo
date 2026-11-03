@@ -20,11 +20,14 @@ import org.gradle.plugins.ide.idea.model.IdeaModel
 import xyz.noisif.buildconfig.Env
 import xyz.noisif.buildconfig.ProjectEnvVar
 import xyz.noisif.buildconfig.apply
+import xyz.noisif.buildconfig.dokka.root.NsDokkaRootPlugin
+import xyz.noisif.buildconfig.dokka.root.nsDokkaRoot
 import xyz.noisif.buildconfig.getPluginId
 import xyz.noisif.buildconfig.jvm.NsJvmPlugin
 import xyz.noisif.buildconfig.spotless.NsSpotlessPlugin
 import xyz.noisif.buildconfig.test.CompactTestOutputListener
 import xyz.noisif.buildconfig.test.registerTestSummaryService
+import java.time.Year
 
 plugins {
   alias(libs.plugins.error.prone)
@@ -69,6 +72,15 @@ allprojects {
       .absolutePath
     isFailOnDetection = false
   }
+}
+
+pluginManager.apply<NsDokkaRootPlugin>()
+
+nsDokkaRoot {
+  projectName.set("NOISIF Platform")
+  documentationVersion.set(Env.get<String>(ProjectEnvVar.VERSION, "0.0.0"))
+  bannerPath.set(".github/banner.png")
+  copyrightMessage.set("© ${Year.now().value} NOISIF. All rights reserved.")
 }
 
 subprojects {

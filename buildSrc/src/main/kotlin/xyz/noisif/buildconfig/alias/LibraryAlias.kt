@@ -22,6 +22,7 @@ import org.gradle.api.artifacts.VersionCatalog
 import org.gradle.api.provider.Provider
 
 internal enum class LibraryAlias(private val alias: String) : DependencyAlias {
+  DOKKA_KOTLIN_AS_JAVA_PLUGIN("dokka.kotlin.as.java.plugin"),
   LOGBACK_CLASSIC("logback.classic"),
   PROTOBUF_COMPILER("protoc"),
   SCALA_LIBRARY("scala.library"),

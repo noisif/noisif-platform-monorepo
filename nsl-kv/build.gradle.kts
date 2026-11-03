@@ -15,6 +15,15 @@
  *
  * Please refer to the LICENSE file in the root directory for full restrictions.
  */
+import xyz.noisif.buildconfig.apply
+import xyz.noisif.buildconfig.dokka.module.NsDokkaModulePlugin
+import xyz.noisif.buildconfig.dokka.module.nsDokkaModule
+
+pluginManager.apply<NsDokkaModulePlugin>()
+
+nsDokkaModule {
+  moduleName.set("NSL KV")
+}
 
 dependencies {
   implementation(libs.jedis)

@@ -28,6 +28,7 @@ import xyz.noisif.buildconfig.libs
 
 internal enum class PluginAlias(private val alias: String) : DependencyAlias {
   APPLICATION("application"),
+  DOKKA("dokka"),
   IDEA("idea"),
   JAVA("java"),
   PROTOBUF("protobuf"),
