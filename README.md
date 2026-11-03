@@ -7,7 +7,7 @@
 
 ## Documentation
 
-Go to [documentation](https://docs.nosifi.xyz) of this software.
+Go to [documentation](https://docs.noisif.xyz) of this software.
 
 ## License
 
