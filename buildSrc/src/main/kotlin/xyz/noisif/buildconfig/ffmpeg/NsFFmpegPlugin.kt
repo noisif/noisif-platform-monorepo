@@ -25,7 +25,7 @@ import xyz.noisif.buildconfig.alias.apply
 class NsFFmpegPlugin : Plugin<Project> {
   override fun apply(target: Project) {
     target.pluginManager.apply(target, PluginAlias.IDEA)
-    val extension = target.extensions.create("ffmpegConfig", NsFFmpegExtension::class.java)
+    val extension = target.extensions.create("nsFfmpeg", NsFFmpegExtension::class.java)
     target.afterEvaluate(NsFFmpegConfigAction(extension))
   }
 }
