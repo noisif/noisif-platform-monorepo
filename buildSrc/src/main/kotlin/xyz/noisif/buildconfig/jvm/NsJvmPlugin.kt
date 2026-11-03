@@ -25,10 +25,6 @@ import org.gradle.api.tasks.testing.Test
 class NsJvmPlugin : Plugin<Project> {
   override fun apply(target: Project) {
     val extension = target.extensions.create("nsJvm", NsJvmExtension::class.java)
-
-    extension.gc.convention(NsGC.ZGC)
-    extension.extraJvmArgs.convention(emptyList())
-
     val configureAction = DynamicJvmArgsConfigureAction(extension)
     target.tasks.withType(JavaExec::class.java).configureEach(configureAction)
     target.tasks.withType(Test::class.java).configureEach(configureAction)

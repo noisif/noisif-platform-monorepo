@@ -22,9 +22,14 @@ import org.gradle.api.provider.ListProperty
 import org.gradle.api.provider.Property
 import org.gradle.kotlin.dsl.configure
 
-interface NsJvmExtension {
-  val gc: Property<NsGC>
-  val extraJvmArgs: ListProperty<String>
+abstract class NsJvmExtension {
+  abstract val gc: Property<NsGC>
+  abstract val extraJvmArgs: ListProperty<String>
+
+  init {
+    gc.convention(NsGC.ZGC)
+    extraJvmArgs.convention(emptyList())
+  }
 }
 
 fun Project.nsJvm(action: NsJvmExtension.() -> Unit) {
