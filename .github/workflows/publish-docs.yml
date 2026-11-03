@@ -49,4 +49,4 @@ jobs:
         with:
           apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
-          command: pages deploy docs/dokka --project-name=noisif-platform-docs --branch=master
+          command: pages deploy build/docs/dokka --project-name=noisif-platform-docs --branch=master
