@@ -5,6 +5,10 @@
 > transparency purposes. Stealing, copying classes, or running your own instances using this code is
 > strictly prohibited under copyright law. Please read the LICENSE file before proceeding.
 
+## Documentation
+
+Go to [documentation](https://docs.nosifi.xyz) of this software.
+
 ## License
 
 ```text
