@@ -85,11 +85,11 @@ gradlePlugin {
     }
     create("nsDokkaRoot") {
       id = "xyz.noisif.ns-dokka-root"
-      implementationClass = "xyz.noisif.buildconfig.dokka.NsDokkaRootPlugin"
+      implementationClass = "xyz.noisif.buildconfig.dokka.root.NsDokkaRootPlugin"
     }
     create("nsDokkaModule") {
       id = "xyz.noisif.ns-dokka-module"
-      implementationClass = "xyz.noisif.buildconfig.dokka.NsDokkaModulePlugin"
+      implementationClass = "xyz.noisif.buildconfig.dokka.module.NsDokkaModulePlugin"
     }
   }
 }
