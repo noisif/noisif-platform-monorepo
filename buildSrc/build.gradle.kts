@@ -38,6 +38,7 @@ dependencies {
   implementation(libs.shadow.marker)
   implementation(libs.spotless.gradle.plugin)
   implementation(libs.teavm.gradle.plugin)
+  implementation(libs.jib.gradle.plugin)
   implementation(libs.commons.compress)
   implementation(libs.xz)
   implementation(gradleApi())

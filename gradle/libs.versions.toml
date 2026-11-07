@@ -6,6 +6,7 @@ assertj = "3.27.7"
 bucket4j = "8.18.0"
 clazzGraph = "4.8.184"
 commonsCli = "1.11.0"
+commonsCompress = "1.28.0"
 dokka = "2.2.0"
 erlangJinterface = "1.6.1"
 errorProne = "2.49.0"
@@ -44,6 +45,7 @@ testcontainersRedis = "2.2.4"
 undertow = "2.4.4.Final"
 wiremock = "3.13.2"
 wsMockServer = "1.5.7"
+xz = "1.12"
 
 [libraries]
 ampq-client = { module = "com.rabbitmq:amqp-client", version.ref = "amqpClient" }
@@ -53,6 +55,7 @@ assertj-core = { module = "org.assertj:assertj-core", version.ref = "assertj" }
 bucket4j = { module = "com.bucket4j:bucket4j_jdk17-core", version.ref = "bucket4j" }
 clazz-graph = { module = "io.github.classgraph:classgraph", version.ref = "clazzGraph" }
 commons-cli = { module = "commons-cli:commons-cli", version.ref = "commonsCli" }
+commons-compress = { module = "org.apache.commons:commons-compress", version.ref = "commonsCompress" }
 dokka-gradle-plugin = { module = "org.jetbrains.dokka:dokka-gradle-plugin", version.ref = "dokka" }
 dokka-kotlin-as-java-plugin = { module = "org.jetbrains.dokka:kotlin-as-java-plugin", version.ref = "dokka" }
 erlang-jinterface = { module = "org.erlang.otp:jinterface", version.ref = "erlangJinterface" }
@@ -107,6 +110,7 @@ testcontainers-redis = { module = "com.redis:testcontainers-redis", version.ref 
 undertow = { module = "io.undertow:undertow-core", version.ref = "undertow" }
 wiremock = { module = "org.wiremock:wiremock-standalone", version.ref = "wiremock" }
 ws-mock-server = { module = "org.java-websocket:Java-WebSocket", version.ref = "wsMockServer" }
+xz = { module = "org.tukaani:xz", version.ref = "xz" }
 
 [plugins]
 application = { id = "application" }
