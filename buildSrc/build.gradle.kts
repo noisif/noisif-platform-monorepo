@@ -38,6 +38,8 @@ dependencies {
   implementation(libs.shadow.marker)
   implementation(libs.spotless.gradle.plugin)
   implementation(libs.teavm.gradle.plugin)
+  implementation(libs.commons.compress)
+  implementation(libs.xz)
   implementation(gradleApi())
 }
 
@@ -67,9 +69,9 @@ gradlePlugin {
       id = "xyz.noisif.ns-scala"
       implementationClass = "xyz.noisif.buildconfig.NsScalaPlugin"
     }
-    create("nsFFmpeg") {
-      id = "xyz.noisif.ns-ffmpeg"
-      implementationClass = "xyz.noisif.buildconfig.ffmpeg.NsFFmpegPlugin"
+    create("nsBinaries") {
+      id = "xyz.noisif.ns-binaries"
+      implementationClass = "xyz.noisif.buildconfig.binary.NsBinariesPlugin"
     }
     create("nsJvm") {
       id = "xyz.noisif.ns-jvm"

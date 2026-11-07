@@ -21,7 +21,7 @@ internal interface PlatformSupported {
   val supportedHosts: Array<out HostPlatform>
 }
 
-internal enum class HostPlatform(val isWindows: Boolean) {
+enum class HostPlatform(val isWindows: Boolean) {
   WINDOWS_X86_64(true),
   WINDOWS_ARM64(true),
   MACOS_X86_64(false),
