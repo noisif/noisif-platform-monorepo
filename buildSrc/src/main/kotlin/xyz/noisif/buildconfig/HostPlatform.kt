@@ -30,8 +30,6 @@ internal enum class HostPlatform(val isWindows: Boolean) {
   LINUX_ARM64(false),
   ;
 
-  fun formatBinaryName(toolName: String): String = if (isWindows) "$toolName.exe" else toolName
-
   companion object {
     fun current(): HostPlatform {
       val osName = System.getProperty("os.name").lowercase()
