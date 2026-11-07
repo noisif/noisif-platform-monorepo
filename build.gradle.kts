@@ -41,7 +41,7 @@ allprojects {
   plugins.apply(getPluginId(rootProject.libs.plugins.sonatype.scan))
 
   group = "xyz.noisif"
-  version = Env.get<String>(ProjectEnvVar.VERSION, "0.0.0")
+  version = Env.get<String>(ProjectEnvVar.VERSION, "latest")
 
   repositories {
     mavenCentral()
@@ -78,7 +78,7 @@ pluginManager.apply<NsDokkaRootPlugin>()
 
 nsDokkaRoot {
   projectName.set("NOISIF Platform")
-  documentationVersion.set(Env.get<String>(ProjectEnvVar.VERSION, "0.0.0"))
+  documentationVersion.set(Env.get<String>(ProjectEnvVar.VERSION, "latest"))
   bannerPath.set(".github/banner.png")
   copyrightMessage.set("© ${Year.now().value} NOISIF. All rights reserved.")
 }
