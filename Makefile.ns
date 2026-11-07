@@ -23,9 +23,10 @@ $(PROTO_TARGETS): proto-%:
 	./gradlew $*:generateProto
 	./gradlew $*:generateTestProto
 
-NSS_MODULES := $(filter nss-%, $(ALL_MODULES))
-RUN_TARGETS := $(addprefix run-, $(NSS_MODULES))
-JAR_TARGETS := $(addprefix jar-, $(NSS_MODULES))
+NSS_MODULES    := $(filter nss-%, $(ALL_MODULES))
+RUN_TARGETS    := $(addprefix run-, $(NSS_MODULES))
+JAR_TARGETS    := $(addprefix jar-, $(NSS_MODULES))
+DOCKER_TARGETS := $(addprefix docker-, $(NSS_MODULES))
 
 .PHONY: $(RUN_TARGETS)
 $(RUN_TARGETS): run-%:
@@ -34,3 +35,7 @@ $(RUN_TARGETS): run-%:
 .PHONY: $(JAR_TARGETS)
 $(JAR_TARGETS): jar-%:
 	./gradlew $*:shadowJar
+
+.PHONY: $(DOCKER_TARGETS)
+$(DOCKER_TARGETS): docker-%:
+	./gradlew $*:jibDockerBuild
