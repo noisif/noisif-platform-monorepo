@@ -23,6 +23,7 @@ jakartaCdiApi = "5.0.0-M1"
 jakartaInjectApi = "2.0.1"
 jedis = "7.4.0"
 jetty = "12.1.14"
+jibGradlePlugin = "3.5.2"
 jspecify = "1.0.0"
 junit = "5.10.2"
 kotlinDsl = "5.2.0"
@@ -77,6 +78,7 @@ jetty-client = { module = "org.eclipse.jetty:jetty-client", version.ref = "jetty
 jetty-server = { module = "org.eclipse.jetty:jetty-server", version.ref = "jetty" }
 jetty-ws-client = { module = "org.eclipse.jetty.websocket:jetty-websocket-jetty-client", version.ref = "jetty" }
 jetty-ws-server = { module = "org.eclipse.jetty.websocket:jetty-websocket-jetty-server", version.ref = "jetty" }
+jib-gradle-plugin = { module = "com.google.cloud.tools:jib-gradle-plugin", version.ref = "jibGradlePlugin" }
 jspecify = { module = "org.jspecify:jspecify", version.ref = "jspecify" }
 junit-jupiter = { module = "org.junit.jupiter:junit-jupiter", version.ref = "junit" }
 logback-classic = { module = "ch.qos.logback:logback-classic", version.ref = "logback" }
@@ -121,6 +123,7 @@ idea = { id = "idea" }
 java = { id = "java" }
 java-gradle-plugin = { id = "java-gradle-plugin" }
 java-library = { id = "java-library" }
+jib = { id = "com.google.cloud.tools.jib" }
 kotlin-dsl = { id = "org.gradle.kotlin.kotlin-dsl", version.ref = "kotlinDsl" }
 node = { id = "com.github.node-gradle.node" }
 protobuf = { id = "com.google.protobuf", version.ref = "protobufPlugin" }

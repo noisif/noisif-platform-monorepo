@@ -31,6 +31,7 @@ internal enum class PluginAlias(private val alias: String) : DependencyAlias {
   DOKKA("dokka"),
   IDEA("idea"),
   JAVA("java"),
+  JIB("jib"),
   PROTOBUF("protobuf"),
   SCALA("scala"),
   SHADOW("shadow"),

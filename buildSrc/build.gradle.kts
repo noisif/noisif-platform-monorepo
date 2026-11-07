@@ -94,6 +94,10 @@ gradlePlugin {
       id = "xyz.noisif.ns-dokka-module"
       implementationClass = "xyz.noisif.buildconfig.dokka.module.NsDokkaModulePlugin"
     }
+    create("nsDockerImage") {
+      id = "xyz.noisif.ns-docker-image"
+      implementationClass = "xyz.noisif.buildconfig.docker.NsDockerImagePlugin"
+    }
   }
 }
 

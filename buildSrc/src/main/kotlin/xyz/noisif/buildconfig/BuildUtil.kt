@@ -21,6 +21,7 @@ import org.gradle.api.Project
 import org.gradle.api.artifacts.VersionCatalog
 import org.gradle.api.artifacts.VersionCatalogsExtension
 import org.gradle.api.plugins.PluginManager
+import org.gradle.api.provider.Property
 import org.gradle.api.provider.Provider
 import org.gradle.plugin.use.PluginDependency
 
@@ -31,4 +32,32 @@ internal val Project.libs: VersionCatalog
 
 inline fun <reified T : Any> PluginManager.apply() {
   apply(T::class.java)
+}
+
+internal inline fun <reified T : Enum<T>> Project.overrideEnumProperty(
+  projectPropertyName: String,
+  targetProperty: Property<T>,
+) {
+  findProperty(projectPropertyName)?.toString()?.let { valueStr ->
+    runCatching { enumValueOf<T>(valueStr.uppercase()) }
+      .onSuccess { targetProperty.set(it) }
+      .onFailure {
+        val availableOptions = enumValues<T>().joinToString { it.name }
+        logger.warn(
+          "Unrecognized value '$valueStr' for parameter '-P$projectPropertyName', " +
+            "available options are: [$availableOptions], skipping override",
+        )
+      }
+  }
+}
+
+internal fun Project.overrideStringProperty(
+  projectPropertyName: String,
+  targetProperty: Property<String>,
+) {
+  findProperty(projectPropertyName)?.toString()?.let { valueStr ->
+    if (valueStr.isNotBlank()) {
+      targetProperty.set(valueStr.trim())
+    }
+  }
 }

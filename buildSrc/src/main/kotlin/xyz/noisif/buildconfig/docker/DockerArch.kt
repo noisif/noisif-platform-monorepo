@@ -15,22 +15,33 @@
  *
  * Please refer to the LICENSE file in the root directory for full restrictions.
  */
-package xyz.noisif.buildconfig.ffmpeg.libav
+package xyz.noisif.buildconfig.service.docker
 
 import xyz.noisif.buildconfig.HostPlatform
 import xyz.noisif.buildconfig.PlatformSupported
 import xyz.noisif.buildconfig.findCurrentPlatform
 
-internal enum class LibAvBinariesPlatform(
-  val platformKey: String,
-  override vararg val supportedHosts: HostPlatform,
+enum class DockerArch(
+  val jibArchitecture: String,
+  override val supportedHosts: Array<out HostPlatform>,
 ) : PlatformSupported {
-  WINDOWS_64("windows-64", HostPlatform.WINDOWS_X86_64),
-  OSX_64("osx-64", HostPlatform.MACOS_ARM64, HostPlatform.MACOS_X86_64),
-  LINUX_64("linux-64", HostPlatform.LINUX_X86_64),
+  AMD64(
+    "amd64",
+    arrayOf(
+      HostPlatform.WINDOWS_X86_64,
+      HostPlatform.MACOS_X86_64,
+      HostPlatform.LINUX_X86_64,
+    ),
+  ),
+  ARM64(
+    "arm64",
+    arrayOf(
+      HostPlatform.MACOS_ARM64,
+    ),
+  ),
   ;
 
   companion object {
-    fun current() = findCurrentPlatform<LibAvBinariesPlatform>()
+    fun current() = findCurrentPlatform<DockerArch>()
   }
 }
