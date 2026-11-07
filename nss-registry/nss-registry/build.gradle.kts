@@ -16,6 +16,7 @@
  * Please refer to the LICENSE file in the root directory for full restrictions.
  */
 import xyz.noisif.buildconfig.apply
+import xyz.noisif.buildconfig.docker.NsDockerImagePlugin
 import xyz.noisif.buildconfig.dokka.module.NsDokkaModulePlugin
 import xyz.noisif.buildconfig.dokka.module.nsDokkaModule
 import xyz.noisif.buildconfig.service.NsServicePlugin
@@ -24,12 +25,15 @@ import xyz.noisif.buildconfig.spa.NsSpaWebRootPlugin
 import xyz.noisif.buildconfig.spa.nsSpaWebRoot
 
 pluginManager.apply<NsServicePlugin>()
+pluginManager.apply<NsDockerImagePlugin>()
 pluginManager.apply<NsSpaWebRootPlugin>()
 pluginManager.apply<NsDokkaModulePlugin>()
 
 nsService {
-  packageSuffix.set("registry")
-  mainClass.set("NssRegistryMain")
+  jar {
+    packageSuffix.set("registry")
+    mainClass.set("NssRegistryMain")
+  }
 }
 
 nsSpaWebRoot {
