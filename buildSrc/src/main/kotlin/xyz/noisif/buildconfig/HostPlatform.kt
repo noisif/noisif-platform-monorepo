@@ -23,9 +23,11 @@ internal interface PlatformSupported {
 
 internal enum class HostPlatform(val isWindows: Boolean) {
   WINDOWS_X86_64(true),
-  MACOS_ARM64(false),
+  WINDOWS_ARM64(true),
   MACOS_X86_64(false),
+  MACOS_ARM64(false),
   LINUX_X86_64(false),
+  LINUX_ARM64(false),
   ;
 
   fun formatBinaryName(toolName: String): String = if (isWindows) "$toolName.exe" else toolName
@@ -34,10 +36,13 @@ internal enum class HostPlatform(val isWindows: Boolean) {
     fun current(): HostPlatform {
       val osName = System.getProperty("os.name").lowercase()
       val arch = System.getProperty("os.arch").lowercase()
+      val isArm = "aarch" in arch || "arm" in arch
       return when {
+        "win" in osName && isArm -> WINDOWS_ARM64
         "win" in osName -> WINDOWS_X86_64
-        "mac" in osName && ("aarch" in arch || "arm" in arch) -> MACOS_ARM64
+        "mac" in osName && isArm -> MACOS_ARM64
         "mac" in osName -> MACOS_X86_64
+        isArm -> LINUX_ARM64
         else -> LINUX_X86_64
       }
     }
